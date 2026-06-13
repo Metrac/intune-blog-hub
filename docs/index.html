@@ -151,8 +151,7 @@
       const titleHref = a.offline_path ? escapeHtml(a.offline_path) : escapeHtml(a.link);
       const titleTarget = a.offline_path ? "" : ' target="_blank" rel="noopener"';
       const links = a.offline_path
-        ? `<a href="${escapeHtml(a.offline_path)}">Read offline</a>
-           <a href="${escapeHtml(a.link)}" target="_blank" rel="noopener">Original ↗</a>`
+        ? `<a href="${escapeHtml(a.link)}" target="_blank" rel="noopener">Original ↗</a>`
         : `<a href="${escapeHtml(a.link)}" target="_blank" rel="noopener">Read on site ↗</a>
            <span class="nooff">offline copy unavailable</span>`;
       return `<article class="card">
