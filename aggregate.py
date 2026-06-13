@@ -23,8 +23,8 @@ from urllib.parse import urljoin, urlparse
 
 import feedparser
 import requests
-import trafilatura
 from bs4 import BeautifulSoup
+from readability import Document
 
 ROOT = Path(__file__).resolve().parent
 FEEDS_FILE = ROOT / "feeds.json"
@@ -262,61 +262,62 @@ def download_image(url: str, dest_dir: Path, index: int, session: requests.Sessi
 def scrape_article(article: dict, session: requests.Session) -> dict:
     """Fetch and extract a reader-view copy of the article with local images.
 
-    Returns status fields to merge onto the article: on success offline_path,
+    Always returns a status dict (never raises): on success offline_path,
     scraped_at, image_count; on failure scrape_error (and offline_path=None).
     """
     h = post_hash(article)
     link = article["link"]
     scraped_at = datetime.now(timezone.utc).isoformat()
 
-    downloaded = trafilatura.fetch_url(link)
-    if not downloaded:
-        return {"offline_path": None, "scrape_error": "fetch failed", "scraped_at": scraped_at}
+    def fail(reason: str) -> dict:
+        return {"offline_path": None, "scrape_error": reason[:200], "scraped_at": scraped_at}
 
-    extracted = trafilatura.extract(
-        downloaded,
-        output_format="html",
-        include_images=True,
-        include_formatting=True,
-        include_links=True,
-        favor_precision=True,
-        url=link,
-    )
-    if not extracted:
-        return {"offline_path": None, "scrape_error": "no main content", "scraped_at": scraped_at}
+    try:
+        resp = session.get(link, timeout=SCRAPE_TIMEOUT)
+        resp.raise_for_status()
+        ctype = resp.headers.get("Content-Type", "")
+        if ctype and "html" not in ctype.lower():
+            return fail(f"not html ({ctype.split(';')[0]})")
 
-    soup = BeautifulSoup(extracted, "lxml")
-    assets_dir = ASSETS_DIR / h
-    image_count = 0
-    for img in soup.find_all("img"):
-        src = img.get("src") or img.get("data-src")
-        # Drop responsive/lazy attributes that would otherwise pull from the web.
-        for attr in ("srcset", "data-srcset", "data-src", "loading", "sizes"):
-            if img.has_attr(attr):
-                del img[attr]
-        if not src:
-            img.decompose()
-            continue
-        if image_count >= MAX_IMAGES_PER_POST:
-            img.decompose()
-            continue
-        abs_url = urljoin(link, src)
-        if not abs_url.lower().startswith(("http://", "https://")):
-            img.decompose()
-            continue
-        local = download_image(abs_url, assets_dir, image_count, session)
-        if local:
-            img["src"] = f"assets/{h}/{local}"
-            image_count += 1
-        else:
-            img.decompose()
+        # readability isolates the main article body as clean HTML.
+        content_html = Document(resp.text).summary(html_partial=True)
+        if not content_html or len(content_html) < 50:
+            return fail("no main content")
 
-    # lxml wraps fragments in <html><body>; emit only the inner content.
-    container = soup.body or soup
-    body_html = container.decode_contents()
-    page = render_post(article, body_html)
-    POSTS_DIR.mkdir(parents=True, exist_ok=True)
-    (POSTS_DIR / f"{h}.html").write_text(page, encoding="utf-8")
+        soup = BeautifulSoup(content_html, "lxml")
+        assets_dir = ASSETS_DIR / h
+        image_count = 0
+        for img in soup.find_all("img"):
+            src = img.get("src") or img.get("data-src") or img.get("data-lazy-src")
+            # Drop responsive/lazy attributes that would otherwise pull from the web.
+            for attr in ("srcset", "data-srcset", "data-src", "data-lazy-src", "loading", "sizes"):
+                if img.has_attr(attr):
+                    del img[attr]
+            if not src or image_count >= MAX_IMAGES_PER_POST:
+                img.decompose()
+                continue
+            abs_url = urljoin(link, src)
+            if not abs_url.lower().startswith(("http://", "https://")):
+                img.decompose()
+                continue
+            local = download_image(abs_url, assets_dir, image_count, session)
+            if local:
+                img["src"] = f"assets/{h}/{local}"
+                image_count += 1
+            else:
+                img.decompose()
+
+        # lxml wraps fragments in <html><body>; emit only the inner content.
+        container = soup.body or soup
+        body_html = container.decode_contents()
+        page = render_post(article, body_html)
+        POSTS_DIR.mkdir(parents=True, exist_ok=True)
+        (POSTS_DIR / f"{h}.html").write_text(page, encoding="utf-8")
+    except requests.RequestException as exc:
+        return fail(f"fetch failed: {type(exc).__name__}")
+    except Exception as exc:  # noqa: BLE001 - record and skip, never abort the run
+        return fail(f"{type(exc).__name__}: {exc}")
+
     return {
         "offline_path": f"posts/{h}.html",
         "scraped_at": scraped_at,
