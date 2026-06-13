@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Troubleshooting Windows First Sign‑in Restore When Conditional Access Gets in the Way</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">MSEndpointMgr</span>
+    <span class="date">February 25, 2026</span>
+  </div>
+  <h1>Troubleshooting Windows First Sign‑in Restore When Conditional Access Gets in the Way</h1>
+  <div class="orig">Saved for offline reading · <a href="https://msendpointmgr.com/2026/02/25/troubleshooting-windows-first-sign-in-restore-when-conditional-access-gets-in-the-way/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p data-block-type="core">When <a data-id="https://techcommunity.microsoft.com/blog/windows-itpro-blog/windows-first-sign-in-restore-experience-now-available/4495551" data-type="link" href="https://techcommunity.microsoft.com/blog/windows-itpro-blog/windows-first-sign-in-restore-experience-now-available/4495551" rel="noreferrer noopener" target="_blank">Windows First Sign‑in Restore finally went GA on February 24th</a>, many of us were eager to bring this slick user‑centric experience into production. After all, giving users the ability to restore their apps and settings directly during Autopilot feels like a major win. Less friction, less hand‑holding, and a more seamless transition between devices.</p>
+<p data-block-type="core">But as with any new capability, real-world deployments reveal real-world challenges. One particular issue surfaced with a customer who relies heavily on Conditional Access (CA) to enforce compliant‑device access across all applications. This post walks through the symptoms, the root cause, and the fix so you can avoid frustrating Autopilot interruptions in your own rollout.</p>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#background-what-first-sign-in-restore-actually-does" id="background-what-first-sign-in-restore-actually-does"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Background: What “First Sign‑in Restore” Actually Does</h2>
+<p data-block-type="core">The feature is well covered elsewhere, including <a data-id="https://techcommunity.microsoft.com/blog/windows-itpro-blog/windows-first-sign-in-restore-experience-now-available/4495551" data-type="link" href="https://techcommunity.microsoft.com/blog/windows-itpro-blog/windows-first-sign-in-restore-experience-now-available/4495551" rel="noreferrer noopener" target="_blank">the official announcement on Tech Community</a> and <a href="https://learn.microsoft.com/en-us/windows/configuration/windows-backup/?tabs=intune" rel="noreferrer noopener" target="_blank">the Microsoft configuration documentation</a>. Since this has already been broadly blogged during the preview period, we’ll skip the step‑by‑step setup and focus on troubleshooting.<br/></p>
+<p data-block-type="core">In short:</p>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core">During Autopilot OOBE, users can choose to restore apps/settings from a previously backed‑up Windows device.</li>
+<li data-block-type="core">The restore interface is part of the Windows Backup and Restore application.</li>
+<li data-block-type="core">Behind the scenes, the restore workflow communicates with the first-party Microsoft service called the “Microsoft Activity Feed Service” (App/Resource ID: d32c68ad-72d2-4acb-a0c7-46bb2cf93873). And that last part is where things get interesting.</li>
+</ul>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#the-problem-a-brutal-error-message-during-autopilot" id="the-problem-a-brutal-error-message-during-autopilot"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>The Problem: A Brutal Error Message During Autopilot</h2>
+<p data-block-type="core">After enabling the restore experience in Autopilot, users suddenly began hitting an alarming message:</p>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-26315" decoding="async" src="assets/297609b1abf1c374/img_0.png"/></figure>
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow" data-block-type="core">
+<p data-block-type="core">“You can’t get there from here. This application contains sensitive information and can only be accessed from devices or client applications that meet management compliance policy.”</p>
+</blockquote>
+<p data-block-type="core">The only selectable button? OK, which loops users right back to a “Try again” button with the famous ice cream cone.</p>
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="" class="wp-image-26316" decoding="async" src="assets/297609b1abf1c374/img_1.png"/></figure>
+<p data-block-type="core">A small link beneath “Set up as a new PC” is technically the escape hatch. But it’s problematic because:</p>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core">It is not intuitive at all during Autopilot.</li>
+<li data-block-type="core">The wording suggests leaving the Autopilot process entirely.</li>
+<li data-block-type="core">Operators fear that clicking it means building a device in violation of company policy.</li>
+</ul>
+<p data-block-type="core">In reality, this link belongs to the restore UI, <em>not</em> Autopilot. But expecting end users to understand that distinction is unrealistic.</p>
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="First Sign‑in Restore" class="wp-image-26317" decoding="async" src="assets/297609b1abf1c374/img_2.png"/></figure>
+<p data-block-type="core">The picture above shows how my test account, Justin Time, should expect the restore option to be presented. You recognize the “Set up as a new PC” option?</p>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#root-cause-conditional-access-blocking-windows-backup-and-restore" id="root-cause-conditional-access-blocking-windows-backup-and-restore"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Root Cause: Conditional Access Blocking “Windows Backup and Restore”</h2>
+<p data-block-type="core">Digging into the user’s sign‑in logs quickly revealed the issue.</p>
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="" class="wp-image-26318" decoding="async" src="assets/297609b1abf1c374/img_3.png"/></figure>
+<p data-block-type="core">A sign‑in log failure pointing to the Windows Backup and Restore application.</p>
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="" class="wp-image-26319" decoding="async" src="assets/297609b1abf1c374/img_4.png"/></figure>
+<p data-block-type="core">Digging into the details:</p>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core">Sign-in error code: 53000</li>
+<li data-block-type="core">Failure reason: <em>“Device is not in required device state. Conditional Access policy requires a compliant device, and the device is not compliant.”</em></li>
+<li data-block-type="core">Application: <em>Windows Backup and Restore</em></li>
+<li data-block-type="core">Resource: <em>Microsoft Activity Feed Service</em></li>
+</ul>
+<p data-block-type="core">This makes perfect sense: during OOBE and early Autopilot stages, the device has not yet reported compliance. But First Sign‑in Restore tries to authenticate <em>during</em> this window.</p>
+<p data-block-type="core">Diving down into the CA details for this sign-in log, we find the matching resource and the block caused by the compliant device requirement.</p>
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="" class="wp-image-26320" decoding="async" src="assets/297609b1abf1c374/img_5.png"/></figure>
+<p data-block-type="core">If your CA policy requires a compliant device <em>for all cloud apps</em>, you have unintentionally blocked the restore process.</p>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#the-fix-add-an-exception-for-microsoft-activity-feed-service" id="the-fix-add-an-exception-for-microsoft-activity-feed-service"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>The Fix: Add an Exception for Microsoft Activity Feed Service</h2>
+<p data-block-type="core">The solution was straightforward once identified: Exclude the “Microsoft Activity Feed Service” from the Conditional Access policy enforcing compliant devices.</p>
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="" class="wp-image-26321" decoding="async" src="assets/297609b1abf1c374/img_6.png"/></figure>
+<p data-block-type="core"><br/>Once this resource was added as an exception:</p>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core">Autopilot flowed normally.</li>
+<li data-block-type="core">The First Sign‑in Restore page appeared as expected.</li>
+<li data-block-type="core">End users no longer hit the compliance‑related roadblock.</li>
+</ul>
+<p data-block-type="core">This aligns with how other foundational services (e.g., enrollment, device registration) often require CA exclusions to avoid chicken‑and‑egg situations.</p>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#first-sign-in-restore-summary" id="first-sign-in-restore-summary"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>First Sign‑in Restore Summary</h2>
+<p data-block-type="core">If you plan to enable Windows First Sign‑in Restore in a tenant with strict Conditional Access enforcement, be prepared to:</p>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core">Review sign‑in logs for Windows Backup and Restore.</li>
+<li data-block-type="core">Identify CA policies requiring compliant devices.</li>
+<li data-block-type="core">Add an exclusion for Microsoft Activity Feed Service.</li>
+</ul>
+<p data-block-type="core">Doing so ensures that Autopilot completes smoothly and that users enjoy a painless restore experience without misleading error messages.</p>
+<p data-block-type="core"></p>
+<p class="post-views content-post post-26314 entry-meta load-static">
+<span class="post-views-icon dashicons dashicons-chart-bar"></span> <span class="post-views-label">Views:</span> <span class="post-views-count">546</span>
+</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

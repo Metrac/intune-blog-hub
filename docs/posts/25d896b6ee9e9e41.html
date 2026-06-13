@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Introducing Intune Guardian — The MSEndpointMgr Intune Audit Dashboard, Evolved</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">MSEndpointMgr</span>
+    <span class="date">March 27, 2026</span>
+  </div>
+  <h1>Introducing Intune Guardian — The MSEndpointMgr Intune Audit Dashboard, Evolved</h1>
+  <div class="orig">Saved for offline reading · <a href="https://msendpointmgr.com/2026/03/27/introducing-intune-guardian-the-msendpointmgr-intune-audit-dashboard-evolved/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p data-block-type="core">Back in October 2022, we released the <a href="vscode-file://vscode-app/c:/Program%20Files/Microsoft%20VS%20Code/cfbea10c5f/resources/app/out/vs/code/electron-browser/workbench/workbench.html">MSEndpointMgr Intune Audit Dashboard</a> — a KQL workbook designed to take the pain out of auditing Intune events. The response from the community was incredible. Over 58,000 views, dozens of deployments across enterprise environments, and plenty of feedback on what you wanted to see next.</p>
+<p data-block-type="core">We listened. And now we have built something entirely new.</p>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/03/image-43.png"><img alt="Intune Guardian" class="wp-image-26410" decoding="async" src="assets/25d896b6ee9e9e41/img_0.png"/></a></figure>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#from-workbook-to-web-portal" id="from-workbook-to-web-portal"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>From Workbook to Web Portal</h3>
+<p data-block-type="core">The original dashboard was a Log Analytics KQL workbook. It worked, and it worked well — but it came with friction. You needed an Azure subscription, a Log Analytics workspace, diagnostic settings configured, manual JSON edits during installation, and KQL knowledge to extend it. The comments on the original post told the story: many admins struggled with the setup, ran into blank dashboards, or wanted capabilities that a workbook simply couldn’t deliver.</p>
+<p data-block-type="core"><strong>Intune Guardian</strong> is the answer to all of that. It’s a purpose-built web portal — no Log Analytics workspace required, no KQL, no JSON editing, no Azure subscription needed. Sign in with your existing admin account, grant consent, and your audit data appears. That’s it.</p>
+<p data-block-type="core">Check it out today – <a href="https://intuneguardian.com" rel="noreferrer noopener" target="_blank">https://intuneguardian.com</a> </p>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#how-it-works" id="how-it-works"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>How It Works</h3>
+<p data-block-type="core">Intune Guardian talks directly to the Microsoft Graph API on your behalf using the On-Behalf-Of (OBO) flow. When you sign in, the portal reads your tenant’s audit events in real time from the <code>deviceManagement/auditEvents</code> endpoint — the same data that powers the Intune admin center’s built-in audit logs, but presented in a way that’s actually useful.</p>
+<p data-block-type="core"><strong>Your data never leaves your control.</strong> There is no database on our side. No customer data is stored, cached long-term, or shared. The portal is a pure read-only window into your own tenant’s data, scoped to the permissions of the signed-in user. Multi-tenant by design — every organization gets its own isolated view.</p>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#what-you-get" id="what-you-get"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>What You Get</h3>
+<p data-block-type="core">If you used the original workbook, you’ll recognise the structure, but everything has been rebuilt from the ground up:</p>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/03/image-45.png"><img alt="" class="wp-image-26413" decoding="async" src="assets/25d896b6ee9e9e41/img_1.png"/></a></figure>
+<p data-block-type="core"><strong>Summary Dashboard</strong><br/>High-level tiles showing total events, devices wiped, devices retired, unique applications — with sparkline trends. Category and operation breakdowns give you the big picture in seconds.</p>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/03/image-49.png"><img alt="" class="wp-image-26417" decoding="async" src="assets/25d896b6ee9e9e41/img_2.png"/></a></figure>
+<p data-block-type="core"><strong>Device Targeted Actions</strong><br/>Every wipe, retire, sync, reboot, and remote lock — filterable by OS, device name, and result. See who did what to which device, with full timeline visualisation broken down by operating system.</p>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/03/image-48.png"><img alt="" class="wp-image-26416" decoding="async" src="assets/25d896b6ee9e9e41/img_3.png"/></a></figure>
+<p data-block-type="core"><strong>Target Actions</strong><br/>Policy changes, configuration profile updates, app assignments — tracked by the target resource. Split between changes made by admin users versus automated service principal actions.</p>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/03/image-50.png"><img alt="" class="wp-image-26418" decoding="async" src="assets/25d896b6ee9e9e41/img_4.png"/></a></figure>
+<p data-block-type="core"><strong>Admin Actions</strong><br/>Filter by a specific administrator and see their complete activity footprint. Operation type breakdowns, success/failure rates, and trend data over time.</p>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/03/image-51.png"><img alt="" class="wp-image-26419" decoding="async" src="assets/25d896b6ee9e9e41/img_5.png"/></a></figure>
+<p data-block-type="core"><strong>Application Actions</strong><br/>Track actions performed by enterprise applications and service principals. Essential for environments with automation, third-party integrations, or delegated management.</p>
+<p data-block-type="core"><strong>Autopilot Events</strong><br/>Autopilot device lifecycle tracking — creates, updates, deletes — enriched with serial number, model, group tag, and manufacturer. Duplicate serial number detection flags potential provisioning issues before they become problems.</p>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/03/image-46.png"><img alt="" class="wp-image-26414" decoding="async" src="assets/25d896b6ee9e9e41/img_6.png"/></a></figure>
+<p data-block-type="core"><strong>Anomaly Detection</strong><br/>This is new. The portal analyses your audit data for patterns that don’t look right — volume spikes, unusual failure rates, off-hours activity, rare operations, and actors that appear unexpectedly. Each anomaly is scored by severity and explained in plain language. Think of it as a security analyst watching your audit logs around the clock.</p>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/03/image-47.png"><img alt="" class="wp-image-26415" decoding="async" src="assets/25d896b6ee9e9e41/img_7.png"/></a></figure>
+<p data-block-type="core"><strong>Multi Admin Approval</strong><br/>This tab gives you a clear overview of how <a data-id="https://learn.microsoft.com/en-us/intune/intune-service/fundamentals/multi-admin-approval?wt.mc_id=MVP_314171" data-type="link" href="https://learn.microsoft.com/en-us/intune/intune-service/fundamentals/multi-admin-approval?wt.mc_id=MVP_314171" rel="noreferrer noopener" target="_blank">Intune Multi-Admin Approval</a> is used in your Intune environment. It surfaces approval events, who requested and approved actions, and when approvals occurred, making it easier to audit activity, spot unusual patterns, and strengthen oversight of high-impact changes.</p>
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="" class="wp-image-26429" decoding="async" src="assets/25d896b6ee9e9e41/img_8.png"/></figure>
+<p data-block-type="core"><strong>Detailed Audit Log</strong><br/>The full filterable, sortable, paginated audit log with every field exposed. Hover over any row for a quick preview, expand for full detail, including modified property values (old vs new). Column grouping lets you slice the data by category, operation type, actor, or result.</p>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#the-tech-under-the-hood" id="the-tech-under-the-hood"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>The Tech Under the Hood</h3>
+<p data-block-type="core">For those who care about the engineering (and we know you do):</p>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core"><strong>Frontend:</strong> React 19 + TypeScript, built with Vite, deployed to Azure Static Web Apps</li>
+<li data-block-type="core"><strong>Backend:</strong> Node.js + Express + TypeScript, deployed to Azure App Service</li>
+<li data-block-type="core"><strong>UI:</strong> Shadcn/UI components with Tailwind CSS — clean, fast, dark mode included</li>
+<li data-block-type="core"><strong>Auth:</strong> MSAL with multi-tenant support and admin consent flow</li>
+<li data-block-type="core"><strong>API:</strong> Microsoft Graph API beta via the official SDK, with server-side pagination and a 1-hour cache layer</li>
+<li data-block-type="core"><strong>Charts:</strong> Recharts for all visualisations</li>
+</ul>
+<p data-block-type="core">The backend acts as a BFF (Backend-for-Frontend), so the browser never talks to Graph directly. Tokens are acquired via OBO flow, scoped per-user, per-tenant. No cross-tenant data leakage is possible by design.</p>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#what-changed-since-the-kql-workbook" id="what-changed-since-the-kql-workbook"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>What Changed Since the KQL Workbook</h3>
+<figure class="wp-block-table" data-block-type="core"><table class="has-fixed-layout"><thead><tr><th></th><th>KQL Workbook (2022)</th><th>Intune Guardian (2026)</th></tr></thead><tbody><tr><td><strong>Prerequisites</strong></td><td>Azure sub + Log Analytics + Diagnostic Settings</td><td>Just an admin account</td></tr><tr><td><strong>Setup</strong></td><td>Import JSON, edit workspace IDs, domain strings, workbook names</td><td>Sign in and grant consent</td></tr><tr><td><strong>Data source</strong></td><td>IntuneAuditLogs table (Log Analytics)</td><td>Microsoft Graph API (real-time)</td></tr><tr><td><strong>Data retention</strong></td><td>Depends on your Log Analytics retention policy</td><td>Graph API default</td></tr><tr><td><strong>Extensibility</strong></td><td>Edit KQL queries manually</td><td>Tabs added as new features ship</td></tr><tr><td><strong>Multi-tenant</strong></td><td>One workbook per workspace</td><td>Single portal, any tenant</td></tr><tr><td><strong>Anomaly detection</strong></td><td>Not available</td><td>Built-in</td></tr><tr><td><strong>Autopilot tracking</strong></td><td>Not available</td><td>Built-in with duplicate detection</td></tr><tr><td><strong>Customer data storage</strong></td><td>In your Log Analytics workspace</td><td>Zero — none stored on our side</td></tr></tbody></table></figure>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#getting-started" id="getting-started"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Getting Started</h3>
+<ol class="wp-block-list" data-block-type="core">
+<li data-block-type="core"><strong>Navigate</strong> to the Intune Guardian portal</li>
+<li data-block-type="core"><strong>Sign in</strong> with a work account that has Intune read permissions</li>
+<li data-block-type="core"><strong>Grant admin consent</strong> (one-time, per tenant) — the portal requests only <code>DeviceManagementApps.Read.All</code></li>
+<li data-block-type="core"><strong>Explore</strong> — your audit data loads immediately</li>
+</ol>
+<p data-block-type="core">That’s the entire setup. No Azure subscription. No diagnostic settings. No KQL.</p>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#whats-next" id="whats-next"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>What’s Next</h3>
+<p data-block-type="core">We’re actively developing new capabilities. On the roadmap:</p>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core"><strong>Multi Admin Approval tab</strong> — Track MAA request workflows, approval timing SLAs, and policy coverage</li>
+<li data-block-type="core"><strong>Compliance insights</strong> — Device compliance trends and drift detection</li>
+<li data-block-type="core"><strong>Configuration drift</strong> — Track policy changes over time with diff views</li>
+</ul>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#the-origin-story" id="the-origin-story"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>The Origin Story</h3>
+<p data-block-type="core">Intune Guardian started as a joint effort in an Airbnb heading into Microsoft MVP Summit week of 2026. The original audit workbook had served the community well for over three years, but we knew it was time to take the next step. What began as a late-night whiteboard session quickly turned into a working prototype — powered by too much pizza and not enough sleep.</p>
+<p data-block-type="core">Three principles were non-negotiable from day one:</p>
+<ol class="wp-block-list" data-block-type="core">
+<li data-block-type="core"><strong>Minimal permissions</strong> — request only what’s needed, nothing more</li>
+<li data-block-type="core"><strong>No customer data storage</strong> — your data stays in your tenant</li>
+<li data-block-type="core"><strong>Pure read-only view</strong> — no modifications, no side effects</li>
+</ol>
+<p data-block-type="core">The team behind Intune Guardian is the same crew from MSEndpointMgr — Nickolaj Andersen, Jan Ketil Skanke, Maurice Daly, Sandy Zeng, and Simon Skotheimsvik. Combined decades of experience in Intune, Graph API, and enterprise mobility, channelled into a tool we wish we’d had years ago.</p>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#conclusion" id="conclusion"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Conclusion</h3>
+<p data-block-type="core">The KQL workbook was a good start. Intune Guardian is where we always wanted to end up — a purpose-built portal that makes Intune audit data accessible to every admin, in every tenant, without the overhead. Give it a try, and as always, let us know what you think.</p>
+<p class="post-views content-post post-26406 entry-meta load-static">
+<span class="post-views-icon dashicons dashicons-chart-bar"></span> <span class="post-views-label">Views:</span> <span class="post-views-count">2,327</span>
+</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

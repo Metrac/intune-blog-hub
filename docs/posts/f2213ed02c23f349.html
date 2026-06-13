@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Security Copilot Agents in the Intune Admin Center</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">MSEndpointMgr</span>
+    <span class="date">March 3, 2026</span>
+  </div>
+  <h1>Security Copilot Agents in the Intune Admin Center</h1>
+  <div class="orig">Saved for offline reading · <a href="https://msendpointmgr.com/2026/03/03/security-copilot-agents-in-the-intune-admin-center/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#overview" id="overview"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Overview</h2>
+<p data-block-type="core">In my previous <a href="https://msendpointmgr.com/2025/11/17/getting-started-with-microsoft-security-copilot-for-intune/">post</a>, we walked through how to get started with Microsoft Security Copilot for Intune. We deep-dived many topics such as initial configurations, why SCU’s should be considered carefully and we started to explore Copilot prompting.</p>
+<p data-block-type="core">But the experience is evolving (and im a little behind with this post). Security Copilot is no longer just a chat interface you impress your co-workers with. AI agents are being surfaced directly inside the Microsoft Intune admin center.</p>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/03/image.png"><img alt="Intune admin center Agents" class="wp-image-26326" decoding="async" src="assets/f2213ed02c23f349/img_0.png"/></a></figure>
+<p data-block-type="core">They are powered by Microsoft Security Copilot under the hood, but they don’t live in the Security Copilot portal itself, they are embedded directly in the Intune experience.</p>
+<p data-block-type="core">It’s also worth calling out that these Intune Security Copilot agents are not the same as the agents you might see in Microsoft Entra. The naming overlap, like “Access Review Agent”, can make it feel like they’re related, but they’re separate, workload-specific agents.</p>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/03/image-1.png"><img alt="Entra admin center Agents" class="wp-image-26328" decoding="async" src="assets/f2213ed02c23f349/img_1.png"/></a></figure>
+<p data-block-type="core">Still very early days for these agents. Microsoft have given us 4 agents to play with, most of us will only see 3 unless you are taking part in the early preview for the Vulnerability Remediation Agent.</p>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#what-agents-can-we-play-with" id="what-agents-can-we-play-with"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>What Agents can we play with?</h2>
+<p data-block-type="core">The agents are extremely well documented at <a href="https://learn.microsoft.com/en-us/intune/agents/" rel="noopener" target="_blank">https://learn.microsoft.com/en-us/intune/agents/</a>, so im not not going to copy pasta that effort in this post, but ill give a hat tilt to them nonetheless.</p>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#change-review-agent" id="change-review-agent"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Change Review Agent</h3>
+<p data-block-type="core">The Change Review agent is designed to help you review Multi-Admin Approval requests, currently focused on PowerShell scripts, before you approve or reject them.</p>
+<p data-block-type="core">Instead of manually digging through context, checking risk signals, and trying to decide if something feels safe, the agent pulls together signals from Defender, Entra ID and Intune to give you a recommendation with reasoning. You still make the final decision…nothing is auto approved! My take on this is instead of implicitly trusting a script John created because John know’s his PowerShell, the Agent looks at measurable signals to give you more insight into the script John wants approval for.</p>
+<p data-block-type="core">You manually run it from the Intune admin center. Each run evaluates up to ten pending approval requests and provides risk based insight explaining what it found and why it is suggesting a particular action.</p>
+<p data-block-type="core">Read more at <a href="https://learn.microsoft.com/en-us/intune/agents/change-review-agent" rel="noopener" target="_blank">https://learn.microsoft.com/en-us/intune/agents/change-review-agent</a>.</p>
+<p data-block-type="core">In this example, John’s team are using the Multi-Admin Approval feature in Intune and John wanted to push out a platform script to wipe devices…John’s coffee was tainted today.</p>
+<p data-block-type="core">When we click into the Change Review Agent, we can see that no one has approved the request yet, unsuprisingly.</p>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/03/image-2.png"><img alt="Change Review Agent" class="wp-image-26330" decoding="async" src="assets/f2213ed02c23f349/img_2.png"/></a></figure>
+<p data-block-type="core">But the Change Review Agent still reviewed the request and tried to look at signals across Intune, Entra and Defender to summarise the event.</p>
+<figure class="wp-block-image size-full" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/03/image-4.png"><img alt="" class="wp-image-26332" decoding="async" src="assets/f2213ed02c23f349/img_3.png"/></a></figure>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/03/image-3.png"><img alt="Script Content" class="wp-image-26331" decoding="async" src="assets/f2213ed02c23f349/img_4.png"/></a></figure>
+<p data-block-type="core">In this example, John submitted a clearly destructive (yet untested) PowerShell script through the Intune Multi-Admin Approval workflow. The Change Review Agent evaluated it. The script included a command that attempts to remove items from the <code>C:\Windows</code> directory, yet the agent returned a “NeedsMoreInfo” recommendation rather than classifying it as high risk.</p>
+<p data-block-type="core">Although the script content was visible in the approval request, the Agent indicated that key validation signals such as script purpose and supporting data were missing, and it defaulted to a medium risk posture. This suggests that in its current state, the agent may not be performing deep analysis of the script body and is instead relying primarily on metadata and contextual signals when generating its recommendation.</p>
+<p data-block-type="core">Maybe im being too optimistic. Reflecting on this behaviour, it may actually be consistent with how the Change Review Agent is currently designed. The Agent aggregates external risk signals from Defender, Entra and Intune then evaluates PowerShell scripts using predefined logic rather than fully autonomous semantic reasoning.</p>
+<p data-block-type="core">Its recommendations are advisory and limited to the signals and evaluation rules available at runtime. If critical validation inputs or supporting data cannot be confidently assessed,<a href="https://learn.microsoft.com/en-us/intune/agents/change-review-agent#how-the-agent-works" rel="noopener" target="_blank">the documented behaviour</a> is to return “Needs more info” rather than assume high risk. Given that the Agent relies on signal aggregation rather than a deeper script-level modeling, this outcome may be expected for now. From a human perspective, the script is obviously suspicious. If John actually deployed that, he may have lost a few friends on the team. We approved it to see whether the signals would change.</p>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/03/image-5.png"><img alt="re-run the agent" class="wp-image-26335" decoding="async" src="assets/f2213ed02c23f349/img_5.png"/></a></figure>
+<p data-block-type="core">Nothing new. Same risk factors.</p>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/03/image-6.png"><img alt="" class="wp-image-26337" decoding="async" src="assets/f2213ed02c23f349/img_6.png"/></a></figure>
+<p data-block-type="core">I mean, Copilot can check script based-content, but the Agent doesnt do that. I asked ChatGPT if the script content was dangerous:</p>
+<figure class="wp-block-image size-full" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/03/image-7.png"><img alt="Script Content is Dangerous" class="wp-image-26338" decoding="async" src="assets/f2213ed02c23f349/img_7.png"/></a></figure>
+<p data-block-type="core">Nothing changed. The same risk factors were presented.</p>
+<p data-block-type="core">My takeaway from this test is that the Change Review Agent does not currently appear to treat the script body itself as a strong evaluation signal. It seems to rely primarily on identity risk, historical approvals, and Defender insights rather than deep content analysis of the PowerShell logic.</p>
+<p data-block-type="core">That said, this is still a preview capability. The agent is designed around structured signal aggregation and predefined evaluation logic, not full semantic reasoning over John’s arbitrary, but dangerous, script content. Copilot-style large language models can absolutely assess script intent and flag destructive behaviour, but this particular Agent does not appear to be operating at that level of analysis yet.</p>
+<p data-block-type="core">If anything, this test highlights a potential improvement opportunity…that is to incorporate stronger script-level risk classification as part of the evaluation pipeline.</p>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#device-offboarding-agent" id="device-offboarding-agent"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Device Offboarding Agent</h3>
+<p data-block-type="core">Short version? Don’t build anything new around it. Microsoft has announced that the Device Offboarding Agent will be retired.</p>
+<p data-block-type="core">The Device Offboarding Agent is never going to make it out of preview (sad pause). It’s aim was to help admins spot devices that looked stale, duplicated, or out of sync between Intune and Entra ID before removing them. Instead of automatically deleting anything, it surfaced insights, acting as a second set of eyes so John didn’t accidentally offboard a perfectly healthy device because it “looked a bit old”. It was meant to help with messy lifecycle clean-up, but it’s being retired in 2026, so it’s not something to build a long-term process around.</p>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#timeline" id="timeline"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Timeline</h3>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core"><strong>April 30, 2026</strong>: You can no longer set it up.</li>
+<li data-block-type="core"><strong>June 1, 2026</strong>: It is removed from the Intune admin center.</li>
+</ul>
+<p data-block-type="core">If you already have it configured, you can continue using it until early June 2026, but once removed, it’s gone.</p>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#policy-configuration-agent" id="policy-configuration-agent"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Policy Configuration Agent</h3>
+<p data-block-type="core">The Policy Configuration Agent in Intune helps turn complicated security documents into actual Intune settings (thats teh headline at least). Instead of John reading a 200 page NIST or STIG document with 3 coffees and mild regret, he can upload the document and let the agent map the requirements to real settings in the Intune Settings Catalog.</p>
+<p data-block-type="core">It reads the text, figures out what controls are being asked for, suggests the matching configuration settings, and builds a draft policy. Nothing is applied automatically. You review the suggestions, tweak anything that doesn’t fit your environment, remove what you don’t want, and then create the policy like normal.</p>
+<p data-block-type="core">Again, you manually invoke the Agent from the Intune admin center. </p>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/03/image-8.png"><img alt="Policy Configuration Agent" class="wp-image-26341" decoding="async" src="assets/f2213ed02c23f349/img_8.png"/></a></figure>
+<p data-block-type="core">Before John creates a policy, he starts by creating a “Knowledge Source” and uploads his document whether that is NIST guidance, a STIG, CIS benchmark. John grabs some examples from <a href="https://www.cyber.mil/stigs/gpo/" rel="noopener" target="_blank">https://www.cyber.mil/stigs/gpo/ </a></p>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/03/image-9.png"><img alt="Sample STIG" class="wp-image-26343" decoding="async" src="assets/f2213ed02c23f349/img_9.png"/></a></figure>
+<p data-block-type="core">Lets try the DoD STIG-based requirement to disable Internet Explorer 11. The Agent ingests txt files only so im simply renaming the policy json to .txt in this example.</p>
+<figure class="wp-block-image size-full" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/03/image-10.png"><img alt="Sample Policy renamed to txt" class="wp-image-26345" decoding="async" src="assets/f2213ed02c23f349/img_10.png"/></a></figure>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/03/image-11.png"><img alt="Create Knowledge Source" class="wp-image-26346" decoding="async" src="assets/f2213ed02c23f349/img_11.png"/></a></figure>
+<p data-block-type="core">The agent then analyzes the file and maps the written or policy structured requirements to real Intune settings, showing the setting name, the proposed value, the original requirement text, and a confidence score.</p>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/03/image-12.png"><img alt="Knowledge Source Match" class="wp-image-26348" decoding="async" src="assets/f2213ed02c23f349/img_12.png"/></a></figure>
+<p data-block-type="core">The agent successfully parsed the file, identified the requirement to disable IE11 as a standalone browser, and mapped it directly to an available Intune Settings Catalog configuration…. not so fast John…zoom in!</p>
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="Knowledge Source Match Red Herring" class="wp-image-26349" decoding="async" src="assets/f2213ed02c23f349/img_13.png"/></figure>
+<p data-block-type="core">At first glance, the analysis looks perfect: 1 setting extracted, 1 catalog match, 0 unmatched, and a shiny 100% match rate. On paper, that suggests the DoD STIG requirement to disable Internet Explorer 11 cleanly maps to a native Intune Settings Catalog policy.</p>
+<p data-block-type="core">But when we scroll down to <strong>Identified settings</strong>, it says <strong>0 settings identified from the document.</strong></p>
+<p data-block-type="core">So what happened?</p>
+<p data-block-type="core">The agent believes it successfully matched the requirement to a catalog setting, but the detailed mapping output didn’t actually materialize into a concrete, surfaced setting in the Identified settings tab. In other words, the high-level analytics say “100% match”, yet there is no actionable configuration listed to review or save.</p>
+<p data-block-type="core">Confused? Me and John are too. This suggests a disconnect between what I am calling the classification layer (which calculated the match rate) and the rendering layer (which should show the mapped setting). It may have recognized the intent “Disable Internet Explorer 11” and associated it with a known category, but failed to produce or expose the actual Settings Catalog entry in the UI.</p>
+<p data-block-type="core">Lets try with natural language instead of a json policy structure. This is the content of my next txt file.</p>
+<p data-block-type="core"><code>Disable Internet Explorer 11 as a standalone browser on all Windows 10 and Windows 11 devices. Internet Explorer 11 must not be accessible to users. Prevent users from launching iexplore.exe directly. Ensure Internet Explorer 11 is disabled using supported Windows policy settings and enforce this across all managed endpoints.</code></p>
+<p data-block-type="core">While that cooks, how are we doing with SCU usage (I’m watching it like a hawk).</p>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/03/image-14.png"><img alt="SCU usage" class="wp-image-26352" decoding="async" src="assets/f2213ed02c23f349/img_14.png"/></a></figure>
+<p data-block-type="core">So far… reasonable. You can see we’re slowly burning through Security Compute Units with each agent run. Nothing dramatic, but definitely not free. Every time we run an agent, we’re effectively consuming Security Copilot compute in the background.</p>
+<p data-block-type="core">This highlights the symbiotic relationship between the Intune agents and Microsoft Security Copilot capacity. The agents in the Intune admin center aren’t doing magic locally…<strong>they are</strong> (using “their” feels weird like im refering to AI as a person) backed by Copilot compute in your Security Copilot workspace. No SCUs, no agent reasoning.</p>
+<p data-block-type="core">In our case, the workspace is configured for overage SCUs only. That means we don’t maintain pre-provisioned capacity. Instead, compute spins up on demand when an agent runs. It’s convenient, and Copilot handles the scaling automatically, but it comes at a higher per-SCU cost because we’re not keeping compute “warm”.</p>
+<p data-block-type="core">So yes, the agents are working… but John’s also quietly feeding the SCU meter every time he clicks “”Run”.</p>
+<p data-block-type="core">Back to the Knwoledge Source. Boom…we have matches!</p>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/03/image-15.png"><img alt="Natural Language Match" class="wp-image-26353" decoding="async" src="assets/f2213ed02c23f349/img_15.png"/></a></figure>
+<p data-block-type="core">Instead of feeding the agent a perfectly formatted but slightly robotic STIG document, we gave it a human sandwich. The result actually made sense. The agent extracted 2 requirements, mapped one cleanly to the Intune Settings Catalog with 100% confidence, and mapped the second to Application Control with high confidence. Most importantly, the settings actually appeared in the Identified settings section. No mysterious “100% match but nothing to show” moment. Moral of the story… sometimes plain English beats perfectly structured compliance docs…for this Agent at least it seems.</p>
+<p data-block-type="core">Now that we have a knowledge source, we can use that to ask the Agent to create the policy draft.</p>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/03/image-17.png"><img alt="Create a policy draft" class="wp-image-26357" decoding="async" src="assets/f2213ed02c23f349/img_16.png"/></a></figure>
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="Commit Policy Draft" class="wp-image-26359" decoding="async" src="assets/f2213ed02c23f349/img_17.png"/></figure>
+<p data-block-type="core">Clicking Create Configuration Policy takes me through a typical Settings Catalog configuration flow.</p>
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="Settings Catalog Flow" class="wp-image-26360" decoding="async" src="assets/f2213ed02c23f349/img_18.png"/></figure>
+<p data-block-type="core">Reflecting on this, I probably gave the agent a fairly lightweight example. Disabling IE11 is hardly a PhD-level compliance challenge. So yes, it performed well with clear natural language input, and the mappings made sense. But that was a controlled test. The real question is how it behaves when John throws something heavier at it, like “Make Windows 11 secure but usable”, backed by a chunky baseline document with layered requirements, exceptions, and vague human wording. </p>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#vulnerability-remediation-agent" id="vulnerability-remediation-agent"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Vulnerability Remediation Agent</h3>
+<p data-block-type="core">The Vulnerability Remediation Agent is currently in a limited public preview and only available to a select group of customers. If you’re interested in access, you’ll need to contact your Microsoft sales team for details and next steps. </p>
+<p data-block-type="core">The agent uses Microsoft Defender data to monitor device vulnerabilities and applies AI-driven risk assessment to help prioritize remediation efforts. It surfaces contextual insight in Intune so administrators can focus on the most impactful security gaps rather than manually correlating Defender findings and device state.</p>
+<p data-block-type="core">Learn more at <a href="https://learn.microsoft.com/en-us/intune/agents/vulnerability-remediation-agent" rel="noopener" target="_blank">https://learn.microsoft.com/en-us/intune/agents/vulnerability-remediation-agent</a></p>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#final-thoughts" id="final-thoughts"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Final Thoughts</h2>
+<p data-block-type="core">That’s my honest, and very short, take on Intune Agents right now.</p>
+<p data-block-type="core">They’re (their) (are they humans?) intersting. “They are” contextual. And they feel like more than just a chat window like the mebedded Copilot experience. These agents live inside the Intune admin center and are starting to plug directly into real workflows. That part I really like.</p>
+<p data-block-type="core">But it is still early.</p>
+<p data-block-type="core">They are in preview and you can feel that in places. The Change Review Agent feels like it is one good iteration away from being very powerful, especially if it starts treating script content itself as a stronger risk signal. The Policy Configuration Agent shows promise, particularly when you give it clear plain English instead of a compliance document written like it was drafted in 2003. The Vulnerability Remediation Agent looks interesting too, even if most of us cannot touch it yet.</p>
+<p data-block-type="core">What I like most is the direction. These are not random AI features bolted on top. They are contextual assistants sitting inside the workload. They do not auto approve anything. John still owns the decision. That matters. But there are still real questions.</p>
+<p data-block-type="core">How much is this costing me in SCUs…Is the value worth the burn rate…Should I just understand this stuff properly myself?</p>
+<p data-block-type="core">The honest answer is yes to all of that.</p>
+<p data-block-type="core">You still need to understand Intune. You still need governance. The agents do not replace thinking. They support it.</p>
+<p data-block-type="core">Overall, I like where it is going. It feels like another useful tool in the toolbox. It needs community feedback. It needs more real world testing. And John will absolutely keep pressing Run while quietly watching the SCU graph like it is his electricity bill in winter.</p>
+<p class="post-views content-post post-26325 entry-meta load-static">
+<span class="post-views-icon dashicons dashicons-chart-bar"></span> <span class="post-views-label">Views:</span> <span class="post-views-count">521</span>
+</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

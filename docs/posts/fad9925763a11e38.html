@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Introducing Cloud Policy Preferences</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">MSEndpointMgr</span>
+    <span class="date">March 20, 2026</span>
+  </div>
+  <h1>Introducing Cloud Policy Preferences</h1>
+  <div class="orig">Saved for offline reading · <a href="https://msendpointmgr.com/2026/03/20/introducing-cloud-policy-preferences/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p data-block-type="core">Over the past number of years I have heard it mentioned on more than one occasion, that admins would like to see features which were part of something called “Group Policy Preferences” in Active Directory, being added in Microsoft Intune. </p>
+<p data-block-type="core">I mentioned this fact recently at a speaking session I did in Dublin, and instantly realised that some don’t even know what GPP is, so let me explain what it was, and then talk about a solution I have just released that helps you solve some of the asks.</p>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#what-is-group-policy-preferences" id="what-is-group-policy-preferences"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>What Is Group Policy Preferences?</h2>
+<p data-block-type="core">Group Policy Preferences (GPP) is a feature of Active Directory Group Policy, for those of you who just know Intune and Entra, its what us old timers used before the cloud was invented. Basically, Group Policy was the Settings Catalog of yesteryear, and it allowed admins to set settings on client/server devices in much the same way that we do today with Intune, albeit just on clients. </p>
+<p data-block-type="core">Contained within Group Policy, GPP offered specific rule based conditions on things like;</p>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core">Registry Settings</li>
+<li data-block-type="core">Printers</li>
+<li data-block-type="core">Drive Mappings</li>
+<li data-block-type="core">Environment Variables</li>
+</ul>
+<figure class="wp-block-image size-full" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/03/image-20.png"><img alt="" class="wp-image-26371" decoding="async" src="assets/fad9925763a11e38/img_0.png"/></a></figure>
+<p data-block-type="core">This allowed the admin to create Registry Keys for groups or individual users, or connect SMB shares for the same on login etc. Due to the nature of the fact it was very flexible with its targeting, GPP was often used by on-premises admins to undertake tasks that previously once upon a time were done in “logon scripts” (I’ll not go down that road).</p>
+<p data-block-type="core">Anyhow, the point is that when it comes to moving to Intune, although there has been great work by the team to realise parity on what you could do in the before times, the mapping of GPP to the cloud simply isn’t a thing. </p>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#introducing-cloud-policy-preferences" id="introducing-cloud-policy-preferences"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Introducing Cloud Policy Preferences</h2>
+<p data-block-type="core">For years, I have been tied to the idea of creating a solution that bridged the gap, or for those who are only working with Intune, extended it for you!.. Well now I have just released a SaaS app that might just do that thing for you. </p>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/03/image-21.png"><img alt="" class="wp-image-26372" decoding="async" src="assets/fad9925763a11e38/img_1.png"/></a></figure>
+<p data-block-type="core">Cloud Policy Preferences is a SaaS based community solution that provides access to some of the more useful features of GPP, allowing you to do the following configurations on your Intune managed clients;</p>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core">Registry Settings</li>
+<li data-block-type="core">File Deployments</li>
+<li data-block-type="core">Shortcuts</li>
+<li data-block-type="core">Printers</li>
+<li data-block-type="core">Drive Mappings </li>
+<li data-block-type="core">Scheduled Tasks</li>
+</ul>
+<p data-block-type="core">Admin Portal / Sign Up – <a href="https://app.cloudpolicypreferences.com" rel="noreferrer noopener" target="_blank">https://app.cloudpolicypreferences.com </a></p>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#how-does-it-work" id="how-does-it-work"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>How does it work?</h2>
+<p data-block-type="core">The solution is provided through Azure Functions, which, in conjunction with Azure tables, storage, key vault, and Microsoft Intune, provide a method to deploy settings in the form of JSON payloads that are targeted at users/devices and/or groups. Configurations are stored within storage tables, and a function app provides your client with a method to communicate with the function through PowerShell remediation scripts pushed to the clients.</p>
+<p data-block-type="core">An initial onboarding script is created, which is required to push down to your client devices. This creates configuration items stored within the device registry which contains a public key for encryption of the payload;<br/></p>
+<figure class="wp-block-image size-full" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/03/image-23.png"><img alt="" class="wp-image-26374" decoding="async" src="assets/fad9925763a11e38/img_2.png"/></a></figure>
+<p data-block-type="core">When your clients communicate with the API, they issue a payload to the API, containing the tenant ID and an API key, which is created within the admin portal;<br/></p>
+<figure class="wp-block-image size-full" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/03/image-22.png"><img alt="" class="wp-image-26373" decoding="async" src="assets/fad9925763a11e38/img_3.png"/></a></figure>
+<p data-block-type="core"><br/>This information is combined with further identifiers including;</p>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core">UserObjectID</li>
+<li data-block-type="core">DeviceID</li>
+<li data-block-type="core">Existing Configurations (matched against the policies you define)</li>
+</ul>
+<p data-block-type="core">The API validates the request through two stages, and once validated the API will deliver policies you have configured within the portal to the client, and also receive updates from the client for reporting purposes.</p>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#what-graph-api-permissions-are-required" id="what-graph-api-permissions-are-required"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>What Graph API Permissions Are Required?</h2>
+<p data-block-type="core">The solution is a multi-tenant app registration that has only read graph permissions in your tenant to allow it to read in users and groups for targeting, and provide Entra based authentication.</p>
+<p data-block-type="core">The full list of application permissions is above, and as you can see only read permissions are required. You, as the admin, can then review / deploy the scripts to use this solution with the knowledge that the solution does not have any form of write access to your Intune or Entra environment.</p>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#what-does-it-do-then" id="what-does-it-do-then"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>What Does It Do Then?</h2>
+<p data-block-type="core">Let’s take an example of an admin that wants to set a Registry Key, the admin would then create a policy in the Admin Portal;</p>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/03/image-26.png"><img alt="" class="wp-image-26377" decoding="async" src="assets/fad9925763a11e38/img_4.png"/></a></figure>
+<p data-block-type="core">During the configuration of the policy, the admin is asked to select which user or group is used for policy deployment;</p>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/03/image-28.png"><img alt="" class="wp-image-26379" decoding="async" src="assets/fad9925763a11e38/img_5.png"/></a></figure>
+<p data-block-type="core">Once created, the policy is added to the list of configured policies;</p>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/03/image-27.png"><img alt="" class="wp-image-26378" decoding="async" src="assets/fad9925763a11e38/img_6.png"/></a></figure>
+<p data-block-type="core">At this point the admin must undertake the following actions;</p>
+<ol class="wp-block-list" data-block-type="core">
+<li data-block-type="core">Deploy the onboarding script as a platform script to the clients they wish to manage.</li>
+<li data-block-type="core">Deploy the detection and remediation scripts to the same clients</li>
+</ol>
+<p data-block-type="core">When the client runs the remediation, local logging is provided for troubleshooting purposes in the following location;</p>
+<p data-block-type="core">C:\ProgramData\Cloud Policy Preferences\Tracing</p>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/03/image-29.png"><img alt="" class="wp-image-26380" decoding="async" src="assets/fad9925763a11e38/img_7.png"/></a></figure>
+<p data-block-type="core">The end result in this example is the registry key is created/updated/deleted as desired on the client device;</p>
+<figure class="wp-block-image size-full" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/03/image-30.png"><img alt="" class="wp-image-26381" decoding="async" src="assets/fad9925763a11e38/img_8.png"/></a></figure>
+<p data-block-type="core">Below is an example of a drive mapping;</p>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/03/image-31.png"><img alt="" class="wp-image-26382" decoding="async" src="assets/fad9925763a11e38/img_9.png"/></a></figure>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#rsop-anyone" id="rsop-anyone"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>RSOP Anyone?</h3>
+<p data-block-type="core">One of the nice things about Group Policies was the ability to generate reports on “what would happen”. The same approach applies here, were we can look at the policies that would impact on the user and/or group ahead of deployment;</p>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/03/image-32.png"><img alt="" class="wp-image-26383" decoding="async" src="assets/fad9925763a11e38/img_10.png"/></a></figure>
+<p data-block-type="core">As you can see, it indicates whether the settings have been targeted at a user, or group;</p>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/03/image-33.png"><img alt="" class="wp-image-26384" decoding="async" src="assets/fad9925763a11e38/img_11.png"/></a></figure>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#reporting-capability" id="reporting-capability"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Reporting Capability</h3>
+<p data-block-type="core">When you are an admin it is key that you can report on the thing you just deployed, and the solution also provides drill down reports showing the clients which are checking in, settings deployment, and more;</p>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/03/image-34.png"><img alt="" class="wp-image-26385" decoding="async" src="assets/fad9925763a11e38/img_12.png"/></a></figure>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/03/image-35.png"><img alt="" class="wp-image-26386" decoding="async" src="assets/fad9925763a11e38/img_13.png"/></a></figure>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/03/image-36.png"><img alt="" class="wp-image-26387" decoding="async" src="assets/fad9925763a11e38/img_14.png"/></a></figure>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/03/image-37.png"><img alt="" class="wp-image-26388" decoding="async" src="assets/fad9925763a11e38/img_15.png"/></a></figure>
+<p data-block-type="core">Should you wish to print the report, it contains a built in PDF export function;</p>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/03/image-38.png"><img alt="" class="wp-image-26389" decoding="async" src="assets/fad9925763a11e38/img_16.png"/></a></figure>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#web-hook-notifications" id="web-hook-notifications"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Web Hook Notifications</h3>
+<p data-block-type="core">Should you wish to be informed once a day as to the operations carried out within your environment, a webhook feature is available;</p>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/03/image-39.png"><img alt="" class="wp-image-26390" decoding="async" src="assets/fad9925763a11e38/img_17.png"/></a></figure>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#auditing" id="auditing"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Auditing</h3>
+<p data-block-type="core">Its kind of an important thing to know when someone did something, and where, well auditing is also included (30 days);</p>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/03/image-40.png"><img alt="" class="wp-image-26391" decoding="async" src="assets/fad9925763a11e38/img_18.png"/></a></figure>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#role-based-access-control" id="role-based-access-control"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Role Based Access Control</h3>
+<p data-block-type="core">RBAC controls allow you to define who is an admin, and who can look but cant touch;</p>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/03/image-41.png"><img alt="" class="wp-image-26393" decoding="async" src="assets/fad9925763a11e38/img_19.png"/></a></figure>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#feedback-use-disclaimer" id="feedback-use-disclaimer"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Feedback, Use &amp; Disclaimer</h2>
+<p data-block-type="core">At the present time, the solution is designed to be free to use, however, depending on the numbers this might change over time in order to run the backend infrastructure required to run this solution. Obviously SaaS solutions cost money, but lets see how far we can drive this thing as a community release.</p>
+<p data-block-type="core">As with all solutions, data privacy is a concern. The solution maintains information for reporting and use, including the email of the users for RBAC, and user/device ID’s for targeting, you also have control over the deletion of your data within the settings page;</p>
+<p data-block-type="core">The solution is provided as is, without warranty and/or defined support. What I am looking for though is your feedback, as to how I can make this better for you!</p>
+<p data-block-type="core">Looking forward to your feedback!</p>
+<p class="post-views content-post post-26370 entry-meta load-static">
+<span class="post-views-icon dashicons dashicons-chart-bar"></span> <span class="post-views-label">Views:</span> <span class="post-views-count">1,829</span>
+</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

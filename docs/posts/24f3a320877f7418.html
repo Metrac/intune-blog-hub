@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Azure OCR Comparison: Mistral, GPT &amp; Document Intelligence</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">January 12, 2026</span>
+  </div>
+  <h1>Azure OCR Comparison: Mistral, GPT &amp; Document Intelligence</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/2026/01/12/master-the-paper-chaos-comparing-azures-ocr-and-document-intelligence-powerhouses/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p class="wp-block-paragraph"><em>Document Intelligence vs. Content Understanding vs. Mistral <a href="https://en.wikipedia.org/wiki/Optical_character_recognition" rel="noopener" target="_blank">OCR</a> 3 vs. GPT-5 vs. Azure Vision</em></p>
+<p class="wp-block-paragraph">Extracting data from documents is no longer just about “reading” text—it’s about <strong><a href="https://jannikreinhard.com/2024/11/30/become-a-prompt-engineering-pro-mastering-the-art-of-talking-to-ai-in-2025/">intelligent understanding</a></strong>. Whether you’re digitizing 10,000 invoices, building a real-time app to read street signs, or preparing scientific papers for <a href="https://jannikreinhard.com/2024/08/25/azure-ai-search-deploying-a-powerful-ai-powered-search-engine/">RAG pipelines</a>, Azure offers a specialized toolkit within its Foundry ecosystem.</p>
+<p class="wp-block-paragraph">In this post, we’ll dive deep into performance, pricing, and capabilities of the leading OCR models in Azure—including the brand-new Mistral OCR 3 and <a href="https://jannikreinhard.com/2023/12/11/deep-dive-into-co-pilots-understanding-architecture-llms-and-advanced-concepts/">VLM-based approaches with GPT-5</a>.</p>
+<figure class="wp-block-image size-large"><img alt="Document OCR tools comparison with papers and AI icons" class="wp-image-10891" data-recalc-dims="1" decoding="async" src="assets/24f3a320877f7418/img_0.jpg"/></figure>
+<span id="more-10885"></span>
+<h2 class="wp-block-heading">The Contenders: Azure’s OCR Portfolio 2025</h2>
+<p class="wp-block-paragraph">Azure has evolved its OCR offerings into five strategic pillars, each optimized for different workloads:</p>
+<ol class="wp-block-list">
+<li><strong>Azure Document Intelligence:</strong> The battle-tested veteran for structured and semi-structured documents (invoices, forms, IDs). Still leading for printed text.</li>
+<li><strong>Azure Content Understanding:</strong> The new multimodal powerhouse (GA since November 2025) that combines OCR with generative AI—handling documents, images, audio, and video.</li>
+<li><strong>Mistral OCR 3:</strong> The brand-new state-of-the-art model (December 2025) with a 74% win rate over its predecessor—specifically designed for enterprise-grade OCR with <a href="https://en.wikipedia.org/wiki/Markdown" rel="noopener" target="_blank">Markdown</a> output.</li>
+<li><span>GPT-5 / VLM Approaches:</span> Vision Language Models as game-changers—especially strong for handwriting and complex document QA workflows.</li>
+<li><span>Azure Vision (v4.0):</span> Optimized for “in-the-wild” images like posters or labels via a fast, synchronous API.</li>
+</ol>
+<h2 class="wp-block-heading">1. Performance: Who’s the Accuracy King?</h2>
+<p class="wp-block-paragraph">When it comes to raw accuracy, the “best” model depends heavily on your document type. Here’s the current benchmark landscape:</p>
+<h3 class="wp-block-heading">Printed Text</h3>
+<p class="wp-block-paragraph"><span>Azure Document Intelligence</span> remains the market leader here, achieving the highest scores in independent benchmarks. For standard forms and clean printed documents, it’s the safest choice.</p>
+<h3 class="wp-block-heading">Multilingual &amp; Tables</h3>
+<p class="wp-block-paragraph"><span>Mistral OCR 3</span> dominates at global scale: 99%+ accuracy across 25+ languages (including German, French, Chinese, Arabic, Hindi) and significantly outperforms standard Azure OCR and GPT-4o in complex table extraction. Benchmarks show 96.6% on tables vs. Textract’s 84.8%.</p>
+<h3 class="wp-block-heading">Handwriting – The Biggest Differentiator!</h3>
+<p class="wp-block-paragraph">This is where it gets interesting. Benchmark results vary depending on the test set:</p>
+<ul class="wp-block-list">
+<li><span>GPT-5</span> leads in independent benchmarks for complex handwriting recognition</li>
+<li><span>Mistral OCR 3:</span> 88.9% accuracy (vs. Azure’s 78.2% in Mistral’s internal tests)</li>
+<li><span>Azure Document Intelligence:</span> Weaker on pure handwriting, but strong on printed/handwritten mixes</li>
+</ul>
+<h3 class="wp-block-heading">Speed</h3>
+<p class="wp-block-paragraph"><span>Mistral OCR 3</span> is built for velocity, processing up to 2,000 pages per minute on a single node. <span>Azure Vision 4.0</span> is the choice for real-time UIs where low-latency synchronous responses are required.</p>
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph"><span>⚠️ Important Note:</span> Mistral’s benchmarks are “internal”—conducted by the vendor themselves. Independent comparisons using identical test sets are still lacking. Running your own tests with your document types is essential!</p>
+</blockquote>
+<h2 class="wp-block-heading">2. Capabilities: Beyond Text Extraction</h2>
+<p class="wp-block-paragraph">If you just need raw text, any model works. But if you need <span><em>intelligence</em></span>, the field narrows. For production pipelines, pair that intelligence with <a href="https://jannikreinhard.com/2026/02/18/what-azure-ai-content-safety-does-and-why-it-matters/">Azure AI Content Safety</a> so downstream agents can filter risky or policy-violating outputs.</p>
+<h3 class="wp-block-heading">Azure Document Intelligence – The Structure Specialist</h3>
+<p class="wp-block-paragraph">Doesn’t just give you text—it identifies paragraphs, titles, section headings, and selection marks. Offers pre-built models for specific forms (US Unified Tax, Identity Documents). Ideal when you have fixed, known document types.</p>
+<h3 class="wp-block-heading">Azure Content Understanding – The Logic Layer</h3>
+<ul class="wp-block-list">
+<li>Can generate derived fields—e.g., calculate total tax even if it’s not explicitly written in the document</li>
+<li>Supports multi-file input—validate data across different documents in a single request</li>
+<li>New: Pro mode with reasoning and external knowledge base integration</li>
+<li>Multimodal: Documents, images, audio, video in one service</li>
+</ul>
+<h3 class="wp-block-heading">Mistral OCR 3 – The RAG Optimizer</h3>
+<ul class="wp-block-list">
+<li>Output in Markdown format—massive advantage for RAG pipelines and LLM downstream processing</li>
+<li>HTML-based table reconstruction with colspan/rowspan support</li>
+<li><a href="https://en.wikipedia.org/wiki/LaTeX" rel="noopener" target="_blank">LaTeX</a> formatting for equations and scientific papers</li>
+<li>Extracts embedded images alongside text</li>
+</ul>
+<h3 class="wp-block-heading">GPT-5 / VLMs – The Reasoning Machines</h3>
+<ul class="wp-block-list">
+<li>Best choice for Document QA: OCR + reasoning in one step</li>
+<li>According to recent studies: VLMs like GPT-5 Mini deliver higher accuracy at lower costs than pure OCR services for complex document intelligence workflows</li>
+<li>Strong on unstructured, visually complex documents</li>
+<li>But: Slower (16-33 seconds per page vs. 2-4 seconds for Azure)</li>
+</ul>
+<h2 class="wp-block-heading">3. Pricing: Tokens vs. Managed Services</h2>
+<p class="wp-block-paragraph">Pricing models in Azure Foundry are becoming increasingly flexible. For a practical example of applying these services in a paperless-office workflow, see this <a href="https://jannikreinhard.com/2025/08/24/document-manager-using-azure-ai-foundry-or-openai-for-my-paperless-office/">Document Manager using Azure AI Foundry or OpenAI</a>:</p>
+<figure class="wp-block-table"><table class="has-fixed-layout"><thead><tr><th class="has-text-align-left" data-align="left">Service</th><th class="has-text-align-left" data-align="left">Pricing Model</th><th class="has-text-align-left" data-align="left">Cost (approx.)</th></tr></thead><tbody><tr><td><span>Document Intelligence</span></td><td>Page-based (tiers)</td><td>~$10 / 1,000 pages</td></tr><tr><td><span>Content Understanding</span></td><td>Token-based + PTU option</td><td>Pay-as-you-go</td></tr><tr><td><span>Mistral OCR 3</span></td><td>Page-based via Marketplace</td><td>$2 / 1,000 pages ($1 batch)</td></tr><tr><td><span>GPT-5 (VLM)</span></td><td>Token-based</td><td>~$10 / 1,000 pages</td></tr><tr><td><span>Azure Vision 4.0</span></td><td>Transaction-based</td><td>Low (basic OCR)</td></tr></tbody></table></figure>
+<p class="wp-block-paragraph"><span>💡 Pro Tip:</span> Mistral OCR 3 offers the best price-performance ratio at $1/1,000 pages (batch) for high-volume document digitization.</p>
+<h2 class="wp-block-heading">Comparison Overview at a Glance</h2>
+<figure class="wp-block-table"><table class="has-fixed-layout"><thead><tr><th>Feature</th><th>Doc Intelligence</th><th>Content Underst.</th><th>Mistral OCR 3</th><th>GPT-5 VLM</th><th>Vision 4.0</th></tr></thead><tbody><tr><td><span>Best For</span></td><td>Standard Forms</td><td>Complex/Multimodal</td><td>RAG Pipelines</td><td>Document QA</td><td>Real-time</td></tr><tr><td><span>Printed Text</span></td><td>⭐⭐⭐⭐⭐</td><td>⭐⭐⭐⭐</td><td>⭐⭐⭐⭐</td><td>⭐⭐⭐⭐</td><td>⭐⭐⭐⭐</td></tr><tr><td><span>Handwriting</span></td><td>⭐⭐⭐</td><td>⭐⭐⭐⭐</td><td>⭐⭐⭐⭐</td><td>⭐⭐⭐⭐⭐</td><td>⭐⭐⭐</td></tr><tr><td><span>Tables</span></td><td>⭐⭐⭐⭐</td><td>⭐⭐⭐⭐</td><td>⭐⭐⭐⭐⭐</td><td>⭐⭐⭐</td><td>⭐⭐</td></tr><tr><td><span>Multilingual</span></td><td>⭐⭐⭐⭐</td><td>⭐⭐⭐⭐</td><td>⭐⭐⭐⭐⭐</td><td>⭐⭐⭐⭐⭐</td><td>⭐⭐⭐</td></tr><tr><td><span>Speed</span></td><td>Fast</td><td>Medium</td><td>Very Fast</td><td>Slow</td><td>Very Fast</td></tr><tr><td><span>Output</span></td><td>JSON</td><td>JSON + Reasoning</td><td>Markdown/HTML</td><td>Flexible</td><td>JSON</td></tr><tr><td><span>Reasoning</span></td><td>❌</td><td>✅ Native</td><td>❌</td><td>✅ Best</td><td>❌</td></tr></tbody></table></figure>
+<h2 class="wp-block-heading">The Verdict: Which Model for Which Use Case?</h2>
+<p class="wp-block-paragraph"><span>📄 Azure Document Intelligence</span> → Fixed form types (insurance claims, ID cards, invoices) requiring reliable, high-accuracy extraction with confidence scores</p>
+<p class="wp-block-paragraph"><span>🧠 Azure Content Understanding</span> → “Messy” documents, wildly varying formats, when logic (calculating, summarizing) needs to be part of the extraction process, or multimodal workflows</p>
+<p class="wp-block-paragraph"><span>🚀 Mistral OCR 3</span> → Global, multilingual datasets, converting massive amounts of scientific/technical PDFs to Markdown for AI agents, high-volume processing with best price-performance ratio</p>
+<p class="wp-block-paragraph"><span>🤖 GPT-5 / VLM Approach</span> → Complex document QA where OCR + reasoning is needed in one step, best handwriting recognition, unstructured documents</p>
+<p class="wp-block-paragraph"><span>📱 Azure Vision 4.0</span> → Mobile apps that need to read signs or product labels instantly—lowest latency, synchronous API</p>
+<h2 class="wp-block-heading">Pro Tips for Real-World Implementation</h2>
+<ol class="wp-block-list">
+<li><span>Test a hybrid approach:</span> GPT-5 Mini + an OCR layer (e.g., Azure Read) can deliver better results for complex QA workflows than pure OCR services alone.</li>
+<li><span>Test PDF vs. JPEG:</span> Developers report that high-resolution JPEGs sometimes yield better table extraction than direct PDF submission with Mistral OCR.</li>
+<li><span>Consider DeepSeek OCR for on-prem:</span> If self-hosting or privacy requirements are important, DeepSeek OCR (October 2025) is a relevant alternative.</li>
+<li><span>Use the Batch API:</span> Mistral OCR 3 offers a 50% discount for batch processing—ideal for archive digitization projects.</li>
+<li><span>Run your own benchmarks:</span> Vendor benchmarks are self-reported. Test with your actual documents!</li>
+</ol>
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">💡 Think of picking an OCR model like choosing a specialized lens for a camera: a macro lens for the fine print of a contract, a wide-angle lens for complex multimodal reports, and a telephoto lens when you need to reason about what you’re seeing from a distance.</p>
+</blockquote>
+<p class="wp-block-paragraph">For a modern AI agent, the combination of <span>Mistral OCR 3</span> (for fast, affordable bulk extraction) + <span>Azure Content Understanding</span> (for reasoning) or <span>GPT-5</span> (for complex QA) is the most future-proof choice.</p>
+<p class="wp-block-paragraph"></p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

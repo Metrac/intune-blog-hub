@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Right Click Tools for SCCM &amp; Intune: Patch, Report, Elevate</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">August 20, 2025</span>
+  </div>
+  <h1>Right Click Tools for SCCM &amp; Intune: Patch, Report, Elevate</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/2025/08/20/one-toolkit-three-outcomes-meet-the-new-right-click-tools-for-sccm-intune-teams/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><article class="post-10419 post type-post status-publish format-standard has-post-thumbnail hentry category-all tag-cyber-security tag-cybersecurity tag-microsoft tag-security tag-technology" id="post-10419">
+<figure class="entry-featured-image">
+<img alt="Right Click Tools for SCCM &amp; Intune: Patch, Report, Elevate" class="attachment-nucleare-normal-post size-nucleare-normal-post wp-post-image" decoding="async" fetchpriority="high" src="assets/83c73f7bb31146d4/img_0.jpg"/> </figure>
+<div class="entry-content">
+<p class="wp-block-paragraph">If your day still looks like this—jumping between consoles, chasing patch gaps, and wrestling with standing local admin—your tools are slowing you down. The <strong>New Right Click Tools</strong> changes that by bringing <strong>patching</strong>, <strong>reporting/visibility</strong>, and <strong>privileged access</strong> together, built for <span>SCCM/ConfigMgr</span> and <span>Intune</span> realities.</p>
+<p class="wp-block-paragraph">Trusted across <span>60M+ endpoints</span>, Right Click Tools is designed for modern endpoint management at scale—without adding another portal to learn.</p>
+<figure class="wp-block-image size-large"><img alt="Right Click Tools graphic for SCCM and Intune teams" class="wp-image-10424" data-recalc-dims="1" decoding="async" src="assets/83c73f7bb31146d4/img_1.jpg"/></figure>
+<span id="more-10419"></span>
+<hr class="wp-block-separator has-alpha-channel-opacity"/>
+<h2 class="wp-block-heading">What’s New (and Why It Matters)</h2>
+<p class="wp-block-paragraph"><span>Right Click Tools Patching</span><br/>Automate third-party application patching at scale and close gaps faster. Spend less time packaging and more time getting compliant.</p>
+<p class="wp-block-paragraph"><span>Right Click Tools Insights</span><br/>Turn visibility into action. Go from “non-compliant” to “handled” in fewer clicks with reports you can act on—right where you work.</p>
+<p class="wp-block-paragraph"><span>Right Click Tools Privileged Access</span><br/>Adopt <span>just-in-time</span> elevation instead of “always-on” admin. Grant time-boxed, scoped privileges that protect users and keep work moving.</p>
+<hr class="wp-block-separator has-alpha-channel-opacity"/>
+<h2 class="wp-block-heading">From Visibility to Action: A Day-in-the-Life</h2>
+<p class="wp-block-paragraph"><span>Scenario:</span> A critical third-party app is out of date on a subset of devices, and a service desk ticket needs elevated access to complete a fix.</p>
+<ol class="wp-block-list" start="1">
+<li><span>See:</span> Use <span>Right Click Tools Insights</span> to isolate the affected devices and understand blast radius—OS versions, app versions, compliance posture—without leaving your primary console.</li>
+<li><span>Decide:</span> Identify remediation paths (automated patch vs. targeted deployment) and group devices instantly based on posture and risk.</li>
+<li><span>Fix:</span> Trigger <span>Right Click Tools Patching</span> to update the app fleet-wide, or perform a scoped rollout to a pilot collection. Track status in the same place you discovered the issue.</li>
+<li><span>Elevate (when needed):</span> Grant <span>just-in-time</span> elevation with <span>Right Click Tools Privileged Access</span> to let a technician complete a task that truly requires higher privileges. Elevation is time-boxed, audited, and scoped—no lingering admin.</li>
+<li><span>Move on:</span> With fewer tools to juggle and fewer hops between discovery and remediation, you reduce escalations and shorten mean time to resolution (MTTR).</li>
+</ol>
+<hr class="wp-block-separator has-alpha-channel-opacity"/>
+<h2 class="wp-block-heading">Where Consolidation Pays Off</h2>
+<ul class="wp-block-list">
+<li><span>Close patching gaps faster:</span> Third-party updates at scale—without endless packaging cycles.</li>
+<li><span>Reduce tool sprawl:</span> One toolkit that handles the most frequent endpoint jobs.</li>
+<li><span>Fewer clicks to results:</span> Insights that connect directly to actions.</li>
+<li><span>Least privilege by default:</span> Just-in-time elevation instead of standing local admin.</li>
+<li><span>Cleaner compliance signal:</span> Stronger reporting for leaders and audit-friendly traces for security.</li>
+</ul>
+<hr class="wp-block-separator has-alpha-channel-opacity"/>
+<h2 class="wp-block-heading">What Changed vs. “Old” Right Click Tools</h2>
+<ul class="wp-block-list">
+<li><span>Third-party application patching</span> is now built to scale, reducing manual overhead.</li>
+<li><span>Deeper, actionable reporting</span> converts insight into in-flow remediation.</li>
+<li><span>Privilege management</span> is built-in, enabling safer just-in-time elevation.</li>
+</ul>
+<p class="wp-block-paragraph">In short: <span>Patch smarter. Report deeper. Elevate safely.</span></p>
+<hr class="wp-block-separator has-alpha-channel-opacity"/>
+<h2 class="wp-block-heading">Getting Started (Live Walk-Through + Q&amp;A)</h2>
+<p class="wp-block-paragraph">See the New Right Click Tools in action and bring your questions. For more Intune-focused background, check out <a href="https://jannikreinhard.com/2025/03/22/introducing-right-click-tools-for-intune-community-edition/">Introducing Right Click Tools for Intune Community Edition</a>.</p>
+<p class="wp-block-paragraph"><span>🗓</span><span> August 27, 2025 — 10:00 AM CT (17:00 CEST)</span><br/><span>Save your seat →</span> <a href="https://www.recastsoftware.com/resources/the-new-right-click-tools/" rel="noopener" target="_blank">https://www.recastsoftware.com/resources/the-new-right-click-tools/</a></p>
+</div>
+</article>
+</div></div>
+</article>
+</body>
+</html>

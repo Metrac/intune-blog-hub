@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI-Powered Intune Policy Documentation and Conflict Analysis</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">March 28, 2026</span>
+  </div>
+  <h1>AI-Powered Intune Policy Documentation and Conflict Analysis</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/2026/03/28/ai-powered-intune-policy-descriptions-conflict-analysis/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p class="wp-block-paragraph">If you manage Microsoft Intune at scale, you know the pain: hundreds of policies, most of them with empty or outdated descriptions, and zero visibility into which settings overlap or even contradict each other across policies. I’ve seen this in pretty much every tenant I’ve worked with and honestly, it’s one of the most underestimated operational risks in modern endpoint management.</p>
+<p class="wp-block-paragraph">So I built a tool to fix it. It builds on the same idea I explored in <a href="https://jannikreinhard.com/2024/03/03/create-your-own-intune-co-pilot-using-azure-openai-studio/">Create your own Intune Co Pilot using Azure OpenAi Studio</a>, but takes it further with policy documentation and conflict analysis. Let me walk you through it.</p>
+<figure class="wp-block-image size-large"><img alt="Intune policy management tool showing conflict analysis dashboard" class="wp-image-17426" data-recalc-dims="1" decoding="async" src="assets/b6ebc04c34f789e9/img_0.jpg"/></figure>
+<span id="more-17401"></span>
+<h2 class="wp-block-heading">The Problem</h2>
+<p class="wp-block-paragraph">Let’s be real, nobody enjoys writing policy descriptions. You create a new Settings Catalog profile, configure 15 settings, assign it, and move on. The description field? Left blank. Maybe you write “Windows Security Settings” if you’re feeling generous.</p>
+<p class="wp-block-paragraph">Now multiply that across an enterprise tenant with 200+ policies. When a colleague needs to understand what a policy does, they have to open each one, scroll through every setting, and piece together the intent. That’s not documentation, that’s archaeology.</p>
+<p class="wp-block-paragraph">And then there’s the conflict problem. You have a Device Configuration profile that sets a password requirement to <code>true</code>, and somewhere in another Compliance Policy, the same setting is configured differently. Nobody notices until users start complaining — or worse, until an audit flags it.</p>
+<h2 class="wp-block-heading">The Solution: Intune PolicyManagement</h2>
+<p class="wp-block-paragraph">I built <strong>Intune PolicyManagement</strong> as a local tool that does three things:</p>
+<ol class="wp-block-list">
+<li><strong>Fetches all your Intune policies</strong> via the Microsoft Graph API, all 12 policy types, from Device Configuration and Settings Catalog to Endpoint Security, Conditional Access, Autopilot profiles, and even Remediation Scripts.</li>
+<li><strong>Generates meaningful descriptions</strong> using Azure OpenAI. The tool sends the complete policy configuration (as JSON) to your Microsoft Foundry deployment and gets back a structured, human-readable description. You see a before/after comparison and can edit the result before pushing it back.</li>
+<li><strong>Analyzes policy conflicts</strong> by scanning all policies for overlapping settings. It tells you exactly which settings are configured in multiple policies and whether they conflict (different values) or are just duplicates (same value, multiple places).</li>
+</ol>
+<h2 class="wp-block-heading">How It Works</h2>
+<p class="wp-block-paragraph">The architecture is straightforward: a React frontend (Vite + TypeScript + Tailwind CSS) talks to a Python FastAPI backend. The backend handles MSAL authentication, Graph API calls, and Azure OpenAI integration.</p>
+<p class="wp-block-paragraph">Here’s the flow:</p>
+<ul class="wp-block-list">
+<li>You sign in with your Microsoft account (interactive browser login via MSAL)</li>
+<li>Click “Load Policies” — the tool fetches all 12 policy types in parallel</li>
+<li>Select the policies you want to describe (individually, filtered, or all at once)</li>
+<li>Hit “Generate” — Microsoft Foundry analyzes each policy’s full configuration and creates a description</li>
+<li>Review the before/after comparison, edit if needed</li>
+<li>Push the descriptions back to Intune with one click</li>
+</ul>
+<p class="wp-block-paragraph">For conflict analysis, you switch to the dedicated tab, hit “Start Analysis,” and the tool compares every setting across every policy. Conflicts show up in red, duplicates in amber — with expandable details showing exactly which policies are affected and what values they use.</p>
+<h2 class="wp-block-heading">Supported Policy Types</h2>
+<p class="wp-block-paragraph">The tool covers the full spectrum of Intune policy types:</p>
+<ul class="wp-block-list">
+<li>Device Configuration</li>
+<li>Settings Catalog</li>
+<li>Compliance Policies</li>
+<li>App Protection Policies</li>
+<li>Conditional Access</li>
+<li>Endpoint Security</li>
+<li>App Configuration</li>
+<li>Autopilot Deployment Profiles</li>
+<li>Device Enrollment Configurations</li>
+<li>Remediation Scripts</li>
+<li>PowerShell Scripts</li>
+<li>Group Policy (ADMX) including definition values</li>
+<li>
+</li></ul>
+<h2 class="wp-block-heading">Why Microsoft Foundry?</h2>
+<p class="wp-block-paragraph">I decided to build this on <a href="https://jannikreinhard.com/2026/01/02/building-your-own-intune-agent-with-microsoft-foundry/">Microsoft Foundry</a> rather than a public API. In enterprise environments, your Intune policy configurations contain sensitive information about your security posture, compliance requirements, and infrastructure setup. Keeping that data within your Azure tenant boundary matters.</p>
+<p class="wp-block-paragraph">The LLM settings (system prompt, output template, custom instructions) are fully customizable through the UI and persist locally. You can tune the output format to match your organization’s documentation standards.</p>
+<h2 class="wp-block-heading">What I Like About This Approach</h2>
+<p class="wp-block-paragraph"><span>It’s practical.</span> You don’t need to change your workflow. Load policies, generate, review, push -&gt; done. A task that would take days manually (writing proper descriptions for 200 policies) takes minutes.</p>
+<p class="wp-block-paragraph"><span>It finds problems you didn’t know you had.</span> The conflict analysis alone is worth the setup. I’ve run this against customer tenants and found dozens of contradicting settings that had been silently causing issues for months.</p>
+<p class="wp-block-paragraph"><span>It runs locally.</span> No cloud service, no SaaS subscription, no data leaving your control beyond Graph API and your own Microsoft Foundry instance. Clone the repo, configure your Microsoft Foundry credentials, and go.</p>
+<h2 class="wp-block-heading">Getting Started</h2>
+<p class="wp-block-paragraph">You’ll need:</p>
+<ul class="wp-block-list">
+<li>Python 3.11–3.13 and Node.js 18+</li>
+<li>Azure CLI installed and logged in</li>
+<li>An Azure OpenAI deployment (e.g., GPT-4o or GPT-5-mini)</li>
+<li>Appropriate Intune permissions (Intune Administrator or equivalent)</li>
+</ul>
+<p class="wp-block-paragraph">Setup is straightforward:</p>
+<p class="wp-block-paragraph">Then start both servers (backend on port 8099, frontend on port 5173) and open <code>http://localhost:5173</code>.</p>
+<p class="wp-block-paragraph">The full installation guide, API reference, and troubleshooting tips are in the <a href="https://github.com/JayRHa/Intune-PolicyManagement" rel="noopener" target="_blank">GitHub README</a>.</p>
+<h2 class="wp-block-heading">What’s Next</h2>
+<p class="wp-block-paragraph">This is an open-source project and I’m actively developing it.</p>
+<p class="wp-block-paragraph">If you have feedback, feature requests, or want to contribute — the repo is open: <a href="https://github.com/JayRHa/Intune-PolicyManagement" rel="noopener" target="_blank">github.com/JayRHa/Intune-PolicyManagement</a></p>
+<h2 class="wp-block-heading">Wrapping Up</h2>
+<p class="wp-block-paragraph">Good policy documentation isn’t glamorous, but it’s essential, for audits, for onboarding, for troubleshooting, and for your own sanity six months from now. And knowing where your policies overlap or conflict is even more critical.</p>
+<p class="wp-block-paragraph">This tool takes the tedious part out of the equation and lets you focus on what actually matters: making informed decisions about your endpoint management strategy.</p>
+<p class="wp-block-paragraph">Give it a try and let me know what you think. If you want to go deeper on the Microsoft Graph side of this, check out my post on the <a href="https://jannikreinhard.com/2024/09/28/graph-batch-endpoint/">Graph Batch Endpoint</a>.</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Location Services is grayed out?</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">MSEndpointMgr</span>
+    <span class="date">February 10, 2026</span>
+  </div>
+  <h1>Location Services is grayed out?</h1>
+  <div class="orig">Saved for offline reading · <a href="https://msendpointmgr.com/2026/02/10/location-services-is-grayed-out/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p data-block-type="core">Are you wondering why Location services are grayed out? Or how to have location services configured the way you want them? Tbh, these settings are a mess! There is no good documentation about it. </p>
+<h2 class="wp-block-heading" id="0-there-are-two-types-of-grayed-out"><a aria-hidden="true" class="aal_anchor" href="#there-are-two-types-of-grayed-out" id="there-are-two-types-of-grayed-out"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>There are two types of grayed out:</h2>
+<h3 class="wp-block-heading" id="1-location-has-been-turned-off-by-an-admin-on-this-device-"><a aria-hidden="true" class="aal_anchor" href="#location-has-been-turned-off-by-an-admin-on-this-device" id="location-has-been-turned-off-by-an-admin-on-this-device"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a><strong><span class="stk-highlight">Location has been turned off by an admin on this device</span></strong></h3>
+<p data-block-type="core">This might be a scenario device was provisioned from Autopilot, it has skipped the OOBE privacy page, Location services are turned off for all users by default, without any Intune policy controlling the setting. If you log in as an administrator, you can turn it on for all users, but standard users can’t turn on location services. </p>
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="" class="wp-image-26288" decoding="async" src="assets/15d220e3ed1414d1/img_0.png"/></figure>
+<h3 class="wp-block-heading" id="2-some-of-these-settings-are-managed-by-your-organization-"><a aria-hidden="true" class="aal_anchor" href="#some-of-these-settings-are-managed-by-your-organization" id="some-of-these-settings-are-managed-by-your-organization"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a><strong><span class="stk-highlight">Some of these settings are managed by your organization</span></strong></h3>
+<p data-block-type="core">This is when you have configured location services related settings from Intune, GPO, or registry. </p>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-26289" decoding="async" src="assets/15d220e3ed1414d1/img_1.png"/></figure>
+<p data-block-type="core"><strong>When “Location services” is disalbed, apps won’t able to use location service, regardless if the “let apps access your location” has the toggle turned On, or if the app itself has the toggle turned on.</strong> </p>
+<h2 class="wp-block-heading" id="3-what-settings-can-we-configured-in-intune"><a aria-hidden="true" class="aal_anchor" href="#what-settings-can-we-configured-in-intune" id="what-settings-can-we-configured-in-intune"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>What settings can we configured in Intune?</h2>
+<h3 class="wp-block-heading" id="4-setting-let-apps-access-location-"><a aria-hidden="true" class="aal_anchor" href="#setting-let-apps-access-location" id="setting-let-apps-access-location"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a><span class="stk-highlight">Setting: Let Apps Access location</span></h3>
+<p data-block-type="core">This setting has three options: User in control, Force allow, Force deny. </p>
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="" class="wp-image-26293" decoding="async" src="assets/15d220e3ed1414d1/img_2.png"/></figure>
+<p data-block-type="core">When it configured as “<strong>Force allow</strong>“, it will enforce enabled Location services as well, everything will be enabled and grayed out. </p>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-26291" decoding="async" src="assets/15d220e3ed1414d1/img_3.png"/></figure>
+<p data-block-type="core">When it configured as “<strong>Force deny</strong>“, it will enforce enabled Location services as well, everything will be enabled and grayed out. </p>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-26292" decoding="async" src="assets/15d220e3ed1414d1/img_4.png"/></figure>
+<p data-block-type="core">But what about “<strong>User in control</strong>“? In this case, because of Location services are disabled by admin, configuring  <span class="stk-highlight">Let Apps Access location</span> as “<strong>User in control</strong>” doesn’t have any impact. It shows like this.</p>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-26294" decoding="async" src="assets/15d220e3ed1414d1/img_5.png"/></figure>
+<p data-block-type="core"> I also tried Disable “Turn off location”, Disable “Turn off sensors” like this, but still Location services, and Let apps access your location are turn off and grayed out. </p>
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="" class="wp-image-26295" decoding="async" src="assets/15d220e3ed1414d1/img_6.png"/></figure>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-26296" decoding="async" src="assets/15d220e3ed1414d1/img_7.png"/></figure>
+<h3 class="wp-block-heading" id="5-setting-let-apps-access-location-force-allow-these-apps-"><a aria-hidden="true" class="aal_anchor" href="#setting-let-apps-access-location-force-allow-these-apps" id="setting-let-apps-access-location-force-allow-these-apps"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a><span class="stk-highlight">Setting: Let Apps Access Location Force Allow These Apps</span></h3>
+<p data-block-type="core">Example I want to allow Microsoft Teams and Settings (for automatic timezone) to access location services for all users. </p>
+<p data-block-type="core">Use Get-AppPackage to get the PackageFamilyName</p>
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="" class="wp-image-26299" decoding="async" src="assets/15d220e3ed1414d1/img_8.png"/></figure>
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="" class="wp-image-26297" decoding="async" src="assets/15d220e3ed1414d1/img_9.png"/></figure>
+<p data-block-type="core">Microsoft Teams is automatictly granted access to location services, user will not get prompted to ask permission access location service,  but still location services and let apps access your location are disabled, grayed out, and in fact Microsoft Teams won’t able to access location service as well. </p>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-26300" decoding="async" src="assets/15d220e3ed1414d1/img_10.png"/></figure>
+<h2 class="wp-block-heading" id="6-how-to-enable-location-services-allow-user-to-control-let-apps-access-your-location-for-standard-users-without-login-first-as-administrator"><a aria-hidden="true" class="aal_anchor" href="#how-to-enable-location-services-allow-user-to-control-let-apps-access-your-location-for-standard-users-without-login-first-as-administrator" id="how-to-enable-location-services-allow-user-to-control-let-apps-access-your-location-for-standard-users-without-login-first-as-administrator"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>How to enable “Location services”, allow user to control “Let apps access your location” for standard users without login first as administrator?</h2>
+<p data-block-type="core">First thing first, we need to enable “Location services” without login as administrator. Unfortuantly I didn’t find any Intune policy, GPO settings or registry can configured this. Only thing I can turn “Location services” from Off to On, is by using this command in elavated permssion. You can make a PowerShell script deploy it from Intune and run as System context.</p>
+<pre class="wp-block-code" data-block-type="core"><code>"C:\Windows\system32\SystemSettingsAdminFlows.exe" SetCamSystemGlobal location 1</code></pre>
+<figure class="wp-block-video" data-block-type="core"><video controls="" src="https://msendpointmgr.com/wp-content/uploads/2026/02/locationservice-1.mp4"></video></figure>
+<p data-block-type="core">In Intune Settings Catalog, I have configured these few settings. I have configured “Turn off location (User)”, “Turn off sensors” and “Turn off sensors (User)” to Disabled, just incase if they are needed.  </p>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-26303" decoding="async" src="assets/15d220e3ed1414d1/img_11.png"/></figure>
+<p data-block-type="core">Now standard user can have control of “Let apps access your location”, user can turn this setting On or Off,  except the apps you have configured in Force Allow list. </p>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#how-about-turn-on-let-apps-access-your-location-by-default-for-standard-user" id="how-about-turn-on-let-apps-access-your-location-by-default-for-standard-user"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>How about turn on “Let apps access your location” by default for standard user?</h2>
+<p data-block-type="core">Now that we have enabled “Location services” for all users, specially for standard user, and allow standard user to turn “Let apps access your location” on or off, but how about if we want to turn on “Let apps access your location” as as default and allow user to change it if they want to? </p>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-26305" decoding="async" src="assets/15d220e3ed1414d1/img_12.png"/></figure>
+<p data-block-type="core">Unfortuantly I didn’t find a way to do that.  It used to be possible to do this by modifying user registry HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location , but this options no longer work anymore.</p>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#summarize" id="summarize"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Summarize</h2>
+<p data-block-type="core">If you want to enfoce all apps access location services, set “Let Apps Access Location” to “force allow”</p>
+<p data-block-type="core">If you want to disable all apps access location services, set “Let Apps Access Location” to “force deny”</p>
+<p data-block-type="core">If you want to allow standard user user access location service, and control apps permission by themselves, make sure “Location Service” is turned on first. </p>
+<p class="post-views content-post post-26287 entry-meta load-static">
+<span class="post-views-icon dashicons dashicons-chart-bar"></span> <span class="post-views-label">Views:</span> <span class="post-views-count">3,547</span>
+</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

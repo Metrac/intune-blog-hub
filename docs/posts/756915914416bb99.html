@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Document Manager with Azure OpenAI for Paperless Offices</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">August 24, 2025</span>
+  </div>
+  <h1>AI Document Manager with Azure OpenAI for Paperless Offices</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/2025/08/24/document-manager-using-azure-ai-foundry-or-openai-for-my-paperless-office/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p class="wp-block-paragraph">This post documents how I built an <strong>AI Document Manager with Azure OpenAI</strong> to power Paperless Offices at home and at work. It is the same project I run for my own household paperwork: scan, classify, extract, file, and search — using Azure AI Foundry and OpenAI models as the core.</p>
+<p class="wp-block-paragraph">Let’s be honest: most document management systems feel like they’re stuck in 2005. I decided to move to a paperless office and <a href="https://jannikreinhard.com/2026/01/12/master-the-paper-chaos-comparing-azures-ocr-and-document-intelligence-powerhouses/">scan all my documents</a>. I tried multiple ways to realize this, but I couldn’t find tooling that I felt comfortable with and that saved me a lot of work storing and retrieving documents.</p>
+<p class="wp-block-paragraph" id="tw-target-text">I wouldn’t be a developer or an AI MVP if I didn’t get stuck in and write my own tool. With Doc Manager, I demonstrate how to use Azure OpenAI / AI Foundry to build a best-in-class document management system, building on ideas like <a href="https://jannikreinhard.com/2024/08/25/azure-ai-search-deploying-a-powerful-ai-powered-search-engine/">Azure AI Search for AI-powered search</a>.</p>
+<figure class="wp-block-image size-large"><img alt="Document manager dashboard overview with AI search" class="wp-image-10451" data-recalc-dims="1" decoding="async" src="assets/756915914416bb99/img_0.jpg"/></figure>
+<span id="more-10433"></span>
+<h2 class="wp-block-heading"><strong>Enter AI: The Game Changer</strong></h2>
+<p class="wp-block-paragraph">What if your document system actually understood your documents? Not just their titles or tags, but their actual content and meaning? That’s exactly what I set out to build with DocumentManager.</p>
+<p class="wp-block-paragraph">The document manager has a vector database behind it to provide an advanced search that finds all your documents based on content understanding. Instead of matching keywords, the system understands concepts. Search for “payment terms” and it’ll find documents discussing invoicing, contracts with payment clauses, and financial agreements – even if they never use those exact words. During the initialization of all documents, an embedding is generated for each of them to use for a vector search.</p>
+<p class="wp-block-paragraph">![AI-Powered Search in Action](images/ai-search.jpeg)</p>
+<h2 class="wp-block-heading"><strong>Key Features That Actually Matter</strong></h2>
+<h3 class="wp-block-heading"><strong>1. Smart OCR with Multi-Language Support</strong></h3>
+<p class="wp-block-paragraph">Upload a scanned PDF in German? No problem. A photo of a whiteboard in Japanese? Got it covered. The system automatically extracts text from images and PDFs in over 50 languages using Tesseract OCR.</p>
+<figure class="wp-block-image size-large is-resized"><img alt="Document manager dashboard showing AI document search overview" class="wp-image-10453" data-recalc-dims="1" decoding="async" src="assets/756915914416bb99/img_1.jpg"/></figure>
+<h3 class="wp-block-heading"><span>2. Natural Language Queries</span></h3>
+<p class="wp-block-paragraph">Stop thinking like a database. Just ask questions naturally. There is an AI chat integrated which finds all the relevant documents and lets you chat with them — similar in concept to the <a href="https://jannikreinhard.com/2024/03/03/create-your-own-intune-co-pilot-using-azure-openai-studio/">Intune Co Pilot I built with Azure OpenAI Studio</a>:</p>
+<ul class="wp-block-list">
+<li>“Show me all contracts expiring this year”</li>
+<li>“Find documents about the Berlin office renovation”</li>
+<li>“What were our Q4 marketing expenses?”</li>
+</ul>
+<p class="wp-block-paragraph">The AI understands context and intent, not just keywords.</p>
+<figure class="wp-block-image size-large is-resized"><img alt="AI chat interface for document search" class="wp-image-10454" data-recalc-dims="1" decoding="async" src="assets/756915914416bb99/img_2.jpg"/></figure>
+<h3 class="wp-block-heading"><span>3. Automatic Categorization</span></h3>
+<p class="wp-block-paragraph">Upload a document and watch the AI automatically tag it based on content. Financial reports get tagged as “finance”, contracts as “legal”, technical specs as “engineering”. No manual tagging required (though you can always override if needed). Also, the Title, Summary, Correspondent, Document Type, Document Date, Tags and Tax Relevance are detected or auto-generated. The AI-generated summary makes it very easy to understand the content, even for large documents.</p>
+<figure class="wp-block-image size-large is-resized"><img alt="Document tags interface for AI document manager" class="wp-image-10455" data-recalc-dims="1" decoding="async" src="assets/756915914416bb99/img_3.jpg"/></figure>
+<h2 class="wp-block-heading"><span>The Technical Stack</span></h2>
+<p class="wp-block-paragraph">For the tech-curious among you, here’s what’s under the hood:</p>
+<ul class="wp-block-list">
+<li><span>**Backend**</span>: FastAPI</li>
+<li><span>**Vector Database**</span>: ChromaDB for lightning-fast semantic search</li>
+<li><span>**AI Models**</span>: OpenAI or Azure OpenAI (your choice)</li>
+<li><span>**Frontend**</span>: Vanilla JavaScript (keeping it simple and fast)</li>
+<li><span>**Deployment**</span>: Docker-ready with a handy setup script</li>
+</ul>
+<h2 class="wp-block-heading"><span>Getting Started in 3 Minutes</span></h2>
+<p class="wp-block-paragraph">The beauty of open source? You can have this running on your machine right now:</p>
+<p class="wp-block-paragraph">Make sure Docker is running on your device.</p>
+<p class="wp-block-paragraph">That’s it. Visit `http://localhost:8000` and start uploading documents.</p>
+<h2 class="wp-block-heading"><span> Security First</span></h2>
+<p class="wp-block-paragraph">I know what you’re thinking – “AI and sensitive documents?” Don’t worry, I’ve got you covered:</p>
+<ul class="wp-block-list">
+<li>Role-based access control (RBAC)</li>
+<li>Complete audit trails</li>
+<li>Option to use Azure OpenAI to keep the models in your own tenant</li>
+<li>All data stays on your infrastructure / storage</li>
+</ul>
+<h2 class="wp-block-heading">How does it work</h2>
+<figure class="wp-block-image size-full"><img alt="Document Manager workflow diagram using Azure AI and OpenAI" class="wp-image-10446" data-recalc-dims="1" decoding="async" src="assets/756915914416bb99/img_4.jpg"/></figure>
+<h2 class="wp-block-heading"><span>The Open Source Advantage</span></h2>
+<p class="wp-block-paragraph">Why open source? Because your document management system shouldn’t be a black box. You can:</p>
+<ul class="wp-block-list">
+<li>Audit the code</li>
+<li>Customize for your needs</li>
+<li>Self-host everything</li>
+<li>Contribute improvements</li>
+</ul>
+<p class="wp-block-paragraph">Plus, no vendor lock-in. Your documents, your rules. If you want to support the project, you can buy me a coffee. You can see it on the sidebar of my blog.</p>
+<h2 class="wp-block-heading"><span> What’s Next?</span></h2>
+<p class="wp-block-paragraph">The foundation is solid, but I’m just getting started. The roadmap includes:</p>
+<ul class="wp-block-list">
+<li>Support self-hosted models</li>
+<li>Mobile apps for on-the-go access or for scanning</li>
+<li>Workflow automation (imagine documents routing themselves)</li>
+<li>Advanced analytics dashboards</li>
+<li>Plugin system for custom integrations</li>
+</ul>
+<h2 class="wp-block-heading"><span>Try It Yourself</span></h2>
+<p class="wp-block-paragraph">Ready to transform your document chaos into organized intelligence? The entire project is available on <a href="https://github.com/JayRHa/Document-Manager?tab=readme-ov-file#-contributing" rel="noopener" target="_blank">GitHub</a>.</p>
+<p class="wp-block-paragraph">Star the repo ⭐ if you find it useful – it really helps with motivation.</p>
+<p class="wp-block-paragraph"><em>DocumentManager is open-source and available under the MIT license. Built with ❤️ by </em><a href="https://github.com/JayRHa" rel="noreferrer noopener" target="_blank">Jannik Reinhard</a><em> and </em><a href="https://github.com/fadope1" rel="noreferrer noopener" target="_blank">Fabian Peschke</a></p>
+<p class="wp-block-paragraph">Need AI in your processes? Need an agent or a tool like this? Message me through the contact form—happy to help.</p>
+<p class="wp-block-paragraph"></p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

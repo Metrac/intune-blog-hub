@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Build a Microsoft Intune AI Agent with Foundry</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">January 2, 2026</span>
+  </div>
+  <h1>Build a Microsoft Intune AI Agent with Foundry</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/2026/01/02/building-your-own-intune-agent-with-microsoft-foundry/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p class="wp-block-paragraph">We’ve all built <a href="https://jannikreinhard.com/2023/02/12/how-to-create-powershell-script-to-automate-tasks-in-intune/">PowerShell scripts to query Intune</a>, wrapped them in some automation, and called it a day. It works. But with Azure OpenAI Service and models like GPT-4.1 and GPT-5.2 optimized for tool calling, there’s a more interesting approach—building an actual AI agent that can talk to your Intune environment.</p>
+<p class="wp-block-paragraph">Instead of writing a script for every query, you build one agent that understands natural language and calls the Graph API on your behalf. Ask it “which Windows devices are non-compliant?” and it figures out the right API call, executes it, and summarizes the results. It’s not magic—it’s function calling with a nice interface.</p>
+<p class="wp-block-paragraph">In this post, I’ll walk you through <strong>two different approaches</strong> to building this agent: the classic direct SDK approach and the newer Microsoft Agent Framework. Both use the same underlying Graph API client, but differ in how they orchestrate the AI. Let’s dive in.</p>
+<span id="more-10833"></span>
+<h2 class="wp-block-heading">Architecture Overview</h2>
+<p class="wp-block-paragraph">Before diving into the code, let’s understand how all the pieces fit together. This follows the same broader pattern as <a href="https://jannikreinhard.com/2026/03/28/ai-powered-intune-policy-descriptions-conflict-analysis/">AI-powered Intune policy documentation and conflict analysis</a>: use AI to interpret Intune data instead of only retrieving it.</p>
+<figure class="wp-block-image size-large"><img alt="High-level architecture diagram for an Intune AI agent" class="wp-image-10850" data-recalc-dims="1" decoding="async" src="assets/0cc08007a5eb0a62/img_0.jpg"/></figure>
+<p class="wp-block-paragraph">Figure 1: High-level architecture of the Intune AI Agent</p>
+<p class="wp-block-paragraph">The agent acts as an orchestrator between the user, Azure OpenAI, and Microsoft Graph. When you ask a question, the Python agent sends it to Microsoft Foundry / Azure OpenAI, which decides which <a href="https://jannikreinhard.com/2026/02/22/why-cli-tools-are-beating-mcp-for-ai-agents/">tools to call</a>. The agent executes those tools via the Graph API and feeds the results back to the AI for interpretation.</p>
+<h2 class="wp-block-heading">Two Implementation Approaches</h2>
+<p class="wp-block-paragraph">This project provides two ways to build the same agent. Both share the same graph_helper.py for Graph API calls, but differ in how they integrate with Azure OpenAI:</p>
+<figure class="wp-block-image size-large"><img alt="High-level architecture of an Intune AI agent" class="wp-image-10851" data-recalc-dims="1" decoding="async" src="assets/0cc08007a5eb0a62/img_1.jpg"/></figure>
+<p class="wp-block-paragraph">Figure 2: Direct SDK vs. Microsoft Agent Framework</p>
+<figure class="wp-block-table"><table class="has-fixed-layout"><thead><tr><td><strong>Aspect</strong></td><td><strong>Direct SDK (main.py)</strong></td><td><strong>Agent Framework</strong></td></tr></thead><tbody><tr><td><span>Python Version</span></td><td>3.9+</td><td>3.10+ required</td></tr><tr><td><span>Tool Definition</span></td><td>Manual JSON schema</td><td>@ai_function decorator</td></tr><tr><td><span>Parameters</span></td><td>Explicit JSON schema</td><td>Annotated[type, “desc”]</td></tr><tr><td><span>Approval Flow</span></td><td>Manual (in system prompt)</td><td>Built-in approval_mode</td></tr><tr><td><span>Observability</span></td><td>Custom logging</td><td>Native OpenTelemetry</td></tr><tr><td><span>Execution Model</span></td><td>Synchronous</td><td>Async (asyncio)</td></tr><tr><td><span>Maturity</span></td><td>Production-ready</td><td>Preview (–pre)</td></tr></tbody></table></figure>
+<p class="wp-block-paragraph"><span>Which should you choose? </span>Use the <span>Direct SDK approach</span> if you need production stability today or are on Python 3.9. Use the <span>Agent Framework</span> if you want cleaner code, built-in approval workflows, and are okay with preview software.</p>
+<h2 class="wp-block-heading">What is Microsoft Foundry?</h2>
+<p class="wp-block-paragraph">If you’ve been following Azure AI Studio, you might have noticed the rebrand. At Ignite 2024, Microsoft introduced Azure AI Foundry Agent Service as a public preview, and by May 2025 it went GA with over 10,000 customers already using it. The platform has since evolved into Microsoft Foundry—a unified experience for building, deploying, and managing AI agents with enterprise-grade security.</p>
+<p class="wp-block-paragraph">The key pieces that matter for us:</p>
+<ul class="wp-block-list">
+<li><span>Foundry Agent Service</span>—The runtime that hosts your agents, handles conversations, orchestrates tool calls, and manages state</li>
+<li><span>Foundry Models</span>—Access to GPT-5.2, GPT-4.1, Claude, and 11,000+ other models through one endpoint</li>
+<li><span>Microsoft Agent Framework</span>—The unified SDK (successor to Semantic Kernel + AutoGen) for building agents locally</li>
+<li><span>Function Calling</span>—Your agent can invoke custom tools—like the Microsoft Graph API</li>
+</ul>
+<h2 class="wp-block-heading">GPT-4.1 vs GPT-5.2: Which Model Should You Use?</h2>
+<p class="wp-block-paragraph">Both models are available in Azure OpenAI Service and optimized for different scenarios.</p>
+<figure class="wp-block-table"><table class="has-fixed-layout"><thead><tr><td><span>Aspect</span></td><td><span>GPT-4.1</span></td><td><span>GPT-5.2</span></td></tr></thead><tbody><tr><td><span>Context</span></td><td>1M tokens input</td><td>272K tokens</td></tr><tr><td><span>Latency</span></td><td>Fast—optimized for real-time</td><td>Slower—deep reasoning takes time</td></tr><tr><td><span>Tool Calling</span></td><td>Excellent for coding/tools</td><td>Full tool support, raw payloads</td></tr><tr><td><span>Best For</span></td><td>Quick queries, real-time chat</td><td>Complex analysis, agentic workflows</td></tr></tbody></table></figure>
+<h2 class="wp-block-heading">How the Conversation Flow Works</h2>
+<p class="wp-block-paragraph">The magic happens in the tool-calling loop. Here’s the step-by-step flow when you ask the agent a question:</p>
+<figure class="wp-block-image size-large"><img alt="Intune AI agent architecture with Azure OpenAI and Graph" class="wp-image-10852" data-recalc-dims="1" decoding="async" src="assets/0cc08007a5eb0a62/img_2.jpg"/></figure>
+<p class="wp-block-paragraph">Figure 3: The tool-calling loop that powers the agent</p>
+<p class="wp-block-paragraph">The key insight is that steps 3-6 can repeat multiple times. If your question requires data from multiple sources, the AI might call multiple tools in sequence, combining the results to give you a complete answer.</p>
+<h2 class="wp-block-heading">Approach 1: Direct Azure OpenAI SDK</h2>
+<p class="wp-block-paragraph">This is the classic approach using the openai Python package directly. You define tools as JSON schemas and manage the conversation loop yourself.</p>
+<h2 class="wp-block-heading">Tool Definition (main.py)</h2>
+<p class="wp-block-paragraph">Tools are defined as a list of JSON objects with explicit schemas:</p>
+<pre class="wp-block-code"><code>TOOLS = [<br/>    {"type": "function", "function": {<br/>        "name": "get_devices_by_os",<br/>        "description": "Filter devices by operating system",<br/>        "parameters": {<br/>            "type": "object",<br/>            "properties": {<br/>                "operating_system": {<br/>                    "type": "string",<br/>                    "description": "OS: Windows, iOS, Android, macOS"<br/>                }<br/>            },<br/>            "required": ["operating_system"]<br/>        }<br/>    }},<br/>    // ... 21 more tool definitions<br/>]</code></pre>
+<h2 class="wp-block-heading">The Conversation Loop</h2>
+<p class="wp-block-paragraph">You manually handle the tool execution loop:</p>
+<pre class="wp-block-code"><code>response = client.chat.completions.create(<br/>    model=model,<br/>    messages=messages,<br/>    tools=TOOLS,<br/>    tool_choice="auto"<br/>)<br/><br/># Handle tool calls in a loop<br/>while assistant_message.tool_calls:<br/>    for tool_call in assistant_message.tool_calls:<br/>        result = execute_tool(<br/>            tool_call.function.name,<br/>            json.loads(tool_call.function.arguments)<br/>        )<br/>        messages.append({<br/>            "role": "tool",<br/>            "tool_call_id": tool_call.id,<br/>            "content": result<br/>        })<br/>   <br/>    # Get next response<br/>    response = client.chat.completions.create(...)<br/>    assistant_message = response.choices[0].message</code></pre>
+<h2 class="wp-block-heading">Approach 2: Microsoft Agent Framework</h2>
+<p class="wp-block-paragraph">The Microsoft Agent Framework (successor to Semantic Kernel + AutoGen) provides a cleaner, more Pythonic way to define tools using decorators and type hints.</p>
+<h2 class="wp-block-heading">Tool Definition with @ai_function</h2>
+<p class="wp-block-paragraph">Tools are defined as methods with the @ai_function decorator:</p>
+<pre class="wp-block-code"><code>from agent_framework import ai_function<br/>from typing import Annotated<br/><br/>class IntuneTools:<br/>    @ai_function(description="Filter devices by operating system")<br/>    def get_devices_by_os(<br/>        self,<br/>        operating_system: Annotated[str, "OS: Windows, iOS, Android, macOS"]<br/>    ) -&gt; str:<br/>        """Filter devices by operating system."""<br/>        result = self.client.get_devices(<br/>            f"operatingSystem eq '{operating_system}'"<br/>        )<br/>        return json.dumps({'count': len(result), 'devices': result})</code></pre>
+<p class="wp-block-paragraph">Notice how the parameter description comes from the Annotated type hint—no separate JSON schema needed!</p>
+<h2 class="wp-block-heading">Built-in Approval Mode for Destructive Actions</h2>
+<p class="wp-block-paragraph">One killer feature is built-in approval workflows:</p>
+<pre class="wp-block-code"><code>@ai_function(<br/>    description="Retire a device from Intune. USE WITH CAUTION!",<br/>    approval_mode="always_require"  # Built-in human-in-the-loop!<br/>)<br/>def retire_device(<br/>    self,<br/>    device_id: Annotated[str, "The device ID to retire"]<br/>) -&gt; str:<br/>    result = self.client.retire_device(device_id)<br/>    return json.dumps(result)</code></pre>
+<p class="wp-block-paragraph">With approval_mode=”always_require”, the framework automatically pauses before executing destructive operations and asks for user confirmation.</p>
+<h2 class="wp-block-heading">Simplified Agent Creation</h2>
+<p class="wp-block-paragraph">The agent creation and execution is much cleaner:</p>
+<pre class="wp-block-code"><code>from agent_framework.azure import AzureOpenAIChatClient<br/><br/>client = AzureOpenAIChatClient(<br/>    endpoint=os.environ['AZURE_OPENAI_ENDPOINT'],<br/>    credential=credential,<br/>    api_version="2024-10-21"<br/>)<br/><br/>agent = client.create_agent(<br/>    name="IntuneAgent",<br/>    instructions=SYSTEM_PROMPT,<br/>    model=os.environ['MODEL_DEPLOYMENT_NAME']<br/>)<br/><br/># Run with all tools - framework handles the loop!<br/>result = await agent.run(<br/>    user_input,<br/>    tools=intune_tools.get_all_tools()<br/>)</code></pre>
+<h2 class="wp-block-heading">Available Tools (Both Approaches)</h2>
+<p class="wp-block-paragraph">Both implementations provide the same 22 tools across 7 categories:</p>
+<figure class="wp-block-image size-large"><img alt="Architecture diagram for an Intune AI agent" class="wp-image-10854" data-recalc-dims="1" decoding="async" src="assets/0cc08007a5eb0a62/img_3.jpg"/></figure>
+<p class="wp-block-paragraph">Figure 4: All 22 function tools organized by category</p>
+<h2 class="wp-block-heading">Quick Start</h2>
+<p class="wp-block-paragraph">Both approaches share the same setup:</p>
+<pre class="wp-block-code"><code># Clone and setup
+<a href="https://github.com/JayRHa/IntuneAgent" rel="noopener" target="_blank">https://github.com/JayRHa/IntuneAgent</a>
+cd IntuneAgent
+python -m venv venv
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Configure Azure (creates app registration automatically)
+az login
+./setup.sh
+
+# Run your preferred approach
+python main.py                    # Direct SDK
+python main_agent_framework.py    # Agent Framework</code></pre>
+<h2 class="wp-block-heading">What Can You Actually Do With This?</h2>
+<ul class="wp-block-list">
+<li><em>“Show me all non-compliant devices”</em>—Instant compliance dashboard</li>
+<li><em>“Which Windows devices haven’t synced in 48 hours?”</em>—Troubleshooting stale devices</li>
+<li><em>“Break down our fleet by OS”</em>—Quick inventory analysis</li>
+<li><em>“Find devices without disk encryption”</em>—Security auditing</li>
+<li><em>“Sync all Windows devices”</em>—Batch operations</li>
+<li><em>“Show me Autopilot deployment status”</em>—Deployment tracking</li>
+</ul>
+<h2 class="wp-block-heading">The Bottom Line</h2>
+<p class="wp-block-paragraph">Building an AI agent for Intune isn’t science fiction anymore. With Azure OpenAI Service and the Graph API, you can create something genuinely useful in an afternoon. The hardest part is honestly just setting up the app registration permissions.</p>
+<p class="wp-block-paragraph">The <span>Direct SDK approach</span> gives you full control and works today in production. The <span>Agent Framework approach</span> is cleaner and more powerful, with built-in approval workflows and observability—but it’s still in preview. Choose based on your needs.</p>
+<p class="wp-block-paragraph">The full code for both approaches is available on GitHub. If you build something cool with this, let me know—I’d love to see what people create. If you want the earlier Azure OpenAI Studio version of this idea, check out <a href="https://jannikreinhard.com/2024/03/03/create-your-own-intune-co-pilot-using-azure-openai-studio/">Create your own Intune Co-Pilot using Azure OpenAI Studio</a>.</p>
+<h2 class="wp-block-heading">Resources</h2>
+<p class="wp-block-paragraph"><a href="https://learn.microsoft.com/en-us/agent-framework/overview/agent-framework-overview" rel="noopener" target="_blank">Microsoft Agent Framework Overview</a><br/><a href="https://github.com/microsoft/agent-framework" rel="noopener" target="_blank">Agent Framework GitHub Repository</a><br/><a href="https://learn.microsoft.com/azure/ai-foundry/" rel="noopener" target="_blank">Microsoft Foundry Documentation</a><br/><a href="https://learn.microsoft.com/azure/ai-services/openai/concepts/models" rel="noopener" target="_blank">Azure OpenAI Service Models</a><br/><a href="https://learn.microsoft.com/graph/api/resources/intune-graph-overview" rel="noopener" target="_blank">Microsoft Graph API for Intune</a><br/><a href="https://openai.com/index/gpt-4-1/" rel="noopener" target="_blank">GPT-4.1 Announcement</a><br/><a href="https://openai.com/index/introducing-gpt-5-2/" rel="noopener" target="_blank">GPT-5.2 Announcement</a></p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
