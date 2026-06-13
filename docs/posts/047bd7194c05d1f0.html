@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Skills, MCP, CLI, Computer Use: Mapping the AI Tooling Surface in 2026</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">May 15, 2026</span>
+  </div>
+  <h1>Skills, MCP, CLI, Computer Use: Mapping the AI Tooling Surface in 2026</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/2026/05/15/skills-mcp-cli-computer-use-mapping-the-ai-tooling-surface-in-2026/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p class="wp-block-paragraph">If you have built more than one AI tool in the past twelve months, you have noticed the same thing I have: the surface area of “how a model talks to systems” has exploded. Skills, MCP servers, CLI tools, Computer Use, function calling, declarative agents, custom engine agents, apps, actions, extensions, gems — every vendor uses a slightly different word for what looks like the same thing on a marketing slide. They are not the same thing. The trade-offs are real, the choice changes architecture, and picking the wrong one wastes weeks.</p>
+<p class="wp-block-paragraph">This post is the mental model I now apply by default when I sit down to build something agentic. It is opinionated. It is not a feature comparison. The goal is to help you decide which surface to reach for first, not to memorise the spec of each one.</p>
+<p class="wp-block-paragraph">I’ll cover seven surfaces (the original five, plus two that are too important to skip in 2026), map them across Anthropic, OpenAI, Microsoft, and Google terminology, and give you the decision tree I actually use.</p>
+<figure class="wp-block-image size-large"><img alt="Skills, MCP, CLI, Computer Use: Mapping the AI Tooling Surface in 2026 image 2" class="wp-image-18611" data-recalc-dims="1" decoding="async" src="assets/047bd7194c05d1f0/img_0.jpg"/></figure>
+<span id="more-18299"></span>
+<h2 class="wp-block-heading">The surfaces, in plain language</h2>
+<p class="wp-block-paragraph">I’ll define each in the way I think about it, not the way the docs do.</p>
+<h3 class="wp-block-heading">1. Function calling — the original</h3>
+<p class="wp-block-paragraph">You give the model a JSON schema for some functions. The model picks one and emits arguments. Your code runs the function and feeds the result back. This is what every modern frontier model supports natively: Anthropic calls it <em>tool use</em>, OpenAI calls it <em>function calling</em> (now with strict mode for guaranteed schema adherence), Google calls it <em>function calling</em> in the Gemini API. It is the lowest abstraction and still the most predictable.</p>
+<p class="wp-block-paragraph">Reach for it when you control the model client and the integration is small enough that wrapping it in a protocol is overhead. Don’t underestimate how far you can get with a dozen well-typed tools and a tight system prompt.</p>
+<h3 class="wp-block-heading">2. MCP — Model Context Protocol</h3>
+<p class="wp-block-paragraph">Anthropic’s protocol that turns one-off function calling into a standardised tool-server architecture. You build a server once (tools, resources, prompts, sampling), and every MCP-aware host can talk to it. The list of hosts is no longer Anthropic-specific: OpenAI adopted MCP in early 2025, ChatGPT Apps run on MCP under the hood, Microsoft Copilot Studio supports MCP servers as a connector type, and IDEs like Cursor, Windsurf, and VS Code’s agent mode all speak it.</p>
+<p class="wp-block-paragraph">Two transports matter today: <strong>stdio</strong> for local servers running on the user’s machine, and <strong>Streamable HTTP</strong> (with OAuth 2.1) for hosted multi-user servers. The hosted variant is what makes MCP interesting at scale — one server, many tenants, browser-based auth.</p>
+<p class="wp-block-paragraph">Reach for it when the integration will be reused — multiple hosts, multiple users, multiple agents. The cost is one extra hop in the architecture and a slightly heavier deploy. The benefit is that your investment compounds across every AI client your team picks up.</p>
+<p class="wp-block-paragraph">Where MCP gets misused: building a single in-app agent and wrapping its three internal helpers as MCP servers. That is over-engineered. Use function calling there.</p>
+<h3 class="wp-block-heading">3. CLI tools — the surprise winner</h3>
+<p class="wp-block-paragraph">I covered this in my earlier post on <a data-id="17365" data-type="post" href="https://jannikreinhard.com/2026/02/22/why-cli-tools-are-beating-mcp-for-ai-agents/">CLI tools beating MCP</a>. Short version: when an agent runs in a Bash environment (Claude Code, the OpenAI Codex CLI, Cursor’s terminal agent, any terminal-based assistant), existing CLIs are already perfect tools. They have flags, structured output (often JSON via <code>--output json</code>), exit codes, manual pages, and decades of operational stability. You don’t have to build anything — you just have to write a good prompt.</p>
+<p class="wp-block-paragraph">Reach for it when the agent is a developer-facing assistant that already has a shell. Trying to wrap <code>kubectl</code>, <code>az</code>, <code>gh</code>, or <code>pwsh</code> behind a custom MCP server is reinventing infrastructure that already works. The exception: when the CLI’s output is too verbose for the context window, or when the CLI requires interactive prompts a model can’t navigate — then a thin MCP wrapper that returns trimmed JSON pays for itself.</p>
+<h3 class="wp-block-heading">4. Computer Use</h3>
+<p class="wp-block-paragraph">Anthropic’s pattern (and now also OpenAI’s <em>Computer Use</em> in the Responses API / Operator, and Microsoft’s <em>Computer Use</em> in Copilot Studio) where the model sees a screenshot, decides where to click, and emits mouse and keyboard actions. Pixels in, actions out. This is the answer for systems that have no API — legacy enterprise tools, in-browser SaaS without OAuth, applications you cannot or will not script.</p>
+<p class="wp-block-paragraph">It is also the slowest, most expensive, and most unreliable surface of the seven. Use it when you must, never when you can use a tool with a stable schema. Two more points: security matters more here than anywhere else (prompt injection via screen content is real — see Anthropic’s writeups on Claude in Chrome), and observability is non-negotiable. If you can’t replay the screenshot stream when something breaks, you can’t debug it.</p>
+<h3 class="wp-block-heading">5. Hosted tools — code execution, retrieval, web search</h3>
+<p class="wp-block-paragraph">This is the category the original five-surface model misses. Every major vendor now ships <em>first-party tools you don’t have to implement</em>: code execution sandboxes (Anthropic’s code execution tool, OpenAI’s code interpreter, Gemini’s code execution), retrieval over uploaded files (OpenAI’s <code>file_search</code>, Anthropic’s files API, Gemini’s File API), and web search as a model-side capability (Anthropic’s <code>web_search_tool</code>, OpenAI’s <code>web_search</code>, Gemini grounding with Google Search).</p>
+<p class="wp-block-paragraph">These look like function calls in the API but execute inside the provider’s infrastructure. You don’t write the function body. You toggle them on.</p>
+<p class="wp-block-paragraph">Reach for them when you’d otherwise be reinventing a sandbox, a vector store, or a search wrapper. The pricing is usually fair, the integration is one line, and the failure modes are well-documented. The catch: your agent now depends on the provider’s infrastructure for that capability, and switching models means rebuilding it. For anything truly mission-critical (legal-regulated retrieval, deterministic code execution), build it yourself.</p>
+<h3 class="wp-block-heading">6. Sub-agents as a tool</h3>
+<p class="wp-block-paragraph">The pattern that exploded in 2025–2026: one agent calls another agent as if it were a tool. Claude Code subagents, OpenAI’s Agents SDK with handoffs, Microsoft’s multi-agent Copilot Studio orchestrations, LangGraph’s hierarchical graphs — all the same shape. The “tool” is another LLM with its own system prompt, tool set, and context window.</p>
+<p class="wp-block-paragraph">Reach for it when one agent’s context would otherwise overflow, when you want a specialist with a narrower toolset to handle a sub-task (e.g. a “research agent” with web search vs. a “writer agent” with no tools), or when you need a parallelisable sub-task. The cost is real: token usage multiplies, latency stacks, and debugging a five-agent chain is harder than debugging one agent with twenty tools. Start with one agent. Split only when you have evidence the single agent is failing on a specific seam.</p>
+<h3 class="wp-block-heading">7. Skills — the term that means four different things</h3>
+<p class="wp-block-paragraph">This is the section that needed the most work. “Skill” is the most overloaded word in the agent ecosystem in 2026. Four distinct concepts share it:</p>
+<p class="wp-block-paragraph"><strong>Alexa Skills (Amazon, 2014):</strong> voice apps that respond to user intents. Largely a relic of the smart-speaker era, but Amazon still ships the SDK. If anyone in your meeting was building voice apps before 2020, this is what they hear when you say “skill”.</p>
+<p class="wp-block-paragraph"><strong>Microsoft Skills (Copilot Studio / Microsoft 365 Agents):</strong> Microsoft uses “skill” as an umbrella for two distinct things. <em>Declarative agents</em> in Copilot Studio are low-code integrations — you wire up triggers, knowledge sources, and actions in a designer. <em>Custom engine agents</em> built with the Microsoft 365 Agents SDK are code-driven, run on Azure, and let you control the model and orchestration directly. The older Bot Framework / Semantic Kernel also used “skill” (Semantic Kernel has since renamed them to “plugins”, but old docs persist). When someone at a Microsoft customer says “we built a skill”, ask which of these three they mean.</p>
+<p class="wp-block-paragraph"><strong>Anthropic Claude Skills (2025):</strong> a filesystem convention, not a network protocol. A skill is a folder containing a <code>SKILL.md</code> file (with a YAML frontmatter description) plus any supporting scripts, templates, or reference files. The model loads <code>SKILL.md</code> only when the task description suggests it’s relevant — <em>progressive disclosure</em>. The contents are instructions for the model on how to do something well: how to format a pptx, how to fill a PDF form, how to lay out a frontend component. Skills are not endpoints. They are reusable expertise bundles that the model unpacks on demand. Available in Claude.ai, Claude Code, and the Claude API.</p>
+<p class="wp-block-paragraph"><strong>OpenAI doesn’t use “skill”</strong> — but the closest analogues are <em>Custom GPTs</em> (a persona + instructions + actions + knowledge bundle, GPT Store distribution), <em>GPT Actions</em> (OpenAPI schemas wired to external APIs, the “function calling but published” surface), and the newer <em>ChatGPT Apps</em> announced at DevDay 2025, which are MCP servers paired with UI components and discoverable inside ChatGPT.</p>
+<p class="wp-block-paragraph"><strong>Google’s equivalents</strong> are <em>Gems</em> (Custom GPT-equivalent personas in Gemini) and <em>Extensions</em> (tool-equivalent integrations to Google services and third parties).</p>
+<p class="wp-block-paragraph">The concept of a “packaged capability you can publish and reuse” is real and useful. The naming is unfortunate. Always disambiguate in design docs and customer conversations.</p>
+<h2 class="wp-block-heading">Vendor terminology cheat sheet</h2>
+<p class="wp-block-paragraph">Same concept, four names. Keep this table next to your architecture diagram.</p>
+<figure class="wp-block-table"><table class="has-fixed-layout"><thead><tr><th>Concept</th><th>Anthropic</th><th>OpenAI</th><th>Microsoft</th><th>Google</th></tr></thead><tbody><tr><td>Function calling</td><td>Tool use</td><td>Function calling (strict mode)</td><td>Function calling (in M365 Agents SDK)</td><td>Function calling</td></tr><tr><td>Tool-server protocol</td><td>MCP (created it)</td><td>MCP (adopted)</td><td>MCP (as connector)</td><td>MCP support in AI Studio</td></tr><tr><td>Hosted code execution</td><td>Code execution tool</td><td>Code interpreter</td><td>Python tool in Copilot Studio</td><td>Code execution</td></tr><tr><td>Hosted retrieval</td><td>Files API + search</td><td><code>file_search</code></td><td>Knowledge sources in Copilot Studio</td><td>File API</td></tr><tr><td>Hosted web search</td><td><code>web_search</code> tool</td><td><code>web_search</code></td><td>Bing grounding</td><td>Google Search grounding</td></tr><tr><td>Computer Use</td><td>Computer use, Claude in Chrome</td><td>Computer Use / Operator</td><td>Computer Use in Copilot Studio</td><td>(Project Mariner, preview)</td></tr><tr><td>Packaged capability</td><td>Claude Skills</td><td>Custom GPTs / GPT Actions / ChatGPT Apps</td><td>Declarative agents / Custom engine agents / “Skills”</td><td>Gems / Extensions</td></tr><tr><td>Sub-agent pattern</td><td>Claude Code subagents, Agent SDK</td><td>Agents SDK / handoffs</td><td>Multi-agent Copilot Studio</td><td>(no first-party SDK yet)</td></tr></tbody></table></figure>
+<h2 class="wp-block-heading">The decision tree I actually use</h2>
+<ol class="wp-block-list">
+<li><strong>Does the target system already have a stable API?</strong> Yes → function calling or MCP. No → Computer Use as a last resort.</li>
+<li><strong>Will the integration be used by more than one host or by more than one team?</strong> Yes → MCP, hosted over Streamable HTTP. No → native function calling.</li>
+<li><strong>Is the agent already a developer-facing CLI assistant with a shell?</strong> Yes → call existing CLIs from bash. Don’t build a tool layer.</li>
+<li><strong>Do you need code execution, file search, or web search?</strong> Use the hosted tool first. Only build it yourself when compliance, determinism, or vendor lock-in justify the investment.</li>
+<li><strong>Is this packaged know-how about <em>how to do something</em>, not <em>how to reach a system</em>?</strong> That’s a skill in the Claude sense — a <code>SKILL.md</code> bundle, not a tool server. Different surface, different problem.</li>
+<li><strong>Is your platform Microsoft Copilot?</strong> “Skill” is the marketing word; under the hood you’ll pick declarative agents (Copilot Studio) for low-code or custom engine agents (M365 Agents SDK) for full control.</li>
+<li><strong>Is one agent’s context overflowing or is there a clean specialist seam?</strong> Then — and only then — split into sub-agents.</li>
+<li><strong>Is the workflow visual or GUI-only?</strong> Computer Use, but invest heavily in observability. The screenshot traces are gold when something goes wrong.</li>
+</ol>
+<h2 class="wp-block-heading">Pitfalls I now avoid</h2>
+<p class="wp-block-paragraph"><strong>Wrapping shell commands in MCP “because protocols are nice”.</strong> They are nice. They are also extra latency, an extra deploy target, and an extra failure mode. Default to native CLIs when the agent has a shell.</p>
+<p class="wp-block-paragraph"><strong>Treating Computer Use as a substitute for an API.</strong> If the API exists and is stable, use it. Computer Use exists for the cases where it doesn’t.</p>
+<p class="wp-block-paragraph"><strong>Mixing surfaces in one agent without a planner.</strong> An agent that has four MCP servers, eight native tools, hosted code execution, and a Computer Use channel will pick the wrong surface routinely. Pick a primary surface per agent; route to others only when the primary fails.</p>
+<p class="wp-block-paragraph"><strong>Confusing “skills” across vendors.</strong> Microsoft’s skills, Anthropic’s Claude Skills, OpenAI’s Custom GPTs, and the original Alexa Skills are four different concepts. Always disambiguate in design docs.</p>
+<p class="wp-block-paragraph"><strong>Reaching for sub-agents too early.</strong> Multi-agent looks impressive in architecture diagrams. It also multiplies token cost, latency, and debugging complexity. A single agent with a good tool set beats a sub-agent constellation in most cases I’ve shipped.</p>
+<p class="wp-block-paragraph"><strong>Building your own retrieval before trying the hosted one.</strong> A custom vector pipeline is six weeks of work. <code>file_search</code> or the Anthropic files API is one API call. Start hosted, migrate only when you’ve outgrown it.</p>
+<p class="wp-block-paragraph"><strong>Forgetting that Computer Use is a security surface.</strong> Screen content is untrusted input. A poisoned web page can hijack an agent the same way a malicious email can hijack a user. Treat every pixel like user input from the internet — because it is.</p>
+<h2 class="wp-block-heading">Where this is heading</h2>
+<p class="wp-block-paragraph">The pattern I expect to win in the medium term: <strong>function calling at the model boundary, MCP at the tool-server boundary, hosted tools for the capability layer, CLIs and Computer Use as the actual execution layer, and skills (Anthropic-style bundles) for packaged expertise.</strong> Vendors will keep their own marketing terms — Microsoft’s “skills”, OpenAI’s “apps”, Google’s “extensions” — but the underlying architectures are converging on MCP faster than I expected a year ago.</p>
+<p class="wp-block-paragraph">The signal: OpenAI adopting MCP, ChatGPT Apps running on it, Copilot Studio supporting it as a connector, every IDE shipping an MCP client. The protocol has won the integration layer. What’s left to decide is which capabilities you build, which you host, and which you delegate to sub-agents.</p>
+<p class="wp-block-paragraph">If you remember nothing else from this post: pick one primary surface per agent, base it on whether the target system has a stable API, and reach for the heavier abstractions only when reuse, scale, or capability genuinely justifies them. Everything else is over-engineering with extra steps.</p>
+<figure class="wp-block-image size-large"><img alt="ALL-ABR — sample screenshot for Microsoft 365 Agents post" class="wp-image-18296" data-recalc-dims="1" decoding="async" src="assets/047bd7194c05d1f0/img_1.png"/></figure>
+<p class="wp-block-paragraph"></p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

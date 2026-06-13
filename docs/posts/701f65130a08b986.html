@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intune Newsletter – 10th April 2026</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Andrew Taylor</span>
+    <span class="date">April 10, 2026</span>
+  </div>
+  <h1>Intune Newsletter – 10th April 2026</h1>
+  <div class="orig">Saved for offline reading · <a href="https://andrewstaylor.com/2026/04/10/intune-newsletter-10th-april-2026/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text">
+<p>Whilst it has been a shorter week, it feels like it has been busier than usual, but we have had some exciting news with the merger of Software Central and Robopack!  Only a couple of weeks until MEM summit in Paris too, hopefully I’ll see some of you there.</p>
+<hr/>
+<h1>Community Content</h1>
+<p>Secure boot certificate expiry is looming so if you haven’t done so already, now is the time to be doing something about it.  Working out which to repair is a great start and this Log Analytics dashboard from <a href="https://www.linkedin.com/in/damien-van-robaeys/">Damien Van Robaeys</a> is well worth implementing</p>
+<p><a href="https://www.systanddeploy.com/2026/04/windows-secure-boot-certificate.html">https://www.systanddeploy.com/2026/04/windows-secure-boot-certificate.html</a></p>
+<hr/>
+<p>Also looking at secure boot, <a href="https://www.linkedin.com/in/thomasmarcussen/">Thomas Marcussen</a> looks at what it means to you and some scripts to fix it</p>
+<blockquote class="wp-embedded-content" data-secret="1NRT21oaPO"><p><a href="https://blog.thomasmarcussen.com/secure-boot-certificate-expiry-2026-blacklotus/">BlackLotus and the 2026 Secure Boot Certificate Expiry: What It Means and How to Fix It</a></p></blockquote>
+<p></p>
+<hr/>
+<p>For those looking to get started with AI agents, this guide from <a href="https://www.linkedin.com/in/niels-kok-79823360/">Niels Kok</a> looks at creating your own with Microsoft Foundry</p>
+<blockquote class="wp-embedded-content" data-secret="RRO9FpBjSK"><p><a href="https://www.nielskok.tech/ai/microsoft-foundry-ai-intune-assistant/">Microsoft Foundry AI Intune Assistant</a></p></blockquote>
+<p></p>
+<hr/>
+<p>Break glass accounts are critical to any environment, but must be setup and protected correctly.  This guide from <a href="https://www.linkedin.com/in/sebastian-markdanner/">Sebastian F. Markdanner</a> runs through why you need one and how to configure it properly</p>
+<p><a href="https://www.chanceofsecurity.com/post/break-glass-accounts-done-right-securing-emergency-access-in-microsoft-entra">https://www.chanceofsecurity.com/post/break-glass-accounts-done-right-securing-emergency-access-in-microsoft-entra</a></p>
+<hr/>
+<p>If you want to manage browser access to location for your managed devices, check out this post from <a href="https://www.linkedin.com/in/peterwoude/">Peter van der Woude</a></p>
+<blockquote class="wp-embedded-content" data-secret="aBNzmuJXQn"><p><a href="https://petervanderwoude.nl/post/managing-geolocation-access-for-websites-in-microsoft-edge/">Managing geolocation access for websites in Microsoft Edge</a></p></blockquote>
+<p></p>
+<hr/>
+<p>Intune kiosks are more powerful, but more complex with the introduction of assigned access.  Here, <a href="https://www.linkedin.com/in/kevin-malinoski-a55a65185/">Kevin Malinoski</a> speaks to <a href="https://www.linkedin.com/in/nicholaspilzner/">Nicholas Pilzner</a> from Microsoft about it</p>
+<blockquote class="wp-embedded-content" data-secret="PI02VeRJ1C"><p><a href="https://malinoski.me/2026/04/06/exclusive-interview-with-microsoft-intune-engineer-deep-dive-into-assigned-access-kiosk-mastery/">Exclusive Interview with Microsoft Intune Engineer: Deep Dive into Assigned Access &amp; Kiosk Mastery</a></p></blockquote>
+<p></p>
+<hr/>
+<p>This post from <a href="https://www.linkedin.com/in/niklas-tinner/">Niklas Tinner</a> looks at multi-admin approval, why you need it, some things to watch and how it works within the Intune portal</p>
+<p><a href="https://www.oceanleaf.ch/the-easy-intune-multi-admin-approval-guide/">https://www.oceanleaf.ch/the-easy-intune-multi-admin-approval-guide/</a></p>
+<hr/>
+<p><a href="https://www.linkedin.com/in/mads-johansen/">Mads Johansen</a> also looks at multi-admin approval here</p>
+<p><a href="https://evil365.com/intune/MultiAdmin-Approval/">https://evil365.com/intune/MultiAdmin-Approval/</a></p>
+<hr/>
+<p>This second part of a series from <a href="https://www.linkedin.com/in/andrew-jones-65a67b59/">Andy Jones</a> continues looking at UTCM to monitor your tenant for drift and how it works in reality</p>
+<blockquote class="wp-embedded-content" data-secret="N5CAdDe8fH"><p><a href="https://move2modern.uk/index.php/2026/04/05/move-aside-utcm-is-here-or-is-it/">Move aside, UTCM is here! Or is it?</a></p></blockquote>
+<p></p>
+<hr/>
+<p>We have an excellent script (and in-depth post) here from <a href="https://www.linkedin.com/in/joe-loveless/">Joe Loveless</a> to report on your configured Settings Catalog policies</p>
+<p><a href="https://joeloveless.com/blog/building-an-intune-settings-catalog-report">https://joeloveless.com/blog/building-an-intune-settings-catalog-report</a></p>
+<hr/>
+<p>If your Lenovo devices are dimming and locking even when in use, <a href="https://www.linkedin.com/in/fsalzmann/">Florian Salzmann</a> has a remediation here to fix it</p>
+<p><a href="https://scloud.work/fix-lenovo-intelligent-sensing-service-locking-screens-with-intune/">https://scloud.work/fix-lenovo-intelligent-sensing-service-locking-screens-with-intune/</a></p>
+<hr/>
+<p>A very unused feature in MDE, Live Response gives you real-time PowerShell access to your devices.  This post from <a href="https://www.linkedin.com/in/rahul-jindal-8166a62b/">Rahul Jindal</a> covers how to use it</p>
+<p><a href="https://rahuljindalmyit.blogspot.com/2026/04/microsoft-defender-live-response-last.html">https://rahuljindalmyit.blogspot.com/2026/04/microsoft-defender-live-response-last.html</a></p>
+<hr/>
+<p>Looking for ways to improve your secure score for devices?  Check out this guide from <a href="https://www.linkedin.com/in/justinverstijnen/">Justin Verstijnen</a></p>
+<blockquote class="wp-embedded-content" data-secret="4DIWQnA8OL"><p><a href="https://justinverstijnen.nl/microsoft-secure-score-devices/">Microsoft Secure Score – Devices</a></p></blockquote>
+<p></p>
+<hr/>
+<h1>Video Content</h1>
+<p>Now for this weeks video content, starting with a guide on how to configure Storage Sense on your devices (particularly shared ones) using Intune from <a href="https://www.linkedin.com/in/markoldham365/">Mark Oldham</a></p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/BKLk3VKbw6s?feature=oembed" title="How to configure Storage Sense with Microsoft Intune">VIDEO</iframe></p>
+<hr/>
+<p>This video from <a href="https://www.linkedin.com/in/chandermanipandey/">Chander Mani Pandey</a> shows how to use a requirements rule to either allow of block applications during ESP</p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/tYbPJvi64L4?feature=oembed" title="Allow or Block Win32 Apps in Windows Autopilot">VIDEO</iframe></p>
+<hr/>
+<p>Learn all about how to configure and fix the all-important ESP in this video from <a href="https://www.linkedin.com/in/stevew25/">Steve Weiner</a></p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/bqz3nMKafc8?feature=oembed" title="How to Configure the Enrollment Status Page in Intune (And Fix It When It Breaks)">VIDEO</iframe></p>
+<hr/>
+<p>Learn how to do compliance properly in this video from <a href="https://www.linkedin.com/in/jonathanjedwards/">Jonathan Edwards</a></p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/kBUiyiUQm5o?feature=oembed" title="Intune Compliance Policies - Why Most Tenants Get Them Wrong">VIDEO</iframe></p>
+<hr/>
+<h1><a id="microsoft"></a>Microsoft Content</h1>
+<p>We start this weeks Microsoft content with the all important Windows News you can use from <a href="https://www.linkedin.com/in/chrismorrissey2009/">Chris Morrissey</a></p>
+<p><a href="https://techcommunity.microsoft.com/t5/windows-it-pro-blog/windows-news-you-can-use-march-2026/ba-p/4495553">https://techcommunity.microsoft.com/t5/windows-it-pro-blog/windows-news-you-can-use-march-2026/ba-p/4495553</a></p>
+<hr/>
+<p>Hotpatch will soon be turned on by default in your tenant to improve your Windows security.  Learn more here from <a href="https://www.linkedin.com/in/katharine-holdsworth-a6788373/">Katharine Holdsworth</a></p>
+<p><a href="https://techcommunity.microsoft.com/t5/windows-it-pro-blog/how-hotpatch-updates-help-keep-windows-secure-by-design/ba-p/4508188">https://techcommunity.microsoft.com/t5/windows-it-pro-blog/how-hotpatch-updates-help-keep-windows-secure-by-design/ba-p/4508188</a></p>
+<hr/>
+<p>Not enough people configure Intune with Log Analytics to keep historical reports with all of the lovely exec-ready graphs.  If you aren’t currently doing so, check out this guide from <a href="https://www.linkedin.com/in/janusz-gal/">Janusz Gal</a></p>
+<p><a href="https://techcommunity.microsoft.com/blog/IntuneCustomerSuccess/create-historical-reports-using-azure-log-analytics-and-microsoft-intune-diagnos/4508971">https://techcommunity.microsoft.com/blog/IntuneCustomerSuccess/create-historical-reports-using-azure-log-analytics-and-microsoft-intune-diagnos/4508971</a></p>
+<hr/>
+<p>On the subject of reporting, Windows 365 has a whole new reporting platform as covered here by <a href="https://www.linkedin.com/in/doug-j-coombs/">Doug Coombs</a></p>
+<p><a href="https://techcommunity.microsoft.com/t5/windows-it-pro-blog/introducing-the-new-windows-365-monitoring-and-reporting/ba-p/4505355">https://techcommunity.microsoft.com/t5/windows-it-pro-blog/introducing-the-new-windows-365-monitoring-and-reporting/ba-p/4505355</a></p>
+<hr/>
+<p>Not strictly for this week, but some exciting things on the Intune in development page, make sure you bookmark this one</p>
+<p><a href="https://learn.microsoft.com/en-gb/intune/intune-service/fundamentals/in-development">https://learn.microsoft.com/en-gb/intune/intune-service/fundamentals/in-development</a></p>
+<hr/>
+<p>Hardening your admin actions on Windows devices is something everyone should be doing.  Learn more here from <a href="https://www.linkedin.com/in/dashmeetkaurajmani/">Dashmeet Ajmani</a></p>
+<p><a href="https://techcommunity.microsoft.com/blog/windows-itpro-blog/hardening-administrative-actions-what-it-pros-need-to-know/4503956">https://techcommunity.microsoft.com/blog/windows-itpro-blog/hardening-administrative-actions-what-it-pros-need-to-know/4503956</a></p>
+<hr/>
+<p>That’s all for this week, have a great weekend!</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

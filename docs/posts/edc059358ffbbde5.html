@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Easy Way to Import Microsoft Scout ADMX Template into Intune</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">HTMD / Anoop C Nair</span>
+    <span class="date">June 11, 2026</span>
+  </div>
+  <h1>Easy Way to Import Microsoft Scout ADMX Template into Intune</h1>
+  <div class="orig">Saved for offline reading · <a href="https://www.anoopcnair.com/import-microsoft-scout-admx-template-intune/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text"><p class="code-block code-block-6">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><h2 class="wp-block-heading" id="key-takeaways"><strong>Key Takeaways</strong></h2><ul class="wp-block-list"><li class="has-medium-font-size">Import the <strong>Microsoft Scout ADMX template</strong> into Intune to centrally manage Scout settings across your organisation.</li><li class="has-medium-font-size">In the Windows ADMX policy <strong>UI</strong>, this setting appears as <strong>“Allow Microsoft Scout Frontier access.”</strong></li><li class="has-medium-font-size">ADMX-backed policies enable <strong>granular configuration</strong> and enforcement without requiring manual changes on individual devices.</li><li class="has-medium-font-size">Policy settings can be deployed, monitored, and updated directly from the Intune admin center, simplifying management.</li><li class="has-medium-font-size">Combining Scout ADMX policies with Intune helps ensure a <strong>consistent</strong>, <strong>secure</strong>, and <strong>compliant</strong> configuration across all managed Windows devices.</li></ul><p class="wp-block-paragraph">In this blog post am going to explain how to import the <strong>Microsoft Scout ADMX template</strong> into <strong>Microsoft Intune</strong>. Microsoft Scout Frontier is a preview feature that provides early access to Microsoft’s latest <strong>AI innovations</strong>. To enable Scout for managed users, Intune administrators must configure the <strong>Allow Microsoft Scout Frontier access</strong> policy (AllowScoutFrontierAccess capability) in the Windows <a data-id="https://www.anoopcnair.com/intune-admx-file-upload-error-referenced/" data-type="link" href="https://www.anoopcnair.com/intune-admx-file-upload-error-referenced/" rel="noreferrer noopener" target="_blank">ADMX policy settings</a>. Access is limited to organizations enrolled in the Frontier preview program and that have accepted the participation terms. As a preview feature, functionality and availability may change over time and may not be released for general availability.</p><details class="wp-block-details has-contrast-3-background-color has-background is-layout-flow wp-block-details-is-layout-flow"><summary><strong>Table of Content</strong></summary>
+</details><h2 class="wp-block-heading" id="prerequisites"><strong>Prerequisites</strong></h2><p class="wp-block-paragraph" id="prerequisites">To get <strong>started</strong>, make sure you have the following. These requirements must be in place <strong>before </strong>you can import the Microsoft Scout <strong>ADMX templates</strong> and configure Microsoft Scout policies in Intune.</p><ul class="wp-block-list"><li class="has-medium-font-size">A Microsoft 365 work or school account associated with your organization. <strong>Personal Microsoft accounts</strong> are not supported.</li><li class="has-medium-font-size">Intune tenant administrator credentials.</li></ul><p class="wp-block-paragraph">Access to the Microsoft Intune admin center at <a href="https://intune.microsoft.com/" rel="noreferrer noopener nofollow" target="_blank">https://intune.microsoft.com</a>. The Microsoft Scout Windows policy template files: microsoft-scout.admx and microsoft-scout.adml</p><h2 class="wp-block-heading" id="how-to-scout-import-admx-administrative-templates-using-intune"><strong>How to Import <strong>Scout</strong></strong> <strong>ADMX Administrative Templates using Intune</strong></h2><p class="wp-block-paragraph">We generally do not recommend this import method for ADMX templates. Once the latest updates (Scout) are available in the <strong>Settings Catalog</strong>, configuring any policies is the ideal approach.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><p class="wp-block-paragraph">To import the Microsoft Scout ADMX template in Intune, follow these steps. Login to the <strong><a href="https://intune.microsoft.com/" rel="noreferrer noopener nofollow" target="_blank">Microsoft Intune Admin Center</a></strong> with your admin credentials.</p><ul class="wp-block-list"><li class="has-medium-font-size">Navigate to <strong>Devices &gt; Windows</strong> &gt; <strong>Manage devices</strong> &gt; <strong>Configuration</strong></li><li class="has-medium-font-size">Click on <strong>Import ADMX</strong> &gt; <strong>+Import</strong></li></ul><div class="wp-block-image"><figure class="aligncenter size-large"><img alt="Easy Way to Import the Microsoft Scout ADMX Template into Intune. Fig. 1" class="wp-image-367554" data-lazyloaded="1" data-sizes="(max-width: 1024px) 100vw, 1024px" decoding="async" src="assets/edc059358ffbbde5/img_0.webp" title="Easy Way to Import Microsoft Scout ADMX Template into Intune 2"/><figcaption class="wp-element-caption">Easy Way to Import the Microsoft Scout ADMX Template into Intune. Fig. 1</figcaption></figure></div><p class="wp-block-paragraph">With custom <strong>ADMX </strong>ingestion, you can upload an ADMX file and its associated<strong> ADML file</strong> to add Administrative Template settings to your <strong>tenant </strong>for configuration. Before that, you can <a href="https://github.com/microsoft/scout-resources/tree/main/admins" rel="noreferrer noopener nofollow" target="_blank">download these template and profile files from GitHub</a>.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><ul class="wp-block-list"><li class="has-medium-font-size">ADMX file – <strong>microsoft-scout.admx</strong></li><li class="has-medium-font-size">ADML file for the default language – <strong>microsoft-scout.adml</strong></li><li class="has-medium-font-size">Specify the language of the ADML file (Specify the language code for the default language ADML file) – <strong>English</strong></li></ul><div class="wp-block-image"><figure class="aligncenter size-large"><img alt="Easy Way to Import the Microsoft Scout ADMX Template into Intune. Fig. 2" class="wp-image-367559" data-lazyloaded="1" data-sizes="(max-width: 1024px) 100vw, 1024px" decoding="async" src="assets/edc059358ffbbde5/img_1.webp" title="Easy Way to Import Microsoft Scout ADMX Template into Intune 3"/><figcaption class="wp-element-caption">Easy Way to Import the Microsoft Scout ADMX Template into Intune. Fig. 2</figcaption></figure></div><p class="wp-block-paragraph">You need to <strong>review </strong>your settings in the<strong> Review + create </strong>tab. After clicking <strong>Create</strong>, your changes are <strong>saved</strong>, and the profile will start uploading to Intune.</p><div class="wp-block-image"><figure class="aligncenter size-large"><img alt="Easy Way to Import the Microsoft Scout ADMX Template into Intune. Fig. 3" class="wp-image-367562" data-lazyloaded="1" data-sizes="auto, (max-width: 756px) 100vw, 756px" decoding="async" src="assets/edc059358ffbbde5/img_2.webp" title="Easy Way to Import Microsoft Scout ADMX Template into Intune 4"/><figcaption class="wp-element-caption">Easy Way to Import the Microsoft Scout ADMX Template into Intune. Fig. 3</figcaption></figure></div><p class="wp-block-paragraph">Finally the screenshot below shows that the <strong>microsoft-scout.admx</strong> has been successfully created and <strong>available</strong> for use. It also shows details such as the <strong>Template Name</strong>, <strong>Version</strong>, <strong>Status</strong>, and <strong>Created date</strong>.</p><p class="has-contrast-3-background-color has-background wp-block-paragraph"><strong>Note</strong>: You may notice the name <strong>Clawpilot</strong> in certain preview Intune policy templates or screenshots. This was the product’s internal codename before it was officially released as <strong>Microsoft Scout</strong>.</p><div class="wp-block-image"><figure class="aligncenter size-large"><img alt="Easy Way Import the Microsoft Scout ADMX Template into Intune. Fig. 4" class="wp-image-367565" data-lazyloaded="1" data-sizes="auto, (max-width: 1024px) 100vw, 1024px" decoding="async" src="assets/edc059358ffbbde5/img_3.webp" title="Easy Way to Import Microsoft Scout ADMX Template into Intune 5"/><figcaption class="wp-element-caption">Easy Way to Import the Microsoft Scout ADMX Template into Intune. Fig. 4</figcaption></figure></div><h2 class="wp-block-heading" id="need-further-assistance-or-have-technical-questions"><strong>Need Further Assistance or Have Technical Questions?</strong></h2><p class="has-contrast-3-background-color has-background wp-block-paragraph">Join the <a href="https://www.linkedin.com/company/how-to-manage-devices/" rel="noreferrer noopener nofollow" target="_blank"><strong>LinkedIn Page</strong></a> and <a href="https://t.me/+Q9lE6G1_BO_bGq97" rel="noreferrer noopener nofollow" target="_blank"><strong>Telegram group</strong></a> to get the latest step-by-step guides and news updates. Join our <a href="https://www.meetup.com/htmd-community-meetup-group/" rel="noreferrer noopener nofollow" target="_blank"><strong>Meetup Page</strong></a> to participate in User group meetings. Also, join the <a href="https://chat.whatsapp.com/CeMXHSD61HtDBJwe78IZwV" rel="noreferrer noopener nofollow" target="_blank"><strong>WhatsApp Community</strong></a> to get the latest news on Microsoft Technologies. We are there on <a href="https://www.reddit.com/r/ImpMSNews/" rel="noreferrer noopener nofollow" target="_blank"><strong>Reddit</strong> </a>as well.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><h2 class="wp-block-heading" id="author"><strong>Author</strong></h2><p class="wp-block-paragraph"><a href="https://www.linkedin.com/in/vaishnav-k-957b0589/" rel="noreferrer noopener nofollow" target="_blank"><strong>Vaishnav K</strong></a> has over 12 years of experience in SCCM, Intune, Modern Device Management, and Automation Solutions. He writes and shares knowledge about Microsoft Intune, Windows 365, Azure, Entra, PowerShell Scripting, and Automation. Check out his profile on <a href="https://www.linkedin.com/in/vaishnav-k-957b0589/" rel="noreferrer noopener nofollow" target="_blank"><strong>LinkedIn</strong></a>.</p><p class="code-block code-block-8">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="1286776600" data-full-width-responsive="true"></ins> </p><p class="code-block code-block-9">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="8125570634" data-full-width-responsive="true"></ins> </p></div></div></div>
+</article>
+</body>
+</html>

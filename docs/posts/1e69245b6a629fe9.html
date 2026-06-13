@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intune Newsletter – 22nd May 2026</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Andrew Taylor</span>
+    <span class="date">May 22, 2026</span>
+  </div>
+  <h1>Intune Newsletter – 22nd May 2026</h1>
+  <div class="orig">Saved for offline reading · <a href="https://andrewstaylor.com/2026/05/22/intune-newsletter-22nd-may-2026/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text">
+<p>It’s that time again, another week has flown by and I’m back again with this weeks treasure trove of Intune content!</p>
+<hr/>
+<h1>Community Content</h1>
+<p>We start this week with a new portal (plus PWA) from <a href="https://www.linkedin.com/in/sebastian-markdanner/">Sebastian F. Markdanner</a> with a custom improved management tool for your PIM activations</p>
+<p><a href="https://www.chanceofsecurity.com/post/introducing-the-new-pimactivation-portal-managed-self-hosted-and-mobile-ready">https://www.chanceofsecurity.com/post/introducing-the-new-pimactivation-portal-managed-self-hosted-and-mobile-ready</a></p>
+<hr/>
+<p><a href="https://www.linkedin.com/in/niklas-tinner/">Niklas Tinner</a> has released a new Intune troubleshooting guide which is worth checking out</p>
+<p><a href="https://www.oceanleaf.ch/the-ultimate-intune-troubleshooting-guide/">https://www.oceanleaf.ch/the-ultimate-intune-troubleshooting-guide/</a></p>
+<hr/>
+<p>Working out how to configure your profiles can be a tricky subject, especially with looking at baselines, handling exceptions and avoiding too many duplicates.  This post from <a href="https://www.linkedin.com/in/joe-loveless/">Joe Loveless</a> looks at how to approach it</p>
+<p><a href="https://joeloveless.com/blog/how-to-deal-with-intune-profile-exceptions">https://joeloveless.com/blog/how-to-deal-with-intune-profile-exceptions</a></p>
+<hr/>
+<p>If you ever have issues with your devices not being able to sync (and lets be honest, we all do), <a href="https://www.linkedin.com/in/rudyooms/">Rudy Ooms</a> has you covered with this new tool</p>
+<blockquote class="wp-embedded-content" data-secret="BKH1zFMMmp"><p><a href="https://call4cloud.nl/intune-sync-debug-toolkit/">Intune Sync Debug Tool:  The Last Royal Treasure</a></p></blockquote>
+<p></p>
+<hr/>
+<p>We now have two posts from <a href="https://www.linkedin.com/in/mauricedaly/">Maurice Daly</a>, starting with a deep dive into how the new platform SSO with ADE works for your macOS device enrollment including the end-user experience</p>
+<blockquote class="wp-embedded-content" data-secret="XkoB3viSFk"><p><a href="https://msendpointmgr.com/2026/05/15/macos-platfom-sso-registration-with-ade/">macOS Platfom SSO Registration with ADE</a></p></blockquote>
+<p></p>
+<p>Maurice has also released a new version of the excellent driver automation tool</p>
+<blockquote class="wp-embedded-content" data-secret="6VcwhEXVjX"><p><a href="https://msendpointmgr.com/2026/05/19/driver-automation-tool-upgraded/">Driver Automation Tool – Upgraded</a></p></blockquote>
+<p></p>
+<hr/>
+<p>Ever wanted to get started with PowerBI and the Intune Data Warehouse?  Look no further than this post from <a href="https://www.linkedin.com/in/michaelsendpoint/">Michael Frank</a></p>
+<p><a href="https://michaelsendpoint.com/intune/DataWarehouse.html">https://michaelsendpoint.com/intune/DataWarehouse.html</a></p>
+<hr/>
+<p>I learned this the hard way when writing my book, screenshots for mobile devices is a complex process, especially during initial setup.  This new tool from <a href="https://www.linkedin.com/in/simonskotheimsvik/">Simon Skotheimsvik</a> will help enourmously</p>
+<blockquote class="wp-embedded-content" data-secret="4Ba0DdLM0B"><p><a href="https://msendpointmgr.com/2026/05/18/1phonemirror-free-screen-mirroring-tool-for-intune-admin/">1PhoneMirror: Free Screen Mirroring Tool for Intune Admin</a></p></blockquote>
+<p></p>
+<hr/>
+<p>This script from <a href="https://www.linkedin.com/in/imran76awan/">Imran Awan</a> will quickly grab the primary user and last sync time from a device</p>
+<p><a href="https://modernizingmobility.blogspot.com/2026/05/getting-primary-user-and-last-intune.html">https://modernizingmobility.blogspot.com/2026/05/getting-primary-user-and-last-intune.html</a></p>
+<hr/>
+<p>This remediation from <a href="https://www.linkedin.com/in/damien-van-robaeys/?locale=en">Damien Van Robaeys</a> can grab any logs from devices on-demand and upload them to Sharepoint</p>
+<p><a href="https://www.systanddeploy.com/2026/05/collect-and-upload-any-logs-you-need-to.html">https://www.systanddeploy.com/2026/05/collect-and-upload-any-logs-you-need-to.html</a></p>
+<hr/>
+<p>If your secure score itself doesn’t shame you enough, this Firefox extension from <a href="https://www.linkedin.com/in/roman-padrun-1040386a/">Roman Padrun</a> certainly will.  Fun, but also useful</p>
+<p><a href="https://www.cloudcook.ch/conditional-affection/">https://www.cloudcook.ch/conditional-affection/</a></p>
+<hr/>
+<p>This post from <a href="https://www.linkedin.com/in/peterwoude/">Peter van der Woude</a> looks at the new app inventory functionality</p>
+<blockquote class="wp-embedded-content" data-secret="IZFteQf4b2"><p><a href="https://petervanderwoude.nl/post/introducing-enhanced-app-inventory-for-windows-devices/">Introducing enhanced app inventory for Windows devices</a></p></blockquote>
+<p></p>
+<hr/>
+<p>Following up on the previous post covering why you might want a hybrid AVD session host (well worth checking out), <a href="https://www.linkedin.com/in/dieterkempeneers/">Dieter Kempeneers</a> walks through how to deploy your session hosts here</p>
+<blockquote class="wp-embedded-content" data-secret="fPkHFcRmqP"><p><a href="https://kempeneers.eu/2026/05/19/azure-virtual-desktop-hybrid-session-host-deployment/">HOWTO: Deploy an AVD Hybrid Session Host</a></p></blockquote>
+<p></p>
+<hr/>
+<p>Learn how to deploy Windows 365 Enterprise in this post from <a href="https://www.linkedin.com/in/jeroenburgerhout/">Jeroen Burgerhout </a></p>
+<p><a href="https://www.burgerhout.org/windows-365-wednesdays-configuring-windows-365-enterprise/">https://www.burgerhout.org/windows-365-wednesdays-configuring-windows-365-enterprise/</a></p>
+<hr/>
+<h1><a id="video"></a>Video Content</h1>
+<p>Now for the video content, starting with a chat recorded at MVP summit where <a href="https://www.linkedin.com/in/stevew25/">Steve Weiner</a> and <a href="https://www.linkedin.com/in/andrew-jones-65a67b59/">Andy Jones</a> chat about a bit of everything</p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/9gRMWwolX_g?feature=oembed" title="Two Bald guys talking Tech - Andy and Steve chat at the MVP Summit 2026">VIDEO</iframe></p>
+<hr/>
+<p>The latest Intune for MSPs meetup is live with <a href="https://www.linkedin.com/in/andrewjrostad/">Andy Rostad</a>, <a href="https://www.linkedin.com/in/liorbela/">Lior Bela</a> and <a href="https://www.linkedin.com/in/joery/">Joery Van den Bosch</a>.  This one looks at managing device policies and some best practices to follow</p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/B23E_KNhvJI?feature=oembed" title="IntuneForMSPs - Device configuration and policies">VIDEO</iframe></p>
+<hr/>
+<p>On the subject of policies, <a href="https://www.linkedin.com/in/jonathanjedwards/">Jonathan Edwards</a> looks at your options for configuring Defender for Office 365</p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/GuDtTFA1jUQ?feature=oembed" title="Defender for Office 365: Preset Policies or Manual Config?">VIDEO</iframe></p>
+<hr/>
+<p>Time for another Secure boot AMA with Arden White, <a href="https://www.linkedin.com/in/kevsull/">Kevin Sullivan</a>, <a href="https://www.linkedin.com/in/scott-shell-499005b8/">Scott Shell</a> and <a href="https://www.linkedin.com/in/jason-sandys-8830362/">Jason Sandys</a></p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/lcrRANfSAZg?feature=oembed" title="Ask Microsoft Anything: Secure Boot - May 18">VIDEO</iframe></p>
+<hr/>
+<p><a href="https://www.linkedin.com/in/deanellerby/">Dean Ellerby</a> looks at the exciting new device view in this video</p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/sxGzijYMYF8?feature=oembed" title="Microsoft's New Intune Device View: Easy when you know where to look!">VIDEO</iframe></p>
+<hr/>
+<p>Another very exciting new feature (I wish it had an API though), the new App Inventory view in Intune. This video from <a href="https://www.linkedin.com/in/stevew25/">Steve Weiner</a> shows how to configure and use it.</p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/gypoXJS_4k8?feature=oembed" title="How to Set Up the New App Inventory in Intune">VIDEO</iframe></p>
+<hr/>
+<h1><a id="microsoft"></a>Microsoft Content</h1>
+<p>Now for this weeks Microsoft content starting with a look at how Autopatch reporting can help with Secure Boot update status from <a href="https://www.linkedin.com/in/harmansthind/">Harman Thind</a></p>
+<p><a href="https://techcommunity.microsoft.com/t5/windows-it-pro-blog/updated-secure-boot-status-report-in-windows-autopatch/ba-p/4517920">https://techcommunity.microsoft.com/t5/windows-it-pro-blog/updated-secure-boot-status-report-in-windows-autopatch/ba-p/4517920</a></p>
+<hr/>
+<p>A new preview which will be very useful for those of you managing Windows 365, admin insights quickly show you things you might need to check.  Learn more in this post from <a href="https://www.linkedin.com/in/madelinevcarr/">Madeline Carr</a></p>
+<p><a href="https://techcommunity.microsoft.com/t5/windows-it-pro-blog/admin-insights-for-windows-365-stay-on-top-of-what-needs/ba-p/4517570">https://techcommunity.microsoft.com/t5/windows-it-pro-blog/admin-insights-for-windows-365-stay-on-top-of-what-needs/ba-p/4517570</a></p>
+<hr/>
+<p>That’s all for this week, have a great weekend!</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

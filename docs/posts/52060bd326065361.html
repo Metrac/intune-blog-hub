@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intune Newsletter – 17th April 2026</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Andrew Taylor</span>
+    <span class="date">April 17, 2026</span>
+  </div>
+  <h1>Intune Newsletter – 17th April 2026</h1>
+  <div class="orig">Saved for offline reading · <a href="https://andrewstaylor.com/2026/04/17/intune-newsletter-17th-april-2026/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text">
+<p>It’s a fairly quiet newsletter this week, I imagine a lot of people are finalising sessions for MEM summit in Paris next week and the MVPs are rapidly getting their renewals ready.  Still some excellent content here though!</p>
+<hr/>
+<h1>Community Content</h1>
+<p>If you are running hybrid users with AVD and Windows 365, but having issues during onboarding with incorrect password messages, it is probably due to the reset password at login option.  Find a fix for it here from<a href="https://www.linkedin.com/in/eskonr/"> Eswar Koneti</a></p>
+<blockquote class="wp-embedded-content" data-secret="S47hJkdlZw"><p><a href="https://eskonr.com/2026/04/synchronizing-forced-password-changes-from-ad-to-entra-id-for-avd-and-cloud-pc-access/">Synchronizing Forced Password Changes from AD to Entra ID for AVD and Cloud PC Access</a></p></blockquote>
+<p></p>
+<hr/>
+<p><a href="https://www.linkedin.com/in/kevin-malinoski-a55a65185/">Kevin Malinoski</a> continues the series looking at Assigned Access and Windows kiosks, this one looks at the other settings you should be configuring on your kiosks</p>
+<blockquote class="wp-embedded-content" data-secret="cF6EUH1BlG"><p><a href="https://malinoski.me/2026/04/13/assigned-access-april-essential-csps-settings-catalog-configurations-to-lock-down-your-windows-11-kiosks/">Assigned Access April: Essential CSPs &amp; Settings Catalog Configurations to Fine-Tine Your Windows 11 Kiosks</a></p></blockquote>
+<p></p>
+<hr/>
+<p>We have a new series here from <a href="https://www.linkedin.com/in/rahul-jindal-8166a62b/">Rahul Jindal</a> looking at protecting your unmanaged Windows devices, this first post covering the Intune app protection and conditional access policies</p>
+<p><a href="https://rahuljindalmyit.blogspot.com/2026/04/protect-bowser-based-work-on-un-managed.html">https://rahuljindalmyit.blogspot.com/2026/04/protect-bowser-based-work-on-un-managed.html</a></p>
+<hr/>
+<p>For those of you running Windows 365 Link devices, learn how to do a full re-install using bare metal recovery here from <a href="https://www.linkedin.com/in/michael-meier-ba3b72210/">Michael Meier</a></p>
+<blockquote class="wp-embedded-content" data-secret="9iiW53xs1O"><p><a href="https://mikemdm.de/2026/04/12/windows-365-bare-metal-recovery/">Windows 365 Link Bare Metal Recovery </a></p></blockquote>
+<p></p>
+<hr/>
+<p>Apple Business Manager is no more, we now have to rapidly update all of our instructions for Apple Business instead.  Learn more about this change here from <a href="https://www.linkedin.com/in/someshpathak/">Somesh Pathak</a></p>
+<blockquote class="wp-embedded-content" data-secret="xEBLI6SQWb"><p><a href="https://intuneirl.com/abm-abe-and-business-connect-are-gone-welcome-to-apple-business/">ABM, ABE, and Business Connect Are Gone — Welcome to Apple Business</a></p></blockquote>
+<p></p>
+<hr/>
+<p>This second part of a series from <a href="https://www.linkedin.com/in/sanderrozemuller/">Sander Rozemuller</a> looks at the different calls and results in Graph API</p>
+<p><a href="https://rozemuller.com/series/intune-automation-tasting-ipa-sip/">https://rozemuller.com/series/intune-automation-tasting-ipa-sip/</a></p>
+<hr/>
+<p>Remove the pesky HP Wolf applications from your devices using this script and win32 app from <a href="https://www.linkedin.com/in/johannes-geir-kristjansson/">Jóhannes Geir Kristjánsson</a></p>
+<blockquote class="wp-embedded-content" data-secret="374VpwZf7H"><p><a href="https://johannesblog.com/2026/04/16/getting-rid-of-hp-wolf-security-with-intune/">Getting Rid of HP Wolf Security With Intune</a></p></blockquote>
+<p></p>
+<hr/>
+<h1><a id="video"></a>Video Content</h1>
+<p>Now for this weeks video content starting with a comparison of static and dynamic groups and use cases for each from <a href="https://www.linkedin.com/in/manishbangia/">Manish Bangia</a></p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/H4HMrWbTI6w?feature=oembed" title="Static vs Dynamic Groups in Entra ID with Real Examples">VIDEO</iframe></p>
+<hr/>
+<p>Filmed on location in the Microsoft studios, <a href="https://www.linkedin.com/in/deanellerby/">Dean Ellerby</a> and <a href="https://www.linkedin.com/in/stevew25/">Steve Weiner</a> look at moving devices to cloud native</p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/QUVHPsoIAbY?feature=oembed" title="Intune and Autopilot for MSPs">VIDEO</iframe></p>
+<hr/>
+<h1><a id="microsoft"></a>Microsoft Content</h1>
+<p>Onto the Microsoft content with a guide on what to consider when migrating your frontline devices to Intune from <a href="https://www.linkedin.com/in/-carol-burns/">Carol Burns</a> and <a href="https://www.linkedin.com/in/sucheta-gawade-52897613/">Sucheta Gawade</a></p>
+<p><a href="https://techcommunity.microsoft.com/blog/IntuneCustomerSuccess/migrating-frontline-mobile-devices-understanding-the-reality-of-your-estate/4511683">https://techcommunity.microsoft.com/blog/IntuneCustomerSuccess/migrating-frontline-mobile-devices-understanding-the-reality-of-your-estate/4511683</a></p>
+<hr/>
+<p>We also have the all-important What’s New in Intune again</p>
+<p><a href="https://learn.microsoft.com/en-us/intune/whats-new/">https://learn.microsoft.com/en-us/intune/whats-new/</a></p>
+<hr/>
+<p>That’s all for this week, have a great weekend and hopefully I’ll see some of you in Paris next week (I’ll be doing two sessions)</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>When Intune Remediations Fail: Troubleshooting Push Notifications</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Call4Cloud (Rudy Ooms)</span>
+    <span class="date">April 20, 2026</span>
+  </div>
+  <h1>When Intune Remediations Fail: Troubleshooting Push Notifications</h1>
+  <div class="orig">Saved for offline reading · <a href="https://patchmypc.com/blog/on-demand-remediation-push-notification-troubleshoot-intune/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="post-content">
+<p>Everything that depends on instant device actions (such as remediations) in Intune relies on <strong>Windows Push Notifications</strong>, and that is where troubleshooting goes blind. <strong>The Windows Notification Services (WNS) </strong>gives you no delivery status, no failure signal, and no way to see whether a push ever reached the device. Intune reports the action as sent, the Intune Management Extension (IME) looks healthy, but nothing happens.</p>
+<p>Read the blog to learn how to determine whether the push arrived, where to check on the device, and how to troubleshoot without reinstalling the IME.</p>
+<h2 class="wp-block-heading" id="h-introduction">Introduction<span class="clth-copy-icon" data-heading-id="h-introduction"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p id="h-">It all started with something that should have been pretty instant. I triggered an on-demand remediation from Intune.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/01/image-137.png"><picture class="wp-image-173126" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-137.png.webp 483w, https://patchmypc.com/app/uploads/2026/01/image-137-300x170.png.webp 300w" sizes="(max-width: 483px) 100vw, 483px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 483px) 100vw, 483px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-137.png 483w, https://patchmypc.com/app/uploads/2026/01/image-137-300x170.png 300w" decoding="async" src="assets/659ff612e0cc35c8/img_0.png"/><noscript><img alt="" decoding="async" src="assets/659ff612e0cc35c8/img_1.png"/></noscript>
+</picture>
+</a></figure>
+<p>Which is a remote action to the device, without waiting for weird IME schedules or the Intune Management Extension to wake up on its own. But somehow nothing happened.  At first, it felt like a one-off. Maybe the remediation itself was broken. But after retrying it a couple of times, it became pretty clear. Every device action that depends on the IME reacting instantly behaves the same way… With it, <strong>Device Query </strong>was also stuck in progress.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/01/image-138.png"><picture class="wp-image-173137" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-138.png.webp 534w, https://patchmypc.com/app/uploads/2026/01/image-138-300x172.png.webp 300w" sizes="(max-width: 534px) 100vw, 534px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 534px) 100vw, 534px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-138.png 534w, https://patchmypc.com/app/uploads/2026/01/image-138-300x172.png 300w" decoding="async" src="assets/659ff612e0cc35c8/img_2.png"/><noscript><img alt="" decoding="async" src="assets/659ff612e0cc35c8/img_3.png"/></noscript>
+</picture>
+</a></figure>
+<p>That was the moment it stopped being only a remediation problem.</p>
+<h2 class="wp-block-heading" id="h-fixing-the-push-notifications-option-1">Fixing the Push Notifications Option 1<span class="clth-copy-icon" data-heading-id="h-fixing-the-push-notifications-option-1"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>This behavior was familiar. I had seen it before. <strong><a href="https://call4cloud.nl/push-notifications-device-query-an-error-occurred/">Uninstalling and reinstalling the Intune Management Extension fixed everything instantly.</a></strong> After the IME got reinstalled, on-demand remediations started working again as if nothing had ever happened. That workaround still worked here.</p>
+<p>But reinstalling the IME is not the solution we want. It is a reset button. The real question was why that reset worked and what exactly got fixed when you do it.</p>
+<p>The IME itself does not discover on-demand remediations by polling. These actions are delivered via Windows push notifications. To receive those notifications, IME registers itself with the Windows Push Notification platform under a specific application identity: the <strong>IME notification AUMID.</strong></p>
+<figure class="wp-block-image size-large"><a data-caption="registering the ime for Push Notifications" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/01/image-201-1024x118.png"><picture class="wp-image-173837" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-201-1024x118.png.webp 1024w, https://patchmypc.com/app/uploads/2026/01/image-201-300x34.png.webp 300w, https://patchmypc.com/app/uploads/2026/01/image-201-768x88.png.webp 768w, https://patchmypc.com/app/uploads/2026/01/image-201-1536x176.png.webp 1536w, https://patchmypc.com/app/uploads/2026/01/image-201-2048x235.png.webp 2048w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="registering the ime for Push Notifications" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-201-1024x118.png 1024w, https://patchmypc.com/app/uploads/2026/01/image-201-300x34.png 300w, https://patchmypc.com/app/uploads/2026/01/image-201-768x88.png 768w, https://patchmypc.com/app/uploads/2026/01/image-201-1536x176.png 1536w, https://patchmypc.com/app/uploads/2026/01/image-201-2048x235.png 2048w" decoding="async" src="assets/659ff612e0cc35c8/img_4.png"/><noscript><img alt="registering the ime for Push Notifications" decoding="async" src="assets/659ff612e0cc35c8/img_5.png"/></noscript>
+</picture>
+</a></figure>
+<p>From Windows’ perspective, this looks like an app registering for push, even though IME is a service. That registration has two distinct steps. First, IME ensures the <strong>local application registration exists</strong>. This lives under the <strong>PushNotifications Applications registry hive</strong>. If the key is missing or incomplete, IME recreates it.</p>
+<figure class="wp-block-image size-large"><a data-caption="the ime Push Notifications registry hive" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/01/image-202-1024x298.png"><picture class="wp-image-173838" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-202-1024x298.png.webp 1024w, https://patchmypc.com/app/uploads/2026/01/image-202-300x87.png.webp 300w, https://patchmypc.com/app/uploads/2026/01/image-202-768x224.png.webp 768w, https://patchmypc.com/app/uploads/2026/01/image-202-1536x447.png.webp 1536w, https://patchmypc.com/app/uploads/2026/01/image-202.png.webp 1773w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="the ime Push Notifications registry hive" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-202-1024x298.png 1024w, https://patchmypc.com/app/uploads/2026/01/image-202-300x87.png 300w, https://patchmypc.com/app/uploads/2026/01/image-202-768x224.png 768w, https://patchmypc.com/app/uploads/2026/01/image-202-1536x447.png 1536w, https://patchmypc.com/app/uploads/2026/01/image-202.png 1773w" decoding="async" src="assets/659ff612e0cc35c8/img_6.png"/><noscript><img alt="the ime Push Notifications registry hive" decoding="async" src="assets/659ff612e0cc35c8/img_7.png"/></noscript>
+</picture>
+</a></figure>
+<p>Second, the IME creates the <strong>IMENotificationApp</strong> folder and asks Windows to create a push channel by calling the WinRT API <strong>CreatePushNotificationChannelForApplicationAsync</strong>.</p>
+<figure class="wp-block-image size-large"><a data-caption="the Push Notifications imenotificationapop" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/01/image-203-1024x180.png"><picture class="wp-image-173839" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-203-1024x180.png.webp 1024w, https://patchmypc.com/app/uploads/2026/01/image-203-300x53.png.webp 300w, https://patchmypc.com/app/uploads/2026/01/image-203-768x135.png.webp 768w, https://patchmypc.com/app/uploads/2026/01/image-203-1536x270.png.webp 1536w, https://patchmypc.com/app/uploads/2026/01/image-203-2048x360.png.webp 2048w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="the Push Notifications imenotificationapop" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-203-1024x180.png 1024w, https://patchmypc.com/app/uploads/2026/01/image-203-300x53.png 300w, https://patchmypc.com/app/uploads/2026/01/image-203-768x135.png 768w, https://patchmypc.com/app/uploads/2026/01/image-203-1536x270.png 1536w, https://patchmypc.com/app/uploads/2026/01/image-203-2048x360.png 2048w" decoding="async" src="assets/659ff612e0cc35c8/img_8.png"/><noscript><img alt="the Push Notifications imenotificationapop" decoding="async" src="assets/659ff612e0cc35c8/img_9.png"/></noscript>
+</picture>
+</a></figure>
+<figure class="wp-block-image size-large"><a data-caption="Push Notifications callback was added" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/01/image-143-1024x186.png"><picture class="wp-image-173145" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-143-1024x186.png.webp 1024w, https://patchmypc.com/app/uploads/2026/01/image-143-300x54.png.webp 300w, https://patchmypc.com/app/uploads/2026/01/image-143-768x139.png.webp 768w, https://patchmypc.com/app/uploads/2026/01/image-143.png.webp 1427w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="Push Notifications callback was added" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-143-1024x186.png 1024w, https://patchmypc.com/app/uploads/2026/01/image-143-300x54.png 300w, https://patchmypc.com/app/uploads/2026/01/image-143-768x139.png 768w, https://patchmypc.com/app/uploads/2026/01/image-143.png 1427w" decoding="async" src="assets/659ff612e0cc35c8/img_10.png"/><noscript><img alt="Push Notifications callback was added" decoding="async" src="assets/659ff612e0cc35c8/img_11.png"/></noscript>
+</picture>
+</a></figure>
+<p>Windows responds with a <strong>channel URI </strong>and an expiration time. That URI is the <strong>callback address.</strong></p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/01/image-144-1024x40.png"><picture class="wp-image-173146" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-144-1024x40.png.webp 1024w, https://patchmypc.com/app/uploads/2026/01/image-144-300x12.png.webp 300w, https://patchmypc.com/app/uploads/2026/01/image-144-768x30.png.webp 768w, https://patchmypc.com/app/uploads/2026/01/image-144-1536x61.png.webp 1536w, https://patchmypc.com/app/uploads/2026/01/image-144-2048x81.png.webp 2048w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-144-1024x40.png 1024w, https://patchmypc.com/app/uploads/2026/01/image-144-300x12.png 300w, https://patchmypc.com/app/uploads/2026/01/image-144-768x30.png 768w, https://patchmypc.com/app/uploads/2026/01/image-144-1536x61.png 1536w, https://patchmypc.com/app/uploads/2026/01/image-144-2048x81.png 2048w" decoding="async" src="assets/659ff612e0cc35c8/img_12.png"/><noscript><img alt="" decoding="async" src="assets/659ff612e0cc35c8/img_13.png"/></noscript>
+</picture>
+</a></figure>
+<p>Intune sends the notification (through WNS) to that address, Windows receives it, and Windows calls back into the IME when a message arrives.   If that callback chain is broken, the IME never wakes up. No remediation runs, no error is shown, and retries from the Intune portal change nothing.</p>
+<h2 class="wp-block-heading" id="h-proving-whether-the-push-notifications-arrived-at-all">Proving whether the push notifications arrived at all<span class="clth-copy-icon" data-heading-id="h-proving-whether-the-push-notifications-arrived-at-all"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>At that point, guessing if the push arrived was no longer useful. There is no status in Intune that tells you whether a push was actually delivered to the device, and IME does not expose that information either….the <strong>WNS is just 1 big black box</strong>. So we stopped relying on the portal and built our own way to observe push delivery on the device.</p>
+<figure class="wp-block-image size-large"><a data-caption="powershell script to monitor Push Notifications" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/01/image-204-1024x468.png"><picture class="wp-image-173840" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-204-1024x468.png.webp 1024w, https://patchmypc.com/app/uploads/2026/01/image-204-300x137.png.webp 300w, https://patchmypc.com/app/uploads/2026/01/image-204-768x351.png.webp 768w, https://patchmypc.com/app/uploads/2026/01/image-204-1536x702.png.webp 1536w, https://patchmypc.com/app/uploads/2026/01/image-204-2048x936.png.webp 2048w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="powershell script to monitor Push Notifications" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-204-1024x468.png 1024w, https://patchmypc.com/app/uploads/2026/01/image-204-300x137.png 300w, https://patchmypc.com/app/uploads/2026/01/image-204-768x351.png 768w, https://patchmypc.com/app/uploads/2026/01/image-204-1536x702.png 1536w, https://patchmypc.com/app/uploads/2026/01/image-204-2048x936.png 2048w" decoding="async" src="assets/659ff612e0cc35c8/img_14.png"/><noscript><img alt="powershell script to monitor Push Notifications" decoding="async" src="assets/659ff612e0cc35c8/img_15.png"/></noscript>
+</picture>
+</a></figure>
+<p>Under normal circumstances, this part of the story is boring. On a healthy device, Windows makes push delivery visible if you know where to look. Every push routed to the Intune Management Extension appears in the PushNotification Platform operational log. You see <strong>Event ID 1010 </strong>for the IME notification AUMID, followed almost immediately by <strong>Event ID 1225 containing the raw payload.</strong></p>
+<figure class="wp-block-image size-large"><a data-caption="Push Notifications payload" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/01/image-146-1024x276.png"><picture class="wp-image-173148" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-146-1024x276.png.webp 1024w, https://patchmypc.com/app/uploads/2026/01/image-146-300x81.png.webp 300w, https://patchmypc.com/app/uploads/2026/01/image-146-768x207.png.webp 768w, https://patchmypc.com/app/uploads/2026/01/image-146-1536x413.png.webp 1536w, https://patchmypc.com/app/uploads/2026/01/image-146.png.webp 1992w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="Push Notifications payload" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-146-1024x276.png 1024w, https://patchmypc.com/app/uploads/2026/01/image-146-300x81.png 300w, https://patchmypc.com/app/uploads/2026/01/image-146-768x207.png 768w, https://patchmypc.com/app/uploads/2026/01/image-146-1536x413.png 1536w, https://patchmypc.com/app/uploads/2026/01/image-146.png 1992w" decoding="async" src="assets/659ff612e0cc35c8/img_16.png"/><noscript><img alt="Push Notifications payload" decoding="async" src="assets/659ff612e0cc35c8/img_17.png"/></noscript>
+</picture>
+</a></figure>
+<p>We can easily decode the payload to see the notification intent and ID.</p>
+<figure class="wp-block-image size-large"><a data-caption="decoding the Push Notifications payload" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/01/image-147-1024x360.png"><picture class="wp-image-173149" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-147-1024x360.png.webp 1024w, https://patchmypc.com/app/uploads/2026/01/image-147-300x106.png.webp 300w, https://patchmypc.com/app/uploads/2026/01/image-147-768x270.png.webp 768w, https://patchmypc.com/app/uploads/2026/01/image-147.png.webp 1486w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="decoding the Push Notifications payload" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-147-1024x360.png 1024w, https://patchmypc.com/app/uploads/2026/01/image-147-300x106.png 300w, https://patchmypc.com/app/uploads/2026/01/image-147-768x270.png 768w, https://patchmypc.com/app/uploads/2026/01/image-147.png 1486w" decoding="async" src="assets/659ff612e0cc35c8/img_18.png"/><noscript><img alt="decoding the Push Notifications payload" decoding="async" src="assets/659ff612e0cc35c8/img_19.png"/></noscript>
+</picture>
+</a></figure>
+<p>That is what a working system looks like. A clean and predictable sequence. The push message is routed, the payload is delivered, and the IME is woken up. On the affected device, none of that happened. When we triggered an on-demand remediation, the Push Platform event log stayed completely silent. No Event <strong>ID 1010 for the IME AUMID.</strong> No <strong>Event ID 1225</strong>. Nothing to decode. From Windows’ perspective, no notification was ever delivered. That absence changed the entire investigation.</p>
+<p>From the Intune side, the action was marked as sent. From the IME side, nothing appeared obviously broken. But the push message never crossed the Windows boundary. The IME was never woken up because the WNS never routed the notification to that specific device. AKA the Push Notification was lost in cyberspace. Before zooming in on how we fixed it without reinstalling the IME, let’s zoom in on the remediation itself… when it’s working.</p>
+<p>A Run Remediation push does NOT contain the remediation logic itself. It is just a signal. When the IME receives that notification, it enters the device action callback path. The payload is parsed, the intent is identified as <strong>RunRemediation</strong>, and IME starts a notification-driven check-in</p>
+<figure class="wp-block-image size-large"><a data-caption="decoding the notificationintent from the Push Notifications payload" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/01/image-205-1024x268.png"><picture class="wp-image-173841" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-205-1024x268.png.webp 1024w, https://patchmypc.com/app/uploads/2026/01/image-205-300x79.png.webp 300w, https://patchmypc.com/app/uploads/2026/01/image-205-768x201.png.webp 768w, https://patchmypc.com/app/uploads/2026/01/image-205-1536x402.png.webp 1536w, https://patchmypc.com/app/uploads/2026/01/image-205.png.webp 1792w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="decoding the notificationintent from the Push Notifications payload" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-205-1024x268.png 1024w, https://patchmypc.com/app/uploads/2026/01/image-205-300x79.png 300w, https://patchmypc.com/app/uploads/2026/01/image-205-768x201.png 768w, https://patchmypc.com/app/uploads/2026/01/image-205-1536x402.png 1536w, https://patchmypc.com/app/uploads/2026/01/image-205.png 1792w" decoding="async" src="assets/659ff612e0cc35c8/img_20.png"/><noscript><img alt="decoding the notificationintent from the Push Notifications payload" decoding="async" src="assets/659ff612e0cc35c8/img_21.png"/></noscript>
+</picture>
+</a></figure>
+<p class="has-small-font-size"><strong>Please Note: Win32AppWorkload Notification…. wondering what that is going to do</strong></p>
+<p>This is different from a scheduled cycle. It is explicitly marked as notification-based and immediately requests the device action policy tied to that <strong>NotificationID.</strong> Only then does IME download the remediation payload, store it locally, and invoke the proactive remediation engine in on-demand mode.</p>
+<p>All of that happens after the push. If the callback never fires, the IME never even starts this remediation flow. If the callback fires but the follow-up communication fails, the remediation still never runs. From the portal, both cases look identical.</p>
+<p>The same flow as discussed above, but now in total… also with the IME action in it</p>
+<figure class="wp-block-image size-large"><a data-caption="Push Notifications flow" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/01/image-206-198x1024.png"><picture class="wp-image-173842" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-206-198x1024.png.webp 198w, https://patchmypc.com/app/uploads/2026/01/image-206-58x300.png.webp 58w" sizes="(max-width: 198px) 100vw, 198px" type="image/webp"/>
+<img alt="Push Notifications flow" data-lazy-sizes="(max-width: 198px) 100vw, 198px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-206-198x1024.png 198w, https://patchmypc.com/app/uploads/2026/01/image-206-58x300.png 58w" decoding="async" src="assets/659ff612e0cc35c8/img_22.png"/><noscript><img alt="Push Notifications flow" decoding="async" src="assets/659ff612e0cc35c8/img_23.png"/></noscript>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-fixing-the-push-notifications-with-our-powershell-script">Fixing the Push Notifications with our PowerShell script<span class="clth-copy-icon" data-heading-id="h-fixing-the-push-notifications-with-our-powershell-script"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>Once it was clear that the IME push notification with the notificationintent never arrived, it became clear what we needed to do. <strong>Re-registering the IME Notification app</strong>… because something during the uninstall and reinstall of the IME also forced the IME to reregister it. So why can’t we do it ourselves? Besides that I thought it was funny….</p>
+<p>We already know that the IME maintains its own notification cache, but that cache is only part of the chain. The more important piece is the Windows Push Notification platform registration for the IME notification AUMID. That registration is owned by the operating system. Even when running as an administrator, you cannot reliably remove or repair it. Windows may block the deletion or recreate the key immediately in the background. So we created a PowerShell script to mimic the same steps</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/01/image-207-1024x535.png"><picture class="wp-image-173843" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-207-1024x535.png.webp 1024w, https://patchmypc.com/app/uploads/2026/01/image-207-300x157.png.webp 300w, https://patchmypc.com/app/uploads/2026/01/image-207-768x401.png.webp 768w, https://patchmypc.com/app/uploads/2026/01/image-207.png.webp 1476w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-207-1024x535.png 1024w, https://patchmypc.com/app/uploads/2026/01/image-207-300x157.png 300w, https://patchmypc.com/app/uploads/2026/01/image-207-768x401.png 768w, https://patchmypc.com/app/uploads/2026/01/image-207.png 1476w" decoding="async" src="assets/659ff612e0cc35c8/img_24.png"/><noscript><img alt="" decoding="async" src="assets/659ff612e0cc35c8/img_25.png"/></noscript>
+</picture>
+</a></figure>
+<p>The IME service was stopped first, so it could not interfere. Its <strong>local notification cache</strong> was cleared to remove any stale channel data. The PushNotifications application registration for the IME AUMID was then removed by executing the deletion as SYSTEM, not as an administrator. That distinction matters. Only SYSTEM can reliably remove the registration long enough for the platform to rebuild it.</p>
+<p>After that, the Windows Push Notification service was restarted to flush any cached platform state. From that point, the normal registration flow ran cleanly.</p>
+<figure class="wp-block-image size-large"><a data-caption="registering the IME Push Notifications" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/01/image-150-1024x178.png"><picture class="wp-image-173152" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-150-1024x178.png.webp 1024w, https://patchmypc.com/app/uploads/2026/01/image-150-300x52.png.webp 300w, https://patchmypc.com/app/uploads/2026/01/image-150-768x133.png.webp 768w, https://patchmypc.com/app/uploads/2026/01/image-150-1536x267.png.webp 1536w, https://patchmypc.com/app/uploads/2026/01/image-150.png.webp 1548w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="registering the IME Push Notifications" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-150-1024x178.png 1024w, https://patchmypc.com/app/uploads/2026/01/image-150-300x52.png 300w, https://patchmypc.com/app/uploads/2026/01/image-150-768x133.png 768w, https://patchmypc.com/app/uploads/2026/01/image-150-1536x267.png 1536w, https://patchmypc.com/app/uploads/2026/01/image-150.png 1548w" decoding="async" src="assets/659ff612e0cc35c8/img_26.png"/><noscript><img alt="registering the IME Push Notifications" decoding="async" src="assets/659ff612e0cc35c8/img_27.png"/></noscript>
+</picture>
+</a></figure>
+<h3 class="wp-block-heading" id="h-create-push-notification-channel">Create Push Notification Channel<span class="clth-copy-icon" data-heading-id="h-create-push-notification-channel"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p>After executing the script, the IME recreated the application registration, and the IME called <strong>CreatePushNotificationChannelForApplicationAsync.</strong> From there on, Windows issued a fresh channel URI and expiration. Immediately after that, push notifications started working again. The PushNotification Platform log began showing <strong>EventID 1010 and 1225</strong> for the IME notification AUMID, and on-demand remediation triggered exactly like it did on a healthy device.</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/01/image-208-1024x389.png"><picture class="wp-image-173844" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-208-1024x389.png.webp 1024w, https://patchmypc.com/app/uploads/2026/01/image-208-300x114.png.webp 300w, https://patchmypc.com/app/uploads/2026/01/image-208-768x292.png.webp 768w, https://patchmypc.com/app/uploads/2026/01/image-208-1536x584.png.webp 1536w, https://patchmypc.com/app/uploads/2026/01/image-208.png.webp 1859w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-208-1024x389.png 1024w, https://patchmypc.com/app/uploads/2026/01/image-208-300x114.png 300w, https://patchmypc.com/app/uploads/2026/01/image-208-768x292.png 768w, https://patchmypc.com/app/uploads/2026/01/image-208-1536x584.png 1536w, https://patchmypc.com/app/uploads/2026/01/image-208.png 1859w" decoding="async" src="assets/659ff612e0cc35c8/img_28.png"/><noscript><img alt="" decoding="async" src="assets/659ff612e0cc35c8/img_29.png"/></noscript>
+</picture>
+</a></figure>
+<p>The end result was identical to reinstalling IME. The difference was understanding why it worked and fixing the actual failure instead of resetting everything around it.</p>
+<h2 class="wp-block-heading" id="h-why-reinstalling-ime-fixes-the-push-channel">Why reinstalling IME “fixes” the Push Channel<span class="clth-copy-icon" data-heading-id="h-why-reinstalling-ime-fixes-the-push-channel"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>The key detail turned out to be where the broken state lived. It was not only inside IME’s own notification cache. It was inside the Windows Push Notification platform’s protected application registration for the IME AUMID. That registry key is owned by the operating system. Even as an administrator, you cannot reliably delete it. Reinstalling IME works because it indirectly forces Windows to tear down and rebuild the push notification app registration. But … yeah, don’t do this in prod.</p>
+<h2 class="wp-block-heading" id="h-wns-as-a-black-box-and-why-ic3-might-replace-it">WNS as a black box, and why IC3 might replace it<span class="clth-copy-icon" data-heading-id="h-wns-as-a-black-box-and-why-ic3-might-replace-it"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p><strong>Windows push notifications</strong> are opaque by design. Once Intune hands a message to WNS, visibility largely disappears. If the notification is routed correctly, you might see it in the PushNotification Platform log. If it is not, there is no retry signal, no failure surface, and no way to tell where it vanished. In practice, WNS is a black box… and it has a nice throttling mechanism. The best thing? You don’t have any visibility!</p>
+<figure class="wp-block-image size-full"><a data-caption="wns black box" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/01/image-47.jpg"><picture class="wp-image-173139" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-47.jpg.webp 247w, https://patchmypc.com/app/uploads/2026/01/image-47-182x300.jpg.webp 182w" sizes="(max-width: 247px) 100vw, 247px" type="image/webp"/>
+<img alt="wns black box" data-lazy-sizes="(max-width: 247px) 100vw, 247px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-47.jpg 247w, https://patchmypc.com/app/uploads/2026/01/image-47-182x300.jpg 182w" decoding="async" src="assets/659ff612e0cc35c8/img_30.jpg"/><noscript><img alt="wns black box" decoding="async" src="assets/659ff612e0cc35c8/img_31.jpg"/></noscript>
+</picture>
+</a></figure>
+<p>That is exactly what we ran into here. Intune marked the action as sent. IME looked healthy. But the push itself never reached the device. Somewhere between the service and the callback, it simply stopped existing. This is where <strong>IC3 becomes interesting</strong>, even though it is not fully there yet.</p>
+<figure class="wp-block-image size-full"><a data-caption="ic3 teams" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/01/image-139.png"><picture class="wp-image-173141" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-139.png.webp 624w, https://patchmypc.com/app/uploads/2026/01/image-139-300x153.png.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="ic3 teams" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-139.png 624w, https://patchmypc.com/app/uploads/2026/01/image-139-300x153.png 300w" decoding="async" src="assets/659ff612e0cc35c8/img_32.png"/><noscript><img alt="ic3 teams" decoding="async" src="assets/659ff612e0cc35c8/img_33.png"/></noscript>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-ic3-is-coming">IC3 is Coming?<span class="clth-copy-icon" data-heading-id="h-ic3-is-coming"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>If you look at how newer IME flows are evolving,<strong> </strong><a href="https://patchmypc.com/blog/intune-ime-ic3-teams-protocol/"><strong>IC3</strong> </a>appears to be positioning itself as more than just another transport layer. Instead of relying on Windows push notifications as the primary wake-up mechanism,<strong> IC3 </strong>provides a direct, stateful communication path between Intune and the IME. One that is observable, traceable, and far less dependent on OS-level push plumbing. In the current model, WNS is still the trigger. <strong>If WNS breaks, the IME never wakes up.</strong> That single dependency is the weak link. The behavior we saw here is a perfect example of that. Everything above WNS was fine. Everything below it was never reached.</p>
+<p>What <strong>IC3</strong> seems to aim to do is <strong>remove that WNS fragility. </strong>Rather than notifications vanishing into an OS owned subsystem with no feedback, IC3 shifts device actions into a protocol that IME already uses for other workloads. One where connections are explicit, retries exist, and failures show up as real errors instead of silence. Today, that transition is incomplete. WNS is still part of the picture, and when it breaks, everything built on top of it still collapses. But the direction is clear.<strong> IC3 is not just another channel</strong>. It looks like a deliberate <strong><a href="https://patchmypc.com/blog/intune-ime-ic3-teams-protocol/">move away from WNS as the critical dependency for instant device actions.</a></strong></p>
+<p>If and when that shift completes, issues like this should become far easier to reason about. Not because failures stop happening, but because they stop disappearing. And after chasing a remediation that never arrived, that alone would be a massive improvement.</p>
+<h2 class="wp-block-heading" id="h-the-real-takeaway">The real takeaway<span class="clth-copy-icon" data-heading-id="h-the-real-takeaway"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>On-demand remediation was never the root problem. It was simply the first feature to expose a broken push callback chain. IME depends on a Windows push notification callback created through CreatePushNotificationChannelForApplicationAsync. When that callback registration is corrupted, IME never wakes up, and every instant device action silently stops working. Reinstalling IME fixes it by coincidence. Resetting the push registration fixes it by design.</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

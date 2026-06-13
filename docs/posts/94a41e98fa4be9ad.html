@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intune Newsletter – 8th May 2026</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Andrew Taylor</span>
+    <span class="date">May 8, 2026</span>
+  </div>
+  <h1>Intune Newsletter – 8th May 2026</h1>
+  <div class="orig">Saved for offline reading · <a href="https://andrewstaylor.com/2026/05/08/intune-newsletter-8th-may-2026/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text">
+<p>Welcome one and all and greetings from Denmark where I am currently in the office planning what exciting things we are adding to Tenant Manager and Robopack next!  Yesterday I was at the excellent EUCTech event at Legoland, was great to meet some of you there.  I wonder how many newsletters I have written in airport lounges and hotel rooms…</p>
+<p>Anyway, this edition is now live and ready for you to enjoy, check out the new individual device view within Intune as well!</p>
+<hr/>
+<h1>Community Content</h1>
+<p>If you ever tried migrating Apple devices in previous years, you will know how painful it was (and usually involved a wipe).  Fortunately things are much easier these days (and wipe free!).  Follow this guide from <a href="https://www.linkedin.com/in/jan-mulder/">Jan Mulder</a> to try it yourself</p>
+<blockquote class="wp-embedded-content" data-secret="2z0tYJ1kQ9"><p><a href="https://wolkenman.wordpress.com/2026/05/03/migrate-your-apple-devices-in-minutes-and-not-hours/">Migrate your apple devices in minutes and not hours</a></p></blockquote>
+<p></p>
+<hr/>
+<p>For those of you managing Lenovo devices, this post from <a href="https://www.linkedin.com/in/pej1025/">Philip Jorgensen</a> is a must read!  A new PowerShell UI tool to create OMA-URI policies instead of having to ingest the ADMX templates!</p>
+<p><a href="https://blog.lenovocdrt.com/introducing-commercial-vantage-policy-manager-for-intune">https://blog.lenovocdrt.com/introducing-commercial-vantage-policy-manager-for-intune</a></p>
+<hr/>
+<p>Learn the join type of the guest accounts accessing your tenant with this Log Analytics KQL query from <a href="https://www.linkedin.com/in/johannes-geir-kristjansson/">Jóhannes Geir Kristjánsson</a></p>
+<blockquote class="wp-embedded-content" data-secret="BX6QrWmNUc"><p><a href="https://johannesblog.com/2026/05/01/guest-device-join-type/">Guest Device Join Type</a></p></blockquote>
+<p></p>
+<hr/>
+<p>We have a very useful new tool from <a href="https://www.linkedin.com/in/andrew-jones-65a67b59/">Andy Jones</a> to help with those day-to-day Intune tasks, check it out here</p>
+<blockquote class="wp-embedded-content" data-secret="rWgp8a4fgf"><p><a href="https://move2modern.uk/index.php/2026/04/23/intuneautomate-now-released-and-available/">IntuneAutomate – NOW released and available</a></p></blockquote>
+<p></p>
+<hr/>
+<p>Take your Kiosk management to the next level by blocking particular key combinations in this post from <a href="https://www.linkedin.com/in/peterwoude/">Peter van der Woude</a></p>
+<blockquote class="wp-embedded-content" data-secret="JyX7Tb1kVu"><p><a href="https://petervanderwoude.nl/post/locking-down-windows-devices-by-suppressing-key-combinations/">Locking down Windows devices by suppressing key combinations</a></p></blockquote>
+<p></p>
+<hr/>
+<p>Trying to get your head around all of the different 365 agents?  Check out this post from <a href="https://www.linkedin.com/in/jannik-r/">Jannik Reinhard</a></p>
+<blockquote class="wp-embedded-content" data-secret="kn3fcfXm5X"><p><a href="https://jannikreinhard.com/2026/05/05/microsoft-365-agents-explained-what-agents-365-means/">Microsoft Agent 365 vs. Microsoft 365 Agents: A Field Guide for IT and Architects</a></p></blockquote>
+<p></p>
+<hr/>
+<p>You probably have known folder move configured with OneDrive, but I imagine the users downloads folder is a mess (I know mine is).  Use this post from <a href="https://www.linkedin.com/in/simoneriksendk/">Simon Hartmann Eriksen</a> to get the devices cleaned up</p>
+<blockquote class="wp-embedded-content" data-secret="2E4hKosYT9"><p><a href="https://www.simsenblog.dk/2026/05/05/cleanup-remediations-the-forgotten-half-of-endpoint-hygiene/">Cleanup Remediations: The Forgotten Half of Endpoint Hygiene</a></p></blockquote>
+<p></p>
+<hr/>
+<p>A very popular change, the new App Discovery functionality is available, using the Properties catalog.  Learn more here from <a href="https://www.linkedin.com/in/michaelsendpoint/">Michael Frank</a></p>
+<p><a href="https://michaelsendpoint.com/intune/ModernApp.html">https://michaelsendpoint.com/intune/ModernApp.html</a></p>
+<hr/>
+<p><a href="https://www.linkedin.com/in/kevin-malinoski-a55a65185/">Kevin Malinoski</a> also looks at the new functionality here</p>
+<blockquote class="wp-embedded-content" data-secret="680T2kD3js"><p><a href="https://malinoski.me/2026/05/06/may-the-apps-be-with-you-intunes-new-enhanced-app-inventory-dashboard/">May the Apps Be With You – Intune’s New Enhanced App Inventory Dashboard</a></p></blockquote>
+<p></p>
+<hr/>
+<p>You can tell it was popular, <a href="https://www.linkedin.com/in/jgelijsteen/">Joost Gelijsteen</a> also has a look here including some useful troubleshooting tips</p>
+<blockquote class="wp-embedded-content" data-secret="LAOB3ofSJm"><p><a href="https://joostgelijsteen.com/app-inventory-in-intune-just-got-a-upgrade/">App Inventory in Intune just got a serious Upgrade</a></p></blockquote>
+<p></p>
+<hr/>
+<p>Next, <a href="https://www.linkedin.com/in/albinklinaku/">Albin Klinaku</a> looks at the native way of removing Windows apps</p>
+<p><a href="https://www.indefent.com/dynamically-remove-apps-from-windows-11-the-new-way/">https://www.indefent.com/dynamically-remove-apps-from-windows-11-the-new-way/</a></p>
+<hr/>
+<p>This is one case where hybrid is allowed (and in some cases recommended).  If you have apps blocking your cloud native move, simply put them on AVD and give users access that way.  You can now even host your AVD servers on-prem!  Find out about this very recent development here from <a href="https://www.linkedin.com/in/dieterkempeneers/">Dieter Kempeneers</a></p>
+<blockquote class="wp-embedded-content" data-secret="V0w79VUooi"><p><a href="https://kempeneers.eu/2026/05/06/azure-virtual-desktop-hybrid-explained/">Azure Virtual Desktop Hybrid Explained</a></p></blockquote>
+<p></p>
+<hr/>
+<p>Protect your platform access by following this guide from <a href="https://www.linkedin.com/in/dominiekverham/">Dominiek Verham</a></p>
+<blockquote class="wp-embedded-content" data-secret="HvxxvBjLXs"><p><a href="https://dominiekverham.com/securing-the-daas-environment-protecting-the-management-platform/">Securing the DaaS environment: protecting the management platform</a></p></blockquote>
+<p></p>
+<hr/>
+<h1><a id="video"></a>Video Content</h1>
+<p>Now for the video content and we start with <a href="https://www.linkedin.com/in/deanellerby/">Dean Ellerby</a> and <a href="https://www.linkedin.com/in/andrew-jones-65a67b59/">Andy Jones</a> discussing all things Intune at the Microsoft recording studio</p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/le4gZTdlRrM?feature=oembed" title="The Intune &amp; Tech Catch-up - Sit down discussion with Dean Ellerby at the MVP Summit">VIDEO</iframe></p>
+<hr/>
+<h1>Microsoft Content</h1>
+<p>Onto the Microsoft content for the week (and there has been a lot), starting with a look at the new Windows 365 for agents from <a href="https://www.linkedin.com/in/swarnimsrivastava/">Swarnim Srivastava</a></p>
+<p><a href="https://techcommunity.microsoft.com/t5/windows-it-pro-blog/windows-365-for-agents-now-in-public-preview-run-ai-agents/ba-p/4513479">https://techcommunity.microsoft.com/t5/windows-it-pro-blog/windows-365-for-agents-now-in-public-preview-run-ai-agents/ba-p/4513479</a></p>
+<hr/>
+<p>This post from <a href="https://www.linkedin.com/in/-carol-burns/">Carol Burns</a> and <a href="https://www.linkedin.com/in/sucheta-gawade-52897613/">Sucheta Gawad</a>e looks at the next steps when migrating your frontline devices to being Intune managed, looking at all of the key stakeholders to involve in the process</p>
+<p><a href="https://techcommunity.microsoft.com/blog/IntuneCustomerSuccess/migrating-frontline-mobile-devices-aligning-stakeholders-before-real-world-testi/4516511">https://techcommunity.microsoft.com/blog/IntuneCustomerSuccess/migrating-frontline-mobile-devices-aligning-stakeholders-before-real-world-testi/4516511</a></p>
+<hr/>
+<p>Some exciting changes for Windows 365 to make it even more accessible to everyone as covered here by <a href="https://www.linkedin.com/in/tristanscott/">Tristan Scott</a></p>
+<p><a href="https://techcommunity.microsoft.com/t5/windows-it-pro-blog/windows-365-and-azure-virtual-desktop-expanding-access/ba-p/4515931">https://techcommunity.microsoft.com/t5/windows-it-pro-blog/windows-365-and-azure-virtual-desktop-expanding-access/ba-p/4515931</a></p>
+<hr/>
+<p>The Windows news you can use is now available for April from <a href="https://www.linkedin.com/in/chrismorrissey2009/">Chris Morrissey</a></p>
+<p><a href="https://techcommunity.microsoft.com/t5/windows-it-pro-blog/windows-news-you-can-use-april-2026/ba-p/4516352">https://techcommunity.microsoft.com/t5/windows-it-pro-blog/windows-news-you-can-use-april-2026/ba-p/4516352</a></p>
+<hr/>
+<p>That’s all for this week, have an amazing weekend!</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

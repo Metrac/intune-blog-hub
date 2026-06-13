@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intune Management Extension: Release Notes</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Call4Cloud (Rudy Ooms)</span>
+    <span class="date">May 26, 2026</span>
+  </div>
+  <h1>Intune Management Extension: Release Notes</h1>
+  <div class="orig">Saved for offline reading · <a href="https://patchmypc.com/blog/intune-management-extension-release-notes/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="post-content">
+<p>The Intune Management Extension is doing a lot more than most people give it credit for. That is why <strong><a href="https://github.com/call4cloud-code/IME-Change-Tracker">Intune Management Extension Release Notes</a></strong> make sense: when the local SideCar/IME agent changes, I want to know what changed before troubleshooting turns into guessing.</p>
+<h2 class="wp-block-heading" id="h-introduction">Introduction<span class="clth-copy-icon" data-heading-id="h-introduction"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p id="h-">The Intune Management Extension is one of those components that quietly became one of the most important components on our devices over time. Most admins first meet it when a Win32 app fails. The app is assigned, the device checks in, nothing happens, and sooner or later someone opens IntuneManagementExtension.log to find out why the install did not start or why the detection rule decided to ruin the day.</p>
+<p>The thing that magically <strong><a href="https://patchmypc.com/blog/intune-management-extension-esp-phases/">installs Win32 apps.</a></strong>.. That is usually how the IME is explained to people.</p>
+<p>But that description is way too small for what the IME is actually doing today. The moment you start looking at the device side of Intune, you see the IME showing up in more and more places. Win32 apps are the obvious part, but the same agent is also involved in scripts, remediation, detection logic, reporting, device queries, Remote Help, APv2-related components, and many other functions.</p>
+<figure class="wp-block-image size-large is-resized"><a data-caption="intune management extension functions" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/05/image-37-1024x528.png"><picture class="wp-image-185481" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-37-1024x528.png.webp 1024w, https://patchmypc.com/app/uploads/2026/05/image-37-300x155.png.webp 300w, https://patchmypc.com/app/uploads/2026/05/image-37-768x396.png.webp 768w, https://patchmypc.com/app/uploads/2026/05/image-37.png.webp 1459w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="intune management extension functions" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-37-1024x528.png 1024w, https://patchmypc.com/app/uploads/2026/05/image-37-300x155.png 300w, https://patchmypc.com/app/uploads/2026/05/image-37-768x396.png 768w, https://patchmypc.com/app/uploads/2026/05/image-37.png 1459w" decoding="async" src="assets/9d55962fac6a6417/img_0.png"/><noscript><img alt="intune management extension functions" decoding="async" src="assets/9d55962fac6a6417/img_1.png"/></noscript>
+</picture>
+</a></figure>
+<p>That makes the IME one of the most important moving parts on an Intune-managed Windows device. It is not just sitting there waiting for an app install command. It is the agent that decides what the device needs to do, what has already happened, what still needs to be reported, and which part of the IME should carry out the task.</p>
+<p>And when a component with that much responsibility changes, it would be nice to know what changed.</p>
+<h2 class="wp-block-heading" id="h-intune-management-extension-needs-release-notes">Intune Management Extension needs Release Notes<span class="clth-copy-icon" data-heading-id="h-intune-management-extension-needs-release-notes"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>Microsoft already provides the <strong><a href="https://learn.microsoft.com/en-us/intune/whats-new/">“What’s new in Intune”</a></strong> page, which is useful. It gives us the product view. New settings, new features (if we don’t spoil it for them), new portal experiences, new service side behavior, and all the things Microsoft wants us to know about from an Intune product perspective.</p>
+<p>The device side is a totally different story. The IME itself also changes. New versions appear without announcement. The MSI changes, and with it, some new features or bug fixes can be introduced. Sometimes the change is small, sometimes it is only a rebuild, and in the best case, a changed DLL hints at something that is not yet visible in the portal. Sometimes a local behavior changes, and you only notice it when something suddenly behaves differently on a device.</p>
+<p>That missing layer is what makes troubleshooting harder than it needs to be.</p>
+<h2 class="wp-block-heading" id="h-the-part-that-normally-stays-invisible">The part that normally stays invisible<span class="clth-copy-icon" data-heading-id="h-the-part-that-normally-stays-invisible"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>Official release notes usually explain changes from the product side, which makes sense. Most admins want to know which setting was added, which workload got a new option, or which feature is rolling out. That is the information you need when you manage the service.</p>
+<p>But again… the IME is in its own separate world. The service can announce a new, wonderful feature even though the local agent already includes part of the plumbing. The IME agent can also change without a big announcement because the change is internal, preparatory, or related to reliability. Sometimes that is fine. Sometimes it becomes important when you are troubleshooting a device and trying to understand why the same flow suddenly behaves a little differently than before.</p>
+<p>That is also why the <strong><a href="https://patchmypc.com/blog/company-portal-stuck-on-downloading-idx12729-0x80131040/">earlier config file issue was interesting</a></strong>. From a distance, a config file sounds like a small detail. Once you follow it down to the device, it becomes clear how much it depends on the local agent to read the right information and process it correctly. A small change on the device side can become a real troubleshooting rabbit hole when there is no easy way to see what changed between agent versions.</p>
+<p>That is where the standard Intune release notes are no longer enough. Not because they are bad, but because they are written for a different layer. They explain Intune as a product. They do not explain every meaningful change within the local agent responsible for carrying out much of that work. In my opinion, the IME needs its own technical change view.</p>
+<h2 class="wp-block-heading" id="h-why-i-started-looking-at-ime-versions-differently">Why I started looking at IME versions differently<span class="clth-copy-icon" data-heading-id="h-why-i-started-looking-at-ime-versions-differently"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>Whenever a new IME version appears, the version number itself is not enough. It tells me something changed, but it does not tell me what changed.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/05/image-41.png"><img alt="" class="wp-image-185491" data-lazy-sizes="(max-width: 953px) 100vw, 953px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-41.png 953w, https://patchmypc.com/app/uploads/2026/05/image-41-300x6.png 300w, https://patchmypc.com/app/uploads/2026/05/image-41-768x15.png 768w" decoding="async" src="assets/9d55962fac6a6417/img_2.png"/><noscript><img alt="" class="wp-image-185491" decoding="async" src="assets/9d55962fac6a6417/img_3.png"/></noscript></a></figure>
+<p>The first thing I normally look for is the IntuneWindowsAgent.msi that was downloaded to the device. The EnterpriseDesktopAppManagement registry key usually provides enough information to locate the MSI, the product version, and the download URL. From there, the actual investigation starts.</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/05/image-42-1024x401.png"><picture class="wp-image-185492" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-42-1024x401.png.webp 1024w, https://patchmypc.com/app/uploads/2026/05/image-42-300x117.png.webp 300w, https://patchmypc.com/app/uploads/2026/05/image-42-768x300.png.webp 768w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-42-1024x401.png 1024w, https://patchmypc.com/app/uploads/2026/05/image-42-300x117.png 300w, https://patchmypc.com/app/uploads/2026/05/image-42-768x300.png 768w, https://patchmypc.com/app/uploads/2026/05/image-42.png 1360w" decoding="async" src="assets/9d55962fac6a6417/img_4.png"/><noscript><img alt="" decoding="async" src="assets/9d55962fac6a6417/img_5.png"/></noscript>
+</picture>
+</a></figure>
+<p>I want to know whether the MSI changed in a meaningful way. Did the MSI tables change? Did the install sequence change? Were custom actions added, removed, or adjusted? Was something added to the payload? Did the main agent executable change? Did one of the plugins change?</p>
+<p>That already gives a better picture, but the DLLs are where things usually become more interesting. A changed DLL does not automatically mean the runtime behavior has changed. A file can be rebuilt, signed again, or version bumped without any meaningful logic change. That is why the next step is looking deeper at the managed methods inside the DLLs.</p>
+<p>That is where you sometimes find the useful stuff, and those are the details that help explain what might have changed in the actual behavior.</p>
+<h2 class="wp-block-heading" id="h-intune-management-extension-release-notes-automation">Intune Management Extension release notes automation<span class="clth-copy-icon" data-heading-id="h-intune-management-extension-release-notes-automation"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>Doing this investigation manually once is fine. Doing it for every Intune Management Extension release is not. It is repetitive, and repetitive work is where you start missing things. One time, you focus on the MSI tables. </p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/05/image-38-1024x198.png"><picture class="wp-image-185482" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-38-1024x198.png.webp 1024w, https://patchmypc.com/app/uploads/2026/05/image-38-300x58.png.webp 300w, https://patchmypc.com/app/uploads/2026/05/image-38-768x149.png.webp 768w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-38-1024x198.png 1024w, https://patchmypc.com/app/uploads/2026/05/image-38-300x58.png 300w, https://patchmypc.com/app/uploads/2026/05/image-38-768x149.png 768w, https://patchmypc.com/app/uploads/2026/05/image-38.png 1214w" decoding="async" src="assets/9d55962fac6a6417/img_6.png"/><noscript><img alt="" decoding="async" src="assets/9d55962fac6a6417/img_7.png"/></noscript>
+</picture>
+</a></figure>
+<p>Another time, you look at the DLL versions but skip the method-level comparison. Another time, you notice that a DLL has changed, but do not follow the changed function far enough to understand the flow.</p>
+<p>So I started automating the investigation. Not because the automation is the story, but because the missing visibility is the story.</p>
+<p>I wanted a repeatable way to ask the same questions every time a new IME version appears. What changed in the MSI? Did the install flow change? Did custom actions change? Which payload files changed? Which managed DLLs changed? Were there method level changes? If a function changed, what does that function actually do? Is the change proven by the evidence, or is it still an interpretation that needs runtime validation?</p>
+<p>That last question is important.</p>
+<p>It is very easy to overstate findings when looking at internal changes. A function name can suggest intent, but that does not mean the flow is active. A new branch can exist before it is used. A changed DLL can look exciting and still be nothing more than cleanup. That is why these Intune Management Extension release notes need to be honest about what is proven and what is not.</p>
+<p>The goal is not to turn every internal change into a dramatic story. The goal is to explain what changed, why it may matter, and what still needs to be tested. That is the kind of Intune Management Extension release note I would actually want to read.</p>
+<h2 class="wp-block-heading" id="h-the-function-flow-is-the-real-story">The function flow is the real story<span class="clth-copy-icon" data-heading-id="h-the-function-flow-is-the-real-story"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>One thing I wanted from these<strong><a href="https://github.com/call4cloud-code/IME-Change-Tracker"> Intune Management Extension release notes</a></strong> is a Mermaid flow, not a generic diagram that only shows one version compared to another. That looks nice, but it does not help much when you are trying to understand a changed DLL.</p>
+<figure class="wp-block-image size-large"><a data-caption="itnune managem" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/05/image-40-1024x775.png"><picture class="wp-image-185484" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-40-1024x775.png.webp 1024w, https://patchmypc.com/app/uploads/2026/05/image-40-300x227.png.webp 300w, https://patchmypc.com/app/uploads/2026/05/image-40-768x581.png.webp 768w, https://patchmypc.com/app/uploads/2026/05/image-40.png.webp 1102w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="itnune managem" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-40-1024x775.png 1024w, https://patchmypc.com/app/uploads/2026/05/image-40-300x227.png 300w, https://patchmypc.com/app/uploads/2026/05/image-40-768x581.png 768w, https://patchmypc.com/app/uploads/2026/05/image-40.png 1102w" decoding="async" src="assets/9d55962fac6a6417/img_8.png"/><noscript><img alt="itnune managem" decoding="async" src="assets/9d55962fac6a6417/img_9.png"/></noscript>
+</picture>
+</a></figure>
+<p>If an existing IME function changed, the diagram should explain how that function works. What comes in, what gets checked, which branch is taken, what action happens, which state is updated, what gets logged, and what comes out at the end.</p>
+<p>That kind of flow makes a technical release note easier to understand. You do not need to start by staring at IL or decompiled C#. You can first look at the function flow to understand the rough behavior, then look at the evidence behind it.</p>
+<p>That is much more useful than a generic <strong>“old version versus new version” </strong>diagram. If the changed function flow can be proven from the evidence, the release note should show it. If the evidence is not strong enough, the release note should say that too. </p>
+<h2 class="wp-block-heading" id="h-publishing-the-intune-management-extension-release-notes-on-github">Publishing the Intune Management Extension Release Notes on GitHub<span class="clth-copy-icon" data-heading-id="h-publishing-the-intune-management-extension-release-notes-on-github"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>The next step is making the results public. The IME change notes will be published on <strong><a href="https://github.com/call4cloud-code/IME-Change-Tracker">GitHub in the IME Change Tracker repository</a></strong>. The idea is simple. Every time a new IME version is found, there should be a place to capture, review, and search for package differences later.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/05/image-39.png"><img alt="" class="wp-image-185483" data-lazy-sizes="(max-width: 913px) 100vw, 913px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-39.png 913w, https://patchmypc.com/app/uploads/2026/05/image-39-300x21.png 300w, https://patchmypc.com/app/uploads/2026/05/image-39-768x53.png 768w" decoding="async" src="assets/9d55962fac6a6417/img_10.png"/><noscript><img alt="" class="wp-image-185483" decoding="async" src="assets/9d55962fac6a6417/img_11.png"/></noscript></a></figure>
+<p>Some releases will probably be boring, and that is perfectly fine. A boring release note that says the MSI changed, but that no meaningful method-level changes were found, still has value. It saves time. It suggests there is probably no reason to spend the evening digging through DLLs.</p>
+<p>Other releases will be more interesting, because maybe a function showed up those hints at something Microsoft is preparing. Those are the changes I want to capture.</p>
+<p>Not as official Microsoft documentation, and not as a replacement for the Intune “<strong>What’s new</strong>” page. This is more of a technical companion for people who spend time troubleshooting the device side of Intune.</p>
+<h2 class="wp-block-heading" id="h-why-this-helps">Why this helps<span class="clth-copy-icon" data-heading-id="h-why-this-helps"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>Most Intune troubleshooting starts after something has already gone wrong. An app does not install. A remediation does not run. A script behaves differently. A device reports something unexpected. A feature starts behaving slightly differently than it did last week.</p>
+<p>When that happens, having a history of IME changes gives you a better starting point. You can check whether there was a new IME version, whether the app plugin changed, whether the scripts plugin changed, whether AgentCommon.dll changed, whether the MSI custom actions changed, or whether a function related to that flow was touched.</p>
+<p>Those answers do not solve everything, but they help you stop guessing. And that is the whole point. The IME is no longer just the Win32 app agent. It is one of the most important moving parts on an Intune-managed Windows device. If that moving part changes, I want to know what changed, what probably matters, and what still needs to be validated.</p>
+<p><strong>Moving parts deserve release notes.</strong></p>
+<p><a href="https://github.com/call4cloud-code/IME-Change-Tracker">https://github.com/call4cloud-code/IME-Change-Tracker</a></p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

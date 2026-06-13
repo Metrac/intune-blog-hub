@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Driver Automation Tool – Upgraded</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">MSEndpointMgr</span>
+    <span class="date">May 19, 2026</span>
+  </div>
+  <h1>Driver Automation Tool – Upgraded</h1>
+  <div class="orig">Saved for offline reading · <a href="https://msendpointmgr.com/2026/05/19/driver-automation-tool-upgraded/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p data-block-type="core">With its roots back in 2016, the Driver Automation Tool has been one of those projects that started off as an internal tool, and quickly became something that people relied on to serve the need to populate Driver and BIOS updates in Configuration Manager.</p>
+<p data-block-type="core">The tool was, of course, one part of a solution Nickolaj Andersen and I called “Modern Driver Management”, later expanded to include “Modern BIOS Management”, and it quickly gained popularity within the community, as it filled a gap in Configuration Manager’s own driver package handling. </p>
+<p data-block-type="core">The Driver Automation Tool has evolved since then, and just under four weeks ago, a long-overdue update was released, marking its 10th iteration in the 10 years of development. This post is both an update from me about its development and the issues associated with it over the years, along with excitement at the new features of the new release and where they can help admins, including Intune admins..</p>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#community-tools-a-labour-of-love" id="community-tools-a-labour-of-love"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Community Tools – A Labour of Love</h3>
+<p data-block-type="core">As with all community tools, the thing is they are a passion project where individuals typically start off by solving a need for themselves. This is the case with the Driver Automation Tool, which I initially created just as a PowerShell script to download and inject the binaries into Configuration Manager. This for me was a time saver and therefore at the time I thought if it helped me, it could help others, so a rough GUI was bolted on, and it was yeet’ed to the community.</p>
+<p data-block-type="core">During the initial few years I worked with OEM’s to get or even help them setup their own XML feeds, and for the most part things were stable. Of course there are times when some OEM’s throw a curveball and it knocks the tool out of sync, causing it at worst case to not display the models you need from that OEM, but I have always tried to stay on top of it. </p>
+<p data-block-type="core">Over time, though, life changes, and through changes in my personal family commitments and career moves, the time to spend on this project became extremely limited. Unfortunately, the optics on this aren’t always clear, so, of course, people would complain that the project was no longer being maintained, or, in the worst cases, they would demand calls with me or even slate my efforts on social media. This got to me because sometimes things in life need to take priority, and my time was simply not available due to real priorities in life. </p>
+<p data-block-type="core">The fact is, I have never abandoned the project. Now, fast forward to a few months ago, and one of the requests I had from my employer was that I could have time to set aside to work on an update. Then, the secure boot issue entered the room.</p>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#secure-boot-the-kick-i-needed" id="secure-boot-the-kick-i-needed"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Secure Boot – The Kick I Needed</h3>
+<p data-block-type="core">Having gone full circle and now being in an internal-facing role, one of my responsibilities was themanagement of our Intune environment. With devices being patched through Microsoft Autopatch, things were usually looking good until the need to look into the firmware deeper came with the requirement to ensure BIOS firmware was updated on all devices.</p>
+<p data-block-type="core">This led me to discover that some models in particular were better at keeping up to date, and in some cases, models that had the latest firmware on some machines did not on others. </p>
+<figure class="wp-block-image size-full" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/05/image-25.png"><img alt="" class="wp-image-26561" decoding="async" src="assets/e8659b29c9c551ca/img_0.png"/></a></figure>
+<p data-block-type="core">I’m not knocking Autopatch at all, by the way, but I did realise that for admins like myself, they might need another option to ensure their devices were kept up to date.</p>
+<p data-block-type="core">This caused me to essentially reboot the Driver Automation Tool, to serve my own needs again. In this case, the world had moved on, and Configuration Manager was not the deployment method, so I did something I wanted to do for a long time, and that was to add Intune support properly. </p>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#a-new-friend-claude" id="a-new-friend-claude"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>A New Friend – Claude</h3>
+<p data-block-type="core">AI is all around us today, and if you are not dabbling in leveraging it for even simple processes, then you should, as it is better to always stay at the curve when working in IT. Leveraging Claude to look at the code base for the V7 and V8 builds of the Driver Automation Tool, I had a number of objectives, including;</p>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core">Intune Support</li>
+<li data-block-type="core">Toast Notifications + Control</li>
+<li data-block-type="core">A Better, Faster UI, moving away from WinForms and Sapien requirements</li>
+<li data-block-type="core">More intuative features</li>
+<li data-block-type="core">Reporting</li>
+</ul>
+<p data-block-type="core">With this in mind, I set about migrating the code to a WPF + XAML UI, and within a few weeks of coding, the initial V10 release was ready to ship. </p>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/05/MainUI-1.png"><img alt="" class="wp-image-26559" decoding="async" src="assets/e8659b29c9c551ca/img_1.png"/></a></figure>
+<p data-block-type="core">The real benefit of working with AI on this was reduced time to work on the code, allowing me to add the things I always wanted to do, much quicker. </p>
+<p data-block-type="core">At the same time, I thought the tool deserved its own standalone website and branding, not because of any issues with the MSEndpointMgr team or brand, it’s just something I have worked on for so many years, and I wanted the site to include API’s and reporting, so <a href="https://www.driverautomationtool.com" rel="noreferrer noopener" target="_blank">https://www.driverautomationtool.com</a> was born.</p>
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="" class="wp-image-26562" decoding="async" src="assets/e8659b29c9c551ca/img_2.png"/></figure>
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="" class="wp-image-26569" decoding="async" src="assets/e8659b29c9c551ca/img_3.png"/></figure>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#new-tool-new-features" id="new-tool-new-features"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>New Tool, New Features</h3>
+<p data-block-type="core">Today, the tool is now in its 30th build, and while that might sound like a lot of a tool out in less than 4 weeks, what it actually means is I am listening to GitHub issues, and I am adding new functional requests quickly to help those use the tool in the best way possible.</p>
+<p data-block-type="core">New community driven additions include</p>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core"><strong>Custom App authentication</strong></li>
+</ul>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/05/image-30.png"><img alt="" class="wp-image-26566" decoding="async" src="assets/e8659b29c9c551ca/img_4.png"/></a></figure>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core"><strong>Fully customisable toast notifications</strong></li>
+</ul>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/05/image-29.png"><img alt="" class="wp-image-26565" decoding="async" src="assets/e8659b29c9c551ca/img_5.png"/></a></figure>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core"><strong>Code signing of certificates (bring your own cert)</strong></li>
+</ul>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/05/image-31.png"><img alt="" class="wp-image-26567" decoding="async" src="assets/e8659b29c9c551ca/img_6.png"/></a></figure>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core"><strong>Package assignment directly in the UI</strong></li>
+</ul>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/05/image-28.png"><img alt="" class="wp-image-26564" decoding="async" src="assets/e8659b29c9c551ca/img_7.png"/></a></figure>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core"><strong>Multi OS selection to show all possible downloads</strong></li>
+</ul>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/05/image-27.png"><img alt="" class="wp-image-26563" decoding="async" src="assets/e8659b29c9c551ca/img_8.png"/></a></figure>
+<p data-block-type="core">The list will continue to grow and I have more ideas…</p>
+<p data-block-type="core">Some key stats in the past 4 weeks include;</p>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core"><strong>396 </strong>unique installations (correction 397 as I was typing)</li>
+<li data-block-type="core"><strong>4838</strong> driver packages created</li>
+<li data-block-type="core"><strong>7727</strong> bios packages created</li>
+<li data-block-type="core"><strong>1227</strong> unique models selected</li>
+</ul>
+<p data-block-type="core">If you are still on the old V7 release, or have not revisited the updated version, I urge you to do so as it contains so many improvements over the old release, and something I am now once again proud to be driving as a solution for the community.</p>
+<p data-block-type="core">Download from GitHub here – <a href="https://github.com/maurice-daly/DriverAutomationTool" rel="noopener" target="_blank">maurice-daly/DriverAutomationTool: Home of the Driver Automation Tool</a></p>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#community-support" id="community-support"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Community Support</h3>
+<p data-block-type="core">During the development of the new V10 build, it is only right that I thank two people who, in particular, have done a lot of testing. They are Paul Andrews (<a href="https://www.linkedin.com/in/paulandrews-ca/" rel="noopener" target="_blank">Paul Andrews | LinkedIn</a>) and Thomas Førde (<a href="https://www.linkedin.com/in/thomasforde/" rel="noopener" target="_blank">Thomas Førde | LinkedIn</a>), who worked long hours to undertake end-user testing, highlight bugs, and steer the direction of the development. Thanks to both of you!</p>
+<p data-block-type="core">Another word of thanks goes to the good folks at Patch My PC, who have always supported my efforts over the years by including the tool in the catalogue, although it might be removed now (due to the retirement of the MSI). </p>
+<p data-block-type="core">This is where the true spirit of community tools comes from, and I am looking forward to ensuring that the tool is maintained and maybe even goes a step further in the future.</p>
+<p class="post-views content-post post-26558 entry-meta load-static">
+<span class="post-views-icon dashicons dashicons-chart-bar"></span> <span class="post-views-label">Views:</span> <span class="post-views-count">1,118</span>
+</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

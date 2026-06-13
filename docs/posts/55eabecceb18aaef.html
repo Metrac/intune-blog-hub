@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intune Newsletter – 12th June 2026</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Andrew Taylor</span>
+    <span class="date">June 11, 2026</span>
+  </div>
+  <h1>Intune Newsletter – 12th June 2026</h1>
+  <div class="orig">Saved for offline reading · <a href="https://andrewstaylor.com/2026/06/12/intune-newsletter-12th-june-2026/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text">
+<p>Welcome back everyone!  This weeks newsletter comes live from Experts Live UK where I have had a very busy week and am very much looking forward to the weekend.</p>
+<p>A special thanks to everyone who attended the Intune pre-day workshop:</p>
+<p><img alt="" class="wp-image-6013 aligncenter" decoding="async" fetchpriority="high" src="assets/55eabecceb18aaef/img_0.jpg"/></p>
+<p>This has been put together in trains, hotel rooms and conference rooms so whilst I think I have everything, if I have missed something, I will include it next week!</p>
+<hr/>
+<h1>Community Content</h1>
+<p>We start this week with a guide on how to convert any Azure VM into a Windows 365 image using only Graph commands from <a href="https://www.linkedin.com/in/andrei-shchetkin/?locale=en">Andrei Shchetkin</a></p>
+<p><a href="https://shchetkin.dev/windows-365-migration-graph-api/">https://shchetkin.dev/windows-365-migration-graph-api/</a></p>
+<hr/>
+<p>For those of you running cloud native but still needing drive mappings, or the dreaded printers, this script from <a href="https://www.linkedin.com/in/mrtbone/">T-Bone</a> should be the lifeline you are looking for.</p>
+<blockquote class="wp-embedded-content" data-secret="MlbyoSJ34G"><p><a href="https://www.tbone.se/2026/06/05/modern-drive-and-printer-mapping-for-cloud-native-windows-with-intune-and-powershell/">Modern Drive and Printer Mapping for Cloud-Native Windows with Intune and PowerShell</a></p></blockquote>
+<p></p>
+<hr/>
+<p>Autopatch does an excellent job of handling your updates carefully with the ring based system.  But what if you could also use those rings for your own use?  Follow this guide from <a href="https://www.linkedin.com/in/mads-johansen/">Mads Johansen</a> to learn how</p>
+<p><a href="https://evil365.com/intune/UsingAutopatch-RingSystem/">https://evil365.com/intune/UsingAutopatch-RingSystem/</a></p>
+<hr/>
+<p>A treat for Lenovo users everywhere, the Lenovo Client Update (LCU) PowerShell module can now be used to get your drivers updated during pre-prov.  No more handing out laptops needing driver updates!  Learn more here from <a href="https://www.linkedin.com/in/pej1025/">Philip Jorgensen</a></p>
+<p><a href="https://blog.lenovocdrt.com/autopilot-pre-provisioning-current-drivers-firmware-bios-lcu/">https://blog.lenovocdrt.com/autopilot-pre-provisioning-current-drivers-firmware-bios-lcu/</a></p>
+<hr/>
+<p>If you are (correctly) using Defender for Cloud Apps to block unsanctioned software but drowning in alerts, this post from <a href="https://www.linkedin.com/in/jeffrey-appel-nl/">Jeffrey Appel</a> will help clear things</p>
+<p><a href="https://jeffreyappel.nl/disable-alert-generation-for-unsanctioned-apps-in-microsoft-defender-for-cloud-apps/">https://jeffreyappel.nl/disable-alert-generation-for-unsanctioned-apps-in-microsoft-defender-for-cloud-apps/</a></p>
+<hr/>
+<p>CMTrace was always a hidden secret, but this is 2026 and we have to move on (although you will never remove Doom from any of my machines!).  Fortunately <a href="https://www.linkedin.com/in/fsalzmann/">Florian Salzmann</a> and <a href="https://www.linkedin.com/in/jannik-r/">Jannik Reinhard</a> have created an excellent new cloud based alternative!</p>
+<p><a href="https://cmtrace.dev/">https://cmtrace.dev/</a></p>
+<hr/>
+<p>When running multi-app kiosks, you definitely don’t want your users accessing apps they shouldn’t be able to access and ideally they shouldn’t be able to see them either.  This post from <a href="https://www.linkedin.com/in/peterwoude/">Peter van der Woude</a> shows how to hide those pesky recommended apps</p>
+<blockquote class="wp-embedded-content" data-secret="uaSMh2eunk"><p><a href="https://petervanderwoude.nl/post/hiding-the-recommended-section-from-the-start-layout-and-multi-app-kiosk-mode/">Hiding the recommended section from the Start layout and multi-app kiosk mode</a></p></blockquote>
+<p></p>
+<hr/>
+<p>Whilst not Intune related (yet), keeping track with what’s new in macOS is always useful because it will reach Intune eventually.  Look at what has been announced in this post from <a href="https://www.linkedin.com/in/simoneriksendk/">Simon Hartmann Eriksen</a></p>
+<blockquote class="wp-embedded-content" data-secret="YympyEIZ9L"><p><a href="https://www.simsenblog.dk/2026/06/10/wwdc26-news-on-mac-management/">WWDC26: News on Mac Management</a></p></blockquote>
+<p></p>
+<hr/>
+<p>If you’re looking at expanding your IT book library, there is an excellent humble bundle here including my book:</p>
+<p><a href="https://www.humblebundle.com/books/ultimate-linux-sysadmin-bundle-books?hmb_source=&amp;hmb_medium=product_tile&amp;hmb_campaign=mosaic_section_1_layout_index_3_layout_type_threes_tile_index_1_c_ultimatelinuxsysadminbundle_bookbundle">https://www.humblebundle.com/books/ultimate-linux-sysadmin-bundle-books?hmb_source=&amp;hmb_medium=product_tile&amp;hmb_campaign=mosaic_section_1_layout_index_3_layout_type_threes_tile_index_1_c_ultimatelinuxsysadminbundle_bookbundle</a></p>
+<hr/>
+<h1><a id="video"></a>Video Content</h1>
+<p>Now for this weeks video content with a look at some exciting new settings available in Settings Catalog from <a href="https://www.linkedin.com/in/markoldham365/">Mark Oldham</a></p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/goUoL8oNzi8?feature=oembed" title="5 New Settings Catalog Features in Intune Windows Restore, Silent Print and More">VIDEO</iframe></p>
+<hr/>
+<h1><a id="microsoft"></a>Microsoft Content</h1>
+<p>If you want to implement Zero Trust for your Intune admin roles themselves, follow this guide from <a href="https://www.linkedin.com/in/chris-vetter07/">Chris Vetter</a></p>
+<p><a href="https://techcommunity.microsoft.com/t5/core-infrastructure-and-security/implementing-intune-rbac-and-scope-tags-for-zero-trust-and-least/ba-p/4506889">https://techcommunity.microsoft.com/t5/core-infrastructure-and-security/implementing-intune-rbac-and-scope-tags-for-zero-trust-and-least/ba-p/4506889</a></p>
+<hr/>
+<p>It’s a big day, MDOP is now out of support, it will be missed.  Learn what this means for you here from <a href="https://www.linkedin.com/in/joelurie/">Joe Lurie</a></p>
+<p><a href="https://techcommunity.microsoft.com/blog/IntuneCustomerSuccess/mdop-is-out-of-support-what-to-do-next-with-microsoft-intune/4526024">https://techcommunity.microsoft.com/blog/IntuneCustomerSuccess/mdop-is-out-of-support-what-to-do-next-with-microsoft-intune/4526024</a></p>
+<hr/>
+<p>Learn how to use GitHub Copilot to analyze your Intune logs here with <a href="https://www.linkedin.com/in/stefan-roell-70a382a8/">Stefan Röll</a></p>
+<p><a href="https://techcommunity.microsoft.com/blog/coreinfrastructureandsecurityblog/analyse-intune-diagnostics-logs-with-github-copilot/4527500">https://techcommunity.microsoft.com/blog/coreinfrastructureandsecurityblog/analyse-intune-diagnostics-logs-with-github-copilot/4527500</a></p>
+<hr/>
+<p>That’s all for this week, have an amazing weekend!</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

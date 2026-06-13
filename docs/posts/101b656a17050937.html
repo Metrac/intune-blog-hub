@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Working with the automatic enablement of Windows hotpatch security updates</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Peter van der Woude</span>
+    <span class="date">April 13, 2026</span>
+  </div>
+  <h1>Working with the automatic enablement of Windows hotpatch security updates</h1>
+  <div class="orig">Saved for offline reading · <a href="https://petervanderwoude.nl/post/working-with-the-automatic-enablement-of-windows-hotpatch-security-updates/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text">
+<p class="wp-block-paragraph">This week is all about the recently introduced configuration that will enable Windows hotpatch security updates by default. The configuration to enable the usage of hotpatch security updates has been available since the introduction of Windows 11 version 24H2, and can be configured relatively as shown in <a href="https://petervanderwoude.nl/post/enabling-hotpatch-for-windows-11-enterprise/">this post</a>. Starting with the Windows security update of May 2026, Windows Autopatch will enable hotpatch security updates by default. That should help organizations with easier getting more secure. The configuration is achieved via a tenant-wide configuration via Windows Autopatch that is only applied when no quality update policies are applied to the device. That configuration is available in Microsoft Intune and will be enabled by default. This post will provide a closer look at that new tenant-wide configuration, the alternatives, and the actual applied configuration on the device.</p>
+<p class="has-background wp-block-paragraph"><strong>Note</strong>: This change applies whether using Windows Autopatch or the Windows updates API.</p>
+<h2 class="wp-block-heading">Reviewing tenant configuration for applying updates without restarting</h2>
+<p class="wp-block-paragraph">When looking at the new tenant-wide configuration to enable hotpatch security updates, the actual configuration is pretty straightforward. The configuration is available in <strong>Microsoft Intune</strong> by navigating to <strong>Tenant admin</strong> &gt; <strong>Windows Autopatch</strong> &gt; <strong>Tenant Management</strong> &gt; <strong>Tenant settings</strong>. On the <strong>Tenant admin | Tenant management</strong> page, the configuration <strong>When available, apply updates without restarting the device (“Hotpatch”)</strong> is switched to <strong>Allow</strong> by default to automatically enable hotpatch security updates for all devices that are registered with Windows Autopatch. That information is shown in Figure 1.</p>
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-1 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><a href="https://petervanderwoude.nl/wordpress/wp-content/uploads/WATC-ConfigurationSetting.png"><img alt="" class="wp-image-23157" data-id="23157" decoding="async" src="assets/101b656a17050937/img_0.png"/></a><figcaption class="wp-element-caption">Figure 1: Overview of the tenant-wide configuration for enabling Windows Autopatch</figcaption></figure>
+</figure>
+<p class="wp-block-paragraph">This configuration does not mean that hotpatch security updates will be mandatory for every organization and every user. First, this slider can be turned of again, and second, this configuration will only be applied when no other quality update policies that configure hotpatch security updates are applied to the device. That combination enables organization to still introduce hotpatch security updates at their own pace. Their own quality update policy will take precedence. </p>
+<p class="has-background wp-block-paragraph"><strong>Important</strong>:  Hotpatch security update configuration in quality update policies take precedence over tenant settings.</p>
+<h2 class="wp-block-heading">Experiencing tenant configuration on the device</h2>
+<p class="wp-block-paragraph">When the tenant-wide configuration is in place, it is time to verify the configuration. There are many methods to verify that hotpatch security updates are enabled and functional. Most of those methods do, however, not really provide insights in where the information is coming from. The reporting, for example, is great, but only provide insights in the updates that devices are installing and not in the the configuration on the devices. Locally on the device there are multiple places available that show the successful configuration of enabling hotpatch security updates. The best and easiest places to look at, are the registry on the device and the <em>Settings </em>app. Both provide a clear indication of the newly applied configuration. Besides that, both locations also provide information about were the configurations are coming from. Below in Figure 2 is an overview of the applied configuration in the Settings app (via <em>Windows Updat</em>e &gt; <em>Advanced Options</em> &gt; <em>Configured update policies</em>) and the registry. The first location shows that the configuration is coming from the <em>Cloud </em>and the other shows a different winning provider.</p>
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-2 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><a href="https://petervanderwoude.nl/wordpress/wp-content/uploads/WATC-ConfigurationExperience.png"><img alt="" class="wp-image-23155" data-id="23155" decoding="async" src="assets/101b656a17050937/img_1.png"/></a><figcaption class="wp-element-caption">Figure 2: Overview of the applied hotpatch security update configuration</figcaption></figure>
+</figure>
+<h2 class="wp-block-heading">More information</h2>
+<p class="wp-block-paragraph">For more information regarding the Windows hotpatch configuration options, refer to the following docs.</p>
+<div class="wp-block-group has-border-color"><div class="wp-block-group__inner-container is-layout-flow wp-block-group-is-layout-flow">
+<hr class="wp-block-separator has-alpha-channel-opacity is-style-wide"/>
+<h3 class="wp-block-heading has-text-align-center">Discover more from All about Microsoft Intune</h3>
+<p class="has-text-align-center wp-block-paragraph">Subscribe to get the latest posts sent to your email.</p>
+</div></div>
+</div>
+</div></div>
+</article>
+</body>
+</html>

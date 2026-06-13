@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intune Sync Debug Tool: The Last Royal Treasure</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Call4Cloud (Rudy Ooms)</span>
+    <span class="date">May 15, 2026</span>
+  </div>
+  <h1>Intune Sync Debug Tool: The Last Royal Treasure</h1>
+  <div class="orig">Saved for offline reading · <a href="https://call4cloud.nl/intune-sync-debug-toolkit/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p>This blog will show you all the information you need to know about the new Intune Sync Debug Tool. Which can be downloaded here:</p><p data-inserter-version="2" data-placement-location="under_page_title" id="ezoic-pub-ad-placeholder-102"></p>
+<p><a href="https://github.com/call4cloud-code/Intune-Sync-Debug-Tool-V2/tree/main" rel="noopener" target="_blank">call4cloud-code/Intune-Sync-Debug-Tool-V2: Intune Sync Debug Tool V2</a></p>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="Introduction"></span>Introduction<span class="ez-toc-section-end"></span></h2>
+<p>Some Intune sync issues look bigger than they really are. The device stops checking in. Policies are no longer coming down. The Intune portal keeps showing an old check-in time. You start looking at IME, sync buttons, scheduled tasks, and enrollment state, and before you know it, you are knee-deep in logs again.</p>
+<figure class="wp-block-image size-large"><img alt="" class="wp-image-25456" decoding="async" src="assets/83b696031272e049/img_0.png"/></figure>
+<p>But a lot of these issues still come back to the same boring but important thing.</p><p data-inserter-version="2" data-placement-location="under_first_paragraph" id="ezoic-pub-ad-placeholder-110"></p>
+<p><strong>The Intune MDM device certificate.</strong> If that certificate is missing, <strong><a href="https://call4cloud.nl/privatekey-missing-0x80072f99-sync-intune/">expired, in the wrong place, missing</a></strong> its <a href="https://call4cloud.nl/0x80072f9a-intune-mdm-sync-issue/">private key,</a> or if Windows has the wrong registry reference for it, the MDM stack can no longer authenticate properly. After that, sync starts failing and the device slowly turns into one of those “why is this still broken?” cases.</p>
+<p><strong><a href="https://github.com/call4cloud-code/Intune-Sync-Debug-Tool-V2/blob/main/README.md" rel="noopener" target="_blank">That is why I built the Intune Sync Debug Tool.</a></strong></p>
+<p>The first version was mostly a PowerShell repair tool that checked the Intune MDM certificate, looked at the MDM URLs, and used PsExec to run DeviceEnroller.exe as SYSTEM.</p><p data-inserter-version="2" data-placement-location="under_second_paragraph" id="ezoic-pub-ad-placeholder-111"></p>
+<p>This updated version is a lot cleaner. It focuses on the actual certificate state, the<strong> <code>Ss</code>l<code>ClientCertReference</code> </strong>wiring, the<strong> SslClientCertSearchCriteria</strong>, the MDM recovery flow, stale EnterpriseMgmt scheduled task folders, and the difference between the classic Intune MDM cert and the MMP C certificate.</p>
+<p>No more guessing. No more fixing the wrong thing first.</p>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="Installing_and_running_the_tool"></span>Installing and running the tool<span class="ez-toc-section-end"></span></h2>
+<p>The tool is still a PowerShell tool, but this version now opens a small WPF interface. That makes it easier to see what is broken and what the tool is going to fix. When the tool opens, it scans the local MDM enrollment state and shows the important parts directly in the overview.</p>
+<figure class="wp-block-image size-large"><img alt="" class="wp-image-25457" decoding="async" src="assets/83b696031272e049/img_1.png"/></figure>
+<p>It checks the local enrollment registry, the OMADM account registry, the MDM certificate stores, the TenantInfo URLs, the Primary Refresh Token state, and the <code>EnterpriseMgmt</code> scheduled task folders. The first button is simple: <strong>Scan for certificate issues</strong></p><p data-inserter-version="2" data-placement-location="mid_content" id="ezoic-pub-ad-placeholder-112"></p>
+<p>On a healthy device, you should see the enrollment row turn green. The status card should show that the certificate state is healthy and that AzureAdPrt is available.</p>
+<figure class="wp-block-image size-full"><img alt="" class="wp-image-25458" decoding="async" src="assets/83b696031272e049/img_2.png"/></figure>
+<p>Yes, the world moved to Entra. The <code>dsregcmd /status</code> output still calls it AzureAdPrt, so that is what the tool checks.  AzureAdPrt : YES.  That check matters. There is no point in blaming the MDM certificate if the device identity state is already broken.</p>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="What_the_tool_checks"></span>What the tool checks<span class="ez-toc-section-end"></span></h2>
+<p>The tool focuses on the MDM certificate state and the registry values that ensure OMADMClient uses the correct certificate.</p>
+<p>The most important checks are the certificate itself, the private key, the certificate location, the <code>DMPCertThumbPrint</code>, the <code>SslClientCertReference</code>, and the <code>SslClientCertSearchCriteria</code>.</p><p data-inserter-version="2" data-placement-location="long_content" id="ezoic-pub-ad-placeholder-113"></p>
+<p>A healthy Intune enrollment should have a usable certificate with a private key and registry values that point to that certificate. The important values are stored here.</p>
+<pre class="wp-block-code"><code>HKLM:\SOFTWARE\Microsoft\Enrollments\&lt;EnrollmentId&gt;<br/>HKLM:\SOFTWARE\Microsoft\Provisioning\OMADM\Accounts\&lt;EnrollmentId&gt;<br/>HKLM:\SOFTWARE\Microsoft\Provisioning\OMADM\Accounts\&lt;EnrollmentId&gt;\Protected</code></pre>
+<p>The values that matter are these.</p>
+<pre class="wp-block-code"><code>DMPCertThumbPrint<br/>SslClientCertReference<br/>SslClientCertSearchCriteria</code></pre>
+<p>The expected <code>SslClientCertReference</code> should look like this: MY;System;&lt;thumbprint&gt;</p>
+<p>The expected <code>SslClientCertSearchCriteria</code> should look like this: Subject=CN%3d&lt;EntDMID&gt;&amp;Stores=MY%5CSystem</p>
+<p>When those values are missing or pointing to the wrong thumbprint, the certificate can be perfectly fine, but OMADMClient still cannot use it. That is one of those issues that looks like a sync problem but is actually a certificate reference problem.</p>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="Intune_and_MMP_C_certificates"></span>Intune and MMP C certificates<span class="ez-toc-section-end"></span></h2>
+<p>One thing I wanted to make more obvious in this version is the certificate authority behind the certificate.</p>
+<p>The tool now labels the certificates like this.</p>
+<pre class="wp-block-code"><code><strong>Intune: Microsoft Intune MDM Device CA
+MMP C: Microsoft Intune Device Management Device CA</strong></code></pre>
+<figure class="wp-block-image size-full"><img alt="" class="wp-image-25459" decoding="async" src="assets/83b696031272e049/img_3.png"/></figure>
+<p>That distinction matters. If you only look for the classic <code>Microsoft Intune MDM Device CA</code> certificate, you can miss the MMP C side. If both exist, the overview shows which authority belongs to which enrollment row.</p><p data-inserter-version="2" data-placement-location="longer_content" id="ezoic-pub-ad-placeholder-114"></p>
+<p>This also helps when cleaning up or recovering the state. You do not want the tool to silently remove one certificate and leave the other one behind without telling you what happened.</p>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="The_private_key_check"></span>The private key check<span class="ez-toc-section-end"></span></h2>
+<p>A certificate without a private key is useless for this flow. That is why the tool does not call a row healthy just because the certificate exists. The certificate must exist, it must not be expired, and it must have a private key.</p>
+<p>If the certificate was exported without the private key and imported back into another store, the tool should mark that as broken. That is the correct behavior. A certificate object without the matching private key cannot be used for the MDM client authentication flow.</p>
+<p>The old tool had a private key repair option using <code>certutil -repairstore</code>. I removed that from the interface. In theory, it can help in some certificate binding scenarios, but for this specific Intune MDM certificate flow, I do not want the tool to pretend that it can always glue things back together. If the certificate is missing its private key, recovery is the cleaner route.</p><p data-inserter-version="2" data-placement-location="longest_content" id="ezoic-pub-ad-placeholder-115"></p>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="Certificate_location"></span>Certificate location<span class="ez-toc-section-end"></span></h2>
+<p>The tool also checks where the certificate actually lives.  That became important while testing because it is pretty easy to create a weird state. You can have the registry saying <code>MY;System</code>, while the certificate is sitting in the current user store. You can also have a cert in a user hive that looks correct at first glance, but does not have the private key available in the context where OMADMClient needs it.</p>
+<p>The tool checks the common locations.</p>
+<pre class="wp-block-code"><code>LocalMachine\My<br/>CurrentUser\My<br/>SYSTEM CurrentUser\My<br/>.DEFAULT CurrentUser\My<br/>Loaded user CurrentUser\My stores</code></pre>
+<p>For a normal healthy Intune MDM enrollment, the important part is still simple.</p>
+<pre class="wp-block-code"><code>SslClientCertReference = MY;System;&lt;thumbprint&gt;<br/>Certificate location   = LocalMachine\My<br/>Private key            = Yes</code></pre>
+<p>If the certificate is somewhere else, the tool shows that in the details view.</p>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="Fix_SSL_cert_reference"></span>Fix SSL cert reference<span class="ez-toc-section-end"></span></h2>
+<p>The <code>Fix SSL cert reference</code> button is for one specific type of issue.</p><p data-inserter-version="2" data-placement-location="incontent_5" id="ezoic-pub-ad-placeholder-116"></p>
+<p>The certificate exists. The private key is there. The certificate is in the correct location. But the registry values that point OMADMClient to that certificate are missing or wrong. In that case, the tool can repair these values.</p>
+<pre class="wp-block-code"><code>DMPCertThumbPrint<br/>SslClientCertReference<br/>SslClientCertSearchCriteria</code></pre>
+<p>It does not blindly write those values. It first needs to find a valid certificate and the right <code>EntDMID</code>. If the certificate is missing, expired, in the wrong store, or missing the private key, the tool will not treat that as a simple SSL reference issue. That is when you use recovery instead.</p>
+<p>This was important to fix because earlier versions of the tool could show a confusing message. If the certificate was gone, it could still complain about a thumbprint mismatch. That was technically true, but not useful. The real issue in that case is not the mismatch. The real issue is that the certificate is missing.</p>
+<p>The updated tool checks that first.</p>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="Option_1_Easy_recovery"></span>Option 1: Easy recovery<span class="ez-toc-section-end"></span></h2>
+<p>The first recovery option is called <code>Option 1: Easy recovery</code>.</p><p data-inserter-version="2" data-placement-location="incontent_6" id="ezoic-pub-ad-placeholder-117"></p>
+<p>This is the option to use when the local MDM enrollment state is still mostly intact, but the MDM certificate needs to come back. The tool checks whether recovery is allowed. If needed, it sets the recovery flag. If the MDM certificate is still present, it removes it. Then it triggers an MDM sync and waits for Windows to recover the certificate.</p>
+<p>The event you want to see is this one.: Event 272<br/>Device token MDM recovery successful</p>
+<p>That event shows up in the DeviceManagement Enterprise Diagnostics Provider logs and tells us that the recovery path worked. The tool also watches the MDM sync events. One useful event is event <code>209</code> in the Sync log: MDM Session: OMA DM session ended with status: The operation completed successfully.</p>
+<p>That is a nice signal, but it is not the final health check. The final verdict still comes from the actual certificate state. Is the certificate present? Is the private key there? Is the certificate in the right location? Do the SSL reference values point to the right thumbprint?</p>
+<p>That is what decides green or red.</p>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="Option_2_Hard_recovery"></span>Option 2: Hard recovery<span class="ez-toc-section-end"></span></h2>
+<p>The second recovery option is called <code>Option 2: Hard recovery</code>.</p><p data-inserter-version="2" data-placement-location="incontent_7" id="ezoic-pub-ad-placeholder-118"></p>
+<p>This one skips Easy recovery completely.  It is for cases where the local MDM enrollment state is too broken and you want to clean it up and trigger a fresh MDM reenrollment. The old tool used PsExec to run <code>DeviceEnroller.exe</code> as SYSTEM. That worked, but it could also be blocked by ASR rules or AV. It could also create noise in your SIEM. That is not ideal for a troubleshooting tool.</p>
+<p>The updated tool uses a temporary SYSTEM scheduled task instead. The task runs this command: DeviceEnroller.exe /C /AutoEnrollMDM</p>
+<p>That gives us the SYSTEM context without needing PsExec for the normal flow. Before running DeviceEnroller, the tool also checks and repairs the TenantInfo MDM URLs.</p>
+<pre class="wp-block-code"><code>MdmEnrollmentUrl = https://enrollment.manage.microsoft.com/enrollmentserver/discovery.svc<br/>MdmTermsOfUseUrl = https://portal.manage.microsoft.com/TermsofUse.aspx<br/>MdmComplianceUrl = https://portal.manage.microsoft.com/?portalAction=Compliance</code></pre>
+<p>That part matters. If those URLs are missing, Windows may not know where to go when you trigger enrollment. Hard recovery removes stale MDM enrollment artifacts, removes the related MDM certificates, cleans up the old EnterpriseMgmt scheduled task folders, and then triggers reenrollment. That is why the tool shows a clear warning before it runs.</p>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="What_changed_compared_to_the_old_tool"></span>What changed compared to the old tool<span class="ez-toc-section-end"></span></h2>
+<p>The old Intune Sync Debug Tool was mostly a console based repair script. It checked the Intune MDM Device CA certificate, looked at the expiration date, checked for private key issues, checked the wrong store scenario, fixed MDM URLs, checked <code>dmwappushservice</code>, and used PsExec with an encoded command to trigger the repair flow. That worked, but it was also a bit rough.</p><p data-inserter-version="2" data-placement-location="incontent_8" id="ezoic-pub-ad-placeholder-119"></p>
+<p><strong><a href="https://github.com/call4cloud-code/Intune-Sync-Debug-Tool-V2/tree/main" rel="noopener" target="_blank">The updated version </a></strong>is more targeted. It has a WPF interface. It labels Intune and MMP C certificates. It checks the private key state. It checks the actual certificate location. It verifies <code>SslClientCertReference</code> and <code>SslClientCertSearchCriteria</code>. It can repair those values when safe. It uses Easy recovery for certificate recovery. It uses a temporary SYSTEM scheduled task for hard recovery. It detects stale <code>EnterpriseMgmt</code> folders. It checks <code>AzureAdPrt</code>. It no longer depends on PsExec for the normal flow.</p>
+<p>And just as important, it tries not to fix the wrong thing.</p>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="Conclusion"></span>Conclusion<span class="ez-toc-section-end"></span></h2>
+<p>Having Intune sync issues on a device is annoying. But not every sync issue is really a sync issue.</p>
+<p>Sometimes the MDM certificate is missing. Sometimes the private key is gone. Sometimes the SSL reference values are wrong. Sometimes the certificate is healthy, and the only leftover mess is an old <code>EnterpriseMgmt</code> scheduled task folder.</p>
+<p>That is why the updated<strong><a href="https://github.com/call4cloud-code/Intune-Sync-Debug-Tool-V2/tree/main" rel="noopener" target="_blank"> Intune Sync Debug Too</a></strong>l tries to separate those states before touching anything.If the certificate is present and usable, fix the SSL reference wiring.</p><p data-inserter-version="2" data-placement-location="incontent_9" id="ezoic-pub-ad-placeholder-120"></p>
+<p>If the certificate is missing but the enrollment is still intact, use Easy Recovery. If the local enrollment state is broken, use Hard recovery.If only an old scheduled task folder is left behind, remove that stale folder and move on. No magic. No guessing. Just checking the right local state and fixing the part that is actually broken.</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

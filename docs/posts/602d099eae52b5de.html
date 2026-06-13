@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Controlled Configuration for Microsoft Defender Antivirus settings</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Call4Cloud (Rudy Ooms)</span>
+    <span class="date">May 11, 2026</span>
+  </div>
+  <h1>Controlled Configuration for Microsoft Defender Antivirus settings</h1>
+  <div class="orig">Saved for offline reading · <a href="https://patchmypc.com/blog/controlled-configuration-for-microsoft-defender-antivirus-settings/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="post-content">
+<p>In this blog, we will look at something new coming: <strong>Controlled Configuration for Microsoft Defender antivirus setting</strong>s. It sounds like another Defender setting at first, but the pieces already sitting on the device tell a much bigger story. Almost a year ago, I noticed the first traces of it, and now that Microsoft has finally mentioned Controlled Configuration publicly, it is time to connect those dots.</p>
+<p><strong>Please Note: This blog is based on OSINT and purely my own investigation….. nothing else… well… maybe the update of the<a href="https://learn.microsoft.com/en-us/intune/whats-new/in-development"> what’s in development pages from MSFT</a></strong></p>
+<h2 class="wp-block-heading" id="h-introduction-to-controlled-configuration">Introduction to Controlled Configuration<span class="clth-copy-icon" data-heading-id="h-introduction-to-controlled-configuration"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>Almost a year ago (or even more), I stumbled upon something on one of my devices that immediately felt out of place. Buried in Program Files was a component called <strong>ControlConfigAdapter</strong>. I had never seen it before, Microsoft was not saying anything publicly about it, and the name was far too specific to ignore. So I started <strong>investigating….yes, investigating……</strong></p>
+<figure class="wp-block-image size-full"><a data-caption="ControlConfig Adapter" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/05/image-3.png"><picture class="wp-image-184233" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-3.png.webp 624w, https://patchmypc.com/app/uploads/2026/05/image-3-300x95.png.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="ControlConfig Adapter" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-3.png 624w, https://patchmypc.com/app/uploads/2026/05/image-3-300x95.png 300w" decoding="async" src="assets/602d099eae52b5de/img_0.png"/><noscript><img alt="ControlConfig Adapter" decoding="async" src="assets/602d099eae52b5de/img_1.png"/></noscript>
+</picture>
+</a></figure>
+<p>At first, it was just a folder, just a name, and that familiar feeling that Windows had quietly dropped something important on the device without much explanation (as always). What made it even stranger was where it showed up. This ControlConfig adapter came along in the same agent package as the <strong><a href="https://call4cloud.nl/intune-device-inventory-agent/">device inventory agent MSI</a></strong>… That alone was enough to make me think about it, because device inventory and configuration enforcement are not exactly the same story. The more I investigated, the less this looked like a random device inventory extension and the more it looked like the plumbing for something much bigger… Something new for <strong>Defender.</strong></p>
+<h2 class="wp-block-heading" id="h-controlled-configuration-does-not-belong-to-device-inventory">Controlled Configuration does not belong to Device Inventory<span class="clth-copy-icon" data-heading-id="h-controlled-configuration-does-not-belong-to-device-inventory"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>The first surprise was simply that it existed. If you notice a new agent or component on the device and it appears next to an inventory agent, the natural assumption is that it likely belongs to the same device inventory agent. <strong>ControlConfigAdapter </strong>was sure not. While doing some additional investigation, the function names did not mention inventory, collection, or hardware state. They were talking about <strong>config payloads</strong>, <strong>policy status</strong>, <strong>payload import</strong>, and something called <strong>SCC state</strong>.</p>
+<figure class="wp-block-image size-full"><a data-caption="Controlled Configuration Adapter" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/05/image-2.png"><img alt="Controlled Configuration Adapter" class="wp-image-184231" data-lazy-sizes="(max-width: 492px) 100vw, 492px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-2.png 492w, https://patchmypc.com/app/uploads/2026/05/image-2-300x110.png 300w" decoding="async" src="assets/602d099eae52b5de/img_2.png"/><noscript><img alt="Controlled Configuration Adapter" class="wp-image-184231" decoding="async" src="assets/602d099eae52b5de/img_3.png"/></noscript></a></figure>
+<p>That already pushed it in a very different direction. Instead of looking like an additional part of the device inventory agent, it started to look like something that receives policy, hands it off, and tracks the result.  That was the moment I started to believe it had something to do with Defender.</p>
+<h2 class="wp-block-heading" id="h-controlled-configuration-payload-import-and-policy-state">Controlled Configuration payload import and policy state<span class="clth-copy-icon" data-heading-id="h-controlled-configuration-payload-import-and-policy-state"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>Once I started following the functions, the story became clearer. The controlled configuration adapter has routines that line up around three big actions. First, it can import a <strong>configuration payload.</strong> One of the clearest examples is the function that logs, which calls <strong>MpImportConfigPayload.</strong></p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/05/image-4.png"><img alt="" class="wp-image-184232" data-lazy-sizes="(max-width: 603px) 100vw, 603px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-4.png 603w, https://patchmypc.com/app/uploads/2026/05/image-4-300x71.png 300w" decoding="async" src="assets/602d099eae52b5de/img_4.png"/><noscript><img alt="" class="wp-image-184232" decoding="async" src="assets/602d099eae52b5de/img_5.png"/></noscript></a></figure>
+<p>That alone is a strong hint that this adapter is not enforcing settings on its own. It looks more like a bridge that takes an incoming management payload and hands it to the <strong>Defender configuration</strong> layer through <strong>mpclient.dll</strong>.</p>
+<figure class="wp-block-image size-full"><a data-caption="Controlled Configuration loading mpclient" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/05/image-5.png"><img alt="Controlled Configuration loading mpclient" class="wp-image-184236" data-lazy-sizes="(max-width: 368px) 100vw, 368px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-5.png 368w, https://patchmypc.com/app/uploads/2026/05/image-5-300x60.png 300w" decoding="async" src="assets/602d099eae52b5de/img_6.png"/><noscript><img alt="Controlled Configuration loading mpclient" class="wp-image-184236" decoding="async" src="assets/602d099eae52b5de/img_7.png"/></noscript></a></figure>
+<p>Second, it can retrieve payload status. Another function calls <strong>MpGetConfigPayloadStatus</strong>, then reads the response and logs whether the payload was successfully retrieved. That tells you this is not a one-way push only. It also wants feedback from the Defender side.</p>
+<figure class="wp-block-image size-full"><a data-caption="SCC Secure Controlled Config" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/05/image-9.png"><img alt="SCC Secure Controlled Config" class="wp-image-184239" data-lazy-sizes="(max-width: 524px) 100vw, 524px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-9.png 524w, https://patchmypc.com/app/uploads/2026/05/image-9-300x231.png 300w" decoding="async" src="assets/602d099eae52b5de/img_8.png"/><noscript><img alt="SCC Secure Controlled Config" class="wp-image-184239" decoding="async" src="assets/602d099eae52b5de/img_9.png"/></noscript></a></figure>
+<p>Third, it keeps checking something called <strong>SCC state (secure controlled configuration?</strong>. Multiple functions revolve around reading that state, logging it, parsing versioned data, and turning it into policy reporting. So, there is an import path, a status path, and a state path.</p>
+<p>That combination matters. It means this adapter looks like a management bridge with full round-trip behavior. It takes the Secure Controlled configuration in, asks Defender to apply it, reads back the status, and exposes reporting on top of that.</p>
+<h2 class="wp-block-heading" id="h-the-mof-file-tied-it-into-microsoft-device-management">The MOF file tied it into Microsoft device management<span class="clth-copy-icon" data-heading-id="h-the-mof-file-tied-it-into-microsoft-device-management"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>While looking through the Controlled Configuration adapter folder… something else caught my eye. Inside the folder, there was a MOF file. That MOF file was the missing piece.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/05/image-11.png"><picture class="wp-image-184235" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-11.png.webp 624w, https://patchmypc.com/app/uploads/2026/05/image-11-300x44.png.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-11.png 624w, https://patchmypc.com/app/uploads/2026/05/image-11-300x44.png 300w" decoding="async" src="assets/602d099eae52b5de/img_10.png"/><noscript><img alt="" decoding="async" src="assets/602d099eae52b5de/img_11.png"/></noscript>
+</picture>
+</a></figure>
+<p>Instead of sitting in some private Defender-only corner, the provider is registered in the <strong>ROOT\MicrosoftDeviceManagement_Extensibility_ControlConfig</strong> namespace. The class is literally called <strong>ControlConfigAdapter</strong> and it inherits from <strong>OMI_BaseResource</strong>, which is exactly what we also noticed with the device inventory agent and how that one was connected to declared configuration.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/05/image-14.png"><img alt="" class="wp-image-184244" data-lazy-sizes="(max-width: 796px) 100vw, 796px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-14.png 796w, https://patchmypc.com/app/uploads/2026/05/image-14-300x61.png 300w, https://patchmypc.com/app/uploads/2026/05/image-14-768x156.png 768w" decoding="async" src="assets/602d099eae52b5de/img_12.png"/><noscript><img alt="" class="wp-image-184244" decoding="async" src="assets/602d099eae52b5de/img_13.png"/></noscript></a></figure>
+<p>The keys are also revealing. The class defines <strong>DocumentID</strong>, <strong>Version</strong>, <strong>MeID</strong>, <strong>PayloadName</strong>, <strong>SettingReportIDs</strong>, <strong>ReportNodeName</strong>, <strong>BaseReportNodeName</strong>, and <strong>ExtendedProperties</strong>. The actual payload is carried in <strong>ControlConfigPayload</strong> and the resource supports <strong>GetTargetResource</strong>, <strong>TestTargetResource</strong>, and <strong>SetTargetResource</strong>.</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/05/image-15-1024x154.png"><picture class="wp-image-184245" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-15-1024x154.png.webp 1024w, https://patchmypc.com/app/uploads/2026/05/image-15-300x45.png.webp 300w, https://patchmypc.com/app/uploads/2026/05/image-15-768x116.png.webp 768w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-15-1024x154.png 1024w, https://patchmypc.com/app/uploads/2026/05/image-15-300x45.png 300w, https://patchmypc.com/app/uploads/2026/05/image-15-768x116.png 768w, https://patchmypc.com/app/uploads/2026/05/image-15.png 1375w" decoding="async" src="assets/602d099eae52b5de/img_14.png"/><noscript><img alt="" decoding="async" src="assets/602d099eae52b5de/img_15.png"/></noscript>
+</picture>
+</a></figure>
+<p>It tells you this adapter is designed to receive a declarative device configuration document, identify it properly, apply it, test it, and report back…. <strong>Get … Set … test …</strong>  That is where the adapter stopped looking like a local Defender helper and started looking like a native Defender enforcement bridge connected to <strong><a href="https://patchmypc.com/blog/mmp-c-the-future-of-windows-device-management-with-intune/">MMP-C and WinDC</a></strong></p>
+<h2 class="wp-block-heading" id="h-scc-kept-showing-up-in-the-mpclient">SCC kept showing up in the MPClient<span class="clth-copy-icon" data-heading-id="h-scc-kept-showing-up-in-the-mpclient"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>Then there was the other breadcrumb that kept repeating itself as I investigated: <strong>SCC</strong>. It showed up everywhere. It showed up in the configuration tree under <strong>Features\SCC</strong> and <strong>Features\SCC\Notification</strong>.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/05/image-16.png"><picture class="wp-image-184246" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-16.png.webp 983w, https://patchmypc.com/app/uploads/2026/05/image-16-300x64.png.webp 300w, https://patchmypc.com/app/uploads/2026/05/image-16-768x163.png.webp 768w" sizes="(max-width: 983px) 100vw, 983px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 983px) 100vw, 983px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-16.png 983w, https://patchmypc.com/app/uploads/2026/05/image-16-300x64.png 300w, https://patchmypc.com/app/uploads/2026/05/image-16-768x163.png 768w" decoding="async" src="assets/602d099eae52b5de/img_16.png"/><noscript><img alt="" decoding="async" src="assets/602d099eae52b5de/img_17.png"/></noscript>
+</picture>
+</a></figure>
+<p>The MPClient also contains trace strings such as <strong>Origin_SCC</strong>, <strong>Origin_SCC_Policy</strong>,, <strong>TamperProtection</strong>, and even a string named <strong>SecureControledConfig</strong> with the typo included.</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/05/image-17-1024x165.png"><picture class="wp-image-184282" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-17-1024x165.png.webp 1024w, https://patchmypc.com/app/uploads/2026/05/image-17-300x48.png.webp 300w, https://patchmypc.com/app/uploads/2026/05/image-17-768x124.png.webp 768w, https://patchmypc.com/app/uploads/2026/05/image-17.png.webp 1309w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-17-1024x165.png 1024w, https://patchmypc.com/app/uploads/2026/05/image-17-300x48.png 300w, https://patchmypc.com/app/uploads/2026/05/image-17-768x124.png 768w, https://patchmypc.com/app/uploads/2026/05/image-17.png 1309w" decoding="async" src="assets/602d099eae52b5de/img_18.png"/><noscript><img alt="" decoding="async" src="assets/602d099eae52b5de/img_19.png"/></noscript>
+</picture>
+</a></figure>
+<p>So while Microsoft was not publicly explaining what <strong>SCC </strong>meant at the time, the Defender Client was already showing it. Whatever SCC is, it was being treated as a distinct policy source inside the Defender Agent. In other words, the function is not only concerned with whether a value exists. It is concerned with <strong>who owns the value</strong>, <strong>which source wins (sounds like tamper protection)</strong>, and whether local administrators are still allowed to merge or override settings.That starts to sound a lot stronger than classic tamper protection.</p>
+<h2 class="wp-block-heading" id="h-controlled-configuration-in-defender">Controlled Configuration In Defender<span class="clth-copy-icon" data-heading-id="h-controlled-configuration-in-defender"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>One of the more interesting parts is that the Defender provider already seems to know about this state.  Inside the <strong>ProtectionManagement</strong> MOF, the <strong>MSFT_MpComputerStatus</strong> class exposes a field called <strong>ControlledConfigurationState</strong>.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/05/image-6.png"><img alt="" class="wp-image-184238" data-lazy-sizes="(max-width: 616px) 100vw, 616px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-6.png 616w, https://patchmypc.com/app/uploads/2026/05/image-6-300x41.png 300w" decoding="async" src="assets/602d099eae52b5de/img_20.png"/><noscript><img alt="" class="wp-image-184238" decoding="async" src="assets/602d099eae52b5de/img_21.png"/></noscript></a></figure>
+<p>Which is also visible if you ask for the defender status</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/05/image-8.png"><img alt="" class="wp-image-184234" data-lazy-sizes="(max-width: 363px) 100vw, 363px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-8.png 363w, https://patchmypc.com/app/uploads/2026/05/image-8-300x34.png 300w" decoding="async" src="assets/602d099eae52b5de/img_22.png"/><noscript><img alt="" class="wp-image-184234" decoding="async" src="assets/602d099eae52b5de/img_23.png"/></noscript></a></figure>
+<p>That stood out immediately. It sits there next to other known Defender states, including <strong>IsTamperProtected</strong> and <strong>TamperProtectionSource</strong>. That means the Defender side is already prepared to expose a dedicated controlled configuration state. Not just tamper protection, but something better. That is a strong clue. It suggests that <strong>tamper protection and controlled configuration are not the same thing</strong>. They live next to each other in the Defender model.</p>
+<h2 class="wp-block-heading" id="h-controlled-configuration-showing-up-in-the-what-s-in-development">Controlled Configuration showing up in the What’s in Development<span class="clth-copy-icon" data-heading-id="h-controlled-configuration-showing-up-in-the-what-s-in-development"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>For a long time, all of that lived only in the code, on the device, and in the adapter itself. That made it interesting, but still incomplete. You could see the plumbing, but there was no public sign yet that connected it to an actual product direction. That finally changed once <strong>Controlled Configuration</strong> appeared on Microsoft’s <strong><a href="https://learn.microsoft.com/en-us/intune/whats-new/in-development">What’s in development</a></strong> page.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/05/image-13.png"><picture class="wp-image-184243" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-13.png.webp 624w, https://patchmypc.com/app/uploads/2026/05/image-13-300x284.png.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-13.png 624w, https://patchmypc.com/app/uploads/2026/05/image-13-300x284.png 300w" decoding="async" src="assets/602d099eae52b5de/img_24.png"/><noscript><img alt="" decoding="async" src="assets/602d099eae52b5de/img_25.png"/></noscript>
+</picture>
+</a></figure>
+<p>That matters more than it might seem. Because once Microsoft announced this <strong>Controlled Configuration for Microsoft Defender, </strong>the adapter suddenly stopped looking like an unfinished internal experiment and started looking exactly like what it had been hinting at all along. <strong>Tamper Protection v2 :)..</strong>… and it all started with the ControlConfig Adapter showing up on my devices last year!</p>
+<h2 class="wp-block-heading" id="h-controlled-configuration-for-defender-in-intune">Controlled Configuration For Defender in Intune<span class="clth-copy-icon" data-heading-id="h-controlled-configuration-for-defender-in-intune"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>I need to be a bit careful here, because this part is still more about where the signs are pointing than about a fully public experience everyone can click through today… so the next few sentences… is all based on what I think it will look like (AKA not present of today).</p>
+<p>But based on the current Intune Portal configuration and the way this feature is described,<strong> Controlled Configuration</strong> seems like a setting that would naturally sit in the same general area as the <strong>Tamper Protection</strong> setting in the <strong>Defender Configuration.</strong></p>
+<figure class="wp-block-image size-full"><a data-caption="tamper protection" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/05/image-10.png"><picture class="wp-image-184237" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-10.png.webp 624w, https://patchmypc.com/app/uploads/2026/05/image-10-300x80.png.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="tamper protection" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-10.png 624w, https://patchmypc.com/app/uploads/2026/05/image-10-300x80.png 300w" decoding="async" src="assets/602d099eae52b5de/img_26.png"/><noscript><img alt="tamper protection" decoding="async" src="assets/602d099eae52b5de/img_27.png"/></noscript>
+</picture>
+</a></figure>
+<p>In other words, this feels like something that would belong alongside the <strong>Defender antivirus and endpoint security experience… </strong>So when I need to make a wild guess, it will look something like this…</p>
+<figure class="wp-block-image size-full"><a data-caption="controlled configuration turned on" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/05/image-12.png"><picture class="wp-image-184240" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-12.png.webp 624w, https://patchmypc.com/app/uploads/2026/05/image-12-300x104.png.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="controlled configuration turned on" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-12.png 624w, https://patchmypc.com/app/uploads/2026/05/image-12-300x104.png 300w" decoding="async" src="assets/602d099eae52b5de/img_28.png"/><noscript><img alt="controlled configuration turned on" decoding="async" src="assets/602d099eae52b5de/img_29.png"/></noscript>
+</picture>
+</a></figure>
+<p>The Windows Security side also fits that direction. If the device is going to expose a <strong>Controlled Configuration State</strong>, then there is clearly already a local status concept for this feature. That means the experience is not only about sending policy down. It is also about showing whether the device is actually under that stronger configuration model.</p>
+<p><strong>Please note: The picture above and below are MOCKUPS!!!!! </strong></p>
+<figure class="wp-block-image size-full"><a data-caption="antivirus status showing the controlled configuration status" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/05/image.jpg"><picture class="wp-image-184241" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image.jpg.webp 784w, https://patchmypc.com/app/uploads/2026/05/image-300x159.jpg.webp 300w, https://patchmypc.com/app/uploads/2026/05/image-768x407.jpg.webp 768w" sizes="(max-width: 784px) 100vw, 784px" type="image/webp"/>
+<img alt="antivirus status showing the controlled configuration status" data-lazy-sizes="(max-width: 784px) 100vw, 784px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image.jpg 784w, https://patchmypc.com/app/uploads/2026/05/image-300x159.jpg 300w, https://patchmypc.com/app/uploads/2026/05/image-768x407.jpg 768w" decoding="async" src="assets/602d099eae52b5de/img_30.jpg"/><noscript><img alt="antivirus status showing the controlled configuration status" decoding="async" src="assets/602d099eae52b5de/img_31.jpg"/></noscript>
+</picture>
+</a></figure>
+<p>So while I would not present any portal layout as final, I would absolutely say this: if Microsoft rolls out Controlled Configuration, I would expect it to show up exactly where admins already manage Defender security posture, only with a much heavier focus on source of truth and enforcement.</p>
+<h2 class="wp-block-heading" id="h-controlled-configuration-beats-defender-tamper-protection">Controlled Configuration beats Defender Tamper protection<span class="clth-copy-icon" data-heading-id="h-controlled-configuration-beats-defender-tamper-protection"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>Tamper protection is already useful, but it is also narrower. Tamper protection protects a defined set of Defender settings from being disabled or changed. It is very good at saying <strong>no</strong>, especially when something local tries to turn off protection or weaken it.</p>
+<p><strong>Controlled Configuration</strong> for defender looks way stronger and better. Everything about this adapter suggests it is not just there to block changes. It looks like it is there to make <strong>management authoritative</strong>. The document comes in through a management resource model. The payload gets handed to the Defender side. The adapter checks the status. SCC state is tracked. Strict policy mode and local admin merge behavior are part of the story. The Defender provider exposes a dedicated controlled configuration state. That is a very different posture.</p>
+<p><strong>Tamper protectio</strong>n says certain protected settings cannot be changed.<br/><strong>Controlled configuration</strong> appears to say Intune owns the configuration, Defender applies it, and the device reports that managed state back. And the most interesting part is what happens to everything you did <strong>not</strong> explicitly configure.</p>
+<p>The wording Microsoft is using around this feature strongly suggests it is not only about locking configured settings. It is also about falling back to secure defaults for the rest. That is what makes this feel like more than a simple rename of tamper protection v2. It looks more like a larger managed enforcement model that may include <strong>tamper protection.</strong></p>
+<h2 class="wp-block-heading" id="h-closing-thoughts">Closing thoughts<span class="clth-copy-icon" data-heading-id="h-closing-thoughts"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>When I first noticed <strong>ControlConfigAdapter</strong> on my device almost a year ago, it looked like one of those strange new components Windows sometimes drops on a machine long before anyone is ready to explain it. At that point all I had was a name, a folder, and a lot of unanswered questions. Now the picture is very different.</p>
+<p>The code shows payload import, status retrieval, and SCC state handling. The MOF ties it into Microsoft device management extensibility with the kind of metadata you would expect from <strong><a href="https://patchmypc.com/blog/mmp-c-the-future-of-windows-device-management-with-intune/">MMP C and WinDC</a></strong>. The Defender provider already exposes a <strong>ControlledConfigurationState</strong>. The configuration manager knows about SCC as a policy origin. And Microsoft has finally published Controlled Configuration in the “What’s in development” pages.  This does not look like a small cosmetic addition to tamper protection.<br/>It looks like Microsoft is building a stronger model where Defender configuration is not only protected from tampering, but managed, enforced, and reported as a <strong>secure controlled state.</strong></p>
+<p></p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

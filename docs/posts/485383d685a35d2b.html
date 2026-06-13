@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Managing geolocation access for websites in Microsoft Edge</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Peter van der Woude</span>
+    <span class="date">April 6, 2026</span>
+  </div>
+  <h1>Managing geolocation access for websites in Microsoft Edge</h1>
+  <div class="orig">Saved for offline reading · <a href="https://petervanderwoude.nl/post/managing-geolocation-access-for-websites-in-microsoft-edge/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text">
+<p class="wp-block-paragraph">This week is all about managing (geo)location access for websites in Microsoft Edge. When apps are allowed access to the location of the user, that also includes the Microsoft Edge browser. That means that – depending on the configuration in Microsoft Edge – every website could potentially access the location of the user, or at least ask the user for access. Within Microsoft Edge there are, however, controls available that can be used for controlling the access of websites to the location of the user. Those controls enable the organization to define the default behavior, and also the behavior for specific websites. That enables a layered level of control over the location access in Microsoft Edge. The first layer is the access of apps in general, the second layer is the default access of websites within Microsoft Edge, and the third layer are specific websites in Microsoft Edge. This post will provide more details about the available configuration options, followed with the user experience.</p>
+<p class="has-background wp-block-paragraph"><strong>Note</strong>: The focus is on Microsoft Edge. Configuration of location access for desktop apps is not the focus of this post.</p>
+<h2 class="wp-block-heading">Configuring geolocation access for websites in Microsoft Edge</h2>
+<p class="wp-block-paragraph">When looking at configuring (geo)location access for websites in Microsoft Edge, it all starts with the configurations options. And it is good to be familiar with the different options. Especially because more options have been showing up recently. Those options are all related to providing geolocation access. From the default configuration, to allowing access for specific websites, to blocking access for specific websites. The table below provides an overview of the available options, and what to use them for.</p>
+<table class="wp-block-advgb-table advgb-table-frontend"><thead><tr><th><strong>Setting (friendly name)</strong></th><th><strong>Description</strong></th></tr></thead><tbody><tr><td>Default geolocation setting</td><td>This setting can be used to configure whether websites can track the physical location of the user. IT administrators can allow tracking by default, deny tracking by default, or ask the user each time a website requests their location.</td></tr><tr><td>Allow precise geolocation on these sites</td><td>This setting can be used to specify a list of URL patterns for sites that are allowed to access the geolocation of the user without prompting for permission.</td></tr><tr><td>Block geolocation on these sites</td><td>This setting can be used to specify a list of URL patterns for sites that are blocked from accessing the geolocation of the user. These sites also can’t prompt the user for location permissions.</td></tr></tbody></table>
+<p class="wp-block-paragraph">The configuration options are all available via ADMX-backed settings in the Policy CSP. Those settings are all backed by the <em>MSEdge.admx</em>. Luckily, the configuration is pretty straightforward, as all settings are available within the <em>Microsoft Edge</em> &gt; <em>Content settings</em> category in the <em>Settings Catalog</em>. The following eight steps walk through the process of configuring the default behavior for websites, in combination with allow access for a specific website.</p>
+<ol class="wp-block-list">
+<li>Open the <a href="https://intune.microsoft.com/">Microsoft Intune admin center</a> portal and navigate to <strong>Devices</strong> &gt; <strong>Windows</strong> &gt; <strong>Configuration profiles</strong></li>
+<li>On the <strong>Windows | Configuration profiles</strong> blade, click <strong>Create</strong> &gt; <strong>New Policy</strong></li>
+<li>On the <strong>Create a profile</strong> blade, select <strong>Windows 10 and later</strong> &gt; <strong>Settings catalog</strong> and click <strong>Create</strong></li>
+<li>On the <strong>Basics </strong>page, provide at least a unique name to distinguish it from similar profiles and click <strong>Next</strong></li>
+<li>On the <strong>Configuration settings</strong> page, as shown below in Figure 1, perform the following actions and click <strong>Next</strong></li>
+</ol>
+<ul class="wp-block-list">
+<li>Click <strong>Add settings</strong>, navigate to <strong>Edge </strong>&gt; <strong>Content settings</strong> and select <em>Default geolocation setting</em> and <em>Allow precise geolocation on these sites</em> in <strong>Settings picker</strong></li>
+<li>Configure the required settings for the environment with the values like the following
+<ul class="wp-block-list">
+<li>Switch the slider with <strong>Default geolocation setting</strong> to <strong>Enabled</strong> to enable the configuration
+<ul class="wp-block-list">
+<li>Select <strong>Ask whenever a site wants to track users’ physical location</strong> to set the default behavior for geolocation access for websites to always ask the user (in other words: to prompt the user)</li>
+</ul>
+</li>
+<li>Switch the slider with <strong>Allow precise geolocation on these sites</strong> to <strong>Enabled</strong> to enable the configuration
+<ul class="wp-block-list">
+<li>Specify a list of websites that have automatically geolocation access</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-1 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><a href="https://petervanderwoude.nl/wordpress/wp-content/uploads/GLA-ConfigurationSettings.png"><img alt="" class="wp-image-23145" data-id="23145" decoding="async" src="assets/485383d685a35d2b/img_0.png"/></a><figcaption class="wp-element-caption">Figure 1: Overview of the configuration settings for allow geolocation access for websites</figcaption></figure>
+</figure>
+<ol class="wp-block-list" start="6">
+<li>On the <strong>Scope tags</strong> page, configure the required scope tags and click <strong>Next</strong></li>
+<li>On the <strong>Assignments</strong> page, configure the assignment for the required user or devices and click <strong>Next</strong></li>
+<li>On the <strong>Review + create</strong> page, verify the configuration and click <strong>Create</strong></li>
+</ol>
+<p class="has-background wp-block-paragraph"><strong>Note</strong>: Blocking specific websites geolocation access can be configured similar to allowing access by using the policy setting <em>Block geolocation on these sites</em>.</p>
+<h2 class="wp-block-heading">Experiencing geolocation access for websites in Microsoft Edge</h2>
+<p class="wp-block-paragraph">After applying the configuration, it is pretty straightforward to experience the behavior. From a user experience perspective, the easiest would be to navigate to a website of which it is known that it asks for geolocation access. There are many examples of such websites. A clear example of a Dutch website that wants geolocation access is buienradar.nl. That website wants access to easily help with determining the local weather. It does that by initially providing a huge prompt that will explain the user that another prompt will be shown that will ask for geolocation access. With this configuration, that initial prompt will still be shown as that is coming from the website itself. The second prompt, however, will be blocked when the provided configuration is used in combination with the setting to block access for this specific website. That configuration is shown below in Figure 2. It shows the enforced default behavior, followed with specifically added allowed and blocked websites.</p>
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-2 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><a href="https://petervanderwoude.nl/wordpress/wp-content/uploads/GLA-ConfigurationExperience-scaled.png"><img alt="" class="wp-image-23144" data-id="23144" decoding="async" src="assets/485383d685a35d2b/img_1.png"/></a><figcaption class="wp-element-caption">Figure 2: Overview of the experience after applying configuration of geolocation access</figcaption></figure>
+</figure>
+<h2 class="wp-block-heading">More information</h2>
+<p class="wp-block-paragraph">For more information regarding configuring geolocation access in Microsoft Edge, refer to the following docs.</p>
+<div class="wp-block-group has-border-color"><div class="wp-block-group__inner-container is-layout-flow wp-block-group-is-layout-flow">
+<hr class="wp-block-separator has-alpha-channel-opacity is-style-wide"/>
+<h3 class="wp-block-heading has-text-align-center">Discover more from All about Microsoft Intune</h3>
+<p class="has-text-align-center wp-block-paragraph">Subscribe to get the latest posts sent to your email.</p>
+</div></div>
+</div>
+</div></div>
+</article>
+</body>
+</html>

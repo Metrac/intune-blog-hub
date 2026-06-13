@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dynamically removing preinstalled Microsoft Store apps using native functionality</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Peter van der Woude</span>
+    <span class="date">May 11, 2026</span>
+  </div>
+  <h1>Dynamically removing preinstalled Microsoft Store apps using native functionality</h1>
+  <div class="orig">Saved for offline reading · <a href="https://petervanderwoude.nl/post/dynamically-removing-preinstalled-microsoft-store-apps-using-native-functionality/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text">
+<p class="wp-block-paragraph">This week is all about a really nice addition to the native functionality to remove preinstalled Microsoft Store apps. That nice addition is the ability to dynamically remove any preinstalled MSIX/APPX app, which builds on the functionality <a href="https://petervanderwoude.nl/post/removing-preinstalled-microsoft-store-apps-using-native-functionality/">described earlier about removing preinstalled Microsoft Store apps using native functionality</a>. The story around removing those apps is still the same. When working with Windows devices in an enterprise environment, a common request is to control the preinstalled Microsoft Store apps. These default apps, which ship as part of the Windows image, often include consumer-oriented or redundant functionality that does not align with corporate standards. That makes removing often desirable. Removing these apps often required custom scripting, or other creative solutions. Starting with Windows 11 version 24H2, however, there is native functionality available to facilitate the removal of preinstalled Microsoft Store apps. And that functionality now contains the addition to dynamically remove any preinstalled MSIX/APPX app by referencing the Package Family Name (PFN), unless the app is considered a system app. That enables the IT administrator to easily remove any preinstalled Microsoft Store apps. This post will provide a closer look at this added functionality and how it can be utilized by using Microsoft Intune.</p>
+<p class="has-background wp-block-paragraph"><strong>Important</strong>: The removal of preinstalled Microsoft Store apps with native functionality is now extended to Windows 11, version 24H2 and later. And still only for the Enterprise and Education editions.</p>
+<h2 class="wp-block-heading">Configuring the removal of preinstalled Microsoft Store apps</h2>
+<p class="wp-block-paragraph">When looking at the configuration for the dynamic removal of preinstalled Microsoft Store apps, using Microsoft Intune, it all still starts with the Policy CSP. That CSP contains the <em>ApplicationManagement </em>node, which contains the ADMX-backed settings that can be used for configuring application management related settings, including the setting to remove the preinstalled Microsoft Store apps. For that, the <em>RemoveDefaultMicrosoftStorePackages </em>setting can be used, and that setting is backed by the <em>AppxPackageManager.admx</em>. That is an existing setting that got enhanced with the additional functionality to dynamically remove apps. As input that setting expects an XML that contains elements for the installation value of the different preinstalled Microsoft Store apps. That on itself is also nothing new, but that XML now also contains an additional element for a dynamic list of apps. That list can contain any preinstalled MSIX/APPX app, by simply referencing the PFN. To find the PFN, the <code>Get-AppxPackage</code> cmdlet can be used. Below is an example for the Windows Alarms app.</p>
+<pre class="wp-block-code"><code class="language-powershell" lang="powershell">Get-AppxPackage *Alarms* | Select-Object PackageFamilyName</code></pre>
+<p class="wp-block-paragraph">Together with the already existing elements that should result into an XML-file as shown below. It enables the setting and configures the state of the apps, and on top of that the <code>DynamicRemovalList</code> element removes any apps that are specified as value in the list. To prevent error messages, the XML-file should contain all the apps that are configurable via the setting.</p>
+<pre class="wp-block-code"><code class="language-xml" lang="xml">&lt;enabled/&gt;
+&lt;data id="WindowsFeedbackHub" value="false"/&gt;
+&lt;data id="MicrosoftOfficeHub" value="false"/&gt;
+&lt;data id="Clipchamp" value="false"/&gt;
+&lt;data id="Copilot" value="false"/&gt;
+&lt;data id="BingNews" value="true"/&gt;
+&lt;data id="Photos" value="false"/&gt;
+&lt;data id="MicrosoftSolitaireCollection" value="true"/&gt;
+&lt;data id="MicrosoftStickyNotes" value="true"/&gt;
+&lt;data id="MSTeams" value="false"/&gt;
+&lt;data id="Todo" value="false"/&gt;
+&lt;data id="BingWeather" value="true"/&gt;
+&lt;data id="OutlookForWindows" value="false"/&gt;
+&lt;data id="Paint" value="false"/&gt;
+&lt;data id="QuickAssist" value="true"/&gt;
+&lt;data id="ScreenSketch" value="false"/&gt;
+&lt;data id="WindowsCalculator" value="false"/&gt;
+&lt;data id="WindowsCamera" value="false"/&gt;
+&lt;data id="MediaPlayer" value="true"/&gt;
+&lt;data id="WindowsNotepad" value="false"/&gt;
+&lt;data id="WindowsSoundRecorder" value="false"/&gt;
+&lt;data id="WindowsTerminal" value="false"/&gt;
+&lt;data id="GamingApp" value="true"/&gt;
+&lt;data id="XboxGamingOverlay" value="true"/&gt;
+&lt;data id="XboxIdentityProvider" value="true"/&gt;
+&lt;data id="XboxSpeechToTextOverlay" value="true"/&gt;
+&lt;data id="XboxTCUI" value="true"/&gt;
+&lt;data id="DynamicRemovalList" value="Microsoft.YourPhone_8wekyb3d8bbwe"/&gt;</code></pre>
+<p class="has-background wp-block-paragraph"><strong>Note</strong>: For adding multiple apps to the dynamic removal list, use the HTML-encoded <code>&amp;#x0D;&amp;#x0A;</code> between the apps.</p>
+<p class="wp-block-paragraph">At this moment this setting is already available as <strong>Remove default Microsoft Store packages from the system</strong> within the<em> Settings Catalog</em>. However, that setting does not yet contain the added functionality to dynamically remove any MSIX/APPX apps. That is the reason to still fallback to a <em>Custom</em> configuration profile. As it’s an ADMX-backed setting, the example XML is required to enable and configure the setting. The following nine steps walk through the configuration of removing the Windows Alarms app from Windows 11, version 24H2 and later, using the dynamic list.</p>
+<ol class="wp-block-list">
+<li>Open the <a href="https://intune.microsoft.com/">Microsoft Intune admin center</a> navigate to <strong>Devices </strong>&gt; <strong>Windows</strong> &gt;<strong> Configuration</strong></li>
+<li>On the <strong>Windows | Configuration profiles </strong>blade, click <strong>Create</strong> &gt; <strong>New policy</strong> </li>
+<li>On the <strong>Create a profile</strong> page, provide the following information and click <strong>Create</strong></li>
+</ol>
+<ul class="wp-block-list">
+<li><strong>Platform</strong>: Select <strong>Windows 10 and later</strong> as value</li>
+<li><strong>Profile type</strong>: Select <strong>Templates</strong> as value</li>
+<li><strong>Template name</strong>: Select <strong>Custom</strong> as value</li>
+</ul>
+<ol class="wp-block-list" start="4">
+<li>On the <strong>Basics</strong> page, provide a unique <strong>Name</strong> to distinguish the profile from other custom profiles and click <strong>Next</strong></li>
+<li>On the <strong>Configuration settings</strong> page, as shown below in Figure 1, click <strong>Add</strong> to add the following row and click <strong>Next</strong></li>
+</ol>
+<ul class="wp-block-list">
+<li><strong>OMA-URI setting</strong> – This setting is used to remove the specified preinstalled Microsoft Store apps
+<ul class="wp-block-list">
+<li><strong>Name</strong>: Provide a name for the OMA-URI setting to distinguish it from other similar settings</li>
+<li><strong>Description</strong>: (Optional) Provide a description for the OMA-URI setting to further differentiate settings</li>
+<li><strong>OMA-URI</strong>: Specify <em>./Device/Vendor/MSFT/Policy/Config/ApplicationManagement/RemoveDefaultMicrosoftStorePackages</em></li>
+<li><strong>Data type</strong>: Select <em>String</em> as value</li>
+<li><strong>Value</strong>: Specify the previous XML-value as value to configure which Microsoft Store apps should be removed</li>
+</ul>
+</li>
+</ul>
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-1 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><a href="https://petervanderwoude.nl/wordpress/wp-content/uploads/DAU-ConfigurationSettings.png"><img alt="" class="wp-image-23202" data-id="23202" decoding="async" src="assets/a7d0b583415cdb90/img_0.png"/></a><figcaption class="wp-element-caption">Figure 1: Overview of the configuration of removing apps using a dynamic list </figcaption></figure>
+</figure>
+<ol class="wp-block-list" start="6">
+<li>On the <strong>Scope tags</strong> page, configure the applicable scopes and click <strong>Next</strong></li>
+<li>On the <strong>Assignments</strong> page, configure the assignment for the required devices and click <strong>Next</strong></li>
+<li>On the <strong>Applicability rules</strong> page, configure the applicability rules, and click <strong>Next</strong></li>
+<li>On the <strong>Review + create</strong> page, verify the configuration and click <strong>Create</strong></li>
+</ol>
+<p class="has-background wp-block-paragraph"><strong>Note</strong>: Eventually the mentioned setting will be updated in the <em>Settings Catalog</em> to also configure the dynamic list.</p>
+<h2 class="wp-block-heading">Experiencing the dynamic removal of preinstalled Microsoft Store apps</h2>
+<p class="wp-block-paragraph">After applying the configuration to dynamically remove preinstalled Microsoft Store apps, there are multiple methods to verify a successful configuration. But, before looking at the successful configuration, it is good to understand that the removal of the specified apps occurs at the sign in of the user, or during the device provisioning. Besides that, the configuration is always applicable to all the users on the device. For existing devices that means that the user has to sign out and sign on again to make the configuration take effect. After the removal of an app, the user can still try to install the app via the Microsoft Store. That will result in a message indicating that the action is blocked. The app, however, will show grayed out in the Start Menu. So, it is important to educated the users about the behavior when access to the Microsoft Store is allowed.</p>
+<p class="wp-block-paragraph">Technically, there are multiple methods for verifying a successful configuration. The <strong>AppxDeployment-Server </strong>event log contains the information about the removal of the apps and the <strong>DeviceManagement-Enterprise-Diagnostics-Provider</strong> event log contains the information about applying the configuration. That is actually interesting to look at, as shown below in Figure 2, as that also includes the information of the dynamic removal list. Eventually, the configuration will be written to the registry, as the configuration is ADMX-backed. That enables a pretty straightforward matching of the configuration. Below on the right is the configuration that is applied via Microsoft Intune and below on the left is the actual applied configuration. The number 1 highlights the configuration of the dynamic app removal list.</p>
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-2 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><a href="https://petervanderwoude.nl/wordpress/wp-content/uploads/DAU-ConfigurationExperience-scaled.png"><img alt="" class="wp-image-23203" data-id="23203" decoding="async" src="assets/a7d0b583415cdb90/img_1.png"/></a><figcaption class="wp-element-caption">Figure 2: Overview of the applied configuration</figcaption></figure>
+</figure>
+<div class="wp-block-group has-border-color"><div class="wp-block-group__inner-container is-layout-flow wp-block-group-is-layout-flow">
+<hr class="wp-block-separator has-alpha-channel-opacity is-style-wide"/>
+<h3 class="wp-block-heading has-text-align-center">Discover more from All about Microsoft Intune</h3>
+<p class="has-text-align-center wp-block-paragraph">Subscribe to get the latest posts sent to your email.</p>
+</div></div>
+</div>
+</div></div>
+</article>
+</body>
+</html>

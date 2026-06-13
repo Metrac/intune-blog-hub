@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intune Advanced Analytics: How It Compares to Other Tools</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">June 13, 2026</span>
+  </div>
+  <h1>Intune Advanced Analytics: How It Compares to Other Tools</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/2026/06/13/intune-advanced-analytics-market-comparison/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p>In this blog post I want to look at Microsoft Intune Advanced Analytics and compare it, in plain words, to the other analytics tools that are out there. This is the topic I know well. Before I started writing blogs and running my own company, I spent years as the tech lead for AIOps in a large enterprise. Part of my job was to evaluate analytics and digital employee experience (DEX) platforms — Nexthink, Aternity, HP’s analytics solution and several more. So this is not a marketing piece. It is what I learned from running these tools at scale, and where I think Microsoft’s approach is genuinely different.</p>
+<p>Here is my honest summary up front: most of these platforms cook with water. They are mature and capable, but they largely solve the same problems in the same way. The hard part was never the dashboard — it was building a business case that survived a second look, because every one of them came with its own agent, its own data store, its own portal and its own license. That is exactly the cost that Microsoft Intune Advanced Analytics removes.</p>
+<blockquote>
+<p><strong>Worth knowing before you read on:</strong> From July 1, 2026, Microsoft Intune Advanced Analytics is included in <strong>Microsoft 365 E3 and Microsoft 365 E5</strong> as part of Microsoft Intune Plan 2. The separate add-on that used to cost around 10 USD per user per month is now part of the plan. Many teams already own this and don’t know it yet.</p>
+</blockquote>
+<h2 id="what-is-microsoft-intune-advanced-analytics">What is Microsoft Intune Advanced Analytics?</h2>
+<p>Intune Advanced Analytics extends endpoint analytics inside Microsoft Intune. The important word is <em>inside</em>. It is not a separate product. It lives in the same admin center where you already enroll devices, push configuration and remediate.</p>
+<p>That sounds like a small detail. After years of running the alternatives, I can tell you it is the whole game. Every DEX platform I operated needed its own agent on every device, its own data lake, and a second console to log into. With Advanced Analytics there is no extra agent. The devices you already manage are the devices you already analyze.</p>
+<h2 id="how-does-it-work-behind-the-scenes">How does it work behind the scenes?</h2>
+<p>This is the part I wish more comparisons explained, so let me go a level deeper.</p>
+<p><img alt="Diagram of the two channels behind Intune Advanced Analytics: channel 1 single-device query is near real-time over WNS and the Intune Management Extension reading the device live, using no inventory; channel 2 fleet inventory and reports use data collected via the properties catalog (a core Intune feature) and uploaded on the scheduled check-in about every 24 hours" data-recalc-dims="1" decoding="async" src="assets/e841fed4eeb9e9ad/img_0.jpg"/></p>
+<p>Your managed devices already send diagnostics and telemetry to Intune. Advanced Analytics builds on that same pipeline, so there is no new agent to deploy.</p>
+<p>It helps to separate two things that often get mixed up:</p>
+<ul>
+<li><strong>Device inventory is a core Intune feature.</strong> On Windows you collect extra hardware and software properties with a <strong>properties catalog</strong> policy. This is <em>not</em> part of Advanced Analytics and needs no add-on — it ships with Microsoft Intune Plan 1. (And to be clear: the properties catalog is not the settings catalog you use for configuration profiles. Two different things.) On iOS/iPadOS, Android and macOS this inventory is collected automatically.</li>
+<li><strong>Advanced Analytics is the query and intelligence layer on top.</strong> Device query, the machine-learning anomaly models, battery health, resource performance and the device timeline are the parts that need the license.</li>
+</ul>
+<p>Now the part that took me a while to get straight, and that most write-ups get wrong: <strong>single-device query and the fleet reports use two completely different channels.</strong></p>
+<ul>
+<li><strong>Channel 1 — single-device query (near real-time).</strong> This does <em>not</em> touch the inventory at all. When you run a query against one device, the portal sends a <code>createQuery</code> POST to Microsoft Graph, a <strong>Windows Push Notification Services (WNS)</strong> message wakes the device and starts the <em>PilotDeviceQuery</em> workflow, and the <strong>Intune Management Extension (IME)</strong> takes over. The IME checks the <code>EnableDeviceActionFeature</code> registry flag, pulls down a <em>DeviceQueryDetail</em> payload that carries your KQL as a base64 string, and runs it through <code>IntunePivotPlugin.dll</code> against the matching WMI providers, CSP and the registry. The result is base64-encoded as <em>DeviceQueryResult</em> and returned within seconds. Because WNS is the transport, if WNS is blocked the query simply fails — and you need IME 1.75.4.0 or later. Rudy Ooms reverse-engineered this whole flow on <a href="https://call4cloud.nl/device-query-intune/" rel="noopener" target="_blank">call4cloud</a>; it is the best under-the-hood write-up I have seen, and it is where the detail in the diagram above comes from.</li>
+<li><strong>Channel 2 — fleet inventory and reports (refreshed ~24 hours).</strong> Here the <strong>device inventory agent</strong> collects data from CSP, WMI and the registry, with the scope defined by the <strong>properties catalog</strong> (a core Intune feature). On the scheduled check-in this is uploaded to the Intune data platform — no separate data lake to build or secure. Advanced Analytics then runs its machine-learning models and KQL on top to produce the anomalies, battery, resource and device timeline reports, and to answer <strong>device query for multiple devices</strong>. A fleet-wide result therefore reflects the last inventory upload, not the current second.</li>
+</ul>
+<p><img alt="Side-by-side flow of the two Intune device query channels. Channel 1 single-device query (near real-time): createQuery POST to Microsoft Graph, WNS push wakes the device, IME checks EnableDeviceActionFeature, IntunePivotPlugin.dll runs the base64 KQL on WMI/CSP/Registry, DeviceQueryResult returns in seconds — live device, no inventory, needs IME 1.75.4.0+. Channel 2 fleet inventory and reports (~24 hours): inventory agent collects CSP/WMI/Registry data, scope set by the properties catalog (core Intune), scheduled check-in to the Intune data platform, Advanced Analytics runs the ML and reports and answers device query for multiple devices — collected inventory, about a day old" data-recalc-dims="1" decoding="async" src="assets/e841fed4eeb9e9ad/img_1.jpg"/></p>
+<p>Because everything stays inside Intune, you act on a finding in the same console where you found it. No export, no second tool.</p>
+<p><strong>Hint:</strong> If <em>device query for multiple devices</em> returns nothing on your Windows devices, the missing piece is almost always the <strong>properties catalog</strong> policy — set it up first (it is core Intune, not Advanced Analytics), then give the inventory time to roll in. Note that <em>single-device</em> query does not need it, because that path reads the device live over WNS.</p>
+<h2 id="what-can-it-do-a-closer-look">What can it do? A closer look</h2>
+<p>Let me go through the parts I use most, at the level of detail that actually matters in production.</p>
+<h3 id="device-query-kql-in-a-language-you-already-speak">Device query — KQL in a language you already speak</h3>
+<p>Device query lets you ask a device, or the fleet, a direct question in Kusto Query Language (KQL) — the same language your security team already uses in Microsoft Defender, Microsoft Sentinel and Azure Monitor. A single-device query gives you <strong>near real-time</strong> access to that device; a multi-device query runs over the collected inventory. In every other live-query tool I ran, the team had to learn that product’s own query dialect and operate yet another console. Here, if you write KQL, there is almost nothing new to learn:</p>
+<pre><code class="language-kusto">// Find Windows devices that are low on disk space
+DeviceData
+| where FreeStorageGB &lt; 10
+| project DeviceName, Model, FreeStorageGB, OSVersion
+| sort by FreeStorageGB asc
+</code></pre>
+<p>That shared query language across endpoint and security is, in my experience, a real differentiator. None of the standalone DEX tools could plug into the same query skills and the same security data my team already had.</p>
+<p><strong>My favorite part: let Copilot write the KQL.</strong> With Security Copilot in Intune you don’t even have to write the query yourself. You describe what you want in plain language — <em>“show me Windows 11 devices with TPM 2.0 that haven’t synced in 14 days”</em> — and Copilot generates the KQL, shows you the query, and explains how it built it. It works the other way too: paste a query a colleague wrote, ask <em>“what does this do?”</em>, and you get a plain-language explanation. For me this is the feature that makes device query usable by the whole team, not just the two people who are fluent in KQL. I have never had that with any other analytics tool — the natural-language-to-query step always lived in a separate product, if it existed at all.</p>
+<h3 id="anomaly-detection-the-machine-learning-explained">Anomaly detection — the machine learning, explained</h3>
+<p>The anomalies report is the feature that competes most directly with the premium DEX platforms, and it is where Microsoft’s data advantage shows. It watches for application hangs, crashes and Stop Error restarts, then groups affected devices so you can find the common cause.</p>
+<p><img alt="The Intune Advanced Analytics anomalies report showing anomalies by severity (high, medium, low) and a list of detected device-health issues with affected device counts" data-recalc-dims="1" decoding="async" src="assets/e841fed4eeb9e9ad/img_2.jpg"/><br/>
+<em>The anomalies report, grouped by severity. Source: <a href="https://learn.microsoft.com/en-us/intune/advanced-analytics/anomalies" rel="noopener" target="_blank">Microsoft Learn</a>.</em></p>
+<p>Behind it sit four statistical models, and it helps to know which is doing what:</p>
+<ul>
+<li><strong>Threshold-based heuristic</strong> — flags a device when crashes, hangs or Stop Error restarts cross a set threshold. Simple, good for obvious or static issues.</li>
+<li><strong>Paired t-test</strong> — compares the <em>same</em> device before and after a change (a policy update or an OS update) and looks for a statistically significant difference. This is the one that catches “the update broke it.”</li>
+<li><strong>Population Z-score</strong> — finds outlier devices or apps compared to the fleet average. Needs a large dataset to be accurate.</li>
+<li><strong>Time-series Z-score</strong> — a sliding window over time, so it adapts to trends instead of a fixed threshold.</li>
+</ul>
+<p>When something is flagged, <strong>device correlation groups</strong> show the shared factors — app version, driver update, OS version, device model — and a <strong>prevalence rate</strong> tells you what share of a group is affected. In a large enterprise, this is exactly the view I always had to build by hand before: it points straight at the bad driver or the one hardware model, instead of leaving you to correlate it yourself.</p>
+<h3 id="battery-health-more-than-a-single-score">Battery health — more than a single score</h3>
+<p>The battery health report scores every Windows laptop battery, but the detail underneath is what makes it useful.</p>
+<p><img alt="The Intune Advanced Analytics battery health report showing the overall battery health score, capacity and runtime scores, and recommended insights" data-recalc-dims="1" decoding="async" src="assets/e841fed4eeb9e9ad/img_3.png"/><br/>
+<em>The battery health report with score and insights. Source: <a href="https://learn.microsoft.com/en-us/intune/advanced-analytics/battery-health" rel="noopener" target="_blank">Microsoft Learn</a>.</em></p>
+<p>The <strong>battery health score</strong> is a weighted average of two scores, each from 0 (poor) to 100 (exceptional):</p>
+<ul>
+<li><strong>Capacity score</strong> — based on maximum capacity, which is full-charge capacity divided by design capacity. A battery designed for 70 Watt-hours that now holds 35 is at 50%.</li>
+<li><strong>Runtime score</strong> — based on the estimated time a device runs on a full charge.</li>
+</ul>
+<p>You also get the <strong>cycle count</strong>, and an <strong>App impact</strong> tab that shows which apps drained the most battery over the last 14 days. That last part is what turns “this laptop has bad battery life” into “this laptop runs a power-hungry app” — a different fix entirely. With the alternatives, getting this depth meant a separate hardware-analytics module, often at extra cost.</p>
+<h3 id="device-timeline-the-troubleshooting-view-i-use-most">Device timeline — the troubleshooting view I use most</h3>
+<p>The device timeline is, day to day, the report I open most often, so it deserves more than a footnote. It shows a single device’s events — restarts, Stop Errors, app hangs and crashes, driver and update events — on one low-latency timeline. It replaces the older application reliability report and pulls the events that used to be scattered across logs into one ordered view.</p>
+<p>Why it matters: when a VIP’s machine misbehaves, the first question is always <em>“what changed and when?”</em>. The timeline answers that directly. I can see that the crashes started right after a specific update or driver, line it up against the anomalies report, and hand the service desk a root cause instead of a guess. For tier-1 and tier-2 support this ends most tickets without escalation — and it does it without a forensic agent on the device. In the tools I ran before, getting this ordered, correlated view meant exporting event logs and stitching them together by hand.</p>
+<h3 id="resource-performance-purchasing-decisions-with-evidence">Resource performance — purchasing decisions with evidence</h3>
+<p><strong>Resource performance</strong> ranks CPU and RAM pain by device, model and manufacturer. That turns “we think the 2022 fleet is slow” into a defensible, data-backed purchasing argument. Together with battery health, it is the report that makes hardware-refresh planning a fact-based conversation with procurement rather than a gut feeling. It is built into the same console — no extra agent feeding it.</p>
+<p>Here is how I weigh it. This is about <em>fit</em>, not a winner — every column is a capable, mature category, and the DEX platforms genuinely do some things better.</p>
+<p><img alt="Comparison table: Intune Advanced Analytics versus dedicated DEX platforms and osquery-based live-query tools across agent, data store, query language, ML anomaly detection, remediation, breadth, telemetry and cost" data-recalc-dims="1" decoding="async" src="assets/e841fed4eeb9e9ad/img_4.jpg"/></p>
+<table>
+<thead>
+<tr>
+<th>Point</th>
+<th>Intune Advanced Analytics</th>
+<th>Dedicated DEX platform</th>
+<th>osquery / live-query tool</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Extra agent to deploy</td>
+<td>None — uses Intune</td>
+<td>Yes, per seat</td>
+<td>Yes, separate</td>
+</tr>
+<tr>
+<td>Separate data store</td>
+<td>No</td>
+<td>Yes</td>
+<td>Usually</td>
+</tr>
+<tr>
+<td>Query language</td>
+<td>KQL (same as Defender/Sentinel)</td>
+<td>Own language</td>
+<td>osquery SQL</td>
+</tr>
+<tr>
+<td>ML anomaly detection</td>
+<td>Built in</td>
+<td>Often a premium tier</td>
+<td>Not built in</td>
+</tr>
+<tr>
+<td>Fix it in the same console</td>
+<td>Yes — it is Intune</td>
+<td>No, go back to MDM</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Cross-platform reach</td>
+<td>Windows-first</td>
+<td>Broad</td>
+<td>Broad</td>
+</tr>
+<tr>
+<td>Streaming telemetry</td>
+<td>Near real-time</td>
+<td>Strong</td>
+<td>Strong</td>
+</tr>
+<tr>
+<td>Cost</td>
+<td>Included in M365 E3/E5 (from July 1, 2026)</td>
+<td>Separate subscription</td>
+<td>Separate / open source</td>
+</tr>
+</tbody>
+</table>
+<p>The honest take from the evaluations I ran — Nexthink, Aternity, HP’s analytics tooling and others: these are strong, mature products. They lead on breadth (Windows, macOS, mobile and rich experience scoring in one model) and on continuous streaming telemetry. If that breadth is your main need, they still win, and I will say so plainly.</p>
+<p>But three differences kept showing up in my evaluations, and they are architectural, not cosmetic:</p>
+<ul>
+<li><strong>Where the data lives.</strong> Every standalone platform ships its telemetry into the vendor’s own cloud data lake. Advanced Analytics keeps it inside your existing Microsoft Intune and Microsoft 365 tenant boundary — one less data-residency and security review, which in a regulated enterprise is not a small thing.</li>
+<li><strong>One device identity, not two.</strong> The third-party tools build their own device record, and you spend real effort reconciling <em>their</em> device with <em>your</em> Intune object before a report is trustworthy. In Advanced Analytics the analyzed device, the configured device and the compliance device are the same object. No matching, no data-quality chore.</li>
+<li><strong>Time-to-value.</strong> A DEX rollout is an agent deployment project — packaging, ringed rollout, tuning, months of it. Advanced Analytics is a license switch: enable it, wait up to 48 hours, done.</li>
+</ul>
+<p>When it came to the business case, that combined overhead — a second agent, a second data lake, a second identity to reconcile, a second team to run it — was always the part that made the numbers thin.</p>
+<h2 id="where-microsofts-approach-is-uniquely-suited">Where Microsoft’s approach is uniquely suited</h2>
+<p>The deepest differentiator is structural, and it is the one no standalone tool can copy: <strong>Microsoft owns all three layers at once — the OS telemetry, the management plane and the security graph.</strong> Nexthink, Aternity and the rest are excellent at the analytics layer, but they sit <em>beside</em> your management and security stack and have to integrate back into it. Advanced Analytics sits <em>inside</em> it. That is why a finding can flow straight into a configuration change, a compliance policy or a Microsoft Defender investigation without leaving the platform or re-identifying the device. Pulling the concrete differentiators together:</p>
+<ul>
+<li><strong>No extra agent and no separate data platform.</strong> It rides the telemetry your managed devices already send, and the data stays in your tenant.</li>
+<li><strong>One query language across endpoint and security.</strong> KQL is shared with Microsoft Defender, Microsoft Sentinel and Azure Monitor, so your existing skills and your existing security data carry straight over. None of the standalone tools could plug into that.</li>
+<li><strong>Copilot writes the queries for you.</strong> Security Copilot in Intune turns plain-language questions into KQL for device query — so the whole team can ask the fleet questions, not just the two KQL experts. I never had a built-in equivalent in the standalone tools.</li>
+<li><strong>You remediate where you analyze.</strong> The finding and the fix live in the same admin center — for me this is the single biggest operational win, and the one the side-by-side tools structurally cannot match.</li>
+<li><strong>Machine learning is built in, not a premium upsell.</strong> The anomaly models ship with the capability instead of sitting behind a higher tier.</li>
+<li><strong>It is included in Microsoft 365 E3 and E5.</strong> No separate add-on to justify. This is the point that finally closes the business case I could never quite make with the standalone tools.</li>
+</ul>
+<h2 id="real-world-scenarios">Real-world scenarios</h2>
+<p><strong>Enterprise — catching a bad driver before the storm.</strong> This is a real pattern from my AIOps days. A graphics driver goes out to a few thousand laptops on a Friday. By Monday the anomalies report shows a new medium-severity item: a spike in Stop Error restarts. Here the paired t-test model earns its place — it compares each device <em>before and after</em> the change, so the report isn’t guessing, it is pointing at a real regression. You open the device correlation group and it is unambiguous: one manufacturer, one model, one driver version, with a high prevalence rate. To be clear about what happens next, because this is where people overstate it: the anomalies report does not have a magic “roll back” button. What it gives you is the root cause and the affected and at-risk device lists. You then act with the <em>core</em> Intune tools — and crucially, without leaving Intune: confirm the spread with a multi-device device query, <strong>decline that driver version in your Windows driver update profile</strong> so it stops being offered to the rest of the fleet, and push an Intune <strong>remediation</strong> script (a <code>pnputil</code> driver rollback) to the devices already hit. Detect, find root cause, remediate — all in one platform, before the service desk volume even moves. With the standalone tools I ran, detection lived in one product and the fix lived in another, and bridging the two by hand was the slow part.</p>
+<p><strong>SMB — capabilities that used to be out of reach.</strong> A leaner IT team rarely had the budget <em>or</em> the headcount to run a dedicated DEX platform — someone has to own that agent and that data store. The packaging change matters most here: an organization on Microsoft 365 E3 or E5 now gets battery health, anomaly detection and device query as part of Microsoft Intune Plan 2, with no new agent, no new contract and nobody to train on a second console. (One honest caveat: this applies to Microsoft 365 E3/E5 — a tenant on Microsoft 365 Business Premium is not part of this change.) For a small team, <em>near real-time</em> single-device query alone — ask one misbehaving laptop a question and get an answer in seconds — replaces a lot of remote-session guesswork.</p>
+<h2 id="what-i-would-choose">What I would choose</h2>
+<p><img alt="Decision flow for choosing Intune Advanced Analytics: start with it on a Windows-heavy Intune estate, use device query for fleet triage, keep a dedicated DEX platform for streaming or cross-platform needs" data-recalc-dims="1" decoding="async" src="assets/e841fed4eeb9e9ad/img_5.jpg"/></p>
+<ul>
+<li><strong>Mostly Windows, already on Intune, team knows KQL?</strong> Start with Advanced Analytics. You likely already own it, and you can retire separate battery, resource and anomaly tools.</li>
+<li><strong>Need quick answers across the fleet?</strong> Use device query for multiple devices — deploy the properties catalog policy first and remember the inventory refreshes about every 24 hours.</li>
+<li><strong>Need true streaming telemetry or deep macOS and mobile experience scoring?</strong> A dedicated DEX platform still leads there, and the two work fine side by side.</li>
+</ul>
+<h2 id="things-to-watch-out-for">Things to watch out for</h2>
+<ul>
+<li><strong>It is not instant.</strong> After licensing, and for multi-device query, it can take up to 48 hours before data appears. Turn it on <em>before</em> you need it.</li>
+<li><strong>The properties catalog policy is mandatory on Windows.</strong> Remember it is a <em>core</em> Intune feature you configure separately — without it, device query for multiple devices returns nothing.</li>
+<li><strong>It is near real-time, not a streaming SIEM.</strong> Single-device query is near real-time; fleet inventory is about a day old by design.</li>
+<li><strong>Check your cloud and platform.</strong> Device query and resource performance are not in DoD today, and the deepest reporting is Windows-first.</li>
+</ul>
+<h2 id="a-quick-word-on-licensing">A quick word on licensing</h2>
+<p>This is the part that changed the math for me, so it is worth repeating clearly. From July 1, 2026, Microsoft Intune Advanced Analytics is included in <strong>both Microsoft 365 E3 and Microsoft 365 E5</strong> as part of Microsoft Intune Plan 2 — the old per-user add-on is gone. A few of the more advanced Intune capabilities stay with Microsoft 365 E5: Microsoft Intune Endpoint Privilege Management, Enterprise App Management and Microsoft Cloud PKI. But Advanced Analytics itself is in E3 and E5. The details are in the <a href="https://techcommunity.microsoft.com/blog/microsoftintuneblog/microsoft-365-adds-advanced-microsoft-intune-solutions-at-scale/4474272" rel="noopener" target="_blank">Microsoft Intune blog on the packaging changes</a>.</p>
+<p>After years of trying to justify a separate analytics platform, this is the change I find most exciting: the business case largely makes itself, because most teams already own the license.</p>
+<p>If you want to read where all of this is heading, I wrote about it in <a href="https://jannikreinhard.com/2025/05/25/lets-look-in-the-future-of-device-management/">AI-driven endpoint management: the future with Intune</a>. For the official details, the <a href="https://learn.microsoft.com/en-us/intune/advanced-analytics/" rel="noopener" target="_blank">Advanced Analytics overview on Microsoft Learn</a> is the page I keep open.</p>
+<p>I hope this helps when you compare Intune Advanced Analytics with the other tools out there.</p>
+<p>Stay healthy, Cheers Jannik</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

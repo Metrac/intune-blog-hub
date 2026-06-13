@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Introducing Intune’s New App Inventory Feature</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">MSEndpointMgr</span>
+    <span class="date">May 9, 2026</span>
+  </div>
+  <h1>Introducing Intune’s New App Inventory Feature</h1>
+  <div class="orig">Saved for offline reading · <a href="https://msendpointmgr.com/2026/05/09/intune-app-inventory/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p data-block-type="core">App inventory is Intune’s new feature for collecting detailed application data from Windows devices, and it leaves the old Discovered apps report in the proverbial dust. </p>
+<p data-block-type="core">Pull up a chair, pour yourself something stronger than a martini, and let me show you what I found when I went poking around. How does the new feature actually work, what’s collecting the data (another agent), and what admins should know that isn’t in the docs. </p>
+<h2 class="wp-block-heading" id="0-50-apps-walk-into-a-bar"><a aria-hidden="true" class="aal_anchor" href="#50-apps-walk-into-a-bar" id="50-apps-walk-into-a-bar"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>50 apps walk into a bar</h2>
+<p data-block-type="core">Here’s the same device, showing the old <strong>Discovered Apps</strong> report, bless its heart and the new <strong>App Inventory</strong> report.</p>
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="" class="wp-image-26442" decoding="async" src="assets/f6d4741c7489ba0b/img_0.png"/></figure>
+<p data-block-type="core"><strong>50 vs 828.</strong> Same machine, same century, same universe.</p>
+<p data-block-type="core">You’ll also notice the giant deprecation banner at the top of the Discovered Apps report. Microsoft hasn’t given a kill date, but the writing is on the wall.</p>
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow" data-block-type="core">
+<p data-block-type="core">This report is being replaced by the All Apps page. You can start using the new page now. <a href="https://go.microsoft.com/fwlink/?linkid=2344563" rel="noreferrer noopener" target="_blank">Learn more about the future removal of the Discovered Apps report.</a></p>
+</blockquote>
+<p data-block-type="core">So what changed? Let me walk you through it, then we’ll meet the new(ish) agent in town.</p>
+<h2 class="wp-block-heading" id="1-data-got-a-glow-up"><a aria-hidden="true" class="aal_anchor" href="#data-got-a-glow-up" id="data-got-a-glow-up"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Data got a glow up</h2>
+<p data-block-type="core">The old Discovered Apps report had 2 columns: <strong>Application name</strong> and <strong>Application version</strong>. That’s it. That’s the report. The data has always been pretty, but pretty useless in some regards too. As someone who loves the madness of apps, I never got the data I actually needed, like 64-bit vs 32-bit, is it the MSI or EXE variant. Is it installed for everyone or only in a specific users profile. The old inventory was always very limited becuase it relied on the Win32_InstalledWin32Program class to inventory apps from a device.</p>
+<p data-block-type="core">The new App Inventory page has roughly seventeen columns and they’re all useful. To pick a few favourites:</p>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core"><strong>Installed for</strong><br/>Device or User. Finally we know whether something is machine-wide or per-profile.</li>
+<li data-block-type="core"><strong>User name / User Entra ID / SID</strong><br/>3 flavours of “who installed this”</li>
+<li data-block-type="core"><strong>Architectures</strong><br/>x86, x64, ARM64, Neutral. Useful when you’re chasing down a stubborn 32-bit installer in a 64-bit world.</li>
+<li data-block-type="core"><strong>Install date / Install location / Estimated size</strong></li>
+<li data-block-type="core"><strong>Uninstall command / Modify command</strong><br/>The actual <code>MsiExec.exe /X{...}</code> strings or paths to the EXE.</li>
+<li data-block-type="core"><strong>Package name</strong><br/>MSI product code for Win32 apps, package full name for Store apps. </li>
+<li data-block-type="core"><strong>Last updated</strong><br/>So you know how fresh this view is</li>
+</ul>
+<h2 class="wp-block-heading" id="2-setting-it-up"><a aria-hidden="true" class="aal_anchor" href="#setting-it-up" id="setting-it-up"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Setting it up</h2>
+<p data-block-type="core">Here’s the most important thing to know up front, because it’ll trip people up…</p>
+<p data-block-type="core"><strong>App Inventory does not auto-collect.</strong> Unlike Discovered Apps, which just happens whether you want it to or not, App Inventory needs an explicit policy deployed to the device. No policy, no data.</p>
+<p data-block-type="core">Before you do anything, the device needs to be:</p>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core"><strong>Windows 10 or 11</strong></li>
+<li data-block-type="core"><strong>Microsoft Entra joined</strong></li>
+<li data-block-type="core">Enrolled in Intune</li>
+<li data-block-type="core">Not in the Microsoft Azure operated by 21Vianet sovereign cloud (GCC High is supported, 21Vianet is not)</li>
+</ul>
+<p data-block-type="core">Im going to verbatim mince through the advice given here <a href="https://learn.microsoft.com/en-us/intune/app-management/deployment/enhanced-app-inventory#create-an-app-inventory-policy" rel="noopener" target="_blank">App inventory for Windows devices – Microsoft Intune | Microsoft Learn</a></p>
+<p data-block-type="core">To create the policy:</p>
+<ol class="wp-block-list" data-block-type="core">
+<li data-block-type="core"><strong>Intune admin center</strong> &gt; <strong>Devices</strong> &gt; <strong>Manage devices</strong> &gt; <strong>Configuration</strong> &gt; <strong>Create</strong> &gt; <strong>New policy</strong>.</li>
+<li data-block-type="core">Platform: <strong>Windows 10 and later</strong>.</li>
+<li data-block-type="core">Profile type: <strong>Properties catalog</strong>.</li>
+<li data-block-type="core">Click <strong>Create</strong>.</li>
+<li data-block-type="core">Name it with your favorite naming convention.</li>
+<li data-block-type="core">In <strong>Configuration settings</strong>, click <strong>+ Add Properties</strong>, tick <strong>ApplicationProperties</strong>, and choose your properties.</li>
+</ol>
+<p data-block-type="core">7 properties are required and pre-ticked, you can’t deselect them even if you wanted to. The rest are optional. My recommendation… <strong>tick everything for the first run.</strong> You can always trim later, and you don’t know what you’re missing if you don’t see it.</p>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-26444" decoding="async" src="assets/f6d4741c7489ba0b/img_1.png"/></figure>
+<p data-block-type="core">7. Deploy the policy to your devices.</p>
+<h2 class="wp-block-heading" id="3-another-agent"><a aria-hidden="true" class="aal_anchor" href="#another-agent" id="another-agent"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Another Agent?</h2>
+<p data-block-type="core">This is where it gets a little interesting, and where I’d assumed wrong for the first hour of poking.</p>
+<p data-block-type="core">I’d assumed that the <strong>Intune Management Extension</strong> was doing the inventory work, because it always has done in the past. IME is doing none of it.</p>
+<p data-block-type="core">App Inventory is the work of an entirely separate agent, with its own service, its own install location, and its own log files.</p>
+<p data-block-type="core">The <strong>Microsoft Device Inventory Agent</strong> is not the new kid on the block though. Its actually been with us for a while helping with device inventory. My good friend Rudy wrote a post on this back in late 2024, <a href="https://call4cloud.nl/intune-device-inventory-agent/" rel="noopener" target="_blank">https://call4cloud.nl/intune-device-inventory-agent/ </a></p>
+<p data-block-type="core">What seems to be happening now is that Microsoft are reusing that same inventory agent for app inventory as well. And when you think about it, that does make sense.</p>
+<p data-block-type="core">Both device inventory and app inventory are driven through the Properties Catalog CSP model. So rather than building yet another client-side component, Microsoft appear to be extending the use of the existing Microsoft Device Inventory Agent to collect this additional inventory data.</p>
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="" class="wp-image-26446" decoding="async" src="assets/f6d4741c7489ba0b/img_2.png"/></figure>
+<p data-block-type="core">If you had not previously targeted the device inventory properties catalog to your devices, you may not have seen the Microsoft Device Inventory Agent installed before. But once app inventory is enabled and targeted through an MMP-C sync, the agent should be installed as part of that flow.</p>
+<h2 class="wp-block-heading" id="4-what-the-agent-actually-does"><a aria-hidden="true" class="aal_anchor" href="#what-the-agent-actually-does" id="what-the-agent-actually-does"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>What the agent actually does</h2>
+<p data-block-type="core">For app inventory, 2 collection sources, run and are then merged.</p>
+<p data-block-type="core"><strong>1. Win32 apps (the registry pass). </strong><br/>This is the agent’s bread and butter. It enumerates the standard Windows uninstall keys, in three passes:</p>
+<ol class="wp-block-list" data-block-type="core">
+<li data-block-type="core"><code>HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall</code> 64-bit view (native)</li>
+<li data-block-type="core"><code>HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall</code> 32-bit view (Wow6432Node-redirected). Same key path, different view, different apps.</li>
+<li data-block-type="core"><code>HKEY_USERS\&lt;sid&gt;\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall</code> for every loaded user profile on the machine.</li>
+</ol>
+<p data-block-type="core">For each subkey it pulls <code>DisplayName</code>, <code>DisplayVersion</code>, <code>Publisher</code>, <code>InstallDate</code>, <code>InstallLocation</code>, <code>UninstallString</code>, <code>ModifyPath</code>, <code>EstimatedSize</code>, <code>Language</code>. Standard fare for anyone who’s ever written an inventory script.</p>
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="" class="wp-image-26448" decoding="async" src="assets/f6d4741c7489ba0b/img_3.png"/></figure>
+<p data-block-type="core"><strong>2. Store and MSIX apps (the package manager pass).</strong> <br/>This one tripped me up because Microsoft’s docs say “package manager API” and most of us read that as <strong>WinGet</strong>. It’s not. The agent calls the OS-level <code>Windows.Management.Deployment.PackageManager.FindPackages()</code> API, which has been in Windows since the ark grounded on land and has nothing to do with WinGet.</p>
+<p data-block-type="core">Both results get merged and de-duplicated, then cached locally. The merged result is what gets uploaded. You can get a sneak peek at the data because its stored in json format as well as a local sql lite database.</p>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-26449" decoding="async" src="assets/f6d4741c7489ba0b/img_4.png"/></figure>
+<h2 class="wp-block-heading" id="5-how-the-policy-gets-to-the-agent"><a aria-hidden="true" class="aal_anchor" href="#how-the-policy-gets-to-the-agent" id="how-the-policy-gets-to-the-agent"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>How the policy gets to the agent</h2>
+<p data-block-type="core">This is the bit that I think is most worth understanding, because it’s where troubleshooting starts.</p>
+<p data-block-type="core">Properties Catalog policies don’t ride on the classic OMA-DM channel like your old MDM CSPs. They use the new MMP-C / Declared Configuration channel. On the device side, Windows itself has a component that receives the declared configuration document and writes the policy contents into the registry at:</p>
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="" class="wp-image-26450" decoding="async" src="assets/f6d4741c7489ba0b/img_5.png"/></figure>
+<p data-block-type="core">Early rabbit holing indicates the Intune-shipped agent, <code>InventoryService.exe</code>, watches that registry key for changes. Policy lands in registry, agent picks it up, agent harvests, agent uploads.</p>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-26451" decoding="async" src="assets/f6d4741c7489ba0b/img_6.png"/></figure>
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="" class="wp-image-26452" decoding="async" src="assets/f6d4741c7489ba0b/img_7.png"/></figure>
+<h2 class="wp-block-heading" id="6-syncing"><a aria-hidden="true" class="aal_anchor" href="#syncing" id="syncing"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Syncing</h2>
+<p data-block-type="core">The big question… how often does this thing actually run?</p>
+<p data-block-type="core">The official line from Microsoft is <em>“triggered with the MMP-C sync/check-in cycle”</em> and <em>“multiple times per day for active devices.”</em> So it’s not the classic 8-hour MDM cycle, MMP-C is more frequent than that.</p>
+<p data-block-type="core">But there’s a wrinkle that isn’t in the docs. The agent itself maintains an internal cache of the merged app data with an internal TTL. Even when MMP-C wakes the agent up more often than that, the agent doesn’t necessarily re-enumerate the registry and re-call the package manager API every time. Sometimes it just replays its cached snapshot through whatever properties the current policy is asking for.</p>
+<p data-block-type="core">In practical terms… if you uninstall something and then watch App Inventory like a hawk waiting for it to disappear, you might be waiting a little while even if MMP-C check-ins fire several times in between. But we are talking hours….nothing like the 7 day delay to wait for apps to be removed from the Discovered Apps report.</p>
+<p data-block-type="core">First sync is a full upload. Everything after is delta..makes sense. Only new, changed, or removed apps get sent up.</p>
+<p data-block-type="core">The report is available in the Intune admin center only, on the device view.</p>
+<figure class="wp-block-image size-large" data-block-type="core"></figure>
+<p data-block-type="core"></p>
+<h2 class="wp-block-heading" id="7-stuff-not-in-the-docs-yet"><a aria-hidden="true" class="aal_anchor" href="#stuff-not-in-the-docs-yet" id="stuff-not-in-the-docs-yet"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Stuff not in the docs (yet)</h2>
+<h3 class="wp-block-heading" id="8-the-1000-app-hard-cap"><a aria-hidden="true" class="aal_anchor" href="#the-1000-app-hard-cap" id="the-1000-app-hard-cap"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>The 1000-app hard cap</h3>
+<p data-block-type="core">One limitation worth knowing about is the 1000 app limit per device.</p>
+<p data-block-type="core">This does not seem to be publicly documented by Microsoft and could change, but for those who like to “peek” at dll’s, the agent has a constant called <code>MaxApplicationCount = 1000</code></p>
+<p data-block-type="core">So, it looks like the inventory agent will only process up to 1000 apps on a device. Im off to the Patch My PC Catalog to test this theory.</p>
+<p data-block-type="core">For most devices, that probably will not matter. But it could become relevant on shared devices, developer machines, lab devices, or older devices that have collected a lot of installed apps over time. My lab device has 828 apps listed, so perhaps more of us will stumble across this limit that we would care to imagine. Lets see it play out.</p>
+<p data-block-type="core">There is also a specific error code for this scenario <code>E_APPLICATION_COUNT_EXCEEDED = 0x80511001</code></p>
+<p data-block-type="core">So if app inventory looks incomplete, and the device has a lot of installed apps, search the inventory agent logs for like <code>0x80511001</code>.</p>
+<h3 class="wp-block-heading" id="9-2-log-files-for-troubleshooting-not-one"><a aria-hidden="true" class="aal_anchor" href="#2-log-files-for-troubleshooting-not-one" id="2-log-files-for-troubleshooting-not-one"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>2 log files for troubleshooting, not one</h3>
+<p data-block-type="core">If apps aren’t showing up, knowing which log to check first will save you twenty minutes of squinting at the wrong file.</p>
+<div class="kb-table-container kb-table-container26441_d1b063-32 wp-block-kadence-table"><table class="kb-table kb-table26441_d1b063-32">
+<tr class="kb-table-row kb-table-row26441_ba83e6-84">
+<td class="kb-table-data kb-table-data26441_b88bbf-4d">
+<p data-block-type="core"><strong>Log location</strong></p>
+</td>
+<td class="kb-table-data kb-table-data26441_09d694-e9">
+<p data-block-type="core"><strong>What it tells you</strong></p>
+</td>
+</tr>
+<tr class="kb-table-row kb-table-row26441_ea6ee3-65">
+<td class="kb-table-data kb-table-data26441_ba4f9b-13">
+<p data-block-type="core"><code>%ProgramFiles%\Microsoft Device Inventory Agent\Logs\InventoryAdaptor.log</code></p>
+</td>
+<td class="kb-table-data kb-table-data26441_0c8ed8-79">
+<p data-block-type="core">Windows-side. Did the policy actually arrive on the device via MMP-C?</p>
+</td>
+</tr>
+<tr class="kb-table-row kb-table-row26441_5c65bc-24">
+<td class="kb-table-data kb-table-data26441_13d429-35">
+<p data-block-type="core"><code>%ProgramFiles%\Microsoft Device Inventory Agent\InventoryService\Logs\HarvesterLog.log</code></p>
+</td>
+<td class="kb-table-data kb-table-data26441_1e2ed4-a0">
+<p data-block-type="core">Agent-side. Did the agent run, harvest, merge, and upload?</p>
+</td>
+</tr>
+<tr class="kb-table-row kb-table-row26441_dd0a2c-a8"></tr>
+</table></div>
+<p data-block-type="core"></p>
+<p data-block-type="core">If <code>InventoryAdaptor.log</code> is silent, the policy isn’t arriving. Investigate MMP-C delivery, group assignment, prerequisites etc.</p>
+<p data-block-type="core">If <code>InventoryAdaptor.log</code> shows policy arrivals but <code>HarvesterLog.log</code> is silent, the service isn’t running. Check the <strong>Microsoft Device Inventory Agent</strong> in <code>services.msc</code>.</p>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-26453" decoding="async" src="assets/f6d4741c7489ba0b/img_8.png"/></figure>
+<h2 class="wp-block-heading" id="10-wrap-up"><a aria-hidden="true" class="aal_anchor" href="#wrap-up" id="wrap-up"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Wrap-Up</h2>
+<p data-block-type="core">The new Enhanced App Inventory isn’t just a richer better cousin of Discovered Apps. It’s a different mechanism end to end, separate agent, separate delivery channel, separate logs, separate registry footprint. Once you understand the moving parts, troubleshooting becomes much less mysterious. </p>
+<p data-block-type="core">The missing gap here on everyones lips is this – will app inventory not be accesible via Microsoft Graph in the same way we can’t pull aggregated device inventory. My true hope here is that Microsoft expose this data on something like the Intune Reporting Endpoint via Graph so we can actually pull this data to do intersting things with. I wait with bated breath…</p>
+<p class="post-views content-post post-26441 entry-meta load-static">
+<span class="post-views-icon dashicons dashicons-chart-bar"></span> <span class="post-views-label">Views:</span> <span class="post-views-count">3,666</span>
+</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

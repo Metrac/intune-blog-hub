@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Autopilot profile doesn’t decide if a device is corporate</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Call4Cloud (Rudy Ooms)</span>
+    <span class="date">April 30, 2026</span>
+  </div>
+  <h1>The Autopilot profile doesn’t decide if a device is corporate</h1>
+  <div class="orig">Saved for offline reading · <a href="https://patchmypc.com/blog/the-autopilot-profile-doesnt-decide-if-a-device-is-corporate/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="post-content">
+<p>When a device suddenly shows the full<strong> Out-of-Box Experience (showing privacy screen/region/etc),</strong> most administrators come to the same conclusion. <strong>The Autopilot profile did NOT apply</strong>, so the device must <strong>NOT</strong> have been recognized as a <strong>corporate Autopilot device</strong>. That conclusion feels logical. The Autopilot profile is the only visible signal during setup. When it is present, Windows skips consumer screens, and the experience clearly looks enterprise. When it is missing, Windows looks personal again and <strong>shows the default OOBE flow</strong>. From there, it is easy to assume that enrollment should be blocked when personal devices are restricted.</p>
+<p>That assumption is wrong. This blog explains why by following the device enrollment step by step. If you prefer to watch me talking about it… <strong><a href="https://www.youtube.com/watch?v=gVKHuDEwgjA&amp;t=1s">Check out our Patch N Rant on YouTube.</a></strong></p>
+<h2 class="wp-block-heading" id="h-introduction">Introduction<span class="clth-copy-icon" data-heading-id="h-introduction"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>Windows Autopilot is the supported way to onboard new Windows devices… To do so, we need to upload something that is called the hardware Hash. When the hardware hash is uploaded, and the corresponding Autopilot profile is assigned, the device is <strong>registered with the Autopilot service</strong> and <strong>classified as corporate</strong> at that moment.</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/04/image-29-1024x294.png"><picture class="wp-image-182832" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-29-1024x294.png.webp 1024w, https://patchmypc.com/app/uploads/2026/04/image-29-300x86.png.webp 300w, https://patchmypc.com/app/uploads/2026/04/image-29-768x221.png.webp 768w, https://patchmypc.com/app/uploads/2026/04/image-29.png.webp 1433w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-29-1024x294.png 1024w, https://patchmypc.com/app/uploads/2026/04/image-29-300x86.png 300w, https://patchmypc.com/app/uploads/2026/04/image-29-768x221.png 768w, https://patchmypc.com/app/uploads/2026/04/image-29.png 1433w" decoding="async" src="assets/1458ce381a79453c/img_0.png"/><noscript><img alt="" decoding="async" src="assets/1458ce381a79453c/img_1.png"/></noscript>
+</picture>
+</a></figure>
+<p>That registration exists independently of whether the Autopilot<strong> profile is successfully downloaded during setup</strong>. What most people associate with Autopilot is the visible part we normally don’t see: <strong>The full setup experience</strong>. When the profile downloads, Windows <strong>suppresses those consumer-focused screens</strong> and moves directly into the organizational/corporate flow. When the Autopilot profile fails to be downloaded, the setup screen looks very generic <strong>(AKA not corporate)</strong> again. Almost as if it’s a personal device.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/04/image-30.png"><picture class="wp-image-182834" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-30.png.webp 624w, https://patchmypc.com/app/uploads/2026/04/image-30-300x168.png.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-30.png 624w, https://patchmypc.com/app/uploads/2026/04/image-30-300x168.png 300w" decoding="async" src="assets/1458ce381a79453c/img_2.png"/><noscript><img alt="" decoding="async" src="assets/1458ce381a79453c/img_3.png"/></noscript>
+</picture>
+</a></figure>
+<p>This visual change often leads to the wrong conclusion. <strong>If platform enrollment restrictions are configured to block personal devices</strong>, a device that shows the personal out-of-the-box questions should be blocked from enrollment. </p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/04/image-1-1024x315.jpg"><picture class="wp-image-182831" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-1-1024x315.jpg.webp 1024w, https://patchmypc.com/app/uploads/2026/04/image-1-300x92.jpg.webp 300w, https://patchmypc.com/app/uploads/2026/04/image-1-768x236.jpg.webp 768w, https://patchmypc.com/app/uploads/2026/04/image-1.jpg.webp 1442w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-1-1024x315.jpg 1024w, https://patchmypc.com/app/uploads/2026/04/image-1-300x92.jpg 300w, https://patchmypc.com/app/uploads/2026/04/image-1-768x236.jpg 768w, https://patchmypc.com/app/uploads/2026/04/image-1.jpg 1442w" decoding="async" src="assets/1458ce381a79453c/img_4.jpg"/><noscript><img alt="" decoding="async" src="assets/1458ce381a79453c/img_5.jpg"/></noscript>
+</picture>
+</a></figure>
+<p>In this scenario, even when the Autopilot failed to download, the MDM/ Intune enrollment still succeeded. Why? Well…When the device fails to download the Autopilot Profile, it does NOT mean the device is personal. It only changed how OOBE looked. Before diving in, let me explain what Autopilot really is…</p>
+<h2 class="wp-block-heading" id="h-what-windows-autopilot-really-is">What Windows Autopilot really is<span class="clth-copy-icon" data-heading-id="h-what-windows-autopilot-really-is"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>On first boot, Windows tries to find its assigned Autopilot profile. That Autopilot profile, its job is to improve the <a href="https://patchmypc.com/blog/windows-quality-updates-out-of-box-experience-autopilot/">Enrollment experience.</a></p>
+<figure class="wp-block-image size-large"><a data-caption="what the autopilot profile really is" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/04/image-10-1024x486.jpg"><picture class="wp-image-182843" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-10-1024x486.jpg.webp 1024w, https://patchmypc.com/app/uploads/2026/04/image-10-300x142.jpg.webp 300w, https://patchmypc.com/app/uploads/2026/04/image-10-768x364.jpg.webp 768w, https://patchmypc.com/app/uploads/2026/04/image-10.jpg.webp 1433w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="what the autopilot profile really is" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-10-1024x486.jpg 1024w, https://patchmypc.com/app/uploads/2026/04/image-10-300x142.jpg 300w, https://patchmypc.com/app/uploads/2026/04/image-10-768x364.jpg 768w, https://patchmypc.com/app/uploads/2026/04/image-10.jpg 1433w" decoding="async" src="assets/1458ce381a79453c/img_6.jpg"/><noscript><img alt="what the autopilot profile really is" decoding="async" src="assets/1458ce381a79453c/img_7.jpg"/></noscript>
+</picture>
+</a></figure>
+<p>Its purpose is to skip or suppress specific <strong><a href="https://learn.microsoft.com/en-us/windows-hardware/test/assessments/out-of-box-experience">Out of Box Experience</a></strong> screens such as consumer prompts, privacy questions, and regional setup steps. Once those OOBE instructions are applied, Windows moves on and asks you to log in.</p>
+<figure class="wp-block-image size-full"><a data-caption="the oobe screen" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/04/image-32.png"><picture class="wp-image-182842" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-32.png.webp 624w, https://patchmypc.com/app/uploads/2026/04/image-32-300x167.png.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="the oobe screen" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-32.png 624w, https://patchmypc.com/app/uploads/2026/04/image-32-300x167.png 300w" decoding="async" src="assets/1458ce381a79453c/img_8.png"/><noscript><img alt="the oobe screen" decoding="async" src="assets/1458ce381a79453c/img_9.png"/></noscript>
+</picture>
+</a></figure>
+<p> From that point forward, the Autopilot profile has no further role. Identity registration and Entra/Intune enrollment decisions happen later and are not driven by the profile. Autopilot only affects how the first setup looks like. It does NOT decide whether a device is corporate or personal. Let me zoom into that even a bit more.</p>
+<h2 class="wp-block-heading" id="h-how-the-autopilot-profile-is-fetched">How the Autopilot profile is fetched<span class="clth-copy-icon" data-heading-id="h-how-the-autopilot-profile-is-fetched"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>As soon as Windows<strong> detects internet connectivity during OOBE</strong>,  the wman service attempts to determine whether the device is registered with Autopilot and whether a deployment profile is assigned.</p>
+<figure class="wp-block-image size-large"><a data-caption="fetching the autopilot profile" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/04/image-37-1024x313.png"><picture class="wp-image-183230" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-37-1024x313.png.webp 1024w, https://patchmypc.com/app/uploads/2026/04/image-37-300x92.png.webp 300w, https://patchmypc.com/app/uploads/2026/04/image-37-768x235.png.webp 768w, https://patchmypc.com/app/uploads/2026/04/image-37.png.webp 1191w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="fetching the autopilot profile" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-37-1024x313.png 1024w, https://patchmypc.com/app/uploads/2026/04/image-37-300x92.png 300w, https://patchmypc.com/app/uploads/2026/04/image-37-768x235.png 768w, https://patchmypc.com/app/uploads/2026/04/image-37.png 1191w" decoding="async" src="assets/1458ce381a79453c/img_10.png"/><noscript><img alt="fetching the autopilot profile" decoding="async" src="assets/1458ce381a79453c/img_11.png"/></noscript>
+</picture>
+</a></figure>
+<p>To do so, it needs to talk to the Autopilot ZTD service and prove that it is the same device that was previously registered by its hardware hash. That proof is obtained by reaching out to <strong>login.live.com/rst2</strong> to request a device security token (RST).</p>
+<figure class="wp-block-image size-large"><a data-caption="authentication to the login.live.com endpoint" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/04/image-38-1024x205.png"><picture class="wp-image-183231" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-38-1024x205.png.webp 1024w, https://patchmypc.com/app/uploads/2026/04/image-38-300x60.png.webp 300w, https://patchmypc.com/app/uploads/2026/04/image-38-768x154.png.webp 768w, https://patchmypc.com/app/uploads/2026/04/image-38.png.webp 1375w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="authentication to the login.live.com endpoint" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-38-1024x205.png 1024w, https://patchmypc.com/app/uploads/2026/04/image-38-300x60.png 300w, https://patchmypc.com/app/uploads/2026/04/image-38-768x154.png 768w, https://patchmypc.com/app/uploads/2026/04/image-38.png 1375w" decoding="async" src="assets/1458ce381a79453c/img_12.png"/><noscript><img alt="authentication to the login.live.com endpoint" decoding="async" src="assets/1458ce381a79453c/img_13.png"/></noscript>
+</picture>
+</a></figure>
+<p>Once it retrieves the security token, that token is also cached locally in the system account.</p>
+<figure class="wp-block-image size-full"><a data-caption="saving the authentication ticket" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/04/image-2.jpg"><picture class="wp-image-182833" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-2.jpg.webp 624w, https://patchmypc.com/app/uploads/2026/04/image-2-300x181.jpg.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="saving the authentication ticket" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-2.jpg 624w, https://patchmypc.com/app/uploads/2026/04/image-2-300x181.jpg 300w" decoding="async" src="assets/1458ce381a79453c/img_14.jpg"/><noscript><img alt="saving the authentication ticket" decoding="async" src="assets/1458ce381a79453c/img_15.jpg"/></noscript>
+</picture>
+</a></figure>
+<p>The device token is commonly referenced through the headers when communicating with the ZTD service<strong> (x-device-token)</strong>. It is tied to the uploaded hardware hash and allows the Autopilot service to recognize the device without any user identity being involved. When Windows contacts the Autopilot service with that<strong> x-device-token,</strong> the service checks whether a deployment profile is assigned and returns it if available.</p>
+<figure class="wp-block-image size-full"><a data-caption="fetching the profile from ztd.dds.microsoft.com" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/04/image-3.jpg"><picture class="wp-image-182839" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-3.jpg.webp 624w, https://patchmypc.com/app/uploads/2026/04/image-3-300x68.jpg.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="fetching the profile from ztd.dds.microsoft.com" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-3.jpg 624w, https://patchmypc.com/app/uploads/2026/04/image-3-300x68.jpg 300w" decoding="async" src="assets/1458ce381a79453c/img_16.jpg"/><noscript><img alt="fetching the profile from ztd.dds.microsoft.com" decoding="async" src="assets/1458ce381a79453c/img_17.jpg"/></noscript>
+</picture>
+</a></figure>
+<p>If this request fails, because Autopilot service endpoints are unreachable, the device does <strong>NOT lose its Autopilot registration</strong>. What it loses is only the Autopilot profile instructions <strong>(cloudassignedoobeconfig)</strong> that control setup behavior.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/04/image-6.jpg"><picture class="wp-image-182840" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-6.jpg.webp 624w, https://patchmypc.com/app/uploads/2026/04/image-6-300x119.jpg.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-6.jpg 624w, https://patchmypc.com/app/uploads/2026/04/image-6-300x119.jpg 300w" decoding="async" src="assets/1458ce381a79453c/img_18.jpg"/><noscript><img alt="" decoding="async" src="assets/1458ce381a79453c/img_19.jpg"/></noscript>
+</picture>
+</a></figure>
+<p>The enrollment itself continues with a generic experience and shows the screens that the Autopilot Profile would normally suppress. So… even without the profile in place, the device still proceeds toward the Entra Join and prompts for credentials.</p>
+<figure class="wp-block-image size-large"><a data-caption="the full autopilot profile retrieval flow" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/04/image-35-1024x672.png"><picture class="wp-image-182856" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-35-1024x672.png.webp 1024w, https://patchmypc.com/app/uploads/2026/04/image-35-300x197.png.webp 300w, https://patchmypc.com/app/uploads/2026/04/image-35-768x504.png.webp 768w, https://patchmypc.com/app/uploads/2026/04/image-35-1536x1007.png.webp 1536w, https://patchmypc.com/app/uploads/2026/04/image-35-2048x1343.png.webp 2048w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="the full autopilot profile retrieval flow" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-35-1024x672.png 1024w, https://patchmypc.com/app/uploads/2026/04/image-35-300x197.png 300w, https://patchmypc.com/app/uploads/2026/04/image-35-768x504.png 768w, https://patchmypc.com/app/uploads/2026/04/image-35-1536x1007.png 1536w, https://patchmypc.com/app/uploads/2026/04/image-35-2048x1343.png 2048w" decoding="async" src="assets/1458ce381a79453c/img_20.png"/><noscript><img alt="the full autopilot profile retrieval flow" decoding="async" src="assets/1458ce381a79453c/img_21.png"/></noscript>
+</picture>
+</a></figure>
+<p>This is where the misunderstanding usually starts. A missing Autopilot profile changes the OOBE experience but <strong>NOT</strong> the device’s identity.</p>
+<h2 class="wp-block-heading" id="h-entra-join-and-the-transition-to-mdm">Entra Join and the transition to MDM<span class="clth-copy-icon" data-heading-id="h-entra-join-and-the-transition-to-mdm"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>After the first stages of OOBE, <strong>with or without the Autopilot profile</strong> applied, Windows proceeds with Entra join as part of the same setup flow</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/04/image-39.png"><picture class="wp-image-183232" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-39.png.webp 975w, https://patchmypc.com/app/uploads/2026/04/image-39-300x167.png.webp 300w, https://patchmypc.com/app/uploads/2026/04/image-39-768x429.png.webp 768w" sizes="(max-width: 975px) 100vw, 975px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 975px) 100vw, 975px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-39.png 975w, https://patchmypc.com/app/uploads/2026/04/image-39-300x167.png 300w, https://patchmypc.com/app/uploads/2026/04/image-39-768x429.png 768w" decoding="async" src="assets/1458ce381a79453c/img_22.png"/><noscript><img alt="" decoding="async" src="assets/1458ce381a79453c/img_23.png"/></noscript>
+</picture>
+</a></figure>
+<p>The user signs in, the device object is created in Entra ID, and trust is established. Again… the Entra join does <strong>NOT</strong> depend on the Autopilot profile. If credentials are valid, the device joins Entra.  As part of the Entra join flow, Windows also obtains the MDM enrollment token and the MDM service URLs. (The MDM enrollment URIs are inside the token)</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/04/image-40-1024x649.png"><picture class="wp-image-183233" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-40-1024x649.png.webp 1024w, https://patchmypc.com/app/uploads/2026/04/image-40-300x190.png.webp 300w, https://patchmypc.com/app/uploads/2026/04/image-40-768x487.png.webp 768w, https://patchmypc.com/app/uploads/2026/04/image-40.png.webp 1272w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-40-1024x649.png 1024w, https://patchmypc.com/app/uploads/2026/04/image-40-300x190.png 300w, https://patchmypc.com/app/uploads/2026/04/image-40-768x487.png 768w, https://patchmypc.com/app/uploads/2026/04/image-40.png 1272w" decoding="async" src="assets/1458ce381a79453c/img_24.png"/><noscript><img alt="" decoding="async" src="assets/1458ce381a79453c/img_25.png"/></noscript>
+</picture>
+</a></figure>
+<p>During this MDM discovery phase, the service checks whether the user is in the MDM scope and of course if the user has a valid Intune license assigned.</p>
+<figure class="wp-block-image size-large"><a data-caption="the mde enrollment flow" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/04/image-42-1024x228.png"><picture class="wp-image-183235" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-42-1024x228.png.webp 1024w, https://patchmypc.com/app/uploads/2026/04/image-42-300x67.png.webp 300w, https://patchmypc.com/app/uploads/2026/04/image-42-768x171.png.webp 768w, https://patchmypc.com/app/uploads/2026/04/image-42-1536x343.png.webp 1536w, https://patchmypc.com/app/uploads/2026/04/image-42-2048x457.png.webp 2048w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="the mde enrollment flow" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-42-1024x228.png 1024w, https://patchmypc.com/app/uploads/2026/04/image-42-300x67.png 300w, https://patchmypc.com/app/uploads/2026/04/image-42-768x171.png 768w, https://patchmypc.com/app/uploads/2026/04/image-42-1536x343.png 1536w, https://patchmypc.com/app/uploads/2026/04/image-42-2048x457.png 2048w" decoding="async" src="assets/1458ce381a79453c/img_26.png"/><noscript><img alt="the mde enrollment flow" decoding="async" src="assets/1458ce381a79453c/img_27.png"/></noscript>
+</picture>
+</a></figure>
+<p>Once this step completes, the device moves into MDM/Intune enrollment.</p>
+<h2 class="wp-block-heading" id="h-enrollment-restrictions-and-the-autopilot-profile">Enrollment Restrictions and the Autopilot Profile<span class="clth-copy-icon" data-heading-id="h-enrollment-restrictions-and-the-autopilot-profile"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>Once Windows has the MDM URLs and enrollment token, it reaches out to the Intune enrollment service. <strong>This is the exact moment enrollment restrictions are evaluated.</strong> During this enrollment request, Windows hands over the device information to the Intune enrollment service. <strong>This includes the device identity established earlier and the ZTDID</strong>, which originates from the device ticket issued by login.live.com during the provisioning phase and is carried forward into MDM enrollment.</p>
+<figure class="wp-block-image size-large"><a data-caption="enrollment restrictions and the autopilot profile" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/04/image-43-1024x356.png"><picture class="wp-image-183236" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-43-1024x356.png.webp 1024w, https://patchmypc.com/app/uploads/2026/04/image-43-300x104.png.webp 300w, https://patchmypc.com/app/uploads/2026/04/image-43-768x267.png.webp 768w, https://patchmypc.com/app/uploads/2026/04/image-43-1536x534.png.webp 1536w, https://patchmypc.com/app/uploads/2026/04/image-43-2048x712.png.webp 2048w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="enrollment restrictions and the autopilot profile" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-43-1024x356.png 1024w, https://patchmypc.com/app/uploads/2026/04/image-43-300x104.png 300w, https://patchmypc.com/app/uploads/2026/04/image-43-768x267.png 768w, https://patchmypc.com/app/uploads/2026/04/image-43-1536x534.png 1536w, https://patchmypc.com/app/uploads/2026/04/image-43-2048x712.png 2048w" decoding="async" src="assets/1458ce381a79453c/img_28.png"/><noscript><img alt="enrollment restrictions and the autopilot profile" decoding="async" src="assets/1458ce381a79453c/img_29.png"/></noscript>
+</picture>
+</a></figure>
+<p>The <strong>ZTDID </strong>does not come from the Autopilot profile. It existed before setup started and survives regardless of whether the profile was downloaded. It represents the device physical identity and allows the service to match the enrolling device to the Autopilot registration.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/04/image-33.png"><picture class="wp-image-182844" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-33.png.webp 624w, https://patchmypc.com/app/uploads/2026/04/image-33-300x245.png.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-33.png 624w, https://patchmypc.com/app/uploads/2026/04/image-33-300x245.png 300w" decoding="async" src="assets/1458ce381a79453c/img_30.png"/><noscript><img alt="" decoding="async" src="assets/1458ce381a79453c/img_31.png"/></noscript>
+</picture>
+</a></figure>
+<p>This is the point where the service decides whether the device is corporate or personal. If personal devices are blocked, the presence of a valid ZTDID allows the device to be classified as corporate and proceed.</p>
+<figure class="wp-block-image size-large"><a data-caption="ztdid missing" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/04/image-44-1024x433.png"><picture class="wp-image-183237" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-44-1024x433.png.webp 1024w, https://patchmypc.com/app/uploads/2026/04/image-44-300x127.png.webp 300w, https://patchmypc.com/app/uploads/2026/04/image-44-768x324.png.webp 768w, https://patchmypc.com/app/uploads/2026/04/image-44.png.webp 1373w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="ztdid missing" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-44-1024x433.png 1024w, https://patchmypc.com/app/uploads/2026/04/image-44-300x127.png 300w, https://patchmypc.com/app/uploads/2026/04/image-44-768x324.png 768w, https://patchmypc.com/app/uploads/2026/04/image-44.png 1373w" decoding="async" src="assets/1458ce381a79453c/img_32.png"/><noscript><img alt="ztdid missing" decoding="async" src="assets/1458ce381a79453c/img_33.png"/></noscript>
+</picture>
+</a></figure>
+<p>If the <strong>ZTDID </strong>is missing, the device is treated as personal, and enrollment is blocked, even if the <strong>user is licensed and discovery succeeded.</strong></p>
+<figure class="wp-block-image size-full"><a data-caption="80180014 something went wrong" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/04/image-7.jpg"><picture class="wp-image-182836" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-7.jpg.webp 1001w, https://patchmypc.com/app/uploads/2026/04/image-7-300x150.jpg.webp 300w, https://patchmypc.com/app/uploads/2026/04/image-7-768x384.jpg.webp 768w" sizes="(max-width: 1001px) 100vw, 1001px" type="image/webp"/>
+<img alt="80180014 something went wrong" data-lazy-sizes="(max-width: 1001px) 100vw, 1001px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-7.jpg 1001w, https://patchmypc.com/app/uploads/2026/04/image-7-300x150.jpg 300w, https://patchmypc.com/app/uploads/2026/04/image-7-768x384.jpg 768w" decoding="async" src="assets/1458ce381a79453c/img_34.jpg"/><noscript><img alt="80180014 something went wrong" decoding="async" src="assets/1458ce381a79453c/img_35.jpg"/></noscript>
+</picture>
+</a></figure>
+<p>That decision is not based on the Autopilot profile. It is made silently during the enrollment request…So again.. the Autopilot profile does NOT decide if the device is corporate.</p>
+<h2 class="wp-block-heading" id="h-blocking-the-autopilot-service-ztd">Blocking the Autopilot Service (ZTD)<span class="clth-copy-icon" data-heading-id="h-blocking-the-autopilot-service-ztd"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>Blocking Autopilot service endpoints (ztd.dds.microsoft.com) changes how the OOBE setup looks like, but it does NOT automatically change the device into a personal one. When the Autopilot service endpoints are unreachable, Windows cannot retrieve the Autopilot profile. With it, the enrollment continues without the OOBE instructions that suppress consumer OOBE screens. The experience looks generic, even when the device is corporate.</p>
+<p>As long as login.live.com remains reachable, Windows can still establish its provisioning context. It can obtain a <strong>valid device ticket</strong> and retain the associated <strong>ZTDID</strong> that links the provisioning session back to the Autopilot registration created from the uploaded hardware hash. When the device later reaches MDM enrollment, Intune evaluates that provisioning context, not the setup experience. Because the device can still be linked to a trusted Autopilot registration, enrollment can succeed even when personal devices are blocked.</p>
+<p>Blocking login.live.com is different <strong>(and stupid)</strong>. When login.live.com is unreachable, Windows cannot obtain a valid device ticket. Without it, the provisioning identity chain cannot be established correctly. When the MDM enrollment is retried later on, the request reaches Intune <strong>without the context needed</strong> to link the device back to a trusted Autopilot registration. The failure happens BEFORE enrollment restrictions can even be evaluated. This is exactly why <strong>blocking</strong> <strong>login.live.com</strong> causes weird failures that look like Autopilot or Intune issues, but are actually they are caused by the missing <strong>“identity”</strong>. The device can no longer prove who it is or how it started.</p>
+<h2 class="wp-block-heading" id="h-conclusion">Conclusion<span class="clth-copy-icon" data-heading-id="h-conclusion"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>When the Autopilot profile does not show up, the device can suddenly look personal during OOBE.  You might see a random device name, the local Administrator account, and the normal setup screens. That is what happens when the ZTD service is not reachable and the Autopilot profile cannot be downloaded. But that does not automatically mean the device became personal.</p>
+<p>The Autopilot profile controls how OOBE looks and which settings are applied during setup. If <code>login.live.com</code> is still reachable, the device can still get the device ticket it needs to prove who it is. That proof allows the Autopilot corporate state to be handed over during enrollment. That is also why blocking personal devices does not always block this scenario.</p>
+<p><strong>So the important difference is this:</strong> If the ZTD service is not reachable, the Autopilot experience can be missing. If the identity flow still works, the corporate registration can still be handed over to Intune.</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

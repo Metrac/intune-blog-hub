@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Download IntuneWin Files from Microsoft Intune</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Call4Cloud (Rudy Ooms)</span>
+    <span class="date">May 14, 2026</span>
+  </div>
+  <h1>Download IntuneWin Files from Microsoft Intune</h1>
+  <div class="orig">Saved for offline reading · <a href="https://patchmypc.com/blog/download-intunewin-files-from-microsoft-intune/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="post-content">
+<p>In the first version of the IntuneWin Downloader, the goal was simple: <strong>Download IntuneWin</strong> content from Intune and recover the original Win32 app source files when they were no longer available locally. That blog walked through the IME style flow: find the Intune MDM device certificate, discover the SideCar Gateway, request ContentInfo, download the encrypted content, decrypt it, and extract the package. It also made one thing very clear: this only works when the app is still assigned to the device or user. It was never about bypassing Intune assignments.</p>
+<p>That first version worked, but it still felt a bit rough around the edges. You needed the AppId, you needed the right token to be present in the local TokenBroker cache, and when the cache contained multiple tokens, picking the right one could become a bit of a gamble.</p>
+<p>So I went back into the IME flow. Not to change what the tool was doing, but to make the <strong>IntuneWin Downloader</strong> behave more like the IME and Company Portal. With it… The tool looks like this.</p>
+<figure class="wp-block-image size-large"><a data-caption="Download IntuneWin files  straight from intune using WAM for the tokens" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/05/image-30-1024x659.png"><picture class="wp-image-184622" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-30-1024x659.png.webp 1024w, https://patchmypc.com/app/uploads/2026/05/image-30-300x193.png.webp 300w, https://patchmypc.com/app/uploads/2026/05/image-30-768x494.png.webp 768w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="Download IntuneWin files  straight from intune using WAM for the tokens" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-30-1024x659.png 1024w, https://patchmypc.com/app/uploads/2026/05/image-30-300x193.png 300w, https://patchmypc.com/app/uploads/2026/05/image-30-768x494.png 768w, https://patchmypc.com/app/uploads/2026/05/image-30.png 1248w" decoding="async" src="assets/ea2f0080e6fabb52/img_0.png"/><noscript><img alt="Download IntuneWin files  straight from intune using WAM for the tokens" decoding="async" src="assets/ea2f0080e6fabb52/img_1.png"/></noscript>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-the-first-version-chasing-the-tbres-token">The first version: chasing the .tbres token<span class="clth-copy-icon" data-heading-id="h-the-first-version-chasing-the-tbres-token"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p><strong><a href="https://patchmypc.com/blog/download-intunewin-win32-app-files-from-intune/">The first version of the tool relied on the local TokenBroker cache. </a></strong></p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/05/image-20.png"><img alt="" class="wp-image-184608" data-lazy-sizes="(max-width: 774px) 100vw, 774px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-20.png 774w, https://patchmypc.com/app/uploads/2026/05/image-20-300x170.png 300w, https://patchmypc.com/app/uploads/2026/05/image-20-768x435.png 768w" decoding="async" src="assets/ea2f0080e6fabb52/img_2.png"/><noscript><img alt="" class="wp-image-184608" decoding="async" src="assets/ea2f0080e6fabb52/img_3.png"/></noscript></a></figure>
+<p>The idea was straightforward. The Intune Management Extension already requires a bearer token when communicating with the SideCar Gateway. That token could often be found in the user’s local TokenBroker cache as a .tbres file.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/05/image-35.png"><picture class="wp-image-184636" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-35.png.webp 770w, https://patchmypc.com/app/uploads/2026/05/image-35-300x74.png.webp 300w, https://patchmypc.com/app/uploads/2026/05/image-35-768x189.png.webp 768w" sizes="(max-width: 770px) 100vw, 770px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 770px) 100vw, 770px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-35.png 770w, https://patchmypc.com/app/uploads/2026/05/image-35-300x74.png 300w, https://patchmypc.com/app/uploads/2026/05/image-35-768x189.png 768w" decoding="async" src="assets/ea2f0080e6fabb52/img_4.png"/><noscript><img alt="" decoding="async" src="assets/ea2f0080e6fabb52/img_5.png"/></noscript>
+</picture>
+</a></figure>
+<p>So the script would look through the cache, decrypt ResponseBytes using DPAPI in the current user context, search for a JWT, and then use that token for the SideCar calls. That worked, but it had some weak spots.</p>
+<p>The token had to exist in the tbres cache. The Intunewin Download script had to run as the same user who owned that cache. The cache had to contain a still-valid token. And when the decrypted response contained multiple JWTs, the script had to ensure it did not grab the wrong one. That last part is where things became interesting. A token can be valid and not expired, yet still be completely useless for the endpoint you are calling. If the audience does not match what SideCar expects, the request will fail anyway. So, yes, the .tbres approach was useful. But it was not the cleanest way forward.</p>
+<h2 class="wp-block-heading" id="h-the-moment-wam-changed-the-intunewin-download"><strong>The moment WAM changed the IntuneWin Download</strong><span class="clth-copy-icon" data-heading-id="h-the-moment-wam-changed-the-intunewin-download"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>The newer version no longer depends on scraping .tbres files. Instead of hunting for a cached token, the tool now asks <strong><a href="https://learn.microsoft.com/en-us/entra/identity-platform/reference-entra-id-wam-api">WAM directly</a></strong>.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/05/image-25.png"><img alt="" class="wp-image-184613" data-lazy-sizes="(max-width: 628px) 100vw, 628px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-25.png 628w, https://patchmypc.com/app/uploads/2026/05/image-25-300x79.png 300w" decoding="async" src="assets/ea2f0080e6fabb52/img_6.png"/><noscript><img alt="" class="wp-image-184613" decoding="async" src="assets/ea2f0080e6fabb52/img_7.png"/></noscript></a></figure>
+<p><strong>WAM, or Web Account Manager,</strong> is the Windows broker layer that apps use to request tokens for signed-in accounts. The important part is that the tool no longer needs to rely on the assumption that the right token already exists in the cache. It can request the token itself, using the correct client and resource pair.</p>
+<p>That changed the tool from this:</p>
+<ul class="wp-block-list">
+<li>Find TokenBroker cache</li>
+<li>Decrypt .tbres</li>
+<li>Extract token</li>
+<li>Hope it is the right one</li>
+<li>Call SideCar</li>
+</ul>
+<p>into this:</p>
+<ul class="wp-block-list">
+<li>Ask WAM for the right token</li>
+<li>Use the MDM device certificate</li>
+<li>Call the right Intune client-side endpoint</li>
+<li>Download the content</li>
+<li>Process the package</li>
+</ul>
+<p>That sounds small, but it makes the flow much more reliable.</p>
+<h2 class="wp-block-heading" id="h-two-different-lanes-two-different-tokens-to-download-the-intunewin">Two different lanes, two different tokens to download the IntuneWin<span class="clth-copy-icon" data-heading-id="h-two-different-lanes-two-different-tokens-to-download-the-intunewin"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>The next lesson was that “Intune token” is too vague. The <strong>Company Portal and IME do not use one magic token for everything</strong>. The Company Portal catalog and the IME SideCar flow are different lanes, and each lane expects a token with the correct audience.</p>
+<p>For the Company Portal catalog lane, the tool uses the Company Portal client and the IWService resource.</p>
+<p><strong>Company Portal</strong><br/>ClientId  = 9ba1a5c7-f17a-4de9-a1f1-6178c8d51223<br/>Resource  = b8066b99-6e67-41be-abfa-75db1a2c8809</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/05/image-24.png"><img alt="" class="wp-image-184612" data-lazy-sizes="(max-width: 708px) 100vw, 708px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-24.png 708w, https://patchmypc.com/app/uploads/2026/05/image-24-300x30.png 300w" decoding="async" src="assets/ea2f0080e6fabb52/img_8.png"/><noscript><img alt="" class="wp-image-184612" decoding="async" src="assets/ea2f0080e6fabb52/img_9.png"/></noscript></a></figure>
+<p>That token is used to talk to the IWService catalog endpoint. This is the lane that helps us list apps with a friendly name and an AppId, without having to manually copy the AppId from the Intune portal. For the IME SideCar lane, the tool uses the IME SideCar client and resource pair.</p>
+<p><strong>IME SideCar</strong><br/>ClientId  = fc0f3af4-6835-4174-b806-f7db311fd2f3<br/>Resource  = 26a4ae64-5862-427f-a9b0-044e62572a4f</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/05/image-23.png"><img alt="" class="wp-image-184611" data-lazy-sizes="(max-width: 750px) 100vw, 750px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-23.png 750w, https://patchmypc.com/app/uploads/2026/05/image-23-300x58.png 300w" decoding="async" src="assets/ea2f0080e6fabb52/img_10.png"/><noscript><img alt="" class="wp-image-184611" decoding="async" src="assets/ea2f0080e6fabb52/img_11.png"/></noscript></a></figure>
+<p>That token is used for the SideCar GetContentInfo flow. This split is important. The Company Portal token can help you discover apps, but it is not the token that SideCar wants when you request content. The SideCar token can help you resolve content, but it is not the cleanest way to list the Company Portal catalog. So the new tool uses both lanes for what they do best.</p>
+<h2 class="wp-block-heading" id="h-discovering-the-apps-with-the-company-portal-catalog">Discovering the apps with the Company Portal catalog<span class="clth-copy-icon" data-heading-id="h-discovering-the-apps-with-the-company-portal-catalog"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>The first version required you to know the AppId. That was annoying. Yes, you could get it from the Intune portal. Yes, you could use Graph. But the Company Portal already has a catalog view of apps relevant to the user and device. So the better approach was to use the Company Portal catalog lane for discovery… which just worked perfectly.</p>
+<p>The tool now requests a WAM token for the Company Portal IWService resource and calls the IWService catalog endpoint. From there, it builds the app list in the UI. That gives us the display name and AppId without having to manually search for them. The important thing is that this is only used for discovery. It does not download anything yet. It only answers the question: <strong>Which apps does the Company Portal know about?</strong></p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/05/image-26.png"><img alt="" class="wp-image-184614" data-lazy-sizes="(max-width: 895px) 100vw, 895px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-26.png 895w, https://patchmypc.com/app/uploads/2026/05/image-26-300x27.png 300w, https://patchmypc.com/app/uploads/2026/05/image-26-768x69.png 768w" decoding="async" src="assets/ea2f0080e6fabb52/img_12.png"/><noscript><img alt="" class="wp-image-184614" decoding="async" src="assets/ea2f0080e6fabb52/img_13.png"/></noscript></a></figure>
+<p> The download still happens through the IME SideCar flow.</p>
+<h2 class="wp-block-heading" id="h-downloading-the-intunewin-still-belongs-to-sidecar">Downloading the IntuneWin still belongs to SideCar<span class="clth-copy-icon" data-heading-id="h-downloading-the-intunewin-still-belongs-to-sidecar"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>Once you select an app, the tool switches lanes. It takes the selected AppId and calls SideCar GetContentInfo using the SideCar WAM token and the local Intune MDM device certificate. That part still follows the same idea as the original blog. The device identity matters. The MDM certificate matters. The SideCar Gateway matters. The app assignment still matters.</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/05/image-27-1024x211.png"><picture class="wp-image-184616" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-27-1024x211.png.webp 1024w, https://patchmypc.com/app/uploads/2026/05/image-27-300x62.png.webp 300w, https://patchmypc.com/app/uploads/2026/05/image-27-768x158.png.webp 768w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-27-1024x211.png 1024w, https://patchmypc.com/app/uploads/2026/05/image-27-300x62.png 300w, https://patchmypc.com/app/uploads/2026/05/image-27-768x158.png 768w, https://patchmypc.com/app/uploads/2026/05/image-27.png 1141w" decoding="async" src="assets/ea2f0080e6fabb52/img_14.png"/><noscript><img alt="" decoding="async" src="assets/ea2f0080e6fabb52/img_15.png"/></noscript>
+</picture>
+</a></figure>
+<p>The tool first discovers the correct SideCar Gateway URI for the tenant and scale unit. Then it sends the GetContentInfo request for the selected AppId and ApplicationVersion.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/05/image-28.png"><img alt="" class="wp-image-184618" data-lazy-sizes="(max-width: 748px) 100vw, 748px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-28.png 748w, https://patchmypc.com/app/uploads/2026/05/image-28-300x70.png 300w" decoding="async" src="assets/ea2f0080e6fabb52/img_16.png"/><noscript><img alt="" class="wp-image-184618" decoding="async" src="assets/ea2f0080e6fabb52/img_17.png"/></noscript></a></figure>
+<p>If SideCar allows the current device or user to resolve the content, it returns the metadata needed to download and process the package. If SideCar rejects it, the tool does not magically work around that.</p>
+<p>And that is exactly how it should be.</p>
+<h2 class="wp-block-heading" id="h-regular-win32-apps-versus-catalog-apps">Regular Win32 apps versus catalog apps<span class="clth-copy-icon" data-heading-id="h-regular-win32-apps-versus-catalog-apps"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>The original IntuneWin flow is built around encrypted content. A regular Win32 app returns encrypted content metadata. The tool downloads the .intunewin content, uses the returned encryption information, decrypts the payload with AES, and extracts the resulting zip.</p>
+<p>That is the classic path. But Enterprise App Management catalog apps can behave differently. For some of those apps, the metadata returns: ProfileIdentifier = NoEncryption</p>
+<p>That changes the processing flow. When NoEncryption is enabled, there is no AES key or IV to use in the classic way. The tool should not keep trying to decrypt something that was not returned as an encrypted IntuneWin payload. Instead, it treats the downloaded content as the decoded zip and extracts it directly.</p>
+<p>That was one of those small details that only becomes obvious once the tool starts working against more than just manually uploaded Win32 apps.</p>
+<p>The current flow looks like this. The tool starts by initializing the local Intune identity context. It locates the MDM device certificate and extracts the device identity. It then discovers the SideCar Gateway URI for the device’s Intune environment.</p>
+<p>For app discovery, it requests a Company Portal IWService token through WAM and loads the Company Portal catalog. That gives the UI a clean list of apps with display names and AppIDs.</p>
+<figure class="wp-block-image size-large"><a data-caption="Download IntuneWin files  straight from intune using WAM for the tokens" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/05/image-33-1024x657.png"><picture class="wp-image-184631" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-33-1024x657.png.webp 1024w, https://patchmypc.com/app/uploads/2026/05/image-33-300x193.png.webp 300w, https://patchmypc.com/app/uploads/2026/05/image-33-768x493.png.webp 768w, https://patchmypc.com/app/uploads/2026/05/image-33.png.webp 1217w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="Download IntuneWin files  straight from intune using WAM for the tokens" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-33-1024x657.png 1024w, https://patchmypc.com/app/uploads/2026/05/image-33-300x193.png 300w, https://patchmypc.com/app/uploads/2026/05/image-33-768x493.png 768w, https://patchmypc.com/app/uploads/2026/05/image-33.png 1217w" decoding="async" src="assets/ea2f0080e6fabb52/img_18.png"/><noscript><img alt="Download IntuneWin files  straight from intune using WAM for the tokens" decoding="async" src="assets/ea2f0080e6fabb52/img_19.png"/></noscript>
+</picture>
+</a></figure>
+<p>For downloading, it requests an IME SideCar token through WAM, calls <strong>GetContentInfo with the MDM device certificate</strong>, downloads the content, and then processes it based on the returned metadata.  If the metadata contains regular encryption information, the tool decrypts and extracts the IntuneWin content.If the metadata says NoEncryption, it skips AES decryption and extracts the downloaded zip directly.</p>
+<p>And because large app packages can take some time, the tool now shows a separate download progress dialog instead of making the UI look frozen while the content is being downloaded. </p>
+<figure class="wp-block-image size-large"><a data-caption="Download IntuneWin files  straight from intune using WAM for the tokens" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/05/image-34-1024x452.png"><picture class="wp-image-184632" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-34-1024x452.png.webp 1024w, https://patchmypc.com/app/uploads/2026/05/image-34-300x132.png.webp 300w, https://patchmypc.com/app/uploads/2026/05/image-34-768x339.png.webp 768w, https://patchmypc.com/app/uploads/2026/05/image-34.png.webp 1246w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="Download IntuneWin files  straight from intune using WAM for the tokens" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-34-1024x452.png 1024w, https://patchmypc.com/app/uploads/2026/05/image-34-300x132.png 300w, https://patchmypc.com/app/uploads/2026/05/image-34-768x339.png 768w, https://patchmypc.com/app/uploads/2026/05/image-34.png 1246w" decoding="async" src="assets/ea2f0080e6fabb52/img_20.png"/><noscript><img alt="Download IntuneWin files  straight from intune using WAM for the tokens" decoding="async" src="assets/ea2f0080e6fabb52/img_21.png"/></noscript>
+</picture>
+</a></figure>
+<p><strong>Please Note</strong>: You can download the<a href="https://github.com/call4cloud-code/Intunewin-Downloader-Public"> Intunewin Downloader here. </a></p>
+<h2 class="wp-block-heading" id="h-conclusion">Conclusion<span class="clth-copy-icon" data-heading-id="h-conclusion"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>Recovering IntuneWin content from Intune was already possible, as long as the app was still assigned and the device could resolve the content. The first version showed that by following the IME flow and manually pulling the pieces together. This newer version takes the next step.</p>
+<p>It uses WAM instead of hunting through .tbres files, uses the Company Portal catalog for AppId discovery, uses the IME SideCar lane for content resolution, and handles both encrypted Win32 packages and catalog apps that return NoEncryption.</p>
+<p></p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

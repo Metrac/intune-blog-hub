@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Microsoft Build 2026: A Field Guide to the Agentic Stack</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">June 8, 2026</span>
+  </div>
+  <h1>Microsoft Build 2026: A Field Guide to the Agentic Stack</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/2026/06/08/microsoft-build-2026-agentic-stack/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p class="wp-block-paragraph">If you have sat through a Microsoft keynote more than once, you know the pattern: a wall of product names, a couple of demos that feel like magic, and then weeks of work figuring out what is actually shipping versus what is a sizzle reel. Build 2026 (San Francisco, June 2–3) was the most agent-dense keynote Microsoft has ever given — seven in-house models, a whole context layer, a brand-new <em>category</em> of agent, a containment story that reaches from silicon to cloud, and a concept for hardware that runs agents instead of apps.</p>
+<p class="wp-block-paragraph">This post is the map I wish I’d had on the morning of June 2. I’ll walk every major announcement, explain each one the way I’d explain it to a colleague (not the way the press release phrases it), and — because that’s the job most of us actually have — call out what it means for whoever has to deploy, govern and secure this stuff. It is a round-up, not a feature comparison, and I’ll flag clearly what is generally available, what is preview, and what is still just a slide.</p>
+<span id="more-18775"></span>
+<figure class="wp-block-image"><img alt="Microsoft Build 2026 keynote title card, San Francisco" data-recalc-dims="1" decoding="async" src="assets/da804de2190cf546/img_0.jpg"/><figcaption class="wp-element-caption">Microsoft Build 2026, San Francisco, June 2–3. Image: Microsoft.</figcaption></figure>
+<p class="wp-block-paragraph">If you only have two minutes, Microsoft’s own recap is the fastest way in:</p>
+<figure>
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/ZhZqeo7SD0Y" title="Keynote in 2 minutes: Satya Nadella at Microsoft Build 2026">VIDEO</iframe><p></p>
+<figcaption>Satya Nadella’s keynote, condensed to two minutes. Video: Microsoft (YouTube).</figcaption>
+</figure>
+<h2 class="wp-block-heading">The three themes to anchor on</h2>
+<p class="wp-block-paragraph">Microsoft framed everything around three ideas, and they’re worth holding onto because they explain <em>why</em> each product exists: <strong>intelligence that’s truly yours</strong> (your context plus the world’s knowledge, under your governance), <strong>the full stack built your way</strong> (silicon to OS to cloud, model-agnostic), and <strong>what comes next</strong> (agents moving from writing code to advancing science). Strip away the marketing and the throughline is ownership: the bet that the differentiator is no longer access to a smart model — everyone has that now — but whether your business context, data and workflows become a system <em>you</em> own rather than value that quietly leaks back to a model maker.</p>
+<p class="wp-block-paragraph">Keep that lens on as we go. Almost every announcement below is a building block for one sentence: <em>agents that know you, your business, and the world.</em></p>
+<h2 class="wp-block-heading">Microsoft IQ — the context layer agents were missing</h2>
+<p class="wp-block-paragraph">The single most important announcement, and the least flashy. <strong>Microsoft IQ</strong> (generally available across GitHub Copilot, Microsoft Foundry and Copilot Studio) is a context layer that grounds agents in both enterprise knowledge and world knowledge. In plain terms: until now an agent was brilliant but amnesiac — it didn’t know your org chart, your projects, or where the real answer actually lived. Microsoft IQ is the plumbing that fixes that (I unpacked the idea in detail when it <a href="https://jannikreinhard.com/2025/11/26/microsoft-iq-the-intelligence-layer-that-finally-makes-ai-agents-useful/">first appeared as the intelligence layer</a>), and it comes in four parts.</p>
+<figure class="wp-block-image"><img alt="Microsoft Work IQ — the workplace intelligence layer for AI agents announced at Build 2026" data-recalc-dims="1" decoding="async" src="assets/da804de2190cf546/img_1.jpg"/><figcaption class="wp-element-caption">Work IQ — the workplace intelligence layer for agents. Image: Microsoft.</figcaption></figure>
+<h3 class="wp-block-heading">1. Work IQ — how work actually happens</h3>
+<p class="wp-block-paragraph">The workplace intelligence layer: people, emails, documents, meetings across Microsoft 365 — and crucially <em>how they connect</em>. The detail that matters for builders is that the <strong>Work IQ APIs become generally available on June 16</strong>, giving programmatic access to that graph. This is the difference between an agent that can answer “what’s our PTO policy” and one that knows <em>this</em> deal is stalled because <em>that</em> person hasn’t replied to <em>that</em> thread.</p>
+<h3 class="wp-block-heading">2. Fabric IQ — your structured data, one semantic layer</h3>
+<p class="wp-block-paragraph">A shared semantic foundation over your structured business data in Microsoft Fabric. Translation: instead of every agent re-learning what “active customer” or “net revenue” means, there’s one agreed definition it can reason over. This is the boring-but-load-bearing work that decides whether agent answers are consistent or quietly, confidently wrong.</p>
+<h3 class="wp-block-heading">3. Foundry IQ — retrieval planning across everything</h3>
+<p class="wp-block-paragraph">Foundry IQ ties the others together and plans <em>where</em> the right answer should come from — your enterprise knowledge or the live web. Think of it as the dispatcher: a question comes in, and it decides whether to look in your documents, your structured data, or the open internet.</p>
+<h3 class="wp-block-heading">4. Web IQ — fast, fresh grounding from the web</h3>
+<p class="wp-block-paragraph">New at Build: an AI-first, model-agnostic, MCP-native web search stack that returns relevant passages at roughly <strong>2.5x the speed of the next best alternative</strong>. The MCP-native part is the tell — Microsoft is standardising on the Model Context Protocol as the way agents pull in outside knowledge, which means the same plumbing works whether the agent is Microsoft’s or yours.</p>
+<p class="wp-block-paragraph"><strong>What it means for you:</strong> this is the layer that makes every other agent useful, and it’s also the layer that should make a security team sit up. The moment agents can traverse your Work IQ graph, “who can this agent see” becomes the same hard question as “who can this <em>person</em> see” — except now it scales to thousands of automated identities that never take a holiday.</p>
+<h2 class="wp-block-heading">The MAI models — seven new in-house models</h2>
+<p class="wp-block-paragraph">Microsoft’s AI Superintelligence Team shipped a family of seven first-party models, and the strategic message underneath them is “long-term self-sufficiency” — all seven were trained from scratch with <strong>zero distillation</strong>, meaning none of them lean on the outputs or architecture of OpenAI’s or anyone else’s models.</p>
+<p class="wp-block-paragraph">The headliner is <strong>MAI-Thinking-1</strong>, Microsoft’s first reasoning model: a mid-sized model with <strong>35 billion active parameters</strong> (around a trillion total in a Mixture-of-Experts layout) and a <strong>256K context window</strong>, trained on clean, commercially licensed data. Microsoft’s own framing — independent raters preferring it to Sonnet 4.6, matching Opus 4.6 on SWE Bench Pro coding, and claiming roughly <strong>10x the token efficiency of GPT-5.5</strong> — is a vendor claim, so treat it as one. The more interesting point is the positioning: mid-sized, low token cost, built for multi-step instructions and long-context reasoning. It’s on Foundry in private preview.</p>
+<p class="wp-block-paragraph">The rest of the family: <strong>MAI-Image-2.5</strong> and a Flash variant (now live in PowerPoint, rolling out in OneDrive, landing on Foundry, and currently sitting around #3 on the public text-to-image arena), <strong>MAI-Transcribe-1.5</strong> (state-of-the-art across 43 languages), <strong>MAI-Voice-2</strong> and its Flash variant (15+ additional languages), and <strong>MAI-Code-1</strong>, an inference-efficient coding model now in GitHub Copilot and VS Code. Crucially, Microsoft also made MAI models available on <strong>Fireworks AI, Baseten and OpenRouter</strong>, and brought Fireworks AI onto Foundry.</p>
+<p class="wp-block-paragraph"><strong>What it means for you:</strong> the strategic message isn’t “Microsoft has its own GPT now.” It’s <em>model diversity as a platform principle</em> — first-party MAI models sitting next to OpenAI and others, with Azure governance and data residency regardless of which one you pick. For anyone planning architecture, that’s explicit permission to stop betting the whole stack on a single model vendor.</p>
+<h2 class="wp-block-heading">Scout &amp; Autopilots — a new category of agent</h2>
+<p class="wp-block-paragraph">This is the announcement people will still be talking about in six months. Microsoft introduced a new category called <strong>Autopilots</strong>: always-on agents that run autonomously, <strong>with their own identity</strong>, and act on your behalf without being prompted each time.</p>
+<figure class="wp-block-image"><img alt="Microsoft Scout, the first always-on Autopilot agent for Microsoft 365" data-recalc-dims="1" decoding="async" src="assets/da804de2190cf546/img_2.jpg"/><figcaption class="wp-element-caption">Microsoft Scout, the first Autopilot. Image: Microsoft.</figcaption></figure>
+<p class="wp-block-paragraph"><strong>Microsoft Scout</strong> is the first one. It lives across cloud, desktop and web; connects to Teams, Outlook, OneDrive and SharePoint; and works across your chats, email, calendar and contacts. You talk to it in Teams and extend it through a desktop app to your browser, local resources and MCP servers. Day-to-day it does the coordination glue-work: scheduling across time zones, flagging important meetings, prepping materials, blocking focus time for upcoming deliverables, and spotting stalled decisions before they become blockers. Over time it builds context through Work IQ — learning how you work and what you care about. It’s built on <strong>OpenClaw</strong>, the open-source platform for local AI agents, with policy-conformance work contributed back upstream.</p>
+<p class="wp-block-paragraph">Here’s the part I care about most, and where Microsoft clearly did its homework. Every Scout agent runs under <strong>its own governed Entra identity</strong> — not a shared, anonymous service account — so its actions are attributable to a known actor your directory already understands. Credentials are scoped to the task at hand, redacted from logs and diagnostics, sensitive actions can require human sign-off, and Microsoft Purview policies (sensitivity labels, DLP) are enforced <em>in the moment</em>, before anything is sent or shared.</p>
+<p class="wp-block-paragraph"><strong>Availability is the reality check:</strong> Scout is an <em>experimental</em> release through the <strong>Frontier</strong> program. Access requires Frontier enrollment, <strong>Intune policy configuration</strong>, and an opt-in attestation, after which users with a GitHub Copilot license can install it. So no, it’s not landing in your tenant next week — but the fact that the path to it runs <em>through Intune</em> tells you exactly where this gets managed.</p>
+<p class="wp-block-paragraph"><strong>What it means for you:</strong> “agents with their own identity” is the line that changes endpoint and identity management. We are about to manage a population of non-human identities that log in, hold permissions, and act continuously. Conditional Access, lifecycle, access reviews, audit — all of it now has to account for actors that never sleep and never get offboarded by HR.</p>
+<h2 class="wp-block-heading">Governance — the part that decides whether any of this is usable</h2>
+<p class="wp-block-paragraph">Microsoft spent real keynote time on control, which is the right instinct. <strong>Agent 365 for local agents</strong> extends Entra, Defender and Purview into a single control plane to observe, govern and secure agents <em>regardless of where they’re hosted or what framework they’re built on</em>. That last clause is the whole point — it’s meant to govern the third-party and open-source agents you didn’t build, not just Microsoft’s own. (If you want the deeper split between “Agent 365” and the older “Microsoft 365 Agents” naming, I wrote a <a href="https://jannikreinhard.com/2026/05/05/microsoft-365-agents-explained-what-agents-365-means/">separate field guide on exactly that confusion</a>.)</p>
+<p class="wp-block-paragraph">Around it sit two open-source projects worth knowing by name: <strong>ASSERT</strong> (Adaptive Spec-driven Scoring for Evaluation and Regression Testing) for policy-driven safety evaluation, and the <strong>Agent Control Specification</strong>, a standard for where and how to apply controls inside the agent loop. There’s also <strong>Codename MDASH</strong>, a multi-model agentic security system that deploys 100+ agents to hunt exploitable bugs by reasoning about data flow and exploit chains, then delivers fixes in the Defender portal. And <strong>Frontier Tuning</strong> (private preview) applies reinforcement learning <em>inside your compliance boundary</em>, so agents learn how your business actually works without your data ever leaving it.</p>
+<p class="wp-block-paragraph"><strong>What it means for you:</strong> this is Microsoft acknowledging that the hard problem of the agentic era is not capability, it’s control at scale. If you run security or compliance, Agent 365 and the Agent Control Specification are the two names to track — they’re the difference between “we have agents everywhere” and “we can prove what every agent did, and that it was allowed to.”</p>
+<p class="wp-block-paragraph">If you want the firehose version of the day, this 16-minute official recap covers 20+ announcements back to back:</p>
+<figure>
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/OlbD0L7gr1Y" title="Microsoft Build 2026: 20+ Big Announcements in 16 Minutes">VIDEO</iframe><p></p>
+<figcaption>20+ announcements in 16 minutes. Video: Microsoft (YouTube).</figcaption>
+</figure>
+<h2 class="wp-block-heading">The full stack — silicon, OS and cloud</h2>
+<p class="wp-block-paragraph">A dense block of developer-platform news, grouped by where it sits in the stack:</p>
+<p class="wp-block-paragraph"><strong>Silicon — Surface RTX Spark Dev Box.</strong> A physical machine for sustained local AI work: up to <strong>one petaflop</strong> of compute and <strong>128 GB</strong> unified memory, able to run up to <strong>120B-parameter models with up to a million tokens of context</strong> <em>locally</em>, no cloud GPU rental. WSL2 with native GPU passthrough, CUDA, VS Code and Copilot come pre-configured. US availability later this year. The signal: serious AI development is moving back onto the desk, not only into the cloud.</p>
+<p class="wp-block-paragraph"><strong>OS — Windows as an agent-native runtime.</strong> <strong>Microsoft Execution Containers (MXC)</strong>, in preview, let developers and IT admins create OS-enforced sandboxes for agents — describe the requirements once, and Windows enforces them everywhere the agent runs. <strong>OpenClaw on Windows</strong> already uses MXC, and NVIDIA’s runtime builds on it with policy management and PII obfuscation. This is the containment story for agents that run on actual endpoints, not just in a browser tab.</p>
+<p class="wp-block-paragraph"><strong>Cloud — hosted agents in Foundry Agent Service</strong> (preview): instant-on sandboxes per session, isolated execution, persistent memory, elastic scale. Microsoft’s analogy is apt — “the primitive for agents the way containers were for cloud-native apps.”</p>
+<p class="wp-block-paragraph"><strong>Developer flow.</strong> The <strong>GitHub Copilot app</strong> (preview) is a native desktop experience that orchestrates multiple agent sessions in parallel, each on its own git worktree. <strong>Rayfin</strong> (preview) brings managed backend-as-a-service to Microsoft Fabric via GitHub workflows; a <strong>Replit</strong> integration speeds prototype-to-production; and <strong>Azure HorizonDB</strong>, a fully managed PostgreSQL service, claims 3x+ the throughput of comparable self-managed setups.</p>
+<p class="wp-block-paragraph"><strong>What it means for you:</strong> the through-line is <em>containment</em>. From MXC on the endpoint to per-session sandboxes in the cloud, Microsoft is building the walls agents run inside. That’s the prerequisite for letting autonomous code touch real systems — and it’s where the management surface for agents will actually live.</p>
+<h2 class="wp-block-heading">Project Solara — devices that run agents, not apps</h2>
+<p class="wp-block-paragraph">The most futuristic announcement, and explicitly a concept rather than a product. Introduced by technical fellow Stevie Bathiche, <strong>Project Solara</strong> is a chip-to-cloud platform for “agent-first” devices — hardware built to run AI agents instead of traditional applications. It runs on <strong>MDEP</strong> (Microsoft Device Ecosystem Platform), a lightweight enterprise OS built on the Android Open Source Project, with management and security through <strong>Intune and Entra ID</strong> baked in from the start, plus an agent shell and “just-in-time UI” that adapts the interface to whatever device the agent runs on.</p>
+<figure class="wp-block-image"><img alt="Microsoft Project Solara reference designs — agent-first badge and desk companion devices" data-recalc-dims="1" decoding="async" src="assets/da804de2190cf546/img_3.jpg"/><figcaption class="wp-element-caption">Project Solara reference designs: a wearable badge and a desk companion. Image: Microsoft.</figcaption></figure>
+<p class="wp-block-paragraph">Two reference designs were shown: a <strong>wearable badge</strong> (touchscreen, fingerprint sensor for Windows Hello for Business, far-field mic array, side camera, Wi-Fi/Bluetooth/GNSS/5G, Qualcomm wearable silicon) and a <strong>desk companion</strong> (touchscreen, dual far-field mic array, UWB presence sensor, MediaTek silicon, facial-recognition sign-in — and, plugged into a display over USB-C, it becomes a Windows 365 cloud-PC thin client). Both deliberately have no app store, no browser-first experience, no traditional desktop. Microsoft will pilot with AccuWeather, Best Buy, CVS Health, Levi’s and Target in the coming months.</p>
+<figure>
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" loading="lazy" src="https://www.youtube.com/embed/hbnhMKckxTE" title="Microsoft Project Solara — agent-first devices">VIDEO</iframe><p></p>
+<figcaption>Project Solara, Microsoft’s concept for agent-first devices. Video: Microsoft (YouTube).</figcaption>
+</figure>
+<p class="wp-block-paragraph"><strong>What it means for you:</strong> ignore the hardware for a second — the important word is <strong>Intune</strong>. Microsoft is signalling that even a brand-new, app-less device class gets managed through the same identity and endpoint-management plane you already run. Whether or not these exact gadgets ship, the management model is the real bet, and it’s a familiar one.</p>
+<h2 class="wp-block-heading">Science and quantum — the long game</h2>
+<p class="wp-block-paragraph">Two announcements aimed past the enterprise. <strong>Microsoft Discovery</strong> is generally available: an agentic AI platform for the full science workflow, already used by BHP (copper-leaching solutions in months not years), Syensqo (semiconductor R&amp;D) and GSK (drug discovery). A free local Discovery app is in preview and needs only a GitHub Copilot account.</p>
+<figure class="wp-block-image"><img alt="Microsoft Majorana 2 topological quantum chip" data-recalc-dims="1" decoding="async" src="assets/da804de2190cf546/img_4.jpg"/><figcaption class="wp-element-caption">Majorana 2, Microsoft’s next-generation quantum chip — itself refined with Microsoft Discovery. Image: Microsoft.</figcaption></figure>
+<p class="wp-block-paragraph">And <strong>Majorana 2</strong>, Microsoft’s next-generation topological quantum chip, claims an average qubit lifetime of <strong>20 seconds</strong> (up to a minute), <strong>1,000x higher reliability</strong> than the prior generation, and a path to a million qubits — with Microsoft now targeting a scalable quantum machine by <strong>2029</strong>, half its original timeline. The chip swaps Majorana 1’s aluminium for lead and was itself refined using Microsoft Discovery. Worth your honesty filter: as with Majorana 1, parts of the physics community remain sceptical of the underlying claims, so file this as a milestone Microsoft is asserting, not a settled result.</p>
+<p class="wp-block-paragraph"><strong>What it means for you:</strong> nothing this quarter. But the quantum timeline is exactly why “harvest now, decrypt later” and post-quantum cryptography planning stopped being theoretical. If you own security strategy, the Majorana 2 progress — sceptics and all — is your reminder to put PQC migration on a real roadmap.</p>
+<h2 class="wp-block-heading">Cheat sheet — what shipped vs. what’s a slide</h2>
+<figure class="wp-block-table"><table class="has-fixed-layout"><thead><tr><th>Announcement</th><th>What it is</th><th>Status</th></tr></thead><tbody><tr><td>Microsoft IQ (Work / Fabric / Foundry)</td><td>Context layer grounding agents in your data</td><td>GA now</td></tr><tr><td>Work IQ APIs</td><td>Programmatic access to the workplace graph</td><td>GA June 16</td></tr><tr><td>Web IQ</td><td>Fast, MCP-native web grounding (~2.5x faster)</td><td>New at Build</td></tr><tr><td>MAI-Thinking-1</td><td>First-party 35B-active reasoning model (256K ctx)</td><td>Private preview (Foundry)</td></tr><tr><td>MAI-Image / Voice / Transcribe / Code</td><td>First-party model family</td><td>Rolling out (PowerPoint, Copilot, VS Code, Foundry)</td></tr><tr><td>Microsoft Scout (Autopilots)</td><td>Always-on agent with its own Entra identity</td><td>Experimental via Frontier (needs Intune)</td></tr><tr><td>Agent 365 for local agents</td><td>Single control plane for any agent</td><td>Announced</td></tr><tr><td>MXC / hosted agents in Foundry</td><td>OS- and cloud-enforced agent sandboxes</td><td>Preview</td></tr><tr><td>GitHub Copilot app, Rayfin, HorizonDB</td><td>Developer + platform tooling</td><td>Preview</td></tr><tr><td>Surface RTX Spark Dev Box</td><td>Local 1-petaflop AI machine, 128 GB</td><td>Later this year (US)</td></tr><tr><td>Project Solara</td><td>Agent-first device platform on MDEP</td><td>Concept / pilots</td></tr><tr><td>Microsoft Discovery</td><td>Agentic science platform</td><td>GA (local app: preview)</td></tr><tr><td>Majorana 2</td><td>Next-gen quantum chip</td><td>Research milestone (contested)</td></tr></tbody></table></figure>
+<h2 class="wp-block-heading">The approach I actually use</h2>
+<p class="wp-block-paragraph">Faced with a keynote this big, I triage announcements into three buckets, and I’d suggest the same:</p>
+<ol class="wp-block-list">
+<li><strong>Adopt-track now (GA, low risk):</strong> Microsoft IQ and the Work IQ APIs. This is foundational and it’s shipping — understanding the context graph is time well spent regardless of which agents you eventually run.</li>
+<li><strong>Pilot-track deliberately (preview, real value):</strong> Agent 365, MXC, the GitHub Copilot app, MAI models on Foundry. Stand up a sandbox, learn the governance model, but don’t bet production on preview SLAs.</li>
+<li><strong>Watch-track (concept / experimental):</strong> Scout, Project Solara, Majorana 2. Read every release note, run a Frontier trial if you qualify, but plan as if timelines will slip — because they do.</li>
+</ol>
+<p class="wp-block-paragraph">The deciding question for anything in bucket 2 or 3 is always the same: <em>can I attribute and govern what this agent does before I let it touch production?</em> If the answer is no, it stays a demo.</p>
+<h2 class="wp-block-heading">Pitfalls I now avoid</h2>
+<ul class="wp-block-list">
+<li><strong>Treating agent identities like app registrations.</strong> They’re not. An Autopilot acts continuously under its own Entra identity — give it the lifecycle, access reviews and Conditional Access you’d give a privileged human, not the neglect you give a forgotten service principal.</li>
+<li><strong>Confusing “generally available” with “ready for your tenant.”</strong> Half of this is preview or Frontier-gated. Map each item to its real status (see the cheat sheet) before anyone promises it to leadership.</li>
+<li><strong>Skipping the governance layer because the demos are shinier.</strong> Agent 365 and Purview enforcement are the unglamorous prerequisites. Stand them up <em>before</em> the agents, not after an incident.</li>
+<li><strong>Reading vendor benchmarks as ground truth.</strong> “Preferred over Sonnet 4.6,” “2.5x faster,” “1,000x more reliable” — useful signals, but test on your own workloads before you architect around them.</li>
+</ul>
+<h2 class="wp-block-heading">Where this is heading</h2>
+<p class="wp-block-paragraph">Build 2026 makes the direction unambiguous: Microsoft is turning the agentic era into a platform, and identity is the spine that holds it together. Every headline — Scout’s own Entra identity, Agent 365’s control plane, Project Solara managed through Intune — points to the same place: the next five years of endpoint and identity management are about governing a workforce that is part human and part agent. The teams that win won’t be the ones with the cleverest model; they’ll be the ones who can answer “what did that agent just do, and was it allowed to?” without flinching.</p>
+<p class="wp-block-paragraph">For the full firehose, Microsoft’s own <a href="https://news.microsoft.com/build-2026-live-blog/" rel="noopener" target="_blank">Build 2026 live blog</a> and the <a href="https://www.youtube.com/watch?v=ESicSQIGuOE" rel="noopener" target="_blank">opening keynote</a> are the primary sources. Everything above is my read on what matters — now I’d love to hear which of these you’re actually planning to pilot.</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

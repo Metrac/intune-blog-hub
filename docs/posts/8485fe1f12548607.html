@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Windows 11 Hotpatch Updates, Secure Boot, and the Reset This PC Problem</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Call4Cloud (Rudy Ooms)</span>
+    <span class="date">April 13, 2026</span>
+  </div>
+  <h1>Windows 11 Hotpatch Updates, Secure Boot, and the Reset This PC Problem</h1>
+  <div class="orig">Saved for offline reading · <a href="https://patchmypc.com/blog/windows-11-hotpatch-updates-secure-boot-and-the-reset-this-pc-problem/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="post-content">
+<p>A while ago, I wrote about <strong><a href="https://patchmypc.com/blog/windows-11-hotpatch-rebootless-updates/">hotpatch updates</a> </strong>and why the story felt a bit too clean. Fewer reboots, faster security fixes, less disruption. On paper, it is hard to argue with that. But the moment Microsoft announced that <strong><a href="https://techcommunity.microsoft.com/blog/windows-itpro-blog/securing-devices-faster-with-hotpatch-updates-on-by-default/4500066">hotpatch would be enabled by default</a></strong> for eligible Windows Autopatch devices starting with the May 2026 security update, the whole conversation changed for me.</p>
+<figure class="wp-block-image size-large"><a data-caption="hotpatch updates on by default" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/04/image-18-1024x140.png"><picture class="wp-image-181313" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-18-1024x140.png.webp 1024w, https://patchmypc.com/app/uploads/2026/04/image-18-300x41.png.webp 300w, https://patchmypc.com/app/uploads/2026/04/image-18-768x105.png.webp 768w, https://patchmypc.com/app/uploads/2026/04/image-18.png.webp 1069w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="hotpatch updates on by default" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-18-1024x140.png 1024w, https://patchmypc.com/app/uploads/2026/04/image-18-300x41.png 300w, https://patchmypc.com/app/uploads/2026/04/image-18-768x105.png 768w, https://patchmypc.com/app/uploads/2026/04/image-18.png 1069w" decoding="async" src="assets/8485fe1f12548607/img_0.png"/><noscript><img alt="hotpatch updates on by default" decoding="async" src="assets/8485fe1f12548607/img_1.png"/></noscript>
+</picture>
+</a></figure>
+<p>The moment <strong>hotpatch updates become the default</strong>, most people stop asking what it really changes underneath the hood. And now Microsoft has done something important. It has officially documented the exact kind of issue that made me nervous in the first place.</p>
+<h2 class="wp-block-heading" id="h-the-hotpatch-updates-reset-this-pc-issue">The Hotpatch Updates “Reset this pc” Issue<span class="clth-copy-icon" data-heading-id="h-the-hotpatch-updates-reset-this-pc-issue"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>In the March 10, <a href="https://support.microsoft.com/en-gb/topic/march-10-2026-hotpatch-kb5079420-os-builds-26200-7979-and-26100-7979-752485e9-41c1-4628-ad1a-7538dba503e3"><strong>2026 hotpatch article for KB5079420</strong></a>, Microsoft states that Windows Autopatch managed commercial devices with <strong>hotpatch enabled</strong> can fail during <strong>Push Button Reset.</strong></p>
+<figure class="wp-block-image size-full"><a data-caption="reset this pc might fail with hotpatch updates installed" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/04/image-16.png"><picture class="wp-image-181311" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-16.png.webp 624w, https://patchmypc.com/app/uploads/2026/04/image-16-300x83.png.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="reset this pc might fail with hotpatch updates installed" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-16.png 624w, https://patchmypc.com/app/uploads/2026/04/image-16-300x83.png 300w" decoding="async" src="assets/8485fe1f12548607/img_2.png"/><noscript><img alt="reset this pc might fail with hotpatch updates installed" decoding="async" src="assets/8485fe1f12548607/img_3.png"/></noscript>
+</picture>
+</a></figure>
+<p>After the first phase of the offline reset, the device can restart back to the desktop and show the message, “<strong>There was a problem resetting your PC. No changes were made.”</strong></p>
+<figure class="wp-block-image size-full"><a data-caption="there was a problem resetting your pc" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/04/image.jpg"><picture class="wp-image-181310" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image.jpg.webp 624w, https://patchmypc.com/app/uploads/2026/04/image-300x216.jpg.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="there was a problem resetting your pc" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image.jpg 624w, https://patchmypc.com/app/uploads/2026/04/image-300x216.jpg 300w" decoding="async" src="assets/8485fe1f12548607/img_4.jpg"/><noscript><img alt="there was a problem resetting your pc" decoding="async" src="assets/8485fe1f12548607/img_5.jpg"/></noscript>
+</picture>
+</a></figure>
+<p>If you want to know more about what happened during the reset and why it broke, check out our upcoming <strong>patch n rant!</strong> (it’s coming!)… here is a small teaser in the meantime!</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/04/image-20-1024x141.png"><picture class="wp-image-181322" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-20-1024x141.png.webp 1024w, https://patchmypc.com/app/uploads/2026/04/image-20-300x41.png.webp 300w, https://patchmypc.com/app/uploads/2026/04/image-20-768x106.png.webp 768w, https://patchmypc.com/app/uploads/2026/04/image-20.png.webp 1486w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-20-1024x141.png 1024w, https://patchmypc.com/app/uploads/2026/04/image-20-300x41.png 300w, https://patchmypc.com/app/uploads/2026/04/image-20-768x106.png 768w, https://patchmypc.com/app/uploads/2026/04/image-20.png 1486w" decoding="async" src="assets/8485fe1f12548607/img_6.png"/><noscript><img alt="" decoding="async" src="assets/8485fe1f12548607/img_7.png"/></noscript>
+</picture>
+</a></figure>
+<p>Microsoft also lists a mitigation, the <strong>March Safe OS Dynamic Update KB5079471</strong>, and notes that this update only needs to be applied once.   That matters because this is no longer a theory built on log analysis alone. It is no longer a weird edge case that only showed up in my <strong><a href="https://www.reddit.com/r/Intune/comments/1s36b14/windows_remote_wipe_issues_after_intune_202603/">own testing or on reddit.</a></strong> Microsoft has now placed it directly in the release notes of the hotpatch update itself, for <strong><a href="https://support.microsoft.com/en-gb/topic/march-10-2026-hotpatch-kb5079420-os-builds-26200-7979-and-26100-7979-752485e9-41c1-4628-ad1a-7538dba503e3">Windows 11 version 25H2 and 24H2.</a></strong></p>
+<h2 class="wp-block-heading" id="h-why-this-matters-more-than-the-reset-error-itself">Why this matters more than the reset error itself<span class="clth-copy-icon" data-heading-id="h-why-this-matters-more-than-the-reset-error-itself"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>The reset failure is the visible part. The more interesting part is what it tells us about <strong>hotpatch.</strong> Microsoft’s own hotpatch documentation is already very clear about the update rhythm. January, April, July, and October are <strong>baseline months</strong> that require a restart. The months in between are the hotpatch months.</p>
+<figure class="wp-block-image size-full"><a data-caption="hotpatch updates baseline month" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/04/image-13.png"><picture class="wp-image-181307" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-13.png.webp 501w, https://patchmypc.com/app/uploads/2026/04/image-13-300x131.png.webp 300w" sizes="(max-width: 501px) 100vw, 501px" type="image/webp"/>
+<img alt="hotpatch updates baseline month" data-lazy-sizes="(max-width: 501px) 100vw, 501px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-13.png 501w, https://patchmypc.com/app/uploads/2026/04/image-13-300x131.png 300w" decoding="async" src="assets/8485fe1f12548607/img_8.png"/><noscript><img alt="hotpatch updates baseline month" decoding="async" src="assets/8485fe1f12548607/img_9.png"/></noscript>
+</picture>
+</a></figure>
+<p>And if a device is not on the latest baseline update, Windows can still apply both the latest baseline update and the latest hotpatch update. That alone tells you hotpatch is not replacing the normal servicing model. It is sitting on top of it.</p>
+<p>That is exactly why I have never been fully comfortable with the simplified version of the hotpatch story. Hotpatch can move the OS security fixes forward faster, yes. But that does not mean every other part of the platform moves forward at the same pace. The baseline still matters. The reboot still matters. The broader servicing state still matters. And the moment recovery depends on that servicing state, you stop talking about convenience and start talking about platform consistency.</p>
+<h2 class="wp-block-heading" id="h-hotpatch-updates-and-the-secure-boot-certificates">Hotpatch Updates and the Secure Boot Certificates<span class="clth-copy-icon" data-heading-id="h-hotpatch-updates-and-the-secure-boot-certificates"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>The same March 2026 hotpatch article also contains another detail that should make people slow down a bit. Microsoft explicitly says that <strong>Secure Boot certificate updates</strong> will be delivered with the next baseline Windows update in April 2026<strong>, NOT</strong> with the hotpatch month itself.</p>
+<figure class="wp-block-image size-full"><a data-caption="secure boot certificates will be delivered in the baseline month" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/04/image-14.png"><picture class="wp-image-181309" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-14.png.webp 591w, https://patchmypc.com/app/uploads/2026/04/image-14-300x35.png.webp 300w" sizes="(max-width: 591px) 100vw, 591px" type="image/webp"/>
+<img alt="secure boot certificates will be delivered in the baseline month" data-lazy-sizes="(max-width: 591px) 100vw, 591px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-14.png 591w, https://patchmypc.com/app/uploads/2026/04/image-14-300x35.png 300w" decoding="async" src="assets/8485fe1f12548607/img_10.png"/><noscript><img alt="secure boot certificates will be delivered in the baseline month" decoding="async" src="assets/8485fe1f12548607/img_11.png"/></noscript>
+</picture>
+</a></figure>
+<p>In the same article, Microsoft also reminds customers that Secure Boot certificates used by most Windows devices start expiring from June 2026. It confirms the bigger point in one sentence. Hotpatch can move one part of Windows forward, while another important part still waits for the <strong>baseline month</strong>.</p>
+<figure class="wp-block-image size-full"><a data-caption="hotpatch updates not containing the secure boot certificates" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/04/image-15.png"><picture class="wp-image-181308" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-15.png.webp 471w, https://patchmypc.com/app/uploads/2026/04/image-15-300x180.png.webp 300w" sizes="(max-width: 471px) 100vw, 471px" type="image/webp"/>
+<img alt="hotpatch updates not containing the secure boot certificates" data-lazy-sizes="(max-width: 471px) 100vw, 471px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-15.png 471w, https://patchmypc.com/app/uploads/2026/04/image-15-300x180.png 300w" decoding="async" src="assets/8485fe1f12548607/img_12.png"/><noscript><img alt="hotpatch updates not containing the secure boot certificates" decoding="async" src="assets/8485fe1f12548607/img_13.png"/></noscript>
+</picture>
+</a></figure>
+<p>So yes, a device may look current from a hotpatch point of view. It may have the latest security fixes for the OS. But that still does not mean the entire platform has moved forward as one block. The Secure Boot certificate path is one example. The reset issue is another. And both are sitting in the same official article.</p>
+<h2 class="wp-block-heading" id="h-this-is-the-part-people-need-to-be-aware-of">This is the part people need to be aware of<span class="clth-copy-icon" data-heading-id="h-this-is-the-part-people-need-to-be-aware-of"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p><strong>I am NOT saying hotpatch is bad</strong>. I am saying hotpatch is narrower than the marketing pitch makes it sound. That is a very important difference.</p>
+<p>If you run devices where <strong>uptime </strong>really matters, <strong>hotpatch makes a lot of sense</strong>. But when Microsoft enables it by default for eligible Windows Autopatch devices, the risk is that people stop treating it like a servicing choice and start treating it like a harmless checkbox.</p>
+<figure class="wp-block-image size-large"><a data-caption="hotpatch updates turned on by default" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/04/image-19-1024x287.png"><picture class="wp-image-181315" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-19-1024x287.png.webp 1024w, https://patchmypc.com/app/uploads/2026/04/image-19-300x84.png.webp 300w, https://patchmypc.com/app/uploads/2026/04/image-19-768x215.png.webp 768w, https://patchmypc.com/app/uploads/2026/04/image-19.png.webp 1356w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="hotpatch updates turned on by default" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-19-1024x287.png 1024w, https://patchmypc.com/app/uploads/2026/04/image-19-300x84.png 300w, https://patchmypc.com/app/uploads/2026/04/image-19-768x215.png 768w, https://patchmypc.com/app/uploads/2026/04/image-19.png 1356w" decoding="async" src="assets/8485fe1f12548607/img_14.png"/><noscript><img alt="hotpatch updates turned on by default" decoding="async" src="assets/8485fe1f12548607/img_15.png"/></noscript>
+</picture>
+</a></figure>
+<p>It is not. It changes the way monthly servicing progresses on the device. And once the device has to recover, reset, or rely on components still tied to the baseline path, those differences stop being theoretical.</p>
+<p>That is really why this follow-up blog matters. The earlier conversation around hotpatch could still be framed as a debate about caution. This one cannot. Microsoft has now documented the <strong>push button</strong> <strong>reset failure</strong> itself, documented the mitigation, and in the same breath reminded everyone that <strong>Secure Boot certificate </strong>updates still wait for the next baseline. </p>
+<p>That is the story. <strong>Not that hotpatch is broken</strong> everywhere. <strong>Not that nobody should use it.</strong> But that <strong>reducing reboots is not the same thing as reducing complexity.</strong></p>
+<h2 class="wp-block-heading" id="h-my-take-on-hotpach">My take on Hotpach<span class="clth-copy-icon" data-heading-id="h-my-take-on-hotpach"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>If hotpatch is about to become the default, reset testing should also be part of the conversation. And Secure Boot certificate planning definitely also needs to be part of the conversation now that Microsoft has already pointed to April 2026 as the next baseline moment for those updates, while the certificate expiration window starts in June 2026.  So no, I would not panic (or maybe a bit?). But <strong>I also would NOT just let hotpatch quietly be turned on by default </strong>and assume it is nothing more than a nice way to avoid reboots.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/04/image-17.png"><picture class="wp-image-181312" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-17.png.webp 624w, https://patchmypc.com/app/uploads/2026/04/image-17-300x80.png.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/04/image-17.png 624w, https://patchmypc.com/app/uploads/2026/04/image-17-300x80.png 300w" decoding="async" src="assets/8485fe1f12548607/img_16.png"/><noscript><img alt="" decoding="async" src="assets/8485fe1f12548607/img_17.png"/></noscript>
+</picture>
+</a></figure>
+<p>Microsoft has now shown us, in its own documentation, that hotpatch can affect more than the monthly update experience. It can also show up in the exact moment you need the device to recover cleanly.</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

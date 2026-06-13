@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1PhoneMirror: Free Screen Mirroring Tool for Intune Admin</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">MSEndpointMgr</span>
+    <span class="date">May 18, 2026</span>
+  </div>
+  <h1>1PhoneMirror: Free Screen Mirroring Tool for Intune Admin</h1>
+  <div class="orig">Saved for offline reading · <a href="https://msendpointmgr.com/2026/05/18/1phonemirror-free-screen-mirroring-tool-for-intune-admin/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p data-block-type="core">Writing documentation for Intune and endpoint management environments often comes down to a practical constraint that is easy to underestimate. You need accurate, consistent visuals from mobile devices, and you need them in a format that can be reused across guides, training materials, and support content without additional editing overhead.</p>
+<p data-block-type="core">In practice, this is where most workflows become fragmented. Screenshots are captured in different ways depending on the device, then manually cropped, reformatted, or recreated to fit into documentation standards. Over time, this creates noticeable friction in what should be a straightforward part of the process.</p>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#a-screen-mirroring-tool-built-for-documentation-and-training-workflows" id="a-screen-mirroring-tool-built-for-documentation-and-training-workflows"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>A screen mirroring tool built for documentation and training workflows</h2>
+<p data-block-type="core"><strong>1PhoneMirror</strong> was created as a go-to screen mirroring tool to address this specific gap. The focus is not on replacing existing mobile management or testing tools, but on simplifying the capture and reuse of mobile device screens in documentation and live training scenarios.</p>
+<p data-block-type="core">The project is freely available and can be installed directly on your Windows using Winget.</p>
+<pre class="wp-block-code" data-block-type="core"><code>winget install MSEndpointMgr.1PhoneMirror</code></pre>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-26539" decoding="async" src="assets/eaea3dd22344401e/img_0.png"/><figcaption class="wp-element-caption">Easy install with Winget</figcaption></figure>
+<p data-block-type="core">The user interface is intentionally minimalist to focus on the phone during live training.</p>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#why-is-a-screen-mirroring-tool-needed-in-intune-environments" id="why-is-a-screen-mirroring-tool-needed-in-intune-environments"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Why is a screen mirroring tool needed in Intune environments?</h2>
+<p data-block-type="core">The need for a reliable screen mirroring tool often arises naturally in environments where documentation and user support and training are part of daily operations. Intune administrators, trainers, and endpoint engineers frequently need to demonstrate configuration steps or user interactions on mobile devices, and those demonstrations need to translate cleanly into written or visual material.</p>
+<p data-block-type="core">The challenge is that mobile platforms are not designed with documentation workflows in mind. iOS, iPadOS, macOS, and Android all provide different mechanisms for screen sharing or debugging, but none are particularly optimized to produce consistent, framed outputs suitable for training material.</p>
+<p data-block-type="core">This is where <strong>1PhoneMirror </strong>fits in. It provides a unified screen mirroring tool on Windows that allows multiple device types to be displayed in a consistent, framed interface, with the express purpose of making capture and reuse more predictable.</p>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#a-screen-mirroring-tool-designed-around-existing-platform-capabilities" id="a-screen-mirroring-tool-designed-around-existing-platform-capabilities"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>A screen mirroring tool designed around existing platform capabilities</h2>
+<p data-block-type="core">Rather than introducing proprietary protocols or requiring additional components on mobile devices, 1PhoneMirror builds on existing operating system functionality. No installations should be needed on the phones.</p>
+<p data-block-type="core">For Apple devices, the screen mirroring tool uses the built-in AirPlay protocol. Devices connect through the standard <strong>Screen Mirroring</strong> interface, and once connected, the stream is handled directly on the Windows receiver, 1PhoneMirror.</p>
+<figure class="wp-block-image size-large is-resized" data-block-type="core"><img alt="" class="wp-image-26489" decoding="async" src="assets/eaea3dd22344401e/img_1.png"/><figcaption class="wp-element-caption">Use the Screen Mirroring function to start AirPlay from your Apple device</figcaption></figure>
+<p data-block-type="core">On Android, the screen mirroring tool relies on the standard wireless debugging workflow found under Developer Options. Click &lt;A&gt; in 1PhoneMirror to get started, and ready the guidelines found under &lt;?&gt;.</p>
+<p data-block-type="core">Once the device is paired, screen data is streamed using a scrcpy-compatible pipeline over the local network. This approach avoids the need for additional applications on the device itself and keeps the setup aligned with standard Android development capabilities.</p>
+<figure class="wp-block-image size-full is-resized" data-block-type="core"><img alt="" class="wp-image-26485" decoding="async" src="assets/eaea3dd22344401e/img_2.png"/><figcaption class="wp-element-caption">Press A to start the Android Phone Connection wizard</figcaption></figure>
+<p data-block-type="core">The result is a screen mirroring tool that does not rely on custom mobile deployments or agent installations, which are often required in managed enterprise environments.</p>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#using-the-screen-mirroring-tool-for-documentation-workflows" id="using-the-screen-mirroring-tool-for-documentation-workflows"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Using the screen mirroring tool for documentation workflows</h2>
+<p data-block-type="core">Where <strong>1PhoneMirror</strong> becomes particularly useful is in how it handles output. The intention is not only to display a mobile device screen, but to produce content that can be used directly in documentation without additional formatting.</p>
+<p data-block-type="core">Each mirrored session is rendered inside a consistent device frame, and you can even change color of the device frame in the settings menu &lt;S&gt;. This means screenshots and recordings automatically appear in a format that is suitable for inclusion in Intune guides, training documentation, and internal knowledge bases. The need for manual cropping or visual alignment is largely removed from the workflow.</p>
+<p data-block-type="core">The screen mirroring tool also integrates capture functionality directly into the viewing experience. <strong>Screenshots</strong> can be taken instantly, <strong>recordings </strong>can be created in standard MP4 video formats, and lightweight GIF output is available for scenarios where smaller, embedded visuals are preferred. In addition to visual capture,<strong>OCR-based text extraction</strong> is available, allowing text visible on a device screen to be copied directly into documentation or support tickets.</p>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-26490" decoding="async" src="assets/eaea3dd22344401e/img_3.png"/><figcaption class="wp-element-caption">Left-click button to take screen shot/recording. Right-click gives sub-menus</figcaption></figure>
+<p data-block-type="core">For screen recordings, you can select either MP4 or GIF as the output format in the Settings menu.</p>
+<figure class="wp-block-image size-full is-resized" data-block-type="core"><img alt="" class="wp-image-26520" decoding="async" src="assets/eaea3dd22344401e/img_4.png"/><figcaption class="wp-element-caption">The Settings (S) button under the Menu (M) allows for customizations</figcaption></figure>
+<p data-block-type="core">The tool also supports <strong>annotation during capture</strong>, which allows emphasis to be added directly within the screenshot or recording process. You can add arrows, filled and open squares, blur, and text. This reduces the need to rework content and helps prepare the captured material for direct use.</p>
+<figure class="wp-block-image size-full is-resized" data-block-type="core"><img alt="" class="wp-image-26491" decoding="async" src="assets/eaea3dd22344401e/img_5.png"/><figcaption class="wp-element-caption">Annotations on the screenshot before saving to file/clipboard.</figcaption></figure>
+<p data-block-type="core">You can save screenshots to a specified folder or copy them directly to your clipboard for use in documentation workflows. You will find shortcut to the picture folder under the Menu &lt;M&gt;, or by right-clicking on the capture button.</p>
+<figure class="wp-block-image size-full is-resized" data-block-type="core"><img alt="" class="wp-image-26492" decoding="async" src="assets/eaea3dd22344401e/img_6.png"/><figcaption class="wp-element-caption">Decide where your screenshots go in the Settings (s) blade</figcaption></figure>
+<p data-block-type="core">These capabilities are intentionally integrated into a single interface rather than separated into external utilities, to keep documentation creation as close to the original visual context as possible.</p>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#supporting-live-training-and-demonstrations" id="supporting-live-training-and-demonstrations"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Supporting live training and demonstrations</h2>
+<p data-block-type="core">Beyond static documentation, a screen mirroring tool is often most valuable during live training sessions or support demonstrations. In these scenarios, the ability to quickly switch between devices, highlight specific UI elements, or capture moments during a walkthrough becomes important.</p>
+<p data-block-type="core"><strong>1PhoneMirror </strong>supports multiple connected devices within the same session, allowing trainers to switch between devices without reconfiguration. This is particularly useful in environments where different operating system versions or device types need to be demonstrated side by side.</p>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-26540" decoding="async" src="assets/eaea3dd22344401e/img_7.png"/><figcaption class="wp-element-caption">Switch between devices</figcaption></figure>
+<p data-block-type="core">For live sessions, this reduces dependency on external tools and helps keep the focus on the actual training content rather than the mechanics of capturing it. </p>
+<p data-block-type="core">The app window size will dynamically adapt the device you connect, both in size and orientation. Having and iPad or a macOS connecting, you will see the screen jump to the corresponding size.</p>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-26544" decoding="async" src="assets/eaea3dd22344401e/img_8.png"/><figcaption class="wp-element-caption">Example of iPad mirrored in landscape mode</figcaption></figure>
+<p data-block-type="core">Example of macOS screenmirroring to 1PhoneMirror:</p>
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="" class="wp-image-26547" decoding="async" src="assets/eaea3dd22344401e/img_9.png"/><figcaption class="wp-element-caption">Screenshot of 1PhoneMirror with macOS.</figcaption></figure>
+<p data-block-type="core">For the tech savy, I have left a log viewer &lt;L&gt; used for troubleshooting during development. </p>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-26543" decoding="async" src="assets/eaea3dd22344401e/img_10.png"/><figcaption class="wp-element-caption">Log viewer will give insights in the device communications.</figcaption></figure>
+<p data-block-type="core">You can even log til file from the settings &lt;S&gt; menu.</p>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#considerations-for-managed-intune-environments" id="considerations-for-managed-intune-environments"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Considerations for managed Intune environments</h2>
+<p data-block-type="core">Because 1PhoneMirror is intended for use in enterprise environments, it has been designed with typical Intune constraints in mind.</p>
+<p data-block-type="core">The screen mirroring tool does not require any application installation on mobile devices. On iOS and iPadOS, it uses native AirPlay functionality, while Android relies on wireless debugging where permitted by policy. This means the tool can be used in environments where mobile application deployment is restricted or tightly controlled.</p>
+<p data-block-type="core">All communication occurs over the local network, and device discovery relies on standard network mechanisms.  In practice, this means the tool relies on standard LAN connectivity rather than on cloud services or external relays. Local firewall ports on the Windows device will be configured during installation. The firewall requirements are listed in the app and in the GitHub readme. </p>
+<p data-block-type="core">If you have situations where the tool is running on multiple devices within the same network, you can use a setting to identify the instances by computer name.</p>
+<figure class="wp-block-image size-full is-resized" data-block-type="core"><img alt="" class="wp-image-26519" decoding="async" src="assets/eaea3dd22344401e/img_11.png"/><figcaption class="wp-element-caption">Identify by the computer name if you have multiple instances of 1PhoneMirror in the net</figcaption></figure>
+<p data-block-type="core">On Android, functionality may be limited in environments where developer options are disabled through policy. This is an expected constraint of the platform rather than the tool itself, and it is surfaced in the interface where relevant.</p>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#deployment-of-the-screen-mirroring-tool" id="deployment-of-the-screen-mirroring-tool"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Deployment of the screen mirroring tool</h2>
+<p data-block-type="core"><strong>1PhoneMirror</strong> can be installed individually using Winget or deployed more broadly through Intune as a Win32 application. The project is still in an early phase, and the application is not digitaly signed yet. The application installs per machine, typically under Program Files.</p>
+<p data-block-type="core">For enterprise deployment scenarios, the MSI is available on GitHub and can be packaged with standard Intune tooling and distributed to managed endpoints, with no additional configuration required for basic operation.</p>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#where-this-screen-mirroring-tool-fits-in-the-broader-workflow" id="where-this-screen-mirroring-tool-fits-in-the-broader-workflow"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Where this screen mirroring tool fits in the broader workflow</h2>
+<p data-block-type="core"><strong>1PhoneMirror</strong> is not intended as a device management solution or remote support tool. It focuses specifically on the documentation and training layer of endpoint management work.</p>
+<p data-block-type="core">In many environments, the gap is not in device control, but in how device output is captured and reused. This screen mirroring tool sits in that gap and attempts to reduce the friction between seeing something on a device and turning it into documentation or training material.</p>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#ongoing-development-of-the-screen-mirroring-tool" id="ongoing-development-of-the-screen-mirroring-tool"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Ongoing development of the screen mirroring tool</h2>
+<p data-block-type="core">1PhoneMirror is actively and continuously developed. The application checks for new releases at startup and you can also perform a manual update check from the Information &lt;i&gt; panel. </p>
+<figure class="wp-block-image size-full is-resized" data-block-type="core"><img alt="" class="wp-image-26524" decoding="async" src="assets/eaea3dd22344401e/img_12.png"/><figcaption class="wp-element-caption">Update notifications help you stay on the latest version</figcaption></figure>
+<p data-block-type="core">You can use Winget to update the app:</p>
+<pre class="wp-block-code" data-block-type="core"><code>winget update 1PhoneMirror</code></pre>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-26551" decoding="async" src="assets/eaea3dd22344401e/img_13.png"/></figure>
+<p data-block-type="core">The screen mirroring tool will remain free, and feedback or ideas for new functionality are always welcome as the project evolves.</p>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#closing-thoughts" id="closing-thoughts"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Closing thoughts</h2>
+<p data-block-type="core">The motivation behind <strong>1PhoneMirror</strong> stemmed from recurring friction in documentation workflows rather than a need to introduce new device management capabilities. Over time, the process of capturing and preparing mobile device screenshots became one of those small but persistent inefficiencies that accumulate across documentation, training and support work.</p>
+<p data-block-type="core">This screen mirroring tool aims to reduce that overhead by making the capture process more direct and consistent. If it fits within existing Intune documentation workflows or improves the quality of training materials, it is serving its intended purpose. </p>
+<p data-block-type="core">The application is available on GitHub, and feedback from real-world usage in endpoint management environments is particularly valuable as the tool evolves.</p>
+<p data-block-type="core"><a href="https://github.com/MSEndpointMgr/1PhoneMirror" rel="noopener" target="_blank">https://github.com/MSEndpointMgr/1PhoneMirror</a></p>
+<p data-block-type="core">I have already seen very positive results from using the app in my own workflow, and I hope it can benefit the wider Intune community by reducing daily friction so more time can be spent on the work that actually matters.</p>
+<hr class="wp-block-separator has-alpha-channel-opacity" data-block-type="core"/>
+<p data-block-type="core"><em>For the record, all screenshots of 1PhoneMirror in this post where the menus are visible were taken with a licensed third-party tool, <a data-id="https://skotheimsvik.no/5-ways-to-hack-snagit-and-boost-your-productivity" data-type="link" href="https://skotheimsvik.no/5-ways-to-hack-snagit-and-boost-your-productivity" rel="noreferrer noopener" target="_blank">Snagit</a>. While the 1PhoneMirror tool has worked well in my own environment, it is provided as-is and should be tested in your own lab before rolling out more broadly. As with any utility used in enterprise environments, you remain responsible for how and where it is used. That said, feedback, ideas, and real-world experiences are always welcome and help shape future improvements.</em></p>
+<p class="post-views content-post post-26465 entry-meta load-static">
+<span class="post-views-icon dashicons dashicons-chart-bar"></span> <span class="post-views-label">Views:</span> <span class="post-views-count">1,029</span>
+</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

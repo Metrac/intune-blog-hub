@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Company Portal Not Installing During Autopilot Enrollment 0x87D1041C</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Call4Cloud (Rudy Ooms)</span>
+    <span class="date">June 8, 2026</span>
+  </div>
+  <h1>Company Portal Not Installing During Autopilot Enrollment 0x87D1041C</h1>
+  <div class="orig">Saved for offline reading · <a href="https://patchmypc.com/blog/company-portal-not-installing-during-autopilot-enrollment-0x87d1041c/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="post-content">
+<p>The Company Portal suddenly stopped installing during <strong>Autopilot pre-provisioning</strong> after the <strong>May Windows update,</strong> leaving devices stuck with error <strong>0x87D1041C</strong>. In this blog, we uncover what changed, why system context deployments failed, and how a Microsoft flight rollback restored the Company Portal installation.</p>
+<h2 class="wp-block-heading" id="h-autopilot-and-the-0x87d1041c-error">Autopilot and the 0x87D1041C error<span class="clth-copy-icon" data-heading-id="h-autopilot-and-the-0x87d1041c-error"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>It started with <strong><a href="https://www.linkedin.com/in/sandy-tsang/">Sandy</a></strong> asking why <strong>Company Portal</strong> had suddenly failed to be installed during <strong>Autopilot pre-provisioning</strong> <strong>(0x87D1041C)</strong></p>
+<figure class="wp-block-image size-full"><a data-caption="0x87D1041C during autopilot" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-2.jpg"><picture class="wp-image-186452" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-2.jpg.webp 624w, https://patchmypc.com/app/uploads/2026/06/image-2-300x129.jpg.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="0x87D1041C during autopilot" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-2.jpg 624w, https://patchmypc.com/app/uploads/2026/06/image-2-300x129.jpg 300w" decoding="async" src="assets/f3954085c69b551c/img_0.jpg"/><noscript><img alt="0x87D1041C during autopilot" decoding="async" src="assets/f3954085c69b551c/img_1.jpg"/></noscript>
+</picture>
+</a></figure>
+<p>It was pretty clear that nothing had changed in Intune. <strong><a href="https://patchmypc.com/blog/launching-the-company-portal-automatically-after-autopilot/">The Company Portal </a></strong>was still deployed via the Microsoft Store in system context, and the same Autopilot configuration had worked without issues before. The only real difference was that the device had been installed with the May Windows update. With the May update installed, the Company Portal now failed with <strong>0x87D1041C…</strong></p>
+<p>which just means that the application was not detected after installation completed successfully. The <strong>0x87D1041C</strong> error indicated that the installation had finished, but Intune could not detect the app afterward. That appeared to be exactly what was happening. The Company Portal package was present under C:\Program Files\WindowsApps.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image.jpg"><picture class="wp-image-186446" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image.jpg.webp 624w, https://patchmypc.com/app/uploads/2026/06/image-300x52.jpg.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image.jpg 624w, https://patchmypc.com/app/uploads/2026/06/image-300x52.jpg 300w" decoding="async" src="assets/f3954085c69b551c/img_2.jpg"/><noscript><img alt="" decoding="async" src="assets/f3954085c69b551c/img_3.jpg"/></noscript>
+</picture>
+</a></figure>
+<p>But the Enrollment Status Page still reported that the installation had failed with <strong>0x87D1041C.  The Company Portal was assigned in system context, so it would be installed during Autopilot pre-provi</strong>sioning.</p>
+<figure class="wp-block-image size-full"><a data-caption="company portal deployed under system install behavior during autopilot caused 0x87D1041C" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-3.jpg"><picture class="wp-image-186453" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-3.jpg.webp 624w, https://patchmypc.com/app/uploads/2026/06/image-3-300x139.jpg.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="company portal deployed under system install behavior during autopilot caused 0x87D1041C" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-3.jpg 624w, https://patchmypc.com/app/uploads/2026/06/image-3-300x139.jpg 300w" decoding="async" src="assets/f3954085c69b551c/img_4.jpg"/><noscript><img alt="company portal deployed under system install behavior during autopilot caused 0x87D1041C" decoding="async" src="assets/f3954085c69b551c/img_5.jpg"/></noscript>
+</picture>
+</a></figure>
+<p>Changing the assignment to user context delayed the installation until after the user signed in. That prevented the ESP from failing on the required app, but it also meant Company Portal was no longer installed during pre-provisioning. Noticing that changing the install behavior fixed the issue confirmed that the Store package itself was fine, but it was not a good solution. During Autopilot pre-provisioning, Company Portal needs to be installed before the device is handed over to the user. Waiting for the user to sign in defeats the purpose of assigning it in the system context.</p>
+<p>Sandy was not the only one seeing this. Similar reports appeared on Reddit and <strong><a href="https://techcommunity.microsoft.com/discussions/microsoft-intune/company-portal-no-longer-installing-during-autopilot-enrollment/4519066">Microsoft forums </a></strong>after the May update. Company Portal had worked before the update, failed afterward, and returned the same detection error. Something inside the Windows Store installation flow had changed.</p>
+<h2 class="wp-block-heading" id="h-following-the-error-0x87d1041c-in-the-store-installation">Following the error 0x87D1041C in the Store Installation<span class="clth-copy-icon" data-heading-id="h-following-the-error-0x87d1041c-in-the-store-installation"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>Installing the Microsoft Store app involves more than placing package files in the <strong>WindowsApps</strong> folder.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-1.jpg"><picture class="wp-image-186447" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-1.jpg.webp 624w, https://patchmypc.com/app/uploads/2026/06/image-1-300x52.jpg.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-1.jpg 624w, https://patchmypc.com/app/uploads/2026/06/image-1-300x52.jpg 300w" decoding="async" src="assets/f3954085c69b551c/img_6.jpg"/><noscript><img alt="" decoding="async" src="assets/f3954085c69b551c/img_7.jpg"/></noscript>
+</picture>
+</a></figure>
+<p>Windows first obtains the Store package, stages its content on the device, and then registers or provisions it in the correct scope. The presence of the package under WindowsApps indicates that the content reached the device, but it does not confirm that the final registration completed successfully. To find where that process had changed, we focused on three Windows components:</p>
+<ul class="wp-block-list">
+<li><strong>InstallService.dll</strong></li>
+<li><strong>AppXDeploymentClient.dll</strong></li>
+<li><strong>AppXDeploymentServer.dll</strong></li>
+</ul>
+<p><strong>InstallService.dll</strong> controls the Store installation workflow. It searches for the correct package, prepares the installation session, downloads the content, and determines which installation path to use.</p>
+<p><strong>AppXDeploymentClient.dll</strong> exposes the package management operations for staging, registering, and provisioning AppX and MSIX packages.</p>
+<p><strong>AppXDeploymentServer.dll</strong> performs the underlying deployment work. It processes the package manifest, updates the package repository, and records the package state for the device and its users.</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-9-1024x579.png"><picture class="wp-image-186467" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-9-1024x579.png.webp 1024w, https://patchmypc.com/app/uploads/2026/06/image-9-300x170.png.webp 300w, https://patchmypc.com/app/uploads/2026/06/image-9-768x434.png.webp 768w, https://patchmypc.com/app/uploads/2026/06/image-9-1536x868.png.webp 1536w, https://patchmypc.com/app/uploads/2026/06/image-9.png.webp 1544w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-9-1024x579.png 1024w, https://patchmypc.com/app/uploads/2026/06/image-9-300x170.png 300w, https://patchmypc.com/app/uploads/2026/06/image-9-768x434.png 768w, https://patchmypc.com/app/uploads/2026/06/image-9-1536x868.png 1536w, https://patchmypc.com/app/uploads/2026/06/image-9.png 1544w" decoding="async" src="assets/f3954085c69b551c/img_8.png"/><noscript><img alt="" decoding="async" src="assets/f3954085c69b551c/img_9.png"/></noscript>
+</picture>
+</a></figure>
+<p>Because the Company Portal was already present under WindowsApps, the package download and staging process had clearly completed. The failure appeared to be happening later, when Windows decided how the package should be registered. That brought us back to <strong>InstallService.dll</strong><strong>.</strong></p>
+<h2 class="wp-block-heading" id="h-comparing-april-and-may-to-fix-0x87d1041c">Comparing April and May to Fix 0x87D1041C<span class="clth-copy-icon" data-heading-id="h-comparing-april-and-may-to-fix-0x87d1041c"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>We compared the May version of InstallService.dll with the version from the April update. The most interesting change appeared inside: <strong>UWAInstallWork::_DoNormalInstall</strong></p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-4.jpg"><picture class="wp-image-186456" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-4.jpg.webp 624w, https://patchmypc.com/app/uploads/2026/06/image-4-300x38.jpg.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-4.jpg 624w, https://patchmypc.com/app/uploads/2026/06/image-4-300x38.jpg 300w" decoding="async" src="assets/f3954085c69b551c/img_10.jpg"/><noscript><img alt="" decoding="async" src="assets/f3954085c69b551c/img_11.jpg"/></noscript>
+</picture>
+</a></figure>
+<p>This function controls the normal Store installation flow. It prepares the update session, downloads the required files, and eventually chooses how the application should be installed. Inside the May version, we found a new feature: <strong>FixInstallUnderSystemContext </strong>with the corresponding feature ID: <strong>61372494</strong></p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-8-1024x109.png"><picture class="wp-image-186460" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-8-1024x109.png.webp 1024w, https://patchmypc.com/app/uploads/2026/06/image-8-300x32.png.webp 300w, https://patchmypc.com/app/uploads/2026/06/image-8-768x82.png.webp 768w, https://patchmypc.com/app/uploads/2026/06/image-8.png.webp 1105w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-8-1024x109.png 1024w, https://patchmypc.com/app/uploads/2026/06/image-8-300x32.png 300w, https://patchmypc.com/app/uploads/2026/06/image-8-768x82.png 768w, https://patchmypc.com/app/uploads/2026/06/image-8.png 1105w" decoding="async" src="assets/f3954085c69b551c/img_12.png"/><noscript><img alt="" decoding="async" src="assets/f3954085c69b551c/img_13.png"/></noscript>
+</picture>
+</a></figure>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image.png"><img alt="" class="wp-image-186445" data-lazy-sizes="(max-width: 472px) 100vw, 472px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image.png 472w, https://patchmypc.com/app/uploads/2026/06/image-300x22.png 300w" decoding="async" src="assets/f3954085c69b551c/img_14.png"/><noscript><img alt="" class="wp-image-186445" decoding="async" src="assets/f3954085c69b551c/img_15.png"/></noscript></a></figure>
+<p>The Fix Installed Under System Context name immediately stood out. <strong><a href="https://patchmypc.com/blog/intune-company-portal-app-refreshed/">The Company Portal </a></strong>was failing only when deployed in the system context during autopilot pre-provisioning, and there was a newly introduced feature specifically intended to change exactly that installation path… that couldn’t be a coincidence, right? The next step was to find out what the feature actually did.</p>
+<h2 class="wp-block-heading" id="h-fix-install-under-system-context">Fix Install Under System Context<span class="clth-copy-icon" data-heading-id="h-fix-install-under-system-context"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>When FixInstallUnderSystemContext is active, InstallService.dll loads an additional configuration value:<strong>FIXINSTALLUNDERSYSTEMCONTEXT </strong>When both the feature and its configuration value are enabled, InstallService logs: <strong>Enumerating all users if run in system context.</strong></p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-2.png"><img alt="" class="wp-image-186449" data-lazy-sizes="(max-width: 427px) 100vw, 427px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-2.png 427w, https://patchmypc.com/app/uploads/2026/06/image-2-300x37.png 300w" decoding="async" src="assets/f3954085c69b551c/img_16.png"/><noscript><img alt="" class="wp-image-186449" decoding="async" src="assets/f3954085c69b551c/img_17.png"/></noscript></a></figure>
+<p>With it, the installation will then be redirected into: <strong>UWAInstallWork::_DoInstallForAllLoggedOnUsers</strong></p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-1.png"><img alt="" class="wp-image-186448" data-lazy-sizes="(max-width: 576px) 100vw, 576px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-1.png 576w, https://patchmypc.com/app/uploads/2026/06/image-1-300x35.png 300w" decoding="async" src="assets/f3954085c69b551c/img_18.png"/><noscript><img alt="" class="wp-image-186448" decoding="async" src="assets/f3954085c69b551c/img_19.png"/></noscript></a></figure>
+<p>Instead of continuing only through the normal system installation path, <strong>InstallService</strong> begins looking for logged-on users and tries to register the Store package for them.</p>
+<p>That may work during a normal user session, but Autopilot pre-provisioning is different. The device is being prepared before the actual user receives it, so there may not be a normal user session available yet.  To understand the impact, we opened <strong>_DoInstallForAllLoggedOnUsers.</strong></p>
+<h2 class="wp-block-heading" id="h-looking-for-logged-on-users">Looking for Logged-On Users<span class="clth-copy-icon" data-heading-id="h-looking-for-logged-on-users"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>The function starts with: <strong>TokenHelpers::GetAllLoggedInUserTokens(…) The InstallService</strong> collects the available logged-on user tokens and then processes each user individually.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-3.png"><img alt="" class="wp-image-186457" data-lazy-sizes="(max-width: 592px) 100vw, 592px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-3.png 592w, https://patchmypc.com/app/uploads/2026/06/image-3-300x35.png 300w" decoding="async" src="assets/f3954085c69b551c/img_20.png"/><noscript><img alt="" class="wp-image-186457" decoding="async" src="assets/f3954085c69b551c/img_21.png"/></noscript></a></figure>
+<p>For every token, it retrieves the user SID and searches for packages that should be registered for that user. The logging inside the function shows this clearly: <strong>Attempting to register update for User. </strong>When no applicable package is found, InstallService logs: <strong>Nothing to register for User. Skipping Install. </strong></p>
+<p>The important detail is what happens when there is no normal logged-on user. During Autopilot pre-provisioning, the real user has not yet signed in. If the function does not find a usable user token, there is no user for whom Company Portal can be registered.</p>
+<p>The package may already have been downloaded and staged, but the registration step expected by Intune is never completed. <strong>InstallService</strong> can still finish the operation without returning a package installation failure. Intune then checks whether Company Portal is installed, cannot find it in the expected state, and reports <strong>0x87D1041C.</strong></p>
+<figure class="wp-block-image size-full"><a data-caption="company portal deployed under system install behavior during autopilot caused 0x87D1041C" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-6.jpg"><picture class="wp-image-186455" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-6.jpg.webp 623w, https://patchmypc.com/app/uploads/2026/06/image-6-300x193.jpg.webp 300w" sizes="(max-width: 623px) 100vw, 623px" type="image/webp"/>
+<img alt="company portal deployed under system install behavior during autopilot caused 0x87D1041C" data-lazy-sizes="(max-width: 623px) 100vw, 623px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-6.jpg 623w, https://patchmypc.com/app/uploads/2026/06/image-6-300x193.jpg 300w" decoding="async" src="assets/f3954085c69b551c/img_22.jpg"/><noscript><img alt="company portal deployed under system install behavior during autopilot caused 0x87D1041C" decoding="async" src="assets/f3954085c69b551c/img_23.jpg"/></noscript>
+</picture>
+</a></figure>
+<p>That also explains why the user context assignment continued to work. Once the user signs in, InstallService has a real user token and can register Company Portal for that user. The problem only occurs when the installation is expected to complete before the user session ends.</p>
+<h2 class="wp-block-heading" id="h-was-the-feature-actually-enabled">Was the Feature Actually Enabled?<span class="clth-copy-icon" data-heading-id="h-was-the-feature-actually-enabled"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>Finding the feature inside the DLL did not prove that it was also enabled by default. Microsoft regularly ships feature code before enabling it<strong><a href="https://support.microsoft.com/en-us/windows/delivering-continuous-innovation-in-windows-11-b0aa0a27-ea9a-4365-9224-cb155e517f12"> (it should be turned off by default!!)</a></strong></p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-6.png"><picture class="wp-image-186461" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-6.png.webp 624w, https://patchmypc.com/app/uploads/2026/06/image-6-300x31.png.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-6.png 624w, https://patchmypc.com/app/uploads/2026/06/image-6-300x31.png 300w" decoding="async" src="assets/f3954085c69b551c/img_24.png"/><noscript><img alt="" decoding="async" src="assets/f3954085c69b551c/img_25.png"/></noscript>
+</picture>
+</a></figure>
+<p>The feature can remain dormant until it is activated through Windows feature management or a service-side configuration.  Let’s check if that was the same with this <strong>FixInstallUnderSystemContext function. </strong>When inspecting the InstallService OneSettings configuration. Inside the JSON payload, we found: <strong>“FIXINSTALLUNDERSYSTEMCONTEXT”: “1”</strong></p>
+<figure class="wp-block-image size-full"><a data-caption="fix install under system context flight set to 1 (enabled)" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-4.png"><img alt="fix install under system context flight set to 1 (enabled)" class="wp-image-186450" data-lazy-sizes="(max-width: 433px) 100vw, 433px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-4.png 433w, https://patchmypc.com/app/uploads/2026/06/image-4-300x117.png 300w" decoding="async" src="assets/f3954085c69b551c/img_26.png"/><noscript><img alt="fix install under system context flight set to 1 (enabled)" class="wp-image-186450" decoding="async" src="assets/f3954085c69b551c/img_27.png"/></noscript></a></figure>
+<p>The new code was not only simply present inside the May binary… The Controlled feature rollout service also had enabled it on all devices. That explained why the issue appeared without any change to the Intune assignment. The May update introduced the new <strong>InstallService</strong> behavior, while <strong>OneSettings </strong>activated the code path on Windows.</p>
+<p>From that moment, a Store installation started by LocalSystem could be redirected into a flow that depended on logged-on user tokens. During Autopilot pre-provisioning, that was exactly the wrong moment to depend on a user session.</p>
+<h2 class="wp-block-heading" id="h-reaching-out-to-microsoft">Reaching Out to Microsoft<span class="clth-copy-icon" data-heading-id="h-reaching-out-to-microsoft"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>On Friday, we shared the findings with Microsoft. We explained that Company Portal only failed in system context, while the user context assignment still worked. We also shared the difference between the April and May versions of InstallService.dll, the new <strong>FixInstallUnderSystemContext</strong> feature, and the OneSettings value that enabled it.</p>
+<figure class="wp-block-image size-full"><a data-caption="fix install under system context flight set to 1 (enabled)" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-5.png"><img alt="fix install under system context flight set to 1 (enabled)" class="wp-image-186459" data-lazy-sizes="(max-width: 433px) 100vw, 433px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-5.png 433w, https://patchmypc.com/app/uploads/2026/06/image-5-300x117.png 300w" decoding="async" src="assets/f3954085c69b551c/img_28.png"/><noscript><img alt="fix install under system context flight set to 1 (enabled)" class="wp-image-186459" decoding="async" src="assets/f3954085c69b551c/img_29.png"/></noscript></a></figure>
+<p>The following Monday…. the Sccinstallservice.json was updated (yes… I build a tracked.. more in this in an upcoming blog). The updated JSON was now showing that the flight was reverted.</p>
+<figure class="wp-block-image size-full"><a data-caption="fix install under system context flight set to 0 suddenly" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-7.png"><img alt="fix install under system context flight set to 0 suddenly" class="wp-image-186458" data-lazy-sizes="(max-width: 552px) 100vw, 552px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-7.png 552w, https://patchmypc.com/app/uploads/2026/06/image-7-300x37.png 300w" decoding="async" src="assets/f3954085c69b551c/img_30.png"/><noscript><img alt="fix install under system context flight set to 0 suddenly" class="wp-image-186458" decoding="async" src="assets/f3954085c69b551c/img_31.png"/></noscript></a></figure>
+<p>We repeated the Autopilot pre-provisioning test with Company Portal still assigned in the system context. This time, Company Portal installed successfully again. Nothing had changed in Intune. The application assignment was the same, the Enrollment Status Page configuration was the same, and the Company Portal was still expected to install before the user received the device…and others were reporting the same</p>
+<figure class="wp-block-image size-full"><a data-caption="company portal deployed under system install behavior during autopilot no longer causing 0x87D1041C" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image.jpeg"><picture class="wp-image-186454" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image.jpeg.webp 624w, https://patchmypc.com/app/uploads/2026/06/image-300x53.jpeg.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="company portal deployed under system install behavior during autopilot no longer causing 0x87D1041C" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image.jpeg 624w, https://patchmypc.com/app/uploads/2026/06/image-300x53.jpeg 300w" decoding="async" src="assets/f3954085c69b551c/img_32.jpg"/><noscript><img alt="company portal deployed under system install behavior during autopilot no longer causing 0x87D1041C" decoding="async" src="assets/f3954085c69b551c/img_33.jpg"/></noscript>
+</picture>
+</a></figure>
+<p>The only change was that the <strong>InstallService</strong> flight had been turned off. We cannot claim that our message was the only reason Microsoft reverted the flight. Other customers were reporting the same issue, and Microsoft may already have been investigating it.</p>
+<p>The timing was still hard to ignore. We shared the InstallService findings on Friday, the flight was reverted on Monday, and Company Portal immediately started installing again.</p>
+<h2 class="wp-block-heading" id="h-when-the-fix-becomes-the-actual-problem">When the Fix Becomes the Actual Problem<span class="clth-copy-icon" data-heading-id="h-when-the-fix-becomes-the-actual-problem"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>FixInstallUnderSystemContext was probably intended to improve Store installations started by LocalSystem. The problem was how that new behavior interacted with Autopilot pre-provisioning. A system context installation that runs before the user receives the device cannot depend on a normal user session being available.</p>
+<p>By redirecting the installation into the logged-on user’s path, InstallService changed the final package state. Company Portal reached the device, but it was not registered in the context Intune expected to detect.</p>
+<p>That is why the Store installation appeared successful while the Enrollment Status Page still failed with <strong>0x87D1041C.</strong></p>
+<p>The most interesting part was not that Company Portal disappeared. It never did. It was already sitting inside WindowsApps.</p>
+<p>Windows had simply stopped finishing the part that made it usable and detectable during Autopilot pre-provisioning.</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

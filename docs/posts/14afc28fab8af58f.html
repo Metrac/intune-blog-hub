@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hiding the recommended section from the Start layout and multi-app kiosk mode</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Peter van der Woude</span>
+    <span class="date">June 8, 2026</span>
+  </div>
+  <h1>Hiding the recommended section from the Start layout and multi-app kiosk mode</h1>
+  <div class="orig">Saved for offline reading · <a href="https://petervanderwoude.nl/post/hiding-the-recommended-section-from-the-start-layout-and-multi-app-kiosk-mode/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text">
+<p class="wp-block-paragraph">This week is all about another relatively small, but essential, configuration to further enhance the Start layout experience. Especially when using multi-app kiosk mode. That configuration is to hide the recommended section from the Start layout. Hiding that section is especially relevant when using a multi-app kiosk mode, as that includes a link to the <em>Settings </em>app when there are no recommendations. Even though that might sound pretty small, it does take away another item that a user could potentially click on and hitting an unnecessary blockage. In those cases lesser is better. That means that there are definitely scenarios in which it can be really useful to prevent the Start layout from displaying recommended applications and files. This post will provide a closer look at configuring removing the recommended section and experiencing that in multi-app kiosk mode.</p>
+<h2 class="wp-block-heading">Configuration for hiding the recommended section</h2>
+<p class="wp-block-paragraph">When looking at hiding the recommended section from the Start layout, it is all about the <strong>Remove Recommended section from Start Menu</strong> setting. That setting was introduced a few years ago and is already easily configurable within the<em> Group Policy</em>. The values are pretty straightforward, as it can be configured to <em>Recommended section shown</em> (0) or <em>Recommended section hidden</em> (1). That setting is also available via the Policy CSP as an ADMX-backed setting, as it relies on the <em>StartMenu.admx</em>. It is, however, not available via the <em>Settings Catalog</em> at this moment. That means that the configuration still relies on using <em>Custom</em> configuration profiles. The following nine steps walk through the configuration of removing the recommended section from the Start layout.</p>
+<ol class="wp-block-list">
+<li>Open the <a href="https://intune.microsoft.com/">Microsoft Intune admin center</a> navigate to <strong>Devices </strong>&gt; <strong>Windows</strong> &gt;<strong> Configuration</strong></li>
+<li>On the <strong>Windows | Configuration </strong>blade, click <strong>Create</strong> &gt; <strong>New policy</strong></li>
+<li>On the <strong>Create a profile</strong> page, select <strong>Windows 10 and later</strong> &gt; <strong>Templates </strong>&gt; <strong>Custom </strong>and click <strong>Create</strong></li>
+<li>On the <strong>Basics</strong> page, provide a unique <strong>Name</strong> to distinguish the profile from other custom profiles and click <strong>Next</strong></li>
+<li>On the <strong>Configuration settings</strong> page, as shown below in Figure 1, click <strong>Add</strong> to add the following row and click <strong>Next</strong></li>
+</ol>
+<ul class="wp-block-list">
+<li><strong>OMA-URI setting</strong> – This setting is used to hide the recommended section in the Start layout
+<ul class="wp-block-list">
+<li><strong>Name</strong>: Provide a name for the OMA-URI setting to distinguish it from other similar settings</li>
+<li><strong>Description</strong>: (Optional) Provide a description for the OMA-URI setting to further differentiate settings</li>
+<li><strong>OMA-URI</strong> (1): Specify <em>./Device/Vendor/MSFT/Policy/Config/Start/HideRecommendedSection</em></li>
+<li><strong>Data type</strong> (2): Select <em>Integer </em>as value</li>
+<li><strong>Value</strong> (3): Specify <em>1 </em>as value</li>
+</ul>
+</li>
+</ul>
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-1 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><a href="https://petervanderwoude.nl/wordpress/wp-content/uploads/HRS-ConfigurationSettings.png"><img alt="" class="wp-image-23249" data-id="23249" decoding="async" src="assets/14afc28fab8af58f/img_0.png"/></a><figcaption class="wp-element-caption">Figure 1: Overview of configuring hiding the recommended section</figcaption></figure>
+</figure>
+<ol class="wp-block-list" start="6">
+<li>On the <strong>Scope tags</strong> page, configure the applicable scopes and click <strong>Next</strong></li>
+<li>On the <strong>Assignments</strong> page, configure the assignment for the required devices and click <strong>Next</strong></li>
+<li>On the <strong>Applicability rules</strong> page, configure the applicability rules, and click <strong>Next</strong></li>
+<li>On the <strong>Review + create</strong> page, verify the configuration and click <strong>Create</strong></li>
+</ol>
+<p class="has-background wp-block-paragraph"><strong>Note</strong>: The expectation is that this setting will eventually end up in the <em>Settings Catalog</em>.</p>
+<h2 class="wp-block-heading">Experiencing the hidden recommended section</h2>
+<p class="wp-block-paragraph">After applying the configuration of hiding the recommended section from the Start layout, experiencing the configuration is pretty straightforward. For the best overview it is probably the best and easiest to show a before and after. When creating a custom Start layout, it will by default also show a recommended section that shows a <em>Launch Start Settings</em> link. The latter can be used to open the <em>Settings </em>app, if it is not blocked. Either way, it breaks the user experience. That is the main reason why that section is better left out on multi-app kiosk devices. Below in Figure 2 and Figure 3 is an overview of the before and after situation, when using the provided configuration. Pretty straightforward and nice and clean. </p>
+<div class="wp-block-columns is-layout-flex wp-container-core-columns-is-layout-8f761849 wp-block-columns-is-layout-flex">
+<div class="wp-block-column is-layout-flow wp-block-column-is-layout-flow">
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-2 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><a href="https://petervanderwoude.nl/wordpress/wp-content/uploads/HRS-ConfigurationExperienceBefore.png"><img alt="" class="wp-image-23248" data-id="23248" decoding="async" src="assets/14afc28fab8af58f/img_1.png"/></a><figcaption class="wp-element-caption">Figure 2: Overview of the recommended section before the configuration</figcaption></figure>
+</figure>
+</div>
+<div class="wp-block-column is-layout-flow wp-block-column-is-layout-flow">
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-3 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><a href="https://petervanderwoude.nl/wordpress/wp-content/uploads/HRS-ConfigurationExperienceAfter.png"><img alt="" class="wp-image-23246" data-id="23246" decoding="async" src="assets/14afc28fab8af58f/img_2.png"/></a><figcaption class="wp-element-caption">Figure 3: Overview of the recommended section after the configuration</figcaption></figure>
+</figure>
+</div>
+</div>
+<h2 class="wp-block-heading">More information</h2>
+<p class="wp-block-paragraph">For more information about managing Start, refer to the following docs.</p>
+<div class="wp-block-group has-border-color"><div class="wp-block-group__inner-container is-layout-flow wp-block-group-is-layout-flow">
+<hr class="wp-block-separator has-alpha-channel-opacity is-style-wide"/>
+<h3 class="wp-block-heading has-text-align-center">Discover more from All about Microsoft Intune</h3>
+<p class="has-text-align-center wp-block-paragraph">Subscribe to get the latest posts sent to your email.</p>
+</div></div>
+</div>
+</div></div>
+</article>
+</body>
+</html>

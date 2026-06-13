@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intune Newsletter – 29th May 2026</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Andrew Taylor</span>
+    <span class="date">May 29, 2026</span>
+  </div>
+  <h1>Intune Newsletter – 29th May 2026</h1>
+  <div class="orig">Saved for offline reading · <a href="https://andrewstaylor.com/2026/05/29/intune-newsletter-29th-may-2026/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text">
+<p>Welcome back everyone, a shorter week this week and I think everyone is out enjoying the weather because it’s a very short newsletter too!  Still, quality over quantity, it’s all worth checking out!</p>
+<hr/>
+<h1>Community Content</h1>
+<p>We start this week with a useful guide for those macOS admins out there.  Learn how to deploy and configure Onedrive for macOS with full SSO and KFM here from <a href="https://www.linkedin.com/in/tobias-eriksson-713612183/">Tobias Eriksson</a></p>
+<blockquote class="wp-embedded-content" data-secret="AZ4oKnQpiS"><p><a href="https://tob-it.se/how-to-deploy-onedrive-for-macos-silently-via-intune-known-folder-move-full-disk-access-and-background-services/">How to Deploy OneDrive for macOS Silently via Intune (Known Folder Move, Full Disk Access and Background Services)</a></p></blockquote>
+<p></p>
+<hr/>
+<p><a href="https://www.linkedin.com/in/roman-padrun-1040386a/">Roman Padrun</a> looks at what happens when you click Sync in Intune, the 8-hour myth and some troubleshooting tools in this post</p>
+<p><a href="https://www.cloudcook.ch/the-device-sync-mystery-or-waiting-for-the-cloud-miracle/">https://www.cloudcook.ch/the-device-sync-mystery-or-waiting-for-the-cloud-miracle/</a></p>
+<hr/>
+<p>The enrollment status page, the single screen which probably causes the most complaints from users!  Learn what every setting is and what to do when things inevitably go wrong in this post from <a href="https://www.linkedin.com/in/craig-camacho-59364621/">Craig Camacho</a></p>
+<blockquote class="wp-embedded-content" data-secret="VCVmNIKeAQ"><p><a href="https://thedeploymentguy.co.uk/intune-enrollment-status-page-settings/">The Intune Enrollment Status Page: Every Setting Explained</a></p></blockquote>
+<p></p>
+<hr/>
+<p>This post from <a href="https://www.linkedin.com/in/mecken-swyter/">Mecken Swyter</a> digs into Config Refresh, how to enable it and more importantly, how to deal with the bits it misses</p>
+<p><a href="https://meckenswyter.com/intune/enabling-config-refresh-not-enough">https://meckenswyter.com/intune/enabling-config-refresh-not-enough</a></p>
+<hr/>
+<p>Still worrying about those secure boot certificates?  Check out this post from <a href="https://www.linkedin.com/in/jontowles/">Jon Towles</a> with how to fix it and what happens if you miss the deadline</p>
+<blockquote class="wp-embedded-content" data-secret="NKXE8p1DL2"><p><a href="https://mobile-jon.com/2026/05/28/managing-secure-boot-certificate-lifecycle-with-intune/">Managing Secure Boot Certificate Lifecycle with Intune</a></p></blockquote>
+<p></p>
+<hr/>
+<p>If you want to quickly check why your devices are non-compliant, try this log analytics KQL query from <a href="https://www.linkedin.com/in/nicolasuter/">Nicola Suter</a></p>
+<p><a href="https://tech.nicolonsky.ch/til/intune-device-compliance-drift-kql/">https://tech.nicolonsky.ch/til/intune-device-compliance-drift-kql/</a></p>
+<hr/>
+<p>Unmanaged macOS devices are always a tricky subject because of the lack of MAM support, but <a href="https://www.linkedin.com/in/andrew-jones-65a67b59/">Andy Jones</a> has released part 2 of the series for managing these devices in the most secure way possible here:</p>
+<blockquote class="wp-embedded-content" data-secret="BoKioHeMlp"><p><a href="https://move2modern.uk/index.php/2026/05/28/configuring-unmanaged-macos-for-byod/">Configuring unmanaged macOS for BYOD – Part 2</a></p></blockquote>
+<p></p>
+<hr/>
+<p>This post from <a href="https://www.linkedin.com/in/mniehaus/">Michael Niehaus</a> looks at if we are finally at the time to switch from Entra Connect Sync to Entra Cloud sync</p>
+<blockquote class="wp-embedded-content" data-secret="Dd093SHIGA"><p><a href="https://oofhours.com/2026/05/29/time-to-move-to-entra-cloud-sync/">Time to move to Entra Cloud Sync</a></p></blockquote>
+<p></p>
+<hr/>
+<h1><a id="video"></a>Video Content</h1>
+<p>And now for the video content, starting with part two of <a href="https://www.linkedin.com/in/stevew25/">Steve Weiner</a>‘s look at the new app inventory, find out what happened after the last cliffhanger</p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/pN2L5QRrEeI?feature=oembed" title="The New Intune App Inventory Part 2: 24 Hours Later">VIDEO</iframe></p>
+<hr/>
+<p><a href="https://www.linkedin.com/in/deanellerby/">Dean Ellerby</a> and <a href="https://www.linkedin.com/in/stevew25/">Steve Weiner</a> discuss the upcoming Intune workshop at Experts Live UK here.  Hopefully I’ll see you there!</p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/EY58CAnSGzQ?feature=oembed" title="The Intune Hands-On Workshop: Steve Weiner and I Talk Experts Live UK in London">VIDEO</iframe></p>
+<hr/>
+<p>Protecting macOS devices sometimes seems a lot more complex than it should be.  This video from <a href="https://www.linkedin.com/in/kennethvansurksum/">Kenneth van Surksum</a> looks at how to secure your managed devices with Intune and Conditional Access</p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/6uaOW7rCvK4?feature=oembed" title="Securing macOS devices with Conditional Access">VIDEO</iframe></p>
+<hr/>
+<h1><a id="microsoft"></a>Microsoft Content</h1>
+<p>Also a quiet week from Microsoft, but we do have the all-important What’s New in Intune from <a href="https://www.linkedin.com/in/scottsawyer/">Scott Sawyer</a></p>
+<p><a href="https://techcommunity.microsoft.com/blog/microsoftintuneblog/what%E2%80%99s-new-in-microsoft-intune-%E2%80%93-may/4491984">https://techcommunity.microsoft.com/blog/microsoftintuneblog/what%E2%80%99s-new-in-microsoft-intune-%E2%80%93-may/4491984</a></p>
+<hr/>
+<p>That’s all for this week, have a lovely weekend!</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

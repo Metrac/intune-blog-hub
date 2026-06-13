@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Illusion of Intune “Last Check-in”: When Devices Appear Active but Cannot Sync</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Call4Cloud (Rudy Ooms)</span>
+    <span class="date">May 19, 2026</span>
+  </div>
+  <h1>The Illusion of Intune “Last Check-in”: When Devices Appear Active but Cannot Sync</h1>
+  <div class="orig">Saved for offline reading · <a href="https://patchmypc.com/blog/intune-last-check-in-when-devices-appear-active-but-cannot-sync/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="post-content">
+<p>This blog exposes the gap between what Intune shows as <strong>Last check-in (last sync) </strong>and what the device is actually capable of once the <strong>MDM certificate has expired.</strong></p>
+<p class="has-small-font-size"><em>Please note: This blog is based on my own testing and analysis, including decompiling publicly available Windows binaries. No NDA covered information, internal documentation, or private sources were used.</em></p>
+<h2 class="wp-block-heading" id="h-introduction">Introduction<span class="clth-copy-icon" data-heading-id="h-introduction"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>I ran into this while digging into a set of devices where the Intune MDM certificate simply refused to renew. The certificate had expired, long past its expiration date, yet the device still showed a perfectly fresh <strong>Last check-in (Last Sync Time) </strong>timestamp in the Intune portal.</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2025/11/image-66-1024x80.png"><picture class="wp-image-170302" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2025/11/image-66-1024x80.png.webp 1024w, https://patchmypc.com/app/uploads/2025/11/image-66-300x24.png.webp 300w, https://patchmypc.com/app/uploads/2025/11/image-66-768x60.png.webp 768w, https://patchmypc.com/app/uploads/2025/11/image-66.png.webp 1313w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2025/11/image-66-1024x80.png 1024w, https://patchmypc.com/app/uploads/2025/11/image-66-300x24.png 300w, https://patchmypc.com/app/uploads/2025/11/image-66-768x60.png 768w, https://patchmypc.com/app/uploads/2025/11/image-66.png 1313w" decoding="async" src="assets/15f87233943a4e66/img_0.png"/><noscript><img alt="" decoding="async" src="assets/15f87233943a4e66/img_1.png"/></noscript>
+</picture>
+</a></figure>
+<p>At first glance, that made no sense. An expired certificate should block authentication. (as shown below, the certificate was expired on 11-1-2024)</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2025/11/image-24.jpg"><picture class="wp-image-168058" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2025/11/image-24.jpg.webp 624w, https://patchmypc.com/app/uploads/2025/11/image-24-300x101.jpg.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2025/11/image-24.jpg 624w, https://patchmypc.com/app/uploads/2025/11/image-24-300x101.jpg 300w" decoding="async" src="assets/15f87233943a4e66/img_2.jpg"/><noscript><img alt="" decoding="async" src="assets/15f87233943a4e66/img_3.jpg"/></noscript>
+</picture>
+</a></figure>
+<p>No authentication means no check-in. At least, that is what most IT admins assume. But the Last Check-In <strong>(Last Sync Time) </strong>timestamps kept updating.</p>
+<figure class="wp-block-image size-large"><a href="https://patchmypc.com/app/uploads/2025/11/image-63-scaled.png"><picture class="wp-image-170297" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2025/11/image-63-1024x223.png.webp 1024w, https://patchmypc.com/app/uploads/2025/11/image-63-300x65.png.webp 300w, https://patchmypc.com/app/uploads/2025/11/image-63-768x167.png.webp 768w, https://patchmypc.com/app/uploads/2025/11/image-63-1536x335.png.webp 1536w, https://patchmypc.com/app/uploads/2025/11/image-63-2048x446.png.webp 2048w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2025/11/image-63-1024x223.png 1024w, https://patchmypc.com/app/uploads/2025/11/image-63-300x65.png 300w, https://patchmypc.com/app/uploads/2025/11/image-63-768x167.png 768w, https://patchmypc.com/app/uploads/2025/11/image-63-1536x335.png 1536w, https://patchmypc.com/app/uploads/2025/11/image-63-2048x446.png 2048w" decoding="async" src="assets/15f87233943a4e66/img_4.png"/><noscript><img alt="" decoding="async" src="assets/15f87233943a4e66/img_5.png"/></noscript>
+</picture>
+</a></figure>
+<p>Not just in the Intune portal. The registry under the OMADM account key showed the same thing.<br/><strong>ServerLastAccessTime and ServerLastSuccessTime</strong> moved forward every time the device reached out.</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2025/11/image-64-1024x215.png"><picture class="wp-image-170298" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2025/11/image-64-1024x215.png.webp 1024w, https://patchmypc.com/app/uploads/2025/11/image-64-300x63.png.webp 300w, https://patchmypc.com/app/uploads/2025/11/image-64-768x161.png.webp 768w, https://patchmypc.com/app/uploads/2025/11/image-64-1536x322.png.webp 1536w, https://patchmypc.com/app/uploads/2025/11/image-64.png.webp 1670w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2025/11/image-64-1024x215.png 1024w, https://patchmypc.com/app/uploads/2025/11/image-64-300x63.png 300w, https://patchmypc.com/app/uploads/2025/11/image-64-768x161.png 768w, https://patchmypc.com/app/uploads/2025/11/image-64-1536x322.png 1536w, https://patchmypc.com/app/uploads/2025/11/image-64.png 1670w" decoding="async" src="assets/15f87233943a4e66/img_6.png"/><noscript><img alt="" decoding="async" src="assets/15f87233943a4e66/img_7.png"/></noscript>
+</picture>
+</a></figure>
+<p>The device looked healthy, while the certificate was clearly invalid.<br/>So I started digging into the OMADM flow.</p>
+<h2 class="wp-block-heading" id="h-the-omadm-account-structure-behind-the-scenes">The OMADM account structure behind the scenes<span class="clth-copy-icon" data-heading-id="h-the-omadm-account-structure-behind-the-scenes"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>Every Intune-enrolled device keeps a local record of its MDM account underHKLM\software\microsoft\provisioning\OMADM\Accounts\&lt;AccountGUID&gt;</p>
+<p>Inside that key sits a packed structure the client calls <strong>AcctInfo (AccountInfo)</strong>. That block contains the server URL, retry timers, flags, and, more interesting for this story, the timestamps Intune uses for the last check in:</p>
+<ul class="wp-block-list">
+<li><strong>ServerLastAccessTime</strong></li>
+<li><strong>ServerLastSuccessTime</strong></li>
+<li><strong>LastSessionResult</strong></li>
+</ul>
+<p>When the device talks to Intune, the OMADM client does not just fire off a web request. It first loads this AcctInfo structure, runs a session setup, and only then starts sending SyncML. You can picture the simple version of the flow like this:</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2025/11/image-65-446x1024.png"><picture class="wp-image-170300" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2025/11/image-65-446x1024.png.webp 446w, https://patchmypc.com/app/uploads/2025/11/image-65-131x300.png.webp 131w, https://patchmypc.com/app/uploads/2025/11/image-65-768x1762.png.webp 768w, https://patchmypc.com/app/uploads/2025/11/image-65.png.webp 813w" sizes="(max-width: 446px) 100vw, 446px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 446px) 100vw, 446px" data-lazy-srcset="https://patchmypc.com/app/uploads/2025/11/image-65-446x1024.png 446w, https://patchmypc.com/app/uploads/2025/11/image-65-131x300.png 131w, https://patchmypc.com/app/uploads/2025/11/image-65-768x1762.png 768w, https://patchmypc.com/app/uploads/2025/11/image-65.png 813w" decoding="async" src="assets/15f87233943a4e66/img_8.png"/><noscript><img alt="" decoding="async" src="assets/15f87233943a4e66/img_9.png"/></noscript>
+</picture>
+</a></figure>
+<ul class="wp-block-list">
+<li>    A[MDM scheduled sync or manual sync] –&gt; B[OmadmAccountManager]</li>
+<li>    B –&gt; C[OmaDmGetAcctInfoFromKey&lt;br&gt;Read AcctInfo from HKLM\…Accounts\&lt;GUID&gt;]</li>
+<li>    C –&gt; D[SyncmlSessionStateManager::InitiateSession]</li>
+<li>    D –&gt; E[Build SyncML request&lt;br&gt;select auth settings&lt;br&gt;prepare connection]</li>
+<li>    E –&gt; F[Send request to Intune service]</li>
+<li>    F –&gt; G[Receive SyncML response&lt;br&gt;with server time]</li>
+<li>    G –&gt; H[StoreServerLastTime&lt;br&gt;update timestamps in AcctInfo]</li>
+<li>    H –&gt; I[InternalSaveAcctInfoToKey&lt;br&gt;write back to registry]</li>
+<li>    I –&gt; J[Intune reads these values&lt;br&gt;and shows Last check in]</li>
+<li>    F -.-&gt; K[TLS handshake uses MDM cert&lt;br&gt;but expiry is not enforced here]</li>
+</ul>
+<h3 class="wp-block-heading" id="h-the-corrosponding-explanation">The Corrosponding Explanation<span class="clth-copy-icon" data-heading-id="h-the-corrosponding-explanation"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p>Step A is whatever kicked off the sync. That might be the regular DMClient schedule, a manual sync request from the portal, or the user pressing the sync button. Step B is where OmadmAccountManager wakes up and starts working with the local account. It calls OmaDmGetAcctInfoFromKey, which reads the AcctInfo block from the registry and unpacks it into memory.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2025/11/image-59.png"><img alt="" class="wp-image-168062" data-lazy-sizes="(max-width: 585px) 100vw, 585px" data-lazy-srcset="https://patchmypc.com/app/uploads/2025/11/image-59.png 585w, https://patchmypc.com/app/uploads/2025/11/image-59-300x158.png 300w" decoding="async" src="assets/15f87233943a4e66/img_10.png"/><noscript><img alt="" class="wp-image-168062" decoding="async" src="assets/15f87233943a4e66/img_11.png"/></noscript></a></figure>
+<p>With that state in hand, SyncmlSessionStateManager::InitiateSession sets up the session.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2025/11/image-58.png"><picture class="wp-image-168061" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2025/11/image-58.png.webp 531w, https://patchmypc.com/app/uploads/2025/11/image-58-300x58.png.webp 300w" sizes="(max-width: 531px) 100vw, 531px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 531px) 100vw, 531px" data-lazy-srcset="https://patchmypc.com/app/uploads/2025/11/image-58.png 531w, https://patchmypc.com/app/uploads/2025/11/image-58-300x58.png 300w" decoding="async" src="assets/15f87233943a4e66/img_12.png"/><noscript><img alt="" decoding="async" src="assets/15f87233943a4e66/img_13.png"/></noscript>
+</picture>
+</a></figure>
+<p>It populates the authentication fields, selects the app auth index, checks the account flags, and prepares the first SyncML envelope. None of that cares about certificate validity yet. Only after that setup does the client send the actual request to Intune. The TLS handshake uses the MDM certificate and its private key, but the code path here does not block on an expired NotAfter date. As long as the private key is available, the connection can be established, and the server can respond.</p>
+<p>When the first response arrives, <strong>StoreServerLastTime</strong> extracts the server time from that response, converts it to ISO format, and updates the timestamps in the in-memory <strong>AcctInfo. InternalSaveAcctInfoToKey</strong> then writes that updated structure back into the OMADM account key in the registry.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2025/11/image-61.png"><picture class="wp-image-168065" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2025/11/image-61.png.webp 975w, https://patchmypc.com/app/uploads/2025/11/image-61-300x83.png.webp 300w, https://patchmypc.com/app/uploads/2025/11/image-61-768x212.png.webp 768w" sizes="(max-width: 975px) 100vw, 975px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 975px) 100vw, 975px" data-lazy-srcset="https://patchmypc.com/app/uploads/2025/11/image-61.png 975w, https://patchmypc.com/app/uploads/2025/11/image-61-300x83.png 300w, https://patchmypc.com/app/uploads/2025/11/image-61-768x212.png 768w" decoding="async" src="assets/15f87233943a4e66/img_14.png"/><noscript><img alt="" decoding="async" src="assets/15f87233943a4e66/img_15.png"/></noscript>
+</picture>
+</a></figure>
+<p>Intune reads those values and displays them as a fresh last check-in, even though the certificate used for the handshake has already expired. The certificate will become relevant later in the session, when policy and management operations are attempted, but the timestamps are already updated at this early stage.</p>
+<p><strong>And that is exactly what was happening.</strong></p>
+<h2 class="wp-block-heading" id="h-the-surprising-part-certificate-expiry-is-not-checked-on-the-device">The Surprising Part: Certificate Expiry Is Not Checked on The Device<span class="clth-copy-icon" data-heading-id="h-the-surprising-part-certificate-expiry-is-not-checked-on-the-device"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>While going through the decompiled code for the SyncML session startup, one thing became immediately obvious. The OMADM client on the device itself does not check whether the MDM certificate has expired. The entire setup phase in <strong>SyncmlSessionStateManager::InitiateSession</strong> reads the account information, prepares the SyncML envelope, selects the authentication method, and establishes the connection. Not once does it validate the certificate’s <strong>NotAfter date.</strong></p>
+<p>Even the function that writes the<strong> timestamps</strong>,<strong>StoreServerLastTime,</strong> simply accepts the timestamp from the server and writes it directly into the AcctInfo structure without verifying whether the session certificate is valid or has expired.</p>
+<p>So from the device’s perspective, a session with Intune can begin even if the certificate is completely out of date. This raised a new question: how does the device even reach Intune without a valid certificate?</p>
+<h2 class="wp-block-heading" id="h-why-the-tls-handshake-still-works">Why the TLS Handshake Still Works<span class="clth-copy-icon" data-heading-id="h-why-the-tls-handshake-still-works"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>TLS should block expired certificates, right? But in this case, it does not. And there is a simple reason why. If Microsoft enforced strict certificate validity for client authentication, a device with a broken or expired management certificate would never be able to recover. The renewal flow would be impossible because the device would not even be allowed to start the session needed to request a new certificate.</p>
+<p>Instead, the TLS handshake accepts expired certificates as long as the private key still exists. That allows the device to authenticate just enough for Intune to identify which device is attempting the connection. Intune then sends its initial SyncML response header, which includes a server timestamp.</p>
+<p>The OMADM client receives that timestamp, stores it in the AcctInfo structure, and updates the registry. Once that happens, the Last check-in value in the portal moves forward, even though the certificate has expired.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2025/11/image-27.jpg"><picture class="wp-image-168063" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2025/11/image-27.jpg.webp 624w, https://patchmypc.com/app/uploads/2025/11/image-27-300x101.jpg.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2025/11/image-27.jpg 624w, https://patchmypc.com/app/uploads/2025/11/image-27-300x101.jpg 300w" decoding="async" src="assets/15f87233943a4e66/img_16.jpg"/><noscript><img alt="" decoding="async" src="assets/15f87233943a4e66/img_17.jpg"/></noscript>
+</picture>
+</a></figure>
+<p>Only after this early handshake does the server begin enforcing the certificate validity for real management operations. And that is where everything fails.</p>
+<h2 class="wp-block-heading" id="h-the-device-looks-healthy-but-management-is-gone">The Device Looks Healthy, but Management Is Gone?<span class="clth-copy-icon" data-heading-id="h-the-device-looks-healthy-but-management-is-gone"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>After the timestamp update, the device tries to request new policies or fetch the latest configuration. This is where the expired certificate finally causes trouble. All meaningful operations fail silently. Policies are not updating, and because the IME also uses the Intune Certificate, none of the Win32 apps will be installed. </p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2025/11/image-67.png"><img alt="" class="wp-image-170375" data-lazy-sizes="(max-width: 773px) 100vw, 773px" data-lazy-srcset="https://patchmypc.com/app/uploads/2025/11/image-67.png 773w, https://patchmypc.com/app/uploads/2025/11/image-67-300x24.png 300w, https://patchmypc.com/app/uploads/2025/11/image-67-768x62.png 768w" decoding="async" src="assets/15f87233943a4e66/img_18.png"/><noscript><img alt="" class="wp-image-170375" decoding="async" src="assets/15f87233943a4e66/img_19.png"/></noscript></a></figure>
+<p>The only thing that continues to work is the initial contact with the service.</p>
+<p>This creates a situation that feels a bit misleading in the Intune portal.<br/>The device appears online. The last check-in value is up to date. Nothing looks broken at first glance. But behind the scenes, the device is no longer managed at all. It can “<strong>touch</strong>” the service, but cannot communicate in a meaningful way.”</p>
+<h2 class="wp-block-heading" id="h-why-this-last-check-in-behaviour-exists">Why This Last Check-In Behaviour Exists<span class="clth-copy-icon" data-heading-id="h-why-this-last-check-in-behaviour-exists"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>This is not a bug. It is necessary. Without this behaviour, <strong><a href="https://patchmypc.com/blog/automatic-intune-certificate-recovery/">certificate recovery</a></strong> and <strong>renewal (expired certs)</strong> could never work. </p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2025/11/image-19.png"><img alt="" class="wp-image-179278" data-lazy-sizes="(max-width: 715px) 100vw, 715px" data-lazy-srcset="https://patchmypc.com/app/uploads/2025/11/image-19.png 715w, https://patchmypc.com/app/uploads/2025/11/image-19-300x104.png 300w" decoding="async" src="assets/15f87233943a4e66/img_20.png"/><noscript><img alt="" class="wp-image-179278" decoding="async" src="assets/15f87233943a4e66/img_21.png"/></noscript></a></figure>
+<p>A system (Enrollment Services) that refused <strong>expired certificates</strong> at the first connection would trap devices permanently. They would be stuck in an expired state with no way out except for a wipe or a hardware reset.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2025/11/image-50.png"><picture class="wp-image-179280" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2025/11/image-50.png.webp 202w, https://patchmypc.com/app/uploads/2025/11/image-50-90x300.png.webp 90w" sizes="(max-width: 202px) 100vw, 202px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 202px) 100vw, 202px" data-lazy-srcset="https://patchmypc.com/app/uploads/2025/11/image-50.png 202w, https://patchmypc.com/app/uploads/2025/11/image-50-90x300.png 90w" decoding="async" src="assets/15f87233943a4e66/img_22.png"/><noscript><img alt="" decoding="async" src="assets/15f87233943a4e66/img_23.png"/></noscript>
+</picture>
+</a></figure>
+<p>So Microsoft allows just enough of the session to proceed to support renewal. The timestamps are updated during that early stage, which can give the impression that the device is still healthy even when it is not.</p>
+<h2 class="wp-block-heading" id="h-the-real-problem-you-cannot-trust-last-check-in">The Real Problem: You Cannot Trust Last Check In<span class="clth-copy-icon" data-heading-id="h-the-real-problem-you-cannot-trust-last-check-in"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>This leads to one unavoidable conclusion.<br/><strong>The Last check in value cannot be used as a device health indicator.</strong><br/>It only indicates that the device was able to contact Intune.</p>
+<ul class="wp-block-list">
+<li>It does not tell you that the device could retrieve the latest policies.</li>
+<li>It does not tell you that the certificate is valid.</li>
+<li>It does not tell you that management is still working.</li>
+</ul>
+<p>An expired certificate can still move the <strong>Last-check in</strong> date forward while management is completely dead. If you truly want to know if a device is still under management, you have to look beyond that single value. Start with the Management certificate expiration date itself, and from there on sort by last check-in. That is where the truth sits.</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

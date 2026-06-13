@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>macOS Platfom SSO Registration with ADE</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">MSEndpointMgr</span>
+    <span class="date">May 15, 2026</span>
+  </div>
+  <h1>macOS Platfom SSO Registration with ADE</h1>
+  <div class="orig">Saved for offline reading · <a href="https://msendpointmgr.com/2026/05/15/macos-platfom-sso-registration-with-ade/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p data-block-type="core">There is a quiet change going on when it comes to how Intune admins manage devices today, that being the surge of demand to support users on macOS. Over the past 18 months in particular lots of organisations have seen this shift towards supporting / enabling their users to use their MacBooks, and why is that? </p>
+<p data-block-type="core">In a nutshell, its down to two things. The first of which is the rising cost of traditional laptops, and also down to something called Platform SSO, a feature that allows your MacBook to automatically map the local user account to an Entra ID account, while also joining the device to Entra ID. </p>
+<p data-block-type="core">The benefit of Platform SSO is that you have all of the single sign-on (SSO) authenticated features you would expect from being “domain or Entra ID joined”, and make the entire usability of macOS more like your typical Windows experience. Combine this with the mind-blowing fact that MacBooks can be cheaper than traditional Windows-based laptops, and you can understand why more and more people are asking for one.</p>
+<p data-block-type="core">The additional fact here is that Microsoft Intune as a management platform has grown massively over the past 18 months when it comes to its abilities to manage macOS. Organisations that previously had to incur additional licensing costs are now once again looking at macOS directly managed through Intune, and discovering that in many areas, managing the device and in particular the end user experience, is very compariable with Windows.</p>
+<h3 class="wp-block-heading" id="0-the-user-experience-before-today"><a aria-hidden="true" class="aal_anchor" href="#the-user-experience-before-today" id="the-user-experience-before-today"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>The User Experience – Before Today</h3>
+<p data-block-type="core">The user experience and onboarding experience today are very closely tied when it comes to Windows devices, as we are now in a world where you can ship the device to the end user. So parking the configuration elements to one side, for a later series of blog posts on macOS management, lets go back to the onboarding. </p>
+<p data-block-type="core">For the most part, since Platform SSO was introduced, the onboarding process is painless, with the user running through the initial setup, setting up the local account, before providing the user with a dialogue post delivery to the desktop. </p>
+<p data-block-type="core">They then sign in, and their accounts get linked, and the device is joined to Entra.</p>
+<figure class="wp-block-image size-large wp-lightbox-container" data-block-type="core" data-wp-context='{"imageId":"6a2dc602177f6"}' data-wp-interactive="core/image" data-wp-key="6a2dc602177f6"><img alt="" class="wp-image-26494" data-wp-class--hide="state.isContentHidden" data-wp-class--show="state.isContentVisible" data-wp-init="callbacks.setButtonStyles" data-wp-on--click="actions.showLightbox" data-wp-on--load="callbacks.setButtonStyles" data-wp-on-window--resize="callbacks.setButtonStyles" decoding="async" src="assets/2ddeb85e86e25b56/img_0.png"/><button aria-haspopup="dialog" aria-label="Enlarge" class="lightbox-trigger" data-wp-init="callbacks.initTriggerButton" data-wp-on--click="actions.showLightbox" data-wp-style--right="state.imageButtonRight" data-wp-style--top="state.imageButtonTop" type="button">
+<svg fill="none" viewbox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+<path d="M2 0a2 2 0 0 0-2 2v2h1.5V2a.5.5 0 0 1 .5-.5h2V0H2Zm2 10.5H2a.5.5 0 0 1-.5-.5V8H0v2a2 2 0 0 0 2 2h2v-1.5ZM8 12v-1.5h2a.5.5 0 0 0 .5-.5V8H12v2a2 2 0 0 1-2 2H8Zm2-12a2 2 0 0 1 2 2v2h-1.5V2a.5.5 0 0 0-.5-.5H8V0h2Z" fill="#fff"></path>
+</svg>
+</button></figure>
+<p data-block-type="core">There can, however, be issues where multiple notifications appear at the same time, hiding the “Registration Required ” prompt and sometimes causing a delay in the process. Without the user knowing where to go to force this process to start, they often have to wait for the slide-in dialogue to reappear, and that can cause some minor frustration.</p>
+<p data-block-type="core">But today, thankfully, even this has been solved, read on..</p>
+<h3 class="wp-block-heading" id="1-the-user-experience-today-much-improved"><a aria-hidden="true" class="aal_anchor" href="#the-user-experience-today-much-improved" id="the-user-experience-today-much-improved"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>The User Experience Today – Much Improved</h3>
+<p data-block-type="core">Today heralds a new dawn for simplicity with the arrival of new configuration options and a new version of the Intune Company Portal, that now supports the registration of the user SSO and device join during the initial setup screens. </p>
+<figure class="wp-block-image size-large wp-lightbox-container" data-block-type="core" data-wp-context='{"imageId":"6a2dc60217adc"}' data-wp-interactive="core/image" data-wp-key="6a2dc60217adc"><img alt="" class="wp-image-26501" data-wp-class--hide="state.isContentHidden" data-wp-class--show="state.isContentVisible" data-wp-init="callbacks.setButtonStyles" data-wp-on--click="actions.showLightbox" data-wp-on--load="callbacks.setButtonStyles" data-wp-on-window--resize="callbacks.setButtonStyles" decoding="async" src="assets/2ddeb85e86e25b56/img_1.png"/><button aria-haspopup="dialog" aria-label="Enlarge" class="lightbox-trigger" data-wp-init="callbacks.initTriggerButton" data-wp-on--click="actions.showLightbox" data-wp-style--right="state.imageButtonRight" data-wp-style--top="state.imageButtonTop" type="button">
+<svg fill="none" viewbox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+<path d="M2 0a2 2 0 0 0-2 2v2h1.5V2a.5.5 0 0 1 .5-.5h2V0H2Zm2 10.5H2a.5.5 0 0 1-.5-.5V8H0v2a2 2 0 0 0 2 2h2v-1.5ZM8 12v-1.5h2a.5.5 0 0 0 .5-.5V8H12v2a2 2 0 0 1-2 2H8Zm2-12a2 2 0 0 1 2 2v2h-1.5V2a.5.5 0 0 0-.5-.5H8V0h2Z" fill="#fff"></path>
+</svg>
+</button></figure>
+<p data-block-type="core">This means that when the user gets to the desktop, everything is already in place!.. The user then simply gets delivered to the desktop and is productive, nice!</p>
+<h3 class="wp-block-heading" id="2-the-setup-process"><a aria-hidden="true" class="aal_anchor" href="#the-setup-process" id="the-setup-process"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>The Setup Process</h3>
+<p data-block-type="core">Let’s run through the prerequisites first, as there are both OS and configuration policy requirements in order to implement the new functionality. </p>
+<h4 class="wp-block-heading" id="3-prerequisites-"><a aria-hidden="true" class="aal_anchor" href="#prerequisites" id="prerequisites"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a><strong>Prerequisites </strong></h4>
+<div class="wp-block-stackable-columns stk-block-columns stk-block stk-944ef72" data-block-id="944ef72"><div class="stk-row stk-inner-blocks stk-block-content stk-content-align stk-944ef72-column">
+<div class="wp-block-stackable-column stk-block-column stk-column stk-block stk-9bfa93e" data-block-id="9bfa93e" data-v="4"><div class="stk-column-wrapper stk-block-column__content stk-container stk-9bfa93e-container stk--no-background stk--no-padding"><div class="stk-block-content stk-inner-blocks stk-9bfa93e-inner-blocks">
+<div class="wp-block-stackable-columns stk-block-columns stk-block stk-fd6324e" data-block-id="fd6324e"><div class="stk-row stk-inner-blocks stk-block-content stk-content-align stk-fd6324e-column">
+<div class="wp-block-stackable-column stk-block-column stk-column stk-block stk-b0441f2" data-block-id="b0441f2" data-v="4"><div class="stk-column-wrapper stk-block-column__content stk-container stk-b0441f2-container stk--no-background stk--no-padding"><div class="stk-block-content stk-inner-blocks stk-b0441f2-inner-blocks"><div class="kb-table-container kb-table-container26488_f9eb6e-04 wp-block-kadence-table"><table class="kb-table kb-table26488_f9eb6e-04">
+<tr class="kb-table-row kb-table-row26488_4337a6-6c">
+<td class="kb-table-data kb-table-data26488_a27fbd-8f">
+<p data-block-type="core"><strong>Requirement</strong></p>
+</td>
+<td class="kb-table-data kb-table-data26488_71bd84-8a">
+<p data-block-type="core"><strong>Details</strong></p>
+</td>
+</tr>
+<tr class="kb-table-row kb-table-row26488_0de369-39">
+<td class="kb-table-data kb-table-data26488_915a24-dd">
+<p data-block-type="core">macOS version</p>
+</td>
+<td class="kb-table-data kb-table-data26488_6713ab-e0">
+<p data-block-type="core">macOS 26 and newer</p>
+</td>
+</tr>
+<tr class="kb-table-row kb-table-row26488_378918-20">
+<td class="kb-table-data kb-table-data26488_632af2-5d">
+<p data-block-type="core">Enrollment method</p>
+</td>
+<td class="kb-table-data kb-table-data26488_f2007f-ed">
+<p data-block-type="core">ADE via Apple Business</p>
+</td>
+</tr>
+<tr class="kb-table-row kb-table-row26488_d500c9-b6">
+<td class="kb-table-data kb-table-data26488_2707d7-e0">
+<p data-block-type="core">Intune Company Portal</p>
+</td>
+<td class="kb-table-data kb-table-data26488_4c0bd2-24">
+<p data-block-type="core">Version 5.2604.0 or newer, deployed as a LOB app. Download from <a href="https://go.microsoft.com/fwlink/?linkid=853070" rel="noreferrer noopener" target="_blank">https://go.microsoft.com/fwlink/?linkid=853070</a></p>
+</td>
+</tr>
+<tr class="kb-table-row kb-table-row26488_ad72aa-24">
+<td class="kb-table-data kb-table-data26488_209e1a-7d">
+<p data-block-type="core">Intune role for configuration</p>
+</td>
+<td class="kb-table-data kb-table-data26488_0c7d49-74">
+<p data-block-type="core">Admin account with at least the <strong>Policy and Profile Manager</strong> built-in role</p>
+</td>
+</tr>
+<tr class="kb-table-row kb-table-row26488_4ac0f1-b6">
+<td class="kb-table-data kb-table-data26488_8c8ade-4d">
+<p data-block-type="core">Group type</p>
+</td>
+<td class="kb-table-data kb-table-data26488_b8b150-44">
+<p data-block-type="core">Assigned (static) user groups only. Dynamic groups and device groups are not supported.</p>
+</td>
+</tr>
+</table></div></div></div></div>
+</div></div>
+</div></div></div>
+</div></div>
+<h4 class="wp-block-heading" id="4-configuration"><a aria-hidden="true" class="aal_anchor" href="#configuration" id="configuration"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Configuration</h4>
+<p data-block-type="core">To leverage the new capability, we need to first of all ensure that our enrollment profile is configured correctly, and the devices we wish to run through the process are assigned.</p>
+<p data-block-type="core">Going into the Microsoft Intune Admin Center UI, we then go to </p>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core">Devices</li>
+<li data-block-type="core">Enrollment</li>
+<li data-block-type="core">Apple</li>
+<li data-block-type="core">Enrollment Program Tokens</li>
+</ul>
+<figure class="wp-block-image size-large wp-lightbox-container" data-block-type="core" data-wp-context='{"imageId":"6a2dc6021823e"}' data-wp-interactive="core/image" data-wp-key="6a2dc6021823e"><img alt="" class="wp-image-26502" data-wp-class--hide="state.isContentHidden" data-wp-class--show="state.isContentVisible" data-wp-init="callbacks.setButtonStyles" data-wp-on--click="actions.showLightbox" data-wp-on--load="callbacks.setButtonStyles" data-wp-on-window--resize="callbacks.setButtonStyles" decoding="async" src="assets/2ddeb85e86e25b56/img_2.png"/><button aria-haspopup="dialog" aria-label="Enlarge" class="lightbox-trigger" data-wp-init="callbacks.initTriggerButton" data-wp-on--click="actions.showLightbox" data-wp-style--right="state.imageButtonRight" data-wp-style--top="state.imageButtonTop" type="button">
+<svg fill="none" viewbox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+<path d="M2 0a2 2 0 0 0-2 2v2h1.5V2a.5.5 0 0 1 .5-.5h2V0H2Zm2 10.5H2a.5.5 0 0 1-.5-.5V8H0v2a2 2 0 0 0 2 2h2v-1.5ZM8 12v-1.5h2a.5.5 0 0 0 .5-.5V8H12v2a2 2 0 0 1-2 2H8Zm2-12a2 2 0 0 1 2 2v2h-1.5V2a.5.5 0 0 0-.5-.5H8V0h2Z" fill="#fff"></path>
+</svg>
+</button></figure>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core">Now we need to click on the token, go to profiles, and create a new profile</li>
+</ul>
+<figure class="wp-block-image size-large wp-lightbox-container" data-block-type="core" data-wp-context='{"imageId":"6a2dc602184a4"}' data-wp-interactive="core/image" data-wp-key="6a2dc602184a4"><img alt="" class="wp-image-26503" data-wp-class--hide="state.isContentHidden" data-wp-class--show="state.isContentVisible" data-wp-init="callbacks.setButtonStyles" data-wp-on--click="actions.showLightbox" data-wp-on--load="callbacks.setButtonStyles" data-wp-on-window--resize="callbacks.setButtonStyles" decoding="async" src="assets/2ddeb85e86e25b56/img_3.png"/><button aria-haspopup="dialog" aria-label="Enlarge" class="lightbox-trigger" data-wp-init="callbacks.initTriggerButton" data-wp-on--click="actions.showLightbox" data-wp-style--right="state.imageButtonRight" data-wp-style--top="state.imageButtonTop" type="button">
+<svg fill="none" viewbox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+<path d="M2 0a2 2 0 0 0-2 2v2h1.5V2a.5.5 0 0 1 .5-.5h2V0H2Zm2 10.5H2a.5.5 0 0 1-.5-.5V8H0v2a2 2 0 0 0 2 2h2v-1.5ZM8 12v-1.5h2a.5.5 0 0 0 .5-.5V8H12v2a2 2 0 0 1-2 2H8Zm2-12a2 2 0 0 1 2 2v2h-1.5V2a.5.5 0 0 0-.5-.5H8V0h2Z" fill="#fff"></path>
+</svg>
+</button></figure>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core">Creating a new macOS policy and providing a name, we then want to use the following selections on the Management Settings page</li>
+</ul>
+<figure class="wp-block-image size-full wp-lightbox-container" data-block-type="core" data-wp-context='{"imageId":"6a2dc602186d9"}' data-wp-interactive="core/image" data-wp-key="6a2dc602186d9"><img alt="" class="wp-image-26504" data-wp-class--hide="state.isContentHidden" data-wp-class--show="state.isContentVisible" data-wp-init="callbacks.setButtonStyles" data-wp-on--click="actions.showLightbox" data-wp-on--load="callbacks.setButtonStyles" data-wp-on-window--resize="callbacks.setButtonStyles" decoding="async" src="assets/2ddeb85e86e25b56/img_4.png"/><button aria-haspopup="dialog" aria-label="Enlarge" class="lightbox-trigger" data-wp-init="callbacks.initTriggerButton" data-wp-on--click="actions.showLightbox" data-wp-style--right="state.imageButtonRight" data-wp-style--top="state.imageButtonTop" type="button">
+<svg fill="none" viewbox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+<path d="M2 0a2 2 0 0 0-2 2v2h1.5V2a.5.5 0 0 1 .5-.5h2V0H2Zm2 10.5H2a.5.5 0 0 1-.5-.5V8H0v2a2 2 0 0 0 2 2h2v-1.5ZM8 12v-1.5h2a.5.5 0 0 0 .5-.5V8H12v2a2 2 0 0 1-2 2H8Zm2-12a2 2 0 0 1 2 2v2h-1.5V2a.5.5 0 0 0-.5-.5H8V0h2Z" fill="#fff"></path>
+</svg>
+</button></figure>
+<figure class="wp-block-table" data-block-type="core"><table class="has-fixed-layout"><tbody><tr><td>Setting</td><td>Value</td></tr><tr><td>User affinity</td><td><strong>Enroll with User Affinity</strong></td></tr><tr><td>Authentication</td><td><strong>Setup Assistant with modern authentication</strong></td></tr><tr><td>Await final configuration</td><td><strong>Yes</strong></td></tr><tr><td>Locked enrollment</td><td><strong>Yes</strong></td></tr></tbody></table></figure>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core">Complete the policy configuration, showing or disabling pages as you see fit. Below is an example;</li>
+</ul>
+<figure class="wp-block-image size-full wp-lightbox-container" data-block-type="core" data-wp-context='{"imageId":"6a2dc60218931"}' data-wp-interactive="core/image" data-wp-key="6a2dc60218931"><img alt="" class="wp-image-26505" data-wp-class--hide="state.isContentHidden" data-wp-class--show="state.isContentVisible" data-wp-init="callbacks.setButtonStyles" data-wp-on--click="actions.showLightbox" data-wp-on--load="callbacks.setButtonStyles" data-wp-on-window--resize="callbacks.setButtonStyles" decoding="async" src="assets/2ddeb85e86e25b56/img_5.png"/><button aria-haspopup="dialog" aria-label="Enlarge" class="lightbox-trigger" data-wp-init="callbacks.initTriggerButton" data-wp-on--click="actions.showLightbox" data-wp-style--right="state.imageButtonRight" data-wp-style--top="state.imageButtonTop" type="button">
+<svg fill="none" viewbox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+<path d="M2 0a2 2 0 0 0-2 2v2h1.5V2a.5.5 0 0 1 .5-.5h2V0H2Zm2 10.5H2a.5.5 0 0 1-.5-.5V8H0v2a2 2 0 0 0 2 2h2v-1.5ZM8 12v-1.5h2a.5.5 0 0 0 .5-.5V8H12v2a2 2 0 0 1-2 2H8Zm2-12a2 2 0 0 1 2 2v2h-1.5V2a.5.5 0 0 0-.5-.5H8V0h2Z" fill="#fff"></path>
+</svg>
+</button></figure>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core">The policy should then be assigned to the devices you wish to onboard</li>
+</ul>
+<p data-block-type="core">The next step is to create a Settings Catalog policy and assign this to a static user group, or alternatively “all users” as per the below example;</p>
+<div class="wp-block-stackable-columns stk-block-columns stk-block stk-e77e5b9" data-block-id="e77e5b9"><div class="stk-row stk-inner-blocks stk-block-content stk-content-align stk-e77e5b9-column">
+<div class="wp-block-stackable-column stk-block-column stk-column stk-block stk-13a3051" data-block-id="13a3051" data-v="4"><div class="stk-column-wrapper stk-block-column__content stk-container stk-13a3051-container stk--no-background stk--no-padding"><div class="stk-block-content stk-inner-blocks stk-13a3051-inner-blocks">
+<figure class="wp-block-table" data-block-type="core"><table class="has-fixed-layout"><tbody><tr><td>Setting: Extensible Single Sign On (SS0)\Extension Identifier<br/>Value: <strong>com.microsoft.CompanyPortalMac.ssoextension</strong><br/><br/>Setting: Extensible Single Sign On (SS0)\Platform SSO\Authentication Method<br/>Value: <strong>UseSecureEnclaveKey*</strong><br/><br/>Setting: Extensible Single Sign On (SS0)\Platform SSO\Enable Create User At Login<br/>Value: <strong>Enabled</strong><br/><br/>Setting: <span class="stk-highlight">Extensible Single Sign On (SS0)\Platform SSO\Enable Registration During Setup<br/></span>Value:<span class="stk-highlight"> <strong>Enabled</strong><br/></span><br/>Setting: Extensible Single Sign On (SS0)\Platform SSO\New User Authorization Mode<br/>Value: <strong>Standard</strong><br/><br/>Setting: Extensible Single Sign On (SS0)\Platform SSO\Token To User Mapping\Account Name<br/>Value: <strong>preferred_username</strong><br/><br/>Setting: Extensible Single Sign On (SS0)\Platform SSO\Token To User Mapping\Full Name<br/>Value: <strong>Name</strong><br/><br/>Setting: Extensible Single Sign On (SS0)\Platform SSO\Token To User Mapping\Use Shared Devices Keys<br/>Value: <strong>Enabled</strong><br/><br/>Setting: Extensible Single Sign On (SS0)\Platform SSO\Registration Token<br/>Value: <strong>{{DEVICEREGISTRATION}}</strong><br/><br/>Setting: Extensible Single Sign On (SS0)\Platform SSO\Screen Locked Behaviour<br/>Value: <strong>Do Not Handle</strong><br/><br/>Setting: Extensible Single Sign On (SS0)\Platform SSO\Team Identifier<br/>Value: <strong>UBF8T346G9</strong><br/><br/>Setting: Extensible Single Sign On (SS0)\Platform SSO\Type<br/>Value: <strong>Redirect</strong><br/><br/>Setting: <strong>URLs</strong><br/>Values:<br/>https://login.microsoftonline.com<br/>https://login.microsoft.com<br/>https://sts.windows.net</td></tr></tbody></table></figure>
+</div></div></div>
+</div></div>
+<p data-block-type="core"><br/>Microsoft recommends the use of the Secure Enclave, to provide the hardware secured security, however, if you are using Password instead of this, it is recommended to add the password sync function;</p>
+<figure class="wp-block-table" data-block-type="core"><table class="has-fixed-layout"><tbody><tr><td>Setting: Extensible Single Sign On (SS0)\Platform SSO\Enable Creation First User During Setup<br/>Value: <strong>Enabled</strong></td></tr></tbody></table></figure>
+<h4 class="wp-block-heading" id="5-company-portal-app"><a aria-hidden="true" class="aal_anchor" href="#company-portal-app" id="company-portal-app"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Company Portal App</h4>
+<p data-block-type="core">The next thing we need to do is deploy an updated version of the Microsoft Company Portal application. To do this, we need to download build 5.2604.0 or higher and deploy this as a line of business app (LOB);</p>
+<figure class="wp-block-image size-large wp-lightbox-container" data-block-type="core" data-wp-context='{"imageId":"6a2dc60218ca8"}' data-wp-interactive="core/image" data-wp-key="6a2dc60218ca8"><img alt="" class="wp-image-26508" data-wp-class--hide="state.isContentHidden" data-wp-class--show="state.isContentVisible" data-wp-init="callbacks.setButtonStyles" data-wp-on--click="actions.showLightbox" data-wp-on--load="callbacks.setButtonStyles" data-wp-on-window--resize="callbacks.setButtonStyles" decoding="async" src="assets/2ddeb85e86e25b56/img_6.png"/><button aria-haspopup="dialog" aria-label="Enlarge" class="lightbox-trigger" data-wp-init="callbacks.initTriggerButton" data-wp-on--click="actions.showLightbox" data-wp-style--right="state.imageButtonRight" data-wp-style--top="state.imageButtonTop" type="button">
+<svg fill="none" viewbox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+<path d="M2 0a2 2 0 0 0-2 2v2h1.5V2a.5.5 0 0 1 .5-.5h2V0H2Zm2 10.5H2a.5.5 0 0 1-.5-.5V8H0v2a2 2 0 0 0 2 2h2v-1.5ZM8 12v-1.5h2a.5.5 0 0 0 .5-.5V8H12v2a2 2 0 0 1-2 2H8Zm2-12a2 2 0 0 1 2 2v2h-1.5V2a.5.5 0 0 0-.5-.5H8V0h2Z" fill="#fff"></path>
+</svg>
+</button></figure>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core">Click on “+ Create” and then select “Line-of-business app” from the drop down</li>
+</ul>
+<figure class="wp-block-image size-full wp-lightbox-container" data-block-type="core" data-wp-context='{"imageId":"6a2dc60218ed5"}' data-wp-interactive="core/image" data-wp-key="6a2dc60218ed5"><img alt="" class="wp-image-26509" data-wp-class--hide="state.isContentHidden" data-wp-class--show="state.isContentVisible" data-wp-init="callbacks.setButtonStyles" data-wp-on--click="actions.showLightbox" data-wp-on--load="callbacks.setButtonStyles" data-wp-on-window--resize="callbacks.setButtonStyles" decoding="async" src="assets/2ddeb85e86e25b56/img_7.png"/><button aria-haspopup="dialog" aria-label="Enlarge" class="lightbox-trigger" data-wp-init="callbacks.initTriggerButton" data-wp-on--click="actions.showLightbox" data-wp-style--right="state.imageButtonRight" data-wp-style--top="state.imageButtonTop" type="button">
+<svg fill="none" viewbox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+<path d="M2 0a2 2 0 0 0-2 2v2h1.5V2a.5.5 0 0 1 .5-.5h2V0H2Zm2 10.5H2a.5.5 0 0 1-.5-.5V8H0v2a2 2 0 0 0 2 2h2v-1.5ZM8 12v-1.5h2a.5.5 0 0 0 .5-.5V8H12v2a2 2 0 0 1-2 2H8Zm2-12a2 2 0 0 1 2 2v2h-1.5V2a.5.5 0 0 0-.5-.5H8V0h2Z" fill="#fff"></path>
+</svg>
+</button></figure>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-26510" decoding="async" src="assets/2ddeb85e86e25b56/img_8.png"/></figure>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core">Select the minimum OS version as “macOS Tahoe 26.0”</li>
+<li data-block-type="core">Continue through the application page, and assign this application to the same group as you assigned the Platform SSO configuration to.</li>
+</ul>
+<h3 class="wp-block-heading" id="6-the-entire-setup-experience"><a aria-hidden="true" class="aal_anchor" href="#the-entire-setup-experience" id="the-entire-setup-experience"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>The Entire Setup Experience</h3>
+<h4 class="wp-block-heading" id="7-step-1-initial-setup-screens"><a aria-hidden="true" class="aal_anchor" href="#step-1-initial-setup-screens" id="step-1-initial-setup-screens"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Step 1. Initial Setup Screens</h4>
+<p data-block-type="core">So the user in this case unboxes the device, powers it on and selects the region/language options;</p>
+<figure class="wp-block-image size-large wp-lightbox-container" data-block-type="core" data-wp-context='{"imageId":"6a2dc6021952c"}' data-wp-interactive="core/image" data-wp-key="6a2dc6021952c"><img alt="" class="wp-image-26497" data-wp-class--hide="state.isContentHidden" data-wp-class--show="state.isContentVisible" data-wp-init="callbacks.setButtonStyles" data-wp-on--click="actions.showLightbox" data-wp-on--load="callbacks.setButtonStyles" data-wp-on-window--resize="callbacks.setButtonStyles" decoding="async" src="assets/2ddeb85e86e25b56/img_9.png"/><button aria-haspopup="dialog" aria-label="Enlarge" class="lightbox-trigger" data-wp-init="callbacks.initTriggerButton" data-wp-on--click="actions.showLightbox" data-wp-style--right="state.imageButtonRight" data-wp-style--top="state.imageButtonTop" type="button">
+<svg fill="none" viewbox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+<path d="M2 0a2 2 0 0 0-2 2v2h1.5V2a.5.5 0 0 1 .5-.5h2V0H2Zm2 10.5H2a.5.5 0 0 1-.5-.5V8H0v2a2 2 0 0 0 2 2h2v-1.5ZM8 12v-1.5h2a.5.5 0 0 0 .5-.5V8H12v2a2 2 0 0 1-2 2H8Zm2-12a2 2 0 0 1 2 2v2h-1.5V2a.5.5 0 0 0-.5-.5H8V0h2Z" fill="#fff"></path>
+</svg>
+</button></figure>
+<figure class="wp-block-image size-large wp-lightbox-container" data-block-type="core" data-wp-context='{"imageId":"6a2dc60219f61"}' data-wp-interactive="core/image" data-wp-key="6a2dc60219f61"><img alt="" class="wp-image-26498" data-wp-class--hide="state.isContentHidden" data-wp-class--show="state.isContentVisible" data-wp-init="callbacks.setButtonStyles" data-wp-on--click="actions.showLightbox" data-wp-on--load="callbacks.setButtonStyles" data-wp-on-window--resize="callbacks.setButtonStyles" decoding="async" src="assets/2ddeb85e86e25b56/img_10.png"/><button aria-haspopup="dialog" aria-label="Enlarge" class="lightbox-trigger" data-wp-init="callbacks.initTriggerButton" data-wp-on--click="actions.showLightbox" data-wp-style--right="state.imageButtonRight" data-wp-style--top="state.imageButtonTop" type="button">
+<svg fill="none" viewbox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+<path d="M2 0a2 2 0 0 0-2 2v2h1.5V2a.5.5 0 0 1 .5-.5h2V0H2Zm2 10.5H2a.5.5 0 0 1-.5-.5V8H0v2a2 2 0 0 0 2 2h2v-1.5ZM8 12v-1.5h2a.5.5 0 0 0 .5-.5V8H12v2a2 2 0 0 1-2 2H8Zm2-12a2 2 0 0 1 2 2v2h-1.5V2a.5.5 0 0 0-.5-.5H8V0h2Z" fill="#fff"></path>
+</svg>
+</button></figure>
+<figure class="wp-block-image size-large wp-lightbox-container" data-block-type="core" data-wp-context='{"imageId":"6a2dc6021a1a0"}' data-wp-interactive="core/image" data-wp-key="6a2dc6021a1a0"><img alt="" class="wp-image-26500" data-wp-class--hide="state.isContentHidden" data-wp-class--show="state.isContentVisible" data-wp-init="callbacks.setButtonStyles" data-wp-on--click="actions.showLightbox" data-wp-on--load="callbacks.setButtonStyles" data-wp-on-window--resize="callbacks.setButtonStyles" decoding="async" src="assets/2ddeb85e86e25b56/img_11.png"/><button aria-haspopup="dialog" aria-label="Enlarge" class="lightbox-trigger" data-wp-init="callbacks.initTriggerButton" data-wp-on--click="actions.showLightbox" data-wp-style--right="state.imageButtonRight" data-wp-style--top="state.imageButtonTop" type="button">
+<svg fill="none" viewbox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+<path d="M2 0a2 2 0 0 0-2 2v2h1.5V2a.5.5 0 0 1 .5-.5h2V0H2Zm2 10.5H2a.5.5 0 0 1-.5-.5V8H0v2a2 2 0 0 0 2 2h2v-1.5ZM8 12v-1.5h2a.5.5 0 0 0 .5-.5V8H12v2a2 2 0 0 1-2 2H8Zm2-12a2 2 0 0 1 2 2v2h-1.5V2a.5.5 0 0 0-.5-.5H8V0h2Z" fill="#fff"></path>
+</svg>
+</button></figure>
+<h4 class="wp-block-heading" id="8-step-2-sign-in-dialogue"><a aria-hidden="true" class="aal_anchor" href="#step-2-sign-in-dialogue" id="step-2-sign-in-dialogue"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Step 2. Sign-In Dialogue</h4>
+<p data-block-type="core">At this point you need to sign in using your corporate credentials, and approve your MFA method.</p>
+<figure class="wp-block-image size-large wp-lightbox-container" data-block-type="core" data-wp-context='{"imageId":"6a2dc6021a3ec"}' data-wp-interactive="core/image" data-wp-key="6a2dc6021a3ec"><img alt="" class="wp-image-26511" data-wp-class--hide="state.isContentHidden" data-wp-class--show="state.isContentVisible" data-wp-init="callbacks.setButtonStyles" data-wp-on--click="actions.showLightbox" data-wp-on--load="callbacks.setButtonStyles" data-wp-on-window--resize="callbacks.setButtonStyles" decoding="async" src="assets/2ddeb85e86e25b56/img_12.png"/><button aria-haspopup="dialog" aria-label="Enlarge" class="lightbox-trigger" data-wp-init="callbacks.initTriggerButton" data-wp-on--click="actions.showLightbox" data-wp-style--right="state.imageButtonRight" data-wp-style--top="state.imageButtonTop" type="button">
+<svg fill="none" viewbox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+<path d="M2 0a2 2 0 0 0-2 2v2h1.5V2a.5.5 0 0 1 .5-.5h2V0H2Zm2 10.5H2a.5.5 0 0 1-.5-.5V8H0v2a2 2 0 0 0 2 2h2v-1.5ZM8 12v-1.5h2a.5.5 0 0 0 .5-.5V8H12v2a2 2 0 0 1-2 2H8Zm2-12a2 2 0 0 1 2 2v2h-1.5V2a.5.5 0 0 0-.5-.5H8V0h2Z" fill="#fff"></path>
+</svg>
+</button></figure>
+<p data-block-type="core">The device now contacts Intune and starts to receive its initial payload;</p>
+<figure class="wp-block-image size-large wp-lightbox-container" data-block-type="core" data-wp-context='{"imageId":"6a2dc6021a5da"}' data-wp-interactive="core/image" data-wp-key="6a2dc6021a5da"><img alt="" class="wp-image-26513" data-wp-class--hide="state.isContentHidden" data-wp-class--show="state.isContentVisible" data-wp-init="callbacks.setButtonStyles" data-wp-on--click="actions.showLightbox" data-wp-on--load="callbacks.setButtonStyles" data-wp-on-window--resize="callbacks.setButtonStyles" decoding="async" src="assets/2ddeb85e86e25b56/img_13.png"/><button aria-haspopup="dialog" aria-label="Enlarge" class="lightbox-trigger" data-wp-init="callbacks.initTriggerButton" data-wp-on--click="actions.showLightbox" data-wp-style--right="state.imageButtonRight" data-wp-style--top="state.imageButtonTop" type="button">
+<svg fill="none" viewbox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+<path d="M2 0a2 2 0 0 0-2 2v2h1.5V2a.5.5 0 0 1 .5-.5h2V0H2Zm2 10.5H2a.5.5 0 0 1-.5-.5V8H0v2a2 2 0 0 0 2 2h2v-1.5ZM8 12v-1.5h2a.5.5 0 0 0 .5-.5V8H12v2a2 2 0 0 1-2 2H8Zm2-12a2 2 0 0 1 2 2v2h-1.5V2a.5.5 0 0 0-.5-.5H8V0h2Z" fill="#fff"></path>
+</svg>
+</button></figure>
+<h4 class="wp-block-heading" id="9-step-3-single-sign-on-for-mac"><a aria-hidden="true" class="aal_anchor" href="#step-3-single-sign-on-for-mac" id="step-3-single-sign-on-for-mac"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Step 3. Single Sign-On for Mac</h4>
+<p data-block-type="core">This is where the experience is new, as the Intune Company portal will now be leveraged in the initial setup.</p>
+<figure class="wp-block-image size-large wp-lightbox-container" data-block-type="core" data-wp-context='{"imageId":"6a2dc6021a768"}' data-wp-interactive="core/image" data-wp-key="6a2dc6021a768"><img alt="" class="wp-image-26512" data-wp-class--hide="state.isContentHidden" data-wp-class--show="state.isContentVisible" data-wp-init="callbacks.setButtonStyles" data-wp-on--click="actions.showLightbox" data-wp-on--load="callbacks.setButtonStyles" data-wp-on-window--resize="callbacks.setButtonStyles" decoding="async" src="assets/2ddeb85e86e25b56/img_14.png"/><button aria-haspopup="dialog" aria-label="Enlarge" class="lightbox-trigger" data-wp-init="callbacks.initTriggerButton" data-wp-on--click="actions.showLightbox" data-wp-style--right="state.imageButtonRight" data-wp-style--top="state.imageButtonTop" type="button">
+<svg fill="none" viewbox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+<path d="M2 0a2 2 0 0 0-2 2v2h1.5V2a.5.5 0 0 1 .5-.5h2V0H2Zm2 10.5H2a.5.5 0 0 1-.5-.5V8H0v2a2 2 0 0 0 2 2h2v-1.5ZM8 12v-1.5h2a.5.5 0 0 0 .5-.5V8H12v2a2 2 0 0 1-2 2H8Zm2-12a2 2 0 0 1 2 2v2h-1.5V2a.5.5 0 0 0-.5-.5H8V0h2Z" fill="#fff"></path>
+</svg>
+</button></figure>
+<h4 class="wp-block-heading" id="10-step-4-company-portal-sign-in-amp-registration"><a aria-hidden="true" class="aal_anchor" href="#step-4-company-portal-sign-in-registration" id="step-4-company-portal-sign-in-registration"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Step 4. Company Portal Sign-In &amp; Registration</h4>
+<p data-block-type="core">You will now be re-prompted to sign into the Microsoft Company Portal app;</p>
+<figure class="wp-block-image size-large wp-lightbox-container" data-block-type="core" data-wp-context='{"imageId":"6a2dc6021a959"}' data-wp-interactive="core/image" data-wp-key="6a2dc6021a959"><img alt="" class="wp-image-26514" data-wp-class--hide="state.isContentHidden" data-wp-class--show="state.isContentVisible" data-wp-init="callbacks.setButtonStyles" data-wp-on--click="actions.showLightbox" data-wp-on--load="callbacks.setButtonStyles" data-wp-on-window--resize="callbacks.setButtonStyles" decoding="async" src="assets/2ddeb85e86e25b56/img_15.png"/><button aria-haspopup="dialog" aria-label="Enlarge" class="lightbox-trigger" data-wp-init="callbacks.initTriggerButton" data-wp-on--click="actions.showLightbox" data-wp-style--right="state.imageButtonRight" data-wp-style--top="state.imageButtonTop" type="button">
+<svg fill="none" viewbox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+<path d="M2 0a2 2 0 0 0-2 2v2h1.5V2a.5.5 0 0 1 .5-.5h2V0H2Zm2 10.5H2a.5.5 0 0 1-.5-.5V8H0v2a2 2 0 0 0 2 2h2v-1.5ZM8 12v-1.5h2a.5.5 0 0 0 .5-.5V8H12v2a2 2 0 0 1-2 2H8Zm2-12a2 2 0 0 1 2 2v2h-1.5V2a.5.5 0 0 0-.5-.5H8V0h2Z" fill="#fff"></path>
+</svg>
+</button></figure>
+<p data-block-type="core">Once authenticated, the registration process takes place;</p>
+<figure class="wp-block-image size-large wp-lightbox-container" data-block-type="core" data-wp-context='{"imageId":"6a2dc6021ab34"}' data-wp-interactive="core/image" data-wp-key="6a2dc6021ab34"><img alt="" class="wp-image-26516" data-wp-class--hide="state.isContentHidden" data-wp-class--show="state.isContentVisible" data-wp-init="callbacks.setButtonStyles" data-wp-on--click="actions.showLightbox" data-wp-on--load="callbacks.setButtonStyles" data-wp-on-window--resize="callbacks.setButtonStyles" decoding="async" src="assets/2ddeb85e86e25b56/img_16.png"/><button aria-haspopup="dialog" aria-label="Enlarge" class="lightbox-trigger" data-wp-init="callbacks.initTriggerButton" data-wp-on--click="actions.showLightbox" data-wp-style--right="state.imageButtonRight" data-wp-style--top="state.imageButtonTop" type="button">
+<svg fill="none" viewbox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+<path d="M2 0a2 2 0 0 0-2 2v2h1.5V2a.5.5 0 0 1 .5-.5h2V0H2Zm2 10.5H2a.5.5 0 0 1-.5-.5V8H0v2a2 2 0 0 0 2 2h2v-1.5ZM8 12v-1.5h2a.5.5 0 0 0 .5-.5V8H12v2a2 2 0 0 1-2 2H8Zm2-12a2 2 0 0 1 2 2v2h-1.5V2a.5.5 0 0 0-.5-.5H8V0h2Z" fill="#fff"></path>
+</svg>
+</button></figure>
+<h4 class="wp-block-heading" id="11-step-5-local-account-setup"><a aria-hidden="true" class="aal_anchor" href="#step-5-local-account-setup" id="step-5-local-account-setup"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Step 5. Local Account Setup</h4>
+<p data-block-type="core">The user is now prompted to create a password, as you will see, the fields are automatically populated based on the Settings Catalog policy created earlier;</p>
+<figure class="wp-block-image size-large wp-lightbox-container" data-block-type="core" data-wp-context='{"imageId":"6a2dc6021ad23"}' data-wp-interactive="core/image" data-wp-key="6a2dc6021ad23"><img alt="" class="wp-image-26517" data-wp-class--hide="state.isContentHidden" data-wp-class--show="state.isContentVisible" data-wp-init="callbacks.setButtonStyles" data-wp-on--click="actions.showLightbox" data-wp-on--load="callbacks.setButtonStyles" data-wp-on-window--resize="callbacks.setButtonStyles" decoding="async" src="assets/2ddeb85e86e25b56/img_17.png"/><button aria-haspopup="dialog" aria-label="Enlarge" class="lightbox-trigger" data-wp-init="callbacks.initTriggerButton" data-wp-on--click="actions.showLightbox" data-wp-style--right="state.imageButtonRight" data-wp-style--top="state.imageButtonTop" type="button">
+<svg fill="none" viewbox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+<path d="M2 0a2 2 0 0 0-2 2v2h1.5V2a.5.5 0 0 1 .5-.5h2V0H2Zm2 10.5H2a.5.5 0 0 1-.5-.5V8H0v2a2 2 0 0 0 2 2h2v-1.5ZM8 12v-1.5h2a.5.5 0 0 0 .5-.5V8H12v2a2 2 0 0 1-2 2H8Zm2-12a2 2 0 0 1 2 2v2h-1.5V2a.5.5 0 0 0-.5-.5H8V0h2Z" fill="#fff"></path>
+</svg>
+</button></figure>
+<h3 class="wp-block-heading" id="12-post-setup"><a aria-hidden="true" class="aal_anchor" href="#post-setup" id="post-setup"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Post Setup</h3>
+<p data-block-type="core">The user is now delivered to the desktop with no more registration prompts!</p>
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="" class="wp-image-26529" decoding="async" src="assets/2ddeb85e86e25b56/img_18.png"/></figure>
+<p data-block-type="core">Should you wish to confirm the configuration, you can go into Settings\Users &amp; Groups. Clicking on the “Edit” button next to “Network account server” will present the SSO Extension state:</p>
+<figure class="wp-block-image size-large wp-lightbox-container" data-block-type="core" data-wp-context='{"imageId":"6a2dc6021afb5"}' data-wp-interactive="core/image" data-wp-key="6a2dc6021afb5"><img alt="" class="wp-image-26530" data-wp-class--hide="state.isContentHidden" data-wp-class--show="state.isContentVisible" data-wp-init="callbacks.setButtonStyles" data-wp-on--click="actions.showLightbox" data-wp-on--load="callbacks.setButtonStyles" data-wp-on-window--resize="callbacks.setButtonStyles" decoding="async" src="assets/2ddeb85e86e25b56/img_19.png"/><button aria-haspopup="dialog" aria-label="Enlarge" class="lightbox-trigger" data-wp-init="callbacks.initTriggerButton" data-wp-on--click="actions.showLightbox" data-wp-style--right="state.imageButtonRight" data-wp-style--top="state.imageButtonTop" type="button">
+<svg fill="none" viewbox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+<path d="M2 0a2 2 0 0 0-2 2v2h1.5V2a.5.5 0 0 1 .5-.5h2V0H2Zm2 10.5H2a.5.5 0 0 1-.5-.5V8H0v2a2 2 0 0 0 2 2h2v-1.5ZM8 12v-1.5h2a.5.5 0 0 0 .5-.5V8H12v2a2 2 0 0 1-2 2H8Zm2-12a2 2 0 0 1 2 2v2h-1.5V2a.5.5 0 0 0-.5-.5H8V0h2Z" fill="#fff"></path>
+</svg>
+</button></figure>
+<figure class="wp-block-image size-large wp-lightbox-container" data-block-type="core" data-wp-context='{"imageId":"6a2dc6021b171"}' data-wp-interactive="core/image" data-wp-key="6a2dc6021b171"><img alt="" class="wp-image-26531" data-wp-class--hide="state.isContentHidden" data-wp-class--show="state.isContentVisible" data-wp-init="callbacks.setButtonStyles" data-wp-on--click="actions.showLightbox" data-wp-on--load="callbacks.setButtonStyles" data-wp-on-window--resize="callbacks.setButtonStyles" decoding="async" src="assets/2ddeb85e86e25b56/img_20.png"/><button aria-haspopup="dialog" aria-label="Enlarge" class="lightbox-trigger" data-wp-init="callbacks.initTriggerButton" data-wp-on--click="actions.showLightbox" data-wp-style--right="state.imageButtonRight" data-wp-style--top="state.imageButtonTop" type="button">
+<svg fill="none" viewbox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+<path d="M2 0a2 2 0 0 0-2 2v2h1.5V2a.5.5 0 0 1 .5-.5h2V0H2Zm2 10.5H2a.5.5 0 0 1-.5-.5V8H0v2a2 2 0 0 0 2 2h2v-1.5ZM8 12v-1.5h2a.5.5 0 0 0 .5-.5V8H12v2a2 2 0 0 1-2 2H8Zm2-12a2 2 0 0 1 2 2v2h-1.5V2a.5.5 0 0 0-.5-.5H8V0h2Z" fill="#fff"></path>
+</svg>
+</button></figure>
+<p data-block-type="core">Clicking on the user will show you the registration state and SSO token states;</p>
+<figure class="wp-block-image size-large wp-lightbox-container" data-block-type="core" data-wp-context='{"imageId":"6a2dc6021b34b"}' data-wp-interactive="core/image" data-wp-key="6a2dc6021b34b"><img alt="" class="wp-image-26532" data-wp-class--hide="state.isContentHidden" data-wp-class--show="state.isContentVisible" data-wp-init="callbacks.setButtonStyles" data-wp-on--click="actions.showLightbox" data-wp-on--load="callbacks.setButtonStyles" data-wp-on-window--resize="callbacks.setButtonStyles" decoding="async" src="assets/2ddeb85e86e25b56/img_21.png"/><button aria-haspopup="dialog" aria-label="Enlarge" class="lightbox-trigger" data-wp-init="callbacks.initTriggerButton" data-wp-on--click="actions.showLightbox" data-wp-style--right="state.imageButtonRight" data-wp-style--top="state.imageButtonTop" type="button">
+<svg fill="none" viewbox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+<path d="M2 0a2 2 0 0 0-2 2v2h1.5V2a.5.5 0 0 1 .5-.5h2V0H2Zm2 10.5H2a.5.5 0 0 1-.5-.5V8H0v2a2 2 0 0 0 2 2h2v-1.5ZM8 12v-1.5h2a.5.5 0 0 0 .5-.5V8H12v2a2 2 0 0 1-2 2H8Zm2-12a2 2 0 0 1 2 2v2h-1.5V2a.5.5 0 0 0-.5-.5H8V0h2Z" fill="#fff"></path>
+</svg>
+</button></figure>
+<h3 class="wp-block-heading" id="13-conclusion"><a aria-hidden="true" class="aal_anchor" href="#conclusion" id="conclusion"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Conclusion</h3>
+<p data-block-type="core">With this enhancement to Platform SSO, the experience of macOS and Windows from an onboarding perspective is now very similar, and is yet another blocker remover to embrace macOS as part of your supported environment.</p>
+<p data-block-type="core">More information can be found on the Microsoft docs – <a data-id="https://learn.microsoft.com/en-us/intune/device-configuration/settings-catalog/configure-platform-sso-macos?tabs=secure-enclave?wt.mc_id=EM-MVP-5002526" data-type="link" href="https://learn.microsoft.com/en-us/intune/device-configuration/settings-catalog/configure-platform-sso-macos?tabs=secure-enclave?wt.mc_id=EM-MVP-5002526" rel="noreferrer noopener" target="_blank">Configure Platform SSO for macOS devices in Microsoft Intune</a></p>
+<p data-block-type="core"></p>
+<p class="post-views content-post post-26488 entry-meta load-static">
+<span class="post-views-icon dashicons dashicons-chart-bar"></span> <span class="post-views-label">Views:</span> <span class="post-views-count">1,485</span>
+</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

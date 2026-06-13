@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maintenance Window Settings Catalog… And it’s Gone</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Call4Cloud (Rudy Ooms)</span>
+    <span class="date">May 13, 2026</span>
+  </div>
+  <h1>Maintenance Window Settings Catalog… And it’s Gone</h1>
+  <div class="orig">Saved for offline reading · <a href="https://patchmypc.com/blog/maintenance-window-settings-catalog-and-its-gone/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="post-content">
+<p>A while ago, I wrote about something interesting that showed up in the Intune “In development” documentation. Microsoft mentioned <a href="https://patchmypc.com/blog/maintenance-window-os-drivers-updates-intune/"><strong>new Maintenance Window</strong></a> settings for OS updates, drivers, and updates in the <strong>Windows Settings Catalog.</strong></p>
+<figure class="wp-block-image size-full"><a data-caption="maintenance window settings catalog" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/05/image-1.jpg"><picture class="wp-image-184476" decoding="async">
+<source sizes="(max-width: 624px) 100vw, 624px" srcset="https://patchmypc.com/app/uploads/2026/05/image-1.jpg.webp 624w, https://patchmypc.com/app/uploads/2026/05/image-1-300x191.jpg.webp 300w" type="image/webp"/>
+<img alt="maintenance window settings catalog" decoding="async" src="assets/ce0fca486a1497fd/img_0.jpg"/>
+</picture>
+</a></figure>
+<p>That immediately caught my attention. Not because we needed another setting in Intune, but because this one touched a very familiar problem: timing. At what point is Windows allowed to do update work? Should drivers install during the day, or only inside a controlled window? What about firmware updates? And how do we prevent all of this from kicking in at exactly the wrong moment?</p>
+<p>We already have active hours, deadlines, and restart controls. Useful settings, but not the same thing as a real Maintenance Window. Active hours tell Windows when it should try to stay out of the user’s way. A maintenance window does the opposite. It tells Windows when it is allowed to do the work. That difference is exactly why this caught my attention.</p>
+<h2 class="wp-block-heading" id="h-maintenance-window-settings-catalog-disappeared">Maintenance Window Settings Catalog Disappeared<span class="clth-copy-icon" data-heading-id="h-maintenance-window-settings-catalog-disappeared"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>Sometime later (1 April), the maintenance window entry disappeared from the public Intune <a href="https://github.com/MicrosoftDocs/memdocs/pull/4993/changes/2e6a66b5566356d8999cb098129bb26a772ad342">“In development”</a> page.</p>
+<p>The GitHub history shows the change clearly. The maintenance window section was removed from the documentation. The removed text specifically talked about new <strong>Windows Settings Catalog settings for maintenance windows</strong>, including configuration steps and policy options.</p>
+<figure class="wp-block-image size-full"><a data-caption="maintenance window settings catalog removed from the docs" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/05/image-18.png"><picture class="wp-image-184479" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-18.png.webp 840w, https://patchmypc.com/app/uploads/2026/05/image-18-300x163.png.webp 300w, https://patchmypc.com/app/uploads/2026/05/image-18-768x417.png.webp 768w" sizes="(max-width: 840px) 100vw, 840px" type="image/webp"/>
+<img alt="maintenance window settings catalog removed from the docs" data-lazy-sizes="(max-width: 840px) 100vw, 840px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-18.png 840w, https://patchmypc.com/app/uploads/2026/05/image-18-300x163.png 300w, https://patchmypc.com/app/uploads/2026/05/image-18-768x417.png 768w" decoding="async" src="assets/ce0fca486a1497fd/img_1.png"/><noscript><img alt="maintenance window settings catalog removed from the docs" decoding="async" src="assets/ce0fca486a1497fd/img_2.png"/></noscript>
+</picture>
+</a></figure>
+<p>That is the interesting part. It was not a small wording change. It was not moved to a different sentence. The Settings Catalog announcement for this feature was pulled back before it landed. <strong>That does NOT mean the whole Maintenance Window idea is gone forever</strong>. It does mean the original public wording is no longer something we should treat as the current Intune roadmap.</p>
+<h2 class="wp-block-heading" id="h-maintenance-window-csps-still-work">Maintenance Window CSPs Still Work<span class="clth-copy-icon" data-heading-id="h-maintenance-window-csps-still-work"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>The best part is that the Windows Update CSP still documents the maintenance window policy family.</p>
+<p>The CSP still contains settings such as <strong>MaintenanceWindowEnabled, MaintenanceWindowDurationHours, MaintenanceWindowStartDate, MaintenanceWindowStartTime, MaintenanceWindowRepeatScheduleOption, and MaintenanceWindowUpdateActions.</strong></p>
+<p>That last one is important because it describes what Windows should only do during the configured maintenance window. The documented actions are around download, install, restart, or install and restart. The Maintenance Window CSPs are still there. The policy surface is still there. With it we can still configure the Maintenance Windows CSP manually (when needed)</p>
+<figure class="wp-block-image size-full"><a data-caption="maintenance window update csp still available" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/05/image-2.jpg"><picture class="wp-image-184478" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-2.jpg.webp 624w, https://patchmypc.com/app/uploads/2026/05/image-2-300x138.jpg.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="maintenance window update csp still available" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-2.jpg 624w, https://patchmypc.com/app/uploads/2026/05/image-2-300x138.jpg 300w" decoding="async" src="assets/ce0fca486a1497fd/img_3.jpg"/><noscript><img alt="maintenance window update csp still available" decoding="async" src="assets/ce0fca486a1497fd/img_4.jpg"/></noscript>
+</picture>
+</a></figure>
+<p>The Intune “In development” entry that promised a Settings Catalog experience is the only part that was pulled back. </p>
+<p>For now, the Custom OMA URI route is still the way to test it. I covered the configuration steps earlier, and those CSP settings are still documented.</p>
+<h2 class="wp-block-heading" id="h-maybe-maintenance-window-settings-catalog-just-needed-more-time">Maybe Maintenance Window Settings Catalog Just Needed More Time<span class="clth-copy-icon" data-heading-id="h-maybe-maintenance-window-settings-catalog-just-needed-more-time"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>A maintenance window sounds simple, but there is more to it than just enabling a setting.</p>
+<p>You need a start time, a duration, a repeat schedule, and the actions Windows is allowed to perform inside that window. In the end, it directly decides how Windows Update behaves on the device. That kind of feature needs a clear story before it shows up in Intune, because admins will not read “<strong>maintenance window”</strong> as a tiny Windows Update detail. They will read it as something bigger. And honestly, that is not weird… because this is a feature everyone is waiting for.</p>
+<p>When admins see a maintenance window, they want to know what respects that window. They want to know what ignores it. They want to know what happens when the device is offline, what happens when a deadline is reached, and what happens when a restart is needed outside the configured time. Those are the details that make this kind of feature useful or confusing.</p>
+<p>Maybe it simply needed more time. The experience could have changed, the wording may have gone public a bit too early, or Microsoft pulled it back before everyone started searching the Settings Catalog for something that was not ready yet. Whatever the reason was, the breadcrumb is still there. The Settings Catalog announcement appeared, and then it disappeared.</p>
+<h2 class="wp-block-heading" id="h-maybe-they-are-saving-it-for-ignite">Maybe They Are Saving It For Ignite<span class="clth-copy-icon" data-heading-id="h-maybe-they-are-saving-it-for-ignite"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>Of course, there is always another option. Maybe Microsoft looked at the documentation and thought: not yet, let’s save this one for a bigger moment. (just guessing… nothing more)</p>
+<p>Maybe Ignite needed another slide. Maybe someone saw the words <strong>“maintenance window</strong>” in the public docs and decided this feature deserved a bit more spotlight before every admin started clicking through the Settings Catalog. Which makes sense, as this maintenance window feature deserves a lot of attention (people are waiting for it)</p>
+<p>For now, the Intune Settings Catalog experience is not there in the public roadmap anymore. That means we are back to the part Windows already gives us: the <strong>Update CSP.</strong></p>
+<figure class="wp-block-image size-full"><a data-caption="maintenance window update csp" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/05/image-3.jpg"><picture class="wp-image-184477" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-3.jpg.webp 898w, https://patchmypc.com/app/uploads/2026/05/image-3-300x102.jpg.webp 300w, https://patchmypc.com/app/uploads/2026/05/image-3-768x262.jpg.webp 768w" sizes="(max-width: 898px) 100vw, 898px" type="image/webp"/>
+<img alt="maintenance window update csp" data-lazy-sizes="(max-width: 898px) 100vw, 898px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-3.jpg 898w, https://patchmypc.com/app/uploads/2026/05/image-3-300x102.jpg 300w, https://patchmypc.com/app/uploads/2026/05/image-3-768x262.jpg 768w" decoding="async" src="assets/ce0fca486a1497fd/img_5.jpg"/><noscript><img alt="maintenance window update csp" decoding="async" src="assets/ce0fca486a1497fd/img_6.jpg"/></noscript>
+</picture>
+</a></figure>
+<p>So if you want to investigate this today, the CSP is where the story currently lives. Not because that is the perfect admin experience, but because that is the public policy surface that still documents the maintenance window settings.</p>
+<h2 class="wp-block-heading" id="h-where-this-leaves-us">Where This Leaves Us<span class="clth-copy-icon" data-heading-id="h-where-this-leaves-us"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>The current Intune “In development” page no longer mentions Maintenance Window Settings Catalog. That does not make the feature useless. The Windows Update CSP still documents the maintenance window policies, still uses preview wording, and still gives us a way to enable it manually when we want to test it.</p>
+<p>So for now, the CSP is the place to look. The Maintenance Window Settings Catalog disappeared from the public Intune docs, but the maintenance window update policy surface is still there. Enough to test, enough to understand, and definitely enough to keep an eye on.</p>
+<p></p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
