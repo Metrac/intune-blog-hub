@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Foundry Local: Run AI Models Offline on Your Mac</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">June 14, 2026</span>
+  </div>
+  <h1>Foundry Local: Run AI Models Offline on Your Mac</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/2026/06/14/run-ai-models-offline-mac-foundry-local/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p class="wp-block-paragraph">In this blog post I explain how to run AI models completely offline on a Mac with Microsoft Foundry Local. No Azure subscription, no API key, no internet connection. Everything runs on your own device.</p>
+<p class="wp-block-paragraph">I made a short video that walks through the whole thing. If you prefer watching over reading, here it is:</p>
+<figure class="wp-block-embed is-type-video is-provider-youtube wp-block-embed-youtube wp-embed-aspect-16-9 wp-has-aspect-ratio"></figure>
+<p class="wp-block-paragraph">The rest of this post is the written version, so you can copy the commands and follow along.</p>
+<span id="more-18867"></span>
+<h2 class="wp-block-heading">What is Foundry Local?</h2>
+<p class="wp-block-paragraph">Foundry Local is Microsoft’s runtime for running open AI models directly on your own machine. You can think of it as “the Azure AI Foundry experience, but the model runs on your laptop instead of in the cloud.”</p>
+<p class="wp-block-paragraph">The important part: once a model is downloaded, you can use it fully offline. Your prompts and your data never leave the device.</p>
+<p class="wp-block-paragraph">A few things make it nice to work with:</p>
+<ul class="wp-block-list">
+<li>It is built on <strong>ONNX Runtime</strong> and uses <em>execution providers</em> to pick the best hardware. On a Mac with Apple Silicon it uses the GPU through Metal.</li>
+<li>It ships with a <strong>model catalog</strong>. You pull a model once with a short alias, it gets cached, and after that it runs locally.</li>
+<li>It exposes an <strong>OpenAI-compatible API</strong> on localhost. So if you already have code that talks to the OpenAI SDK, you mostly just point it at the local endpoint.</li>
+<li>There is a <strong>CLI</strong> for quick testing and <strong>SDKs</strong> for Python, C#, JavaScript and Rust for real apps.</li>
+</ul>
+<h2 class="wp-block-heading">Why would I run a model locally?</h2>
+<p class="wp-block-paragraph">The cloud is great, but it is not always the right answer. These are the cases where I reach for local:</p>
+<ul class="wp-block-list">
+<li><strong>Data that is not allowed to leave the device</strong> — legal, health, or internal documents.</li>
+<li><strong>Offline or edge scenarios</strong> — on a plane, on a shop floor, or inside a locked-down network.</li>
+<li><strong>Prototyping</strong> — no token costs and no rate limits while you experiment.</li>
+<li><strong>Low latency</strong> — when a round-trip to the cloud is the slow part.</li>
+</ul>
+<p class="wp-block-paragraph"><code>Note:</code> A local model will not match the biggest cloud models on hard reasoning tasks. And the size of model you can run is limited by your RAM. For “good enough and fast” workloads it is genuinely impressive though.</p>
+<h2 class="wp-block-heading">How do I install Foundry Local on a Mac?</h2>
+<p class="wp-block-paragraph">The easiest way on macOS is Homebrew. The full setup is also documented in the <a href="https://learn.microsoft.com/en-us/azure/ai-foundry/foundry-local/get-started" rel="noopener" target="_blank">Microsoft Learn quickstart</a>. Open a terminal and run these two commands:</p>
+<p class="wp-block-paragraph">That is it. You now have the <code>foundry</code> command available.</p>
+<p class="wp-block-paragraph"><code>Hint:</code> You need macOS with Apple Silicon, at least 8 GB of RAM (16 GB recommended) and a few GB of free disk space for the models.</p>
+<h2 class="wp-block-heading">How do I run my first model?</h2>
+<p class="wp-block-paragraph">The fastest test is one command. Pick a small model so the download is quick:</p>
+<p class="wp-block-paragraph">The first time, Foundry Local downloads the model. After that it starts in seconds. You drop straight into an interactive chat in the terminal — type a question, get an answer, all on your machine.</p>
+<p class="wp-block-paragraph">To see what else is available, list the catalog:</p>
+<p class="wp-block-paragraph">And to manage the background service that serves the models:</p>
+<p class="wp-block-paragraph"><code>Note:</code> The very first run feels slow because of the model download. Don’t judge the speed by it — the second run is the real one.</p>
+<h2 class="wp-block-heading">How do I call it from my own code?</h2>
+<p class="wp-block-paragraph">This is where it gets interesting. Foundry Local exposes an OpenAI-compatible API locally, so you can reuse the normal OpenAI SDK. Here is a minimal Python example:</p>
+<p class="wp-block-paragraph">Install the SDK first with <code>pip install foundry-local-sdk openai</code>. There are equivalent SDKs for C#, JavaScript and Rust, so it drops into a real application and not just a demo.</p>
+<p class="wp-block-paragraph"><code>Hint:</code> Because the API is OpenAI-compatible, the easiest migration path is to keep your existing OpenAI code and only change the base URL to the local endpoint.</p>
+<h2 class="wp-block-heading">What runs well, and what does not?</h2>
+<p class="wp-block-paragraph">A simple rule from my own testing on a Mac:</p>
+<figure class="wp-block-table"><table class="has-fixed-layout"><thead><tr><th>Model size</th><th>Runs on</th><th>Good for</th></tr></thead><tbody><tr><td>Small (under ~1B)</td><td>8 GB RAM</td><td>quick tasks, classification, drafts</td></tr><tr><td>Mid (3–8B)</td><td>16 GB RAM</td><td>most everyday chat and summarizing</td></tr><tr><td>Large</td><td>lots of RAM</td><td>usually still better in the cloud</td></tr></tbody></table></figure>
+<p class="wp-block-paragraph">If you have 16 GB of RAM, a mid-size model is the sweet spot. Bigger than that and you will feel your RAM running out.</p>
+<h2 class="wp-block-heading">What I would do</h2>
+<p class="wp-block-paragraph">For me the real shift is mental. The cloud is no longer the default. It is now one option next to the very capable machine already on my desk.</p>
+<p class="wp-block-paragraph">If you handle sensitive data, work offline a lot, or just want to experiment without a bill, install Foundry Local and run <code>foundry model run phi-3.5-mini</code> once. It takes five minutes, and it changes how you think about where AI has to run.</p>
+<p class="wp-block-paragraph">If you want the bigger picture of where all of this is going, I wrote about the agentic stack Microsoft showed in <a href="https://jannikreinhard.com/2026/06/08/microsoft-build-2026-agentic-stack/">Microsoft Build 2026: A Field Guide to the Agentic Stack</a>. Local inference is one more building block in that same story.</p>
+<p class="wp-block-paragraph">I hope this is a little help.</p>
+<p class="wp-block-paragraph">Stay healthy, Cheers Jannik</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
