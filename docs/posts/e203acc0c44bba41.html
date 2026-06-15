@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>YellowKey: BitLocker Bypass CVE‑2026‑45585 – Detect &amp; Remediate Automatically with Microsoft Intune</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">HTMD / Anoop C Nair</span>
+    <span class="date">June 15, 2026</span>
+  </div>
+  <h1>YellowKey: BitLocker Bypass CVE‑2026‑45585 – Detect &amp; Remediate Automatically with Microsoft Intune</h1>
+  <div class="orig">Saved for offline reading · <a href="https://www.anoopcnair.com/yellowkey-bitlocker-bypass-cve-2026-45585intune/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text"><p class="code-block code-block-6">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><h2 class="wp-block-heading" id="key-takeaways"><strong>Key Takeaways:</strong></h2><ul class="wp-block-list"><li class="has-medium-font-size">The <strong>YellowKey vulnerability (CVE‑2026‑45585) </strong>is a critical BitLocker bypass in the WinRE</li><li class="has-medium-font-size">It allows attackers with <strong>physical access</strong> to <strong>Windows 11 and Windows Server 2022/2025 </strong>machines to unlock encrypted drives without a password or recovery key.</li><li class="has-medium-font-size"><strong>Windows 10 </strong>is not affected.</li><li class="has-medium-font-size">It was discovered in <strong>May 2026</strong> and publicly disclosed by researcher <strong>“Nightmare Eclipse.”</strong></li></ul><p class="wp-block-paragraph">YellowKey: BitLocker Bypass <strong>CVE‑2026‑45585 </strong>– Detect &amp; Remediate Automatically with Microsoft Intune! A new <strong>zero‑day </strong>dubbed <a href="https://www.anoopcnair.com/fixes-200-vulnerabilities-in-june-2026-patch/" rel="noreferrer noopener" target="_blank"><strong>YellowKey</strong> </a>is undermining <strong>BitLocker </strong>— the very feature meant to safeguard sensitive data on Windows. First disclosed by researcher <em>Chaotic Eclipse</em>, this isn’t a theoretical flaw; it’s a practical bypass that grants attackers with physical access direct entry into encrypted drives on <strong>Windows 11 and Windows Server 2022/2025</strong>. For now, <strong>Windows 10 remains unaffected</strong>, offering its users a brief reprieve.</p><details class="wp-block-details has-contrast-3-background-color has-background is-layout-flow wp-block-details-is-layout-flow"><summary><strong>Table of Contents</strong></summary>
+</details><h2 class="wp-block-heading has-medium-font-size" id="how-yellow-key-gets-exploited"><strong>How YellowKey Gets Exploited</strong> – <strong>YellowKey: BitLocker Bypass CVE‑2026‑45585 – Detect &amp; Remediate Automatically with Microsoft Intune</strong></h2><p class="wp-block-paragraph"><strong>Windows Recovery Environment (WinRE)</strong> is a built‑in component on <strong>Windows 11</strong> and <strong>Windows Server 2022/2025,</strong> stored in a hidden <strong>recovery </strong>partition. Attackers don’t need to mount it manually — it’s already part of the operating system. The <strong>YellowKey vulnerability </strong>is triggered when crafted <strong>FsTx logs </strong>are introduced through a <strong>USB drive or EFI partition.</strong></p><figure class="wp-block-table aligncenter"><table class="has-contrast-3-background-color has-background has-fixed-layout"><thead><tr><th>Aspect</th><th>Details</th></tr></thead><tbody><tr><th>Name</th><td>YellowKey – BitLocker Bypass</td></tr><tr><th>CVE ID</th><td>CVE‑2026‑45585</td></tr><tr><th>Discovered By</th><td>Researcher <em>Nightmare Eclipse</em> (May 2026)</td></tr><tr><th>Type</th><td>Zero‑day security feature bypass</td></tr><tr><th>Affected Systems</th><td>Windows 11, Windows Server 2022, Windows Server 2025</td></tr></tbody></table><figcaption class="wp-element-caption">YellowKey: BitLocker Bypass (CVE‑2026‑45585) – Detect &amp; Remediate Automatically with Microsoft Intune. Table-01</figcaption></figure><p class="wp-block-paragraph">During a reboot into <strong>WinRE</strong>, those logs manipulate the environment to delete winpeshl.ini. Without this file, WinRE defaults to launching a command shell. At that point, because the <strong>TPM </strong>has already unlocked the BitLocker drive, the attacker gains full, decrypted access. Importantly, there is no “<strong>YellowKey file</strong>” present on your system by default. The exploit relies on external malicious input combined with <strong>WinRE’s </strong>flawed logic.</p><h2 class="wp-block-heading has-medium-font-size" id="how-hackers-unlock-bit-locker-with-yellow-key"><strong>How Hackers Unlock BitLocker with YellowKey</strong></h2><p class="wp-block-paragraph">YellowKey isn’t a malware file you can spot — it’s a design flaw in how <strong>WinRE </strong>handles <strong>NTFS </strong>transaction logs. Attackers must have <strong>physical access</strong> to the device. They boot into WinRE (for example, by holding <strong>Shift + Restart</strong> or booting directly into recovery mode).</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><pre class="wp-block-code has-contrast-3-background-color has-background has-medium-font-size"><code><strong>NOTE! </strong>FsTx logs are NTFS transaction records used to guarantee file system consistency. They ensure that operations like file creation or deletion can be rolled back or completed safely after a crash. YellowKey abuses this mechanism by injecting crafted logs that trick WinRE into bypassing BitLocker.</code></pre><p class="wp-block-paragraph">Once in WinRE, they inject <strong>crafted FsTx logs</strong> via a USB drive or EFI partition. The exploit chain then runs automatically as WinRE processes those logs, ultimately bypassing BitLocker protection and granting decrypted access.</p><h2 class="wp-block-heading" id="power-shell-script-to-detect-the-yellow-key-vulnerability"><strong>PowerShell Script to Detect the YellowKey Vulnerability</strong></h2><p class="wp-block-paragraph">Having already analysed the impact of the <strong>YellowKey vulnerability (CVE‑2026‑45585)</strong> on enterprise security, I’ve developed a <strong>PowerShell </strong>script to detect it. This script can be seamlessly integrated into Intune <strong>Proactive Remediations</strong> as the detection logic, enabling automated identification across managed endpoints. You can download the <strong>PowerShell Script to detect the YellowKey Vulnerability</strong> from the <a href="https://github.com/nelladath/Detect-YellowKey-WinRE" rel="noreferrer noopener nofollow" target="_blank"><strong>GitHub repository.</strong></a></p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><pre class="wp-block-code has-contrast-3-background-color has-background"><code><em><strong>&lt;#
+.SYNOPSIS
+    Detection - checks WinRE for the YellowKey (autofstx.exe) entry.
+
+.DESCRIPTION
+    Mounts the device's WinRE image, loads its offline SYSTEM hive,
+    and looks for 'autofstx.exe' inside the BootExecute registry value.
+    The script is read-only; it always discards the mount.
+
+    Exit 0 = Compliant     (entry not found, or WinRE is disabled)
+    Exit 1 = Non-compliant  (entry found - remediation should run)
+
+.NOTES
+    Author : Sujin Nelladath
+    Date   : 2026-06-11
+    Run as : SYSTEM, 64-bit PowerShell (Intune Remediations)
+#&gt;
+
+# ---------- Settings ----------
+$EntryToCheck = "autofstx.exe"
+$MountPath    = "C:\Mount"
+$HiveName     = "WinREHive"
+$LogDir       = "C:\temp\YellowKeyVulnerabilty\logs"
+
+# ---------- Logging ----------
+if (-not (Test-Path $LogDir)) {
+    New-Item -ItemType Directory -Path $LogDir -Force | Out-Null
+}
+$LogFile = Join-Path $LogDir ("Detect-YellowKey_{0}.log" -f (Get-Date -Format "yyyyMMdd-HHmmss"))
+
+function Write-Log {
+    param(
+        [string]$Message,
+        [ValidateSet("INFO","WARN","ERROR","OK")]
+        [string]$Level = "INFO"
+    )
+    $line = "{0} [{1}] {2}" -f (Get-Date -Format "yyyy-MM-dd HH:mm:ss"), $Level, $Message
+    Add-Content -Path $LogFile -Value $line
+    switch ($Level) {
+        "ERROR" { Write-Host $line -ForegroundColor Red }
+        "WARN"  { Write-Host $line -ForegroundColor Yellow }
+        "OK"    { Write-Host $line -ForegroundColor Green }
+        default { Write-Host $line }
+    }
+}
+
+Write-Log "==== YellowKey detection started ===="
+Write-Log "Looking for entry: $EntryToCheck"
+
+# ---------- Step 1: Is WinRE enabled? ----------
+# reagentc /info shows a "\\?\GLOBALROOT\device\..." path only when WinRE is enabled.
+# This works on any Windows language (the path is not localized).
+$reagentInfo = (&amp; reagentc /info 2&gt;&amp;1) -join "`n"
+
+if ($reagentInfo -notmatch '\\\\\?\\GLOBALROOT.*Recovery\\WindowsRE') {
+    Write-Log "WinRE is disabled or not configured. Reporting compliant." "WARN"
+    exit 0
+}
+Write-Log "WinRE is enabled." "OK"
+
+# ---------- Step 2: Prepare an empty mount folder ----------
+if (Test-Path $MountPath) {
+    if (Get-ChildItem -Path $MountPath -Force) {
+        Write-Log "Mount folder $MountPath is not empty. Aborting." "ERROR"
+        exit 1
+    }
+} else {
+    New-Item -ItemType Directory -Path $MountPath -Force | Out-Null
+}
+
+# ---------- Step 3: Mount WinRE ----------
+&amp; reagentc /mountre /path $MountPath | Out-Null
+if ($LASTEXITCODE -ne 0) {
+    Write-Log "reagentc /mountre failed (exit $LASTEXITCODE)." "ERROR"
+    exit 1
+}
+Write-Log "WinRE mounted at $MountPath" "OK"
+
+# ---------- Step 4: Load the offline SYSTEM hive ----------
+$HivePath = "$MountPath\Windows\System32\config\SYSTEM"
+&amp; reg load "HKLM\$HiveName" $HivePath | Out-Null
+if ($LASTEXITCODE -ne 0) {
+    Write-Log "reg load failed - cannot read offline hive." "ERROR"
+    &amp; reagentc /unmountre /path $MountPath /discard | Out-Null
+    Remove-Item $MountPath -Recurse -Force -ErrorAction SilentlyContinue
+    exit 1
+}
+Write-Log "Offline hive loaded as HKLM\$HiveName" "OK"
+
+# ---------- Step 5: Read BootExecute and look for the entry ----------
+$RegPath     = "HKLM:\$HiveName\ControlSet001\Control\Session Manager"
+$BootExecute = (Get-ItemProperty -Path $RegPath -Name "BootExecute" -ErrorAction SilentlyContinue).BootExecute
+$Vulnerable  = $false
+
+if ($BootExecute) {
+    Write-Log "Current BootExecute: $($BootExecute -join ' | ')"
+    foreach ($entry in $BootExecute) {
+        # Match the entry whether it's "autofstx.exe" or "autofstx.exe &lt;args&gt;"
+        if ($entry -match "^\s*$([regex]::Escape($EntryToCheck))(\s|$)") {
+            Write-Log "Vulnerable entry found: $entry" "ERROR"
+            $Vulnerable = $true
+        }
+    }
+} else {
+    Write-Log "BootExecute value not found (treating as compliant)."
+}
+
+# ---------- Step 6: Cleanup (detection never modifies the WIM) ----------
+[gc]::Collect()
+Start-Sleep -Seconds 1
+&amp; reg unload "HKLM\$HiveName" | Out-Null
+&amp; reagentc /unmountre /path $MountPath /discard | Out-Null
+Remove-Item $MountPath -Recurse -Force -ErrorAction SilentlyContinue
+Write-Log "Cleanup complete."
+
+# ---------- Step 7: Report result ----------
+if ($Vulnerable) {
+    Write-Log "Result: NON-COMPLIANT" "ERROR"
+    exit 1
+}
+
+Write-Log "Result: COMPLIANT" "OK"
+exit 0
+</strong></em></code></pre><p class="wp-block-paragraph">The detection script identifies the presence of the YellowKey vulnerability, and now it’s time to move into remediation. Specifically, the code inspects the <strong><code>BootExecute</code> </strong>registry value and flags devices as non‑compliant if it contains <code><strong>autofsxe.exe</strong></code>. The following remediation script then removes the malicious entry and restores system integrity, effectively fixing the YellowKey vulnerability. You can download the remediation code my <a href="https://github.com/nelladath/Remediate-YellowKey-WinRE" rel="noreferrer noopener nofollow" target="_blank"><strong>GitHub Repository</strong></a></p><pre class="wp-block-code has-contrast-3-background-color has-background"><code><em><strong>&lt;#
+.SYNOPSIS
+    Remediation - removes 'autofstx.exe' from WinRE BootExecute.
+
+.DESCRIPTION
+    Mounts the device's WinRE image, removes 'autofstx.exe' from the
+    BootExecute registry value in the offline SYSTEM hive, commits the
+    change back to the WIM, and re-seals WinRE so BitLocker re-measures it.
+
+    Exit 0 = Success (or no change needed)
+    Exit 1 = Failure
+
+.NOTES
+    Author : Sujin Nelladath
+    Date   : 2026-06-11
+    Run as : SYSTEM, 64-bit PowerShell (Intune Remediations)
+#&gt;
+
+# ---------- Settings ----------
+$EntryToRemove = "autofstx.exe"
+$MountPath     = "C:\Mount"
+$HiveName      = "WinREHive"
+$LogDir        = "C:\temp\YellowKeyVulnerabilty\logs"
+
+# ---------- Logging ----------
+if (-not (Test-Path $LogDir)) {
+    New-Item -ItemType Directory -Path $LogDir -Force | Out-Null
+}
+$LogFile = Join-Path $LogDir ("Remediate-YellowKey_{0}.log" -f (Get-Date -Format "yyyyMMdd-HHmmss"))
+
+function Write-Log {
+    param(
+        [string]$Message,
+        [ValidateSet("INFO","WARN","ERROR","OK")]
+        [string]$Level = "INFO"
+    )
+    $line = "{0} [{1}] {2}" -f (Get-Date -Format "yyyy-MM-dd HH:mm:ss"), $Level, $Message
+    Add-Content -Path $LogFile -Value $line
+    switch ($Level) {
+        "ERROR" { Write-Host $line -ForegroundColor Red }
+        "WARN"  { Write-Host $line -ForegroundColor Yellow }
+        "OK"    { Write-Host $line -ForegroundColor Green }
+        default { Write-Host $line }
+    }
+}
+
+Write-Log "==== YellowKey remediation started ===="
+Write-Log "Entry to remove: $EntryToRemove"
+
+# ---------- Step 1: Is WinRE enabled? ----------
+$reagentInfo = (&amp; reagentc /info 2&gt;&amp;1) -join "`n"
+
+if ($reagentInfo -notmatch '\\\\\?\\GLOBALROOT.*Recovery\\WindowsRE') {
+    Write-Log "WinRE is disabled. Nothing to remediate." "WARN"
+    exit 0
+}
+Write-Log "WinRE is enabled." "OK"
+
+# ---------- Step 2: Suspend BitLocker for one reboot (so PCRs don't trip) ----------
+try {
+    $bl = Get-BitLockerVolume -MountPoint $env:SystemDrive -ErrorAction Stop
+    if ($bl.ProtectionStatus -eq 'On') {
+        Suspend-BitLocker -MountPoint $env:SystemDrive -RebootCount 1 | Out-Null
+        Write-Log "BitLocker suspended on $($env:SystemDrive) for 1 reboot." "OK"
+    } else {
+        Write-Log "BitLocker not active - no suspend needed."
+    }
+} catch {
+    Write-Log "BitLocker check skipped: $($_.Exception.Message)" "WARN"
+}
+
+# ---------- Step 3: Prepare an empty mount folder ----------
+if (Test-Path $MountPath) {
+    if (Get-ChildItem -Path $MountPath -Force) {
+        Write-Log "Mount folder $MountPath is not empty. Aborting." "ERROR"
+        exit 1
+    }
+} else {
+    New-Item -ItemType Directory -Path $MountPath -Force | Out-Null
+}
+
+# ---------- Step 4: Mount WinRE ----------
+&amp; reagentc /mountre /path $MountPath | Out-Null
+if ($LASTEXITCODE -ne 0) {
+    Write-Log "reagentc /mountre failed." "ERROR"
+    exit 1
+}
+Write-Log "WinRE mounted at $MountPath" "OK"
+
+# ---------- Step 5: Load the offline SYSTEM hive ----------
+$HivePath = "$MountPath\Windows\System32\config\SYSTEM"
+&amp; reg load "HKLM\$HiveName" $HivePath | Out-Null
+if ($LASTEXITCODE -ne 0) {
+    Write-Log "reg load failed." "ERROR"
+    &amp; reagentc /unmountre /path $MountPath /discard | Out-Null
+    Remove-Item $MountPath -Recurse -Force -ErrorAction SilentlyContinue
+    exit 1
+}
+Write-Log "Offline hive loaded as HKLM\$HiveName" "OK"
+
+# ---------- Step 6: Edit BootExecute ----------
+$RegPath     = "HKLM:\$HiveName\ControlSet001\Control\Session Manager"
+$Current     = (Get-ItemProperty -Path $RegPath -Name "BootExecute" -ErrorAction SilentlyContinue).BootExecute
+$ChangesMade = $false
+
+if ($Current) {
+    Write-Log "Current BootExecute: $($Current -join ' | ')"
+
+    # Keep every entry that does NOT start with autofstx.exe
+    $Pattern = "^\s*$([regex]::Escape($EntryToRemove))(\s|$)"
+    $Updated = @($Current | Where-Object { $_ -and ($_ -notmatch $Pattern) })
+
+    if ($Updated.Count -lt $Current.Count) {
+        # Force REG_MULTI_SZ so the value type stays correct even if 0/1 entries remain
+        Set-ItemProperty -Path $RegPath -Name "BootExecute" -Value ([string[]]$Updated) -Type MultiString
+        Write-Log "Removed '$EntryToRemove' from BootExecute." "OK"
+        Write-Log "New BootExecute: $($Updated -join ' | ')"
+        $ChangesMade = $true
+    } else {
+        Write-Log "'$EntryToRemove' not present - no change needed."
+    }
+} else {
+    Write-Log "BootExecute value not found - no change needed."
+}
+
+# ---------- Step 7: Unload the hive ----------
+[gc]::Collect()
+Start-Sleep -Seconds 2
+&amp; reg unload "HKLM\$HiveName" | Out-Null
+if ($LASTEXITCODE -ne 0) {
+    # One retry - hive handles can take a moment to release
+    Start-Sleep -Seconds 3
+    &amp; reg unload "HKLM\$HiveName" | Out-Null
+}
+Write-Log "Offline hive unloaded."
+
+# ---------- Step 8: Unmount WinRE ----------
+if ($ChangesMade) {
+    &amp; reagentc /unmountre /path $MountPath /commit | Out-Null
+    Write-Log "WinRE unmounted and changes committed." "OK"
+} else {
+    &amp; reagentc /unmountre /path $MountPath /discard | Out-Null
+    Write-Log "WinRE unmounted (no changes)."
+}
+Remove-Item $MountPath -Recurse -Force -ErrorAction SilentlyContinue
+
+# ---------- Step 9: Re-seal WinRE (only if we changed something) ----------
+if ($ChangesMade) {
+    &amp; reagentc /disable | Out-Null
+    &amp; reagentc /enable | Out-Null
+    if ($LASTEXITCODE -ne 0) {
+        Write-Log "reagentc /enable failed - run it manually to recover." "ERROR"
+        exit 1
+    }
+    Write-Log "WinRE re-sealed (disable + enable)." "OK"
+}
+
+Write-Log "==== Remediation complete ====" "OK"
+exit 0
+</strong></em></code></pre><p class="wp-block-paragraph">Follow these steps to fix the <strong>YellowKey Vulnerability</strong> using the Intune <strong> Remediation Script Policy</strong>. Log in to the <strong><a href="https://intune.microsoft.com/" rel="noreferrer noopener nofollow" target="_blank">Microsoft Intune Admin Center</a></strong> using your admin credentials.</p><ul class="wp-block-list"><li class="has-medium-font-size">Navigate to <strong>Devices</strong> &gt; <strong>Windows</strong> &gt; <strong>Scripts and remediations</strong></li><li class="has-medium-font-size">Click on <strong>Remediations</strong> &gt; <strong>+Create</strong></li></ul><div class="wp-block-image"><figure class="aligncenter size-large"><img alt="YellowKey: BitLocker Bypass (CVE‑2026‑45585) - Detect &amp; Remediate Automatically with Microsoft Intune. Fig-02" class="wp-image-368288" data-lazyloaded="1" data-sizes="(max-width: 1024px) 100vw, 1024px" decoding="async" src="assets/e203acc0c44bba41/img_0.webp" title="YellowKey: BitLocker Bypass CVE‑2026‑45585 - Detect &amp; Remediate Automatically with Microsoft Intune 2"/><figcaption class="wp-element-caption">YellowKey: BitLocker Bypass (CVE‑2026‑45585) – Detect &amp; Remediate Automatically with Microsoft Intune. Fig-02</figcaption></figure></div><p class="wp-block-paragraph">In the <strong>Basics</strong> details pane, we can name the <strong>PowerShell script</strong> as “<strong>Detect &amp; Remediate YellowKey Vulnerability</strong>” If necessary, provide a brief description of the script and click <strong>Next</strong>.</p><div class="wp-block-image"><figure class="aligncenter size-large"><img alt="YellowKey: BitLocker Bypass (CVE‑2026‑45585) - Detect &amp; Remediate Automatically with Microsoft Intune. Fig-03" class="wp-image-368290" data-lazyloaded="1" data-sizes="(max-width: 1024px) 100vw, 1024px" decoding="async" src="assets/e203acc0c44bba41/img_1.webp" title="YellowKey: BitLocker Bypass CVE‑2026‑45585 - Detect &amp; Remediate Automatically with Microsoft Intune 3"/><figcaption class="wp-element-caption">YellowKey: BitLocker Bypass (CVE‑2026‑45585) – Detect &amp; Remediate Automatically with Microsoft Intune. Fig-03</figcaption></figure></div><p class="wp-block-paragraph">In the <strong>Script settings</strong> pane, we can set the configurations according to our requirements. The <strong>Detection script file</strong> and <strong>Remediation script file</strong> are mandatory; we must browse and select our saved <strong>PS Script</strong> here.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><div class="wp-block-image"><figure class="aligncenter size-full"><img alt="YellowKey: BitLocker Bypass (CVE‑2026‑45585) - Detect &amp; Remediate Automatically with Microsoft Intune. Fig-04" class="wp-image-368292" data-lazyloaded="1" data-sizes="auto, (max-width: 941px) 100vw, 941px" decoding="async" src="assets/e203acc0c44bba41/img_2.jpg" title="YellowKey: BitLocker Bypass CVE‑2026‑45585 - Detect &amp; Remediate Automatically with Microsoft Intune 4"/><figcaption class="wp-element-caption">YellowKey: BitLocker Bypass (CVE‑2026‑45585) – Detect &amp; Remediate Automatically with Microsoft Intune. Fig-04</figcaption></figure></div><p class="wp-block-paragraph">On the next page, keep the <strong>default scope tags</strong>. If any <strong>custom scope tags</strong> are available based on your requirements, you can select them for this script deployment. Click on <strong>Next</strong> and assign the script to <strong>HTMD – Test Computers</strong>. You can click <strong>Assign to</strong> and select the desired device group in the <strong>Selected groups</strong> section.</p><div class="wp-block-image"><figure class="aligncenter size-full"><img alt="YellowKey: BitLocker Bypass (CVE‑2026‑45585) - Detect &amp; Remediate Automatically with Microsoft Intune. Fig-05" class="wp-image-368294" data-lazyloaded="1" data-sizes="auto, (max-width: 823px) 100vw, 823px" decoding="async" src="assets/e203acc0c44bba41/img_3.webp" title="YellowKey: BitLocker Bypass CVE‑2026‑45585 - Detect &amp; Remediate Automatically with Microsoft Intune 5"/><figcaption class="wp-element-caption">YellowKey: BitLocker Bypass (CVE‑2026‑45585) – Detect &amp; Remediate Automatically with Microsoft Intune. Fig-05</figcaption></figure></div><p class="wp-block-paragraph">On the <strong>Review + create</strong> pane, thoroughly check all the settings you have defined. Once you confirm everything is correct, select <strong>Create</strong> to implement the changes.</p><div class="wp-block-image"><figure class="aligncenter size-full is-resized"><img alt="YellowKey: BitLocker Bypass (CVE‑2026‑45585) - Detect &amp; Remediate Automatically with Microsoft Intune. Fig-06" class="wp-image-368295" data-lazyloaded="1" data-sizes="auto, (max-width: 782px) 100vw, 782px" decoding="async" src="assets/e203acc0c44bba41/img_4.webp" title="YellowKey: BitLocker Bypass CVE‑2026‑45585 - Detect &amp; Remediate Automatically with Microsoft Intune 6"/><figcaption class="wp-element-caption">YellowKey: BitLocker Bypass (CVE‑2026‑45585) – Detect &amp; Remediate Automatically with Microsoft Intune. Fig-06</figcaption></figure></div><p class="wp-block-paragraph">I trust that this article will significantly benefit you and your organization. I appreciate your patience in reading this post. I look forward to seeing you in the next post. Keep supporting the <strong>HTMD Community.</strong></p><h2 class="wp-block-heading" id="need-further-assistance-or-have-technical-questions"><strong>Need Further Assistance or Have Technical Questions?</strong></h2><p class="has-contrast-3-background-color has-background wp-block-paragraph">Join the <a href="https://www.linkedin.com/company/how-to-manage-devices/" rel="noreferrer noopener nofollow" target="_blank"><strong>LinkedI</strong></a><strong><a href="https://www.linkedin.com/company/how-to-manage-devices/" rel="noreferrer noopener nofollow" target="_blank">n</a></strong><a href="https://www.linkedin.com/company/how-to-manage-devices/" rel="noreferrer noopener nofollow" target="_blank"><strong> Page</strong></a> and <a href="https://t.me/+Q9lE6G1_BO_bGq97" rel="noreferrer noopener nofollow" target="_blank"><strong>Telegram group</strong></a> to get the latest step-by-step guides and news updates. Join our <a href="https://www.meetup.com/htmd-community-meetup-group/" rel="noreferrer noopener nofollow" target="_blank"><strong>Meetup Page</strong></a> to participate in User group meetings. Also, Join the <a href="https://chat.whatsapp.com/CeMXHSD61HtDBJwe78IZwV" rel="noreferrer noopener nofollow" target="_blank"><strong>WhatsApp Community</strong></a> to get the latest news on Microsoft Technologies. We are there on <a href="https://www.reddit.com/r/ImpMSNews/" rel="noreferrer noopener nofollow" target="_blank"><strong>Reddit</strong> </a>as well.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><h2 class="wp-block-heading" id="author"><strong>Author</strong></h2><p class="wp-block-paragraph"><strong>About the Author:</strong> <a href="http://linkedin.com/in/sujin-nelladath-8911968a" rel="noreferrer noopener nofollow" target="_blank"><strong>Sujin Nelladath, </strong></a>a <strong>Microsoft Graph MVP</strong> with over 13 years of experience in Intune device management and Automation solutions, writes and shares his experiences with Microsoft device management technologies, Azure, DevOps, Graph API and PowerShell automation.</p><p class="code-block code-block-8">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="1286776600" data-full-width-responsive="true"></ins> </p><p class="code-block code-block-9">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="8125570634" data-full-width-responsive="true"></ins> </p></div></div></div>
+</article>
+</body>
+</html>

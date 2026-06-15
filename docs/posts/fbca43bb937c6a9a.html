@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EPM Part 1: The End of Local Admin: How Intune Endpoint Privilege Management solves a problem IT has lived with for decades</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">MSEndpointMgr</span>
+    <span class="date">June 15, 2026</span>
+  </div>
+  <h1>EPM Part 1: The End of Local Admin: How Intune Endpoint Privilege Management solves a problem IT has lived with for decades</h1>
+  <div class="orig">Saved for offline reading · <a href="https://msendpointmgr.com/2026/06/15/epm-part-1-the-end-of-local-admin-how-intune-endpoint-privilege-management-solves-a-problem-it-has-lived-with-for-decades/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p data-block-type="core"><em>This blog post is the first in a series on Microsoft Intune Endpoint Privilege Management. This is not a Microsoft doc, but a series about how EPM will work in real life.</em></p>
+<hr class="wp-block-separator has-alpha-channel-opacity" data-block-type="core"/>
+<nav aria-label="Table of Contents" class="wp-block-kadence-tableofcontents kb-table-of-content-nav kb-table-of-content-id26587_af58c6-1a" role="navigation"></nav>
+<hr class="wp-block-separator has-alpha-channel-opacity" data-block-type="core"/>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#the-scenario-every-it-pro-recognizes" id="the-scenario-every-it-pro-recognizes"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>The Scenario Every IT Pro Recognizes</h2>
+<p data-block-type="core">It’s a Tuesday afternoon. A developer sends a message in Teams:</p>
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow" data-block-type="core">
+<p data-block-type="core"><em><span class="stk-highlight">“Hey, I need to install a tool to finish this sprint. Can you give me admin rights real quick?”</span></em></p>
+</blockquote>
+<p data-block-type="core">You know this conversation. You’ve had it hundreds of times. And every time, you’re stuck choosing between two options that both feel wrong:</p>
+<p data-block-type="core"><strong>Option A:</strong> Log a helpdesk ticket, wait for approval, remote in, install it yourself. Thirty minutes of friction for a two-minute task. The developer misses their deadline, and your helpdesk queue grows by one more entry.</p>
+<p data-block-type="core"><strong>Option B:</strong> Grant them local admin rights. Fast, easy and a security nightmare that IT leadership will eventually ask you to explain during the next audit.</p>
+<p data-block-type="core">This is not a new problem. It is arguably the oldest unsolved problem in endpoint management. And for years, the answer has been an uncomfortable compromise: organizations either lock everything down and strangle productivity, or they hand out local admin rights like candy and hope nothing bad happens. 🫣🤞</p>
+<p data-block-type="core">Both approaches are wrong, and as architects, we want to show you exactly how Microsoft Intune Endpoint Privilege Management gives you a third path. One that was previously only possible with expensive third-party tooling, and that, as of July 1, 2026, is part of your existing Microsoft 365 license.</p>
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="" class="wp-image-26593" decoding="async" src="assets/fbca43bb937c6a9a/img_0.png"/></figure>
+<hr class="wp-block-separator has-alpha-channel-opacity" data-block-type="core"/>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#why-this-actually-matters-the-architectural-view" id="why-this-actually-matters-the-architectural-view"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Why This Actually Matters – The Architectural View</h2>
+<p data-block-type="core">Before we talk about how Intune Endpoint Privilege Management works, let’s be honest about why the local admin problem is so persistent.</p>
+<p data-block-type="core">The reason organizations default to granting local admin rights is simple: they need to keep people productive. But the security and compliance cost of doing so is significant:</p>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core"><strong>Attack surface expansion.</strong> Local admin rights are one of the most exploited vectors in modern attacks. When a user with local admin rights runs a malicious attachment, the malware inherits those rights. Full stop.</li>
+<li data-block-type="core"><strong>Zero Trust violation.</strong> The principle of least privilege – one of the foundational pillars of a Zero Trust architecture – is immediately broken the moment you give a user more rights than they need for their daily work.</li>
+<li data-block-type="core"><strong>Audit and compliance gaps.</strong> When you grant local admin rights, you lose visibility. You no longer know what was installed, what was elevated, or when. During an incident investigation or a compliance audit, that blind spot is costly.</li>
+<li data-block-type="core"><strong>Helpdesk overload.</strong> If you go the other direction and lock everything down, you trade the security risk for a different operational cost: a helpdesk team buried in elevation requests for tasks that should be self-service.</li>
+</ul>
+<p data-block-type="core">The architecture problem is that there has never been a clean middle ground that works at scale without additional tooling. Until now.</p>
+<hr class="wp-block-separator has-alpha-channel-opacity" data-block-type="core"/>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#what-intune-endpoint-privilege-management-is" id="what-intune-endpoint-privilege-management-is"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>What Intune Endpoint Privilege Management Is</h2>
+<p data-block-type="core">Microsoft Intune Endpoint Privilege Management (EPM) lets your users run as standard users – no local admin rights – while still being able to perform specific tasks that require elevation. IT defines exactly what can be elevated, under what conditions, and with what level of approval. Everything is logged.</p>
+<p data-block-type="core">Here is the key architectural distinction that makes EPM different from simply granting local admin rights: <strong>elevations are temporary and isolated.</strong> EPM uses a virtual account to perform elevations, which is completely isolated from the logged-on user’s account. Neither account is added to the local administrators group. The user gets the elevation they need, the task completes, and then the elevated context is gone. No permanent privilege. No residual access.</p>
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow" data-block-type="core">
+<p data-block-type="core"><strong><span class="stk-highlight">Architect’s note</span> know this before you build your rules:</strong> The virtual account isolation is a security strength, but it comes with a practical gotcha you need to plan for. Because the elevation runs under a separate virtual account, anything written to the HKCU registry hive or the user’s library folders during the elevated process ends up in the <em>virtual account’s</em> profile, not the logged-on user’s. This means software that writes per-user configuration or data during installation may appear to install successfully, but behave incorrectly or fail to launch for the user afterward. We will cover how to identify which applications hit this pattern and how to handle it – including when to use the <em>Elevate as current user</em> elevation type instead – later in this post.</p>
+</blockquote>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#the-three-elevation-models" id="the-three-elevation-models"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>The Three Elevation Models</h3>
+<p data-block-type="core">EPM gives you three ways to handle elevation requests, and you will likely use all three depending on the user persona:</p>
+<p data-block-type="core"><strong>1. Automatic elevation</strong><br/>The application is elevated silently, without any user interaction. This is appropriate for known, trusted tools – a deployment script that needs to write to a protected registry key, for example. The user never even sees it happen.</p>
+<p data-block-type="core"><strong>2. User-initiated elevation with confirmation</strong><br/>The user right-clicks the application and selects “Run with elevated access.” They may be prompted to provide a business justification, which is logged. This is ideal for less frequent tasks where you want a light audit trail – installing a driver update, running a diagnostic tool.</p>
+<p data-block-type="core"><strong>3. Support-approved elevation</strong><br/>The user submits an elevation request, and it is routed to IT for approval before it can proceed. This is appropriate for higher-risk applications or in environments with strict compliance requirements.</p>
+<hr class="wp-block-separator has-alpha-channel-opacity" data-block-type="core"/>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#three-real-world-scenarios" id="three-real-world-scenarios"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Three Real-World Scenarios</h2>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#scenario-1-the-developer-enterprise-smb" id="scenario-1-the-developer-enterprise-smb"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Scenario 1: The Developer (Enterprise / SMB)</h3>
+<p data-block-type="core"><strong>The problem:</strong> A developer needs to install and update development tools regularly – Node.js, package managers, SDKs, local database tools. These installers require elevation. In a locked-down environment, every install becomes a helpdesk ticket.</p>
+<p data-block-type="core"><strong>How EPM solves it:</strong> IT creates an elevation rule for the approved installer, signed by a known certificate. When the developer runs the installer, EPM automatically elevates it. The developer sees no friction. IT retains full visibility. The helpdesk ticket never gets created.</p>
+<p data-block-type="core"><strong>The outcome:</strong> Developer productivity is preserved. The endpoint stays in a standard user configuration. The elevation event is logged with a timestamp, file hash, and user context, making it fully auditable.</p>
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow" data-block-type="core">
+<p data-block-type="core"><strong><span class="stk-highlight">Architect’s perspective</span> when EPM alone is not enough for developers:</strong></p>
+<p data-block-type="core">EPM works for developers. But we want to be honest about something: developers are the hardest user persona to support with EPM, and in many environments they may warrant a different architectural approach entirely.</p>
+<p data-block-type="core">The challenge is not technical, it is operational. Developer tooling is broad, constantly changing, and deeply varied across teams. One developer needs Python and a local Postgres instance. Another needs Docker, a specific kernel driver, and a build tool that ships its own package manager. Keeping EPM elevation rules current with that kind of diversity requires ongoing maintenance that many IT teams simply do not have capacity for. And when a rule is missing, the developer is blocked – which drives exactly the kind of shadow IT and workaround behaviour you are trying to eliminate.</p>
+<p data-block-type="core">More importantly, developers represent a fundamentally different risk profile compared to standard users. A compromised developer workstation is not just a compromised endpoint. It is potential access to source code repositories, CI/CD pipelines, cloud credentials, deployment keys, and production infrastructure. From an attacker’s perspective, a developer machine is one of the highest-value targets in the organisation. Treating it the same as a standard user device – just with tighter elevation policies – underestimates that risk.</p>
+<p data-block-type="core"><strong><span class="stk-highlight">The architectural ideal:</span> device segmentation</strong></p>
+<p data-block-type="core">The more mature approach is to stop trying to make the developer device fit the standard management model, and instead architect around the risk deliberately. This means treating developer devices as privileged access workstations – separated from the rest of the environment rather than simply more tightly controlled within it.</p>
+<p data-block-type="core">In practice, this often means a two-device model:</p>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core"><strong>The developer workstation</strong> is where development happens. It may have broad local rights, developer-controlled tooling, and relatively few restrictions – because the developer genuinely needs that freedom to do their job. But it is architecturally isolated. It has no access to production systems beyond what is explicitly required, no access to sensitive organisational data, and no standard collaboration tools. If it is compromised, the blast radius is contained to the development environment.</li>
+<li data-block-type="core"><strong>The productivity device</strong> is where the developer communicates, collaborates, and accesses organisational systems – email, Teams, SharePoint, HR systems. This device is managed exactly like any other standard user device, with EPM policies in place and no local admin rights. It is no different from what a finance user or operations manager would have.</li>
+</ul>
+<p data-block-type="core"></p>
+<p data-block-type="core"><span class="stk-highlight">The security logic here is important</span>: you are not relaxing security by giving developers a less-restricted machine. You are improving it by containing what an attacker can reach if that machine is compromised. The developer workstation being breached no longer means access to the organization’s communication, data, or identity infrastructure – because those never lived on that device.</p>
+<p data-block-type="core">Developers still need to collaborate and communicate, which is exactly why the productivity device exists. They are not isolated from the organisation – they are isolated from it <em>on the device where the risk is highest</em>.</p>
+<p data-block-type="core"><strong>When this is not practical</strong></p>
+<p data-block-type="core">Not every organization can operationally support two devices per developer. For smaller organizations, cost and logistics are real constraints. In those cases, EPM with carefully built, persona-specific elevation rules is a meaningful improvement over the status quo – and it is absolutely the right starting point. But if your organization is scaling its security maturity or your developers have access to production systems and sensitive pipelines, the two-device model is worth adding to the roadmap. It is the architectural decision that removes the compromise rather than managing it. Keep in mind, this doesn’t have to mean two physical devices – you could equip them with <a data-id="https://msendpointmgr.com/2023/11/13/book-review-of-mastering-windows-365/" data-type="link" href="https://msendpointmgr.com/2023/11/13/book-review-of-mastering-windows-365/" rel="noreferrer noopener" target="_blank">Windows 365 Cloud PC</a>s.</p>
+</blockquote>
+<hr class="wp-block-separator has-alpha-channel-opacity" data-block-type="core"/>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#scenario-2-the-field-operations-worker-enterprise-government" id="scenario-2-the-field-operations-worker-enterprise-government"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Scenario 2: The Field Operations Worker (Enterprise / Government)</h3>
+<p data-block-type="core"><strong>The problem:</strong> A field engineer working remotely needs to modify network settings to connect to a client VPN. On a locked-down machine, this requires either a helpdesk call, <a data-id="https://skotheimsvik.no/how-to-allow-field-engineers-change-their-local-ip-address" data-type="link" href="https://skotheimsvik.no/how-to-allow-field-engineers-change-their-local-ip-address" rel="noreferrer noopener" target="_blank">creative scripting</a>, or standing admin rights. Neither is practical in the field.</p>
+<p data-block-type="core"><strong>How EPM solves it:</strong> IT creates an elevation rule for the specific network configuration utility. The engineer right-clicks, selects elevated access, enters a brief justification, and completes the task. The IT team can see the event in the Intune admin center and correlate it with their SIEM if needed.</p>
+<p data-block-type="core"><strong>The outcome:</strong> The field engineer is unblocked. The endpoint was never compromised. The action is fully auditable – critical in regulated industries and government environments where every privileged action must be traceable.</p>
+<hr class="wp-block-separator has-alpha-channel-opacity" data-block-type="core"/>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#scenario-3-the-long-tail-software-request-all-segments" id="scenario-3-the-long-tail-software-request-all-segments"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Scenario 3: The Long-Tail Software Request (All Segments)</h3>
+<p data-block-type="core"><strong>The problem:</strong> IT packages and deploys the tools that most users need. But every organization has a long tail of software that only a handful of people require – a niche data visualization tool used by two analysts, a vendor-specific diagnostic utility needed by one person in procurement, a free PDF tool a team lead has used for years. These will never make it into the standard application catalog. The ROI of packaging, testing, and maintaining a deployment for two users simply is not there.</p>
+<p data-block-type="core">Without EPM, these requests end up as helpdesk tickets. IT either spends time on low-value installs one by one, or the user gives up and finds a workaround, which usually involves someone granting them temporary local admin rights and hoping they remember to remove it.</p>
+<p data-block-type="core"><strong>How Intune Endpoint Privilege Management solves it:</strong> Rather than packaging every niche tool, IT creates an elevation rule for the specific installer – matched by file hash and certificate – and assigns it to the relevant user or group. The user can install the tool themselves, without a helpdesk ticket and without ever holding local admin rights on their device. The elevation is logged, audited, and scoped to that exact binary. Nothing else is elevated. Nothing else changes.</p>
+<p data-block-type="core">For tools that are not yet known or approved, the support-approved elevation workflow handles the grey area: the user requests elevation, provides a business justification, and IT approves or denies it. If the same tool gets requested repeatedly, that is a signal to formalize it as a rule, or package it properly if adoption has grown enough to warrant it.</p>
+<p data-block-type="core"><strong>The outcome:</strong> The helpdesk queue shrinks. Users are unblocked without IT having to touch their devices. The organization retains full visibility into what was installed, by whom, and when. And no one had to make the uncomfortable choice between productivity and security.</p>
+<hr class="wp-block-separator has-alpha-channel-opacity" data-block-type="core"/>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#the-virtual-account-gotcha-and-how-to-handle-it" id="the-virtual-account-gotcha-and-how-to-handle-it"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>The Virtual Account Gotcha – And How to Handle It</h2>
+<p data-block-type="core">Earlier, we described how EPM uses a virtual account to perform elevations in isolation from the logged-on user. </p>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-26630" decoding="async" src="assets/fbca43bb937c6a9a/img_1.png"/><figcaption class="wp-element-caption">Example of an EPM elevated and a regular PowerShell prompt</figcaption></figure>
+<p data-block-type="core">That isolation is genuinely valuable from a security standpoint – it means the elevated process cannot reach the user’s personal data, credentials, or browser session. But it comes with a real-world catch that will bite you if you don’t plan for it.</p>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#what-goes-wrong" id="what-goes-wrong"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>What Goes Wrong</h3>
+<p data-block-type="core">When an installer or application runs under the virtual account, Windows resolves all user-context paths – <code>HKCU</code> in the registry, <code>%APPDATA%</code>, <code>%LOCALAPPDATA%</code>, <code>%USERPROFILE%\Documents</code>, and similar locations – relative to the <em>virtual account’s</em> profile, not the logged-on user’s.</p>
+<p data-block-type="core">This means that anything written to the HKCU registry hive or the user’s library folders during the elevated process ends up in the virtual account’s profile. The moment the elevation ends, that profile context is gone. The next time the user opens the application, it looks for its per-user configuration in the real user’s profile – and finds nothing. It behaves as if it was never configured, or in some cases, refuses to launch at all.</p>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#how-to-spot-the-pattern" id="how-to-spot-the-pattern"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>How to Spot the Pattern</h3>
+<p data-block-type="core">The symptoms are easy to misread if you don’t know what you’re looking for:</p>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core">The installation completes without errors, but the application will not launch for the user</li>
+<li data-block-type="core">First-run configuration wizards re-appear every time the application is opened</li>
+<li data-block-type="core">Application settings do not persist between sessions</li>
+<li data-block-type="core">Shortcuts created during installation point to paths that do not exist under the user’s profile</li>
+<li data-block-type="core">The application works fine when tested by someone with standing local admin rights (because their HKCU is the real user’s HKCU)</li>
+</ul>
+<p data-block-type="core">The last point is the one that catches teams out during testing. If your test account has local admin rights, the virtual account isolation never applies, and your test passes cleanly. The problem only surfaces when a standard user runs the EPM-elevated installer.</p>
+<p data-block-type="core">The applications most likely to hit this pattern are older Win32 installers that were designed before per-machine vs. per-user installation was a meaningful distinction, client-server applications that write connection configuration into the user profile during setup, and tools that store licence data or activation state in HKCU rather than HKLM.</p>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#the-solution-elevate-as-current-user" id="the-solution-elevate-as-current-user"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>The Solution: Elevate as Current User</h3>
+<p data-block-type="core">Microsoft addressed this directly in the<a data-id="https://learn.microsoft.com/en-us/intune/whats-new/#support-for-user-account-context-in-endpoint-privilege-management-elevation-rules?wt.mc_id=MVP_314171" data-type="link" href="https://learn.microsoft.com/en-us/intune/whats-new/#support-for-user-account-context-in-endpoint-privilege-management-elevation-rules?wt.mc_id=MVP_314171" rel="noreferrer noopener" target="_blank"> October 2025 update to Intune Endpoint Privilege Management</a>, introducing a fifth elevation type: <strong>Elevate as current user</strong>.</p>
+<p data-block-type="core">Instead of running the elevated process under the virtual account, this elevation type runs it under the signed-in user’s own account, with elevated privileges added. The user’s profile paths, environment variables, HKCU registry hive, and personalized settings are all intact and accessible throughout the elevation. The process runs as the user, just with the rights it needs.</p>
+<p data-block-type="core">There is an additional benefit worth noting for hybrid environments: because the elevation runs in the user’s own context, it inherits the user’s Kerberos tickets. This matters for applications that need to reach network resources – a line-of-business application launched from a network share, or a client-server installer that needs to authenticate to the server during setup – scenarios where the virtual account would have no network identity at all.</p>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#the-trade-off-and-when-to-use-each" id="the-trade-off-and-when-to-use-each"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>The Trade-Off and When to Use Each</h3>
+<p data-block-type="core">This is the decision you need to make deliberately in your elevation rules, not by default:</p>
+<div class="kb-table-container kb-table-container26587_dce14d-ee wp-block-kadence-table"><table class="kb-table kb-table26587_dce14d-ee">
+<tr class="kb-table-row kb-table-row26587_7152b4-52">
+<th class="kb-table-data kb-table-data26587_da0b29-92" scope="col">
+<p data-block-type="core">Scenario</p>
+</th>
+<th class="kb-table-data kb-table-data26587_b5f2e8-9b" scope="col">
+<p data-block-type="core">Recommended elevation type</p>
+</th>
+</tr>
+<tr class="kb-table-row kb-table-row26587_1de9cf-9a">
+<td class="kb-table-data kb-table-data26587_dc4c6c-45">
+<p data-block-type="core">Installs to <code>Program Files</code> or <code>HKLM</code> only</p>
+</td>
+<td class="kb-table-data kb-table-data26587_8fbde0-7d">
+<p data-block-type="core">Virtual account</p>
+</td>
+</tr>
+<tr class="kb-table-row kb-table-row26587_dab278-83">
+<td class="kb-table-data kb-table-data26587_c5bc4c-28">
+<p data-block-type="core">Drivers, system utilities, scripts modifying system state</p>
+</td>
+<td class="kb-table-data kb-table-data26587_f6d594-c8">
+<p data-block-type="core">Virtual account</p>
+</td>
+</tr>
+<tr class="kb-table-row kb-table-row26587_bff9e8-00">
+<td class="kb-table-data kb-table-data26587_673e06-96">
+<p data-block-type="core">Installers that write to <code>HKCU</code> or user profile folders</p>
+</td>
+<td class="kb-table-data kb-table-data26587_12e919-4d">
+<p data-block-type="core">Elevate as the current user</p>
+</td>
+</tr>
+<tr class="kb-table-row kb-table-row26587_5adac3-82">
+<td class="kb-table-data kb-table-data26587_3a80d2-80">
+<p data-block-type="core">Applications launched from a network share</p>
+</td>
+<td class="kb-table-data kb-table-data26587_74dfa8-e8">
+<p data-block-type="core">Elevate as the current user</p>
+</td>
+</tr>
+<tr class="kb-table-row kb-table-row26587_d4e527-dd">
+<td class="kb-table-data kb-table-data26587_37382f-bd">
+<p data-block-type="core">Client-server apps that authenticate during installation</p>
+</td>
+<td class="kb-table-data kb-table-data26587_c33c2a-89">
+<p data-block-type="core">Elevate as the current user</p>
+</td>
+</tr>
+<tr class="kb-table-row kb-table-row26587_c35d72-6f">
+<td class="kb-table-data kb-table-data26587_b5fbca-63">
+<p data-block-type="core">Anything where you are uncertain</p>
+</td>
+<td class="kb-table-data kb-table-data26587_7897a4-ce">
+<p data-block-type="core">Start with a virtual account, <br/>test, then switch if needed</p>
+</td>
+</tr>
+</table></div>
+<p data-block-type="core">The security posture of the virtual account is stronger – the elevated process is more isolated, and the audit trail clearly distinguishes the virtual account’s actions from the user’s. Elevate as current user increases the exposure surface because the elevated process runs with the full user identity. Use it where it is genuinely needed, and treat it as the exception rather than the default.</p>
+<p data-block-type="core">In practice, the audit data from your Phase 1 deployment will tell you a lot. If you see elevation events completing successfully but users reporting that applications are not working correctly afterward, the virtual account profile collision is almost certainly the cause. That is your signal to review the rule and switch to Elevate as current user for that specific application.</p>
+<hr class="wp-block-separator has-alpha-channel-opacity" data-block-type="core"/>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#the-architecture-how-epm-is-built" id="the-architecture-how-epm-is-built"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>The Architecture: How EPM is built</h2>
+<p data-block-type="core">For those who want to understand what is happening under the hood, here is the practical architecture of Intune Endpoint Privilege Management.</p>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#two-policy-types" id="two-policy-types"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Two Policy Types</h3>
+<p data-block-type="core">Intune Endpoint Privilege Management is configured through two types of policies in the Microsoft Intune admin center:</p>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core"><strong>Elevation Settings Policy</strong> – controls how the EPM client behaves on the device: whether elevation is enabled, what the default behavior is, and what level of reporting is collected.</li>
+<li data-block-type="core"><strong>Elevation Rules Policy</strong> – defines what gets elevated and how. Rules are built on one or more detection attributes: file name, file path, file hash, product version, and certificate signature. You can also control child process behavior, meaning you can specify what subprocesses an elevated application is allowed to spawn.</li>
+</ul>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#the-recommended-deployment-approach" id="the-recommended-deployment-approach"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>The recommended deployment approach</h3>
+<p data-block-type="core">If there is one architectural recommendation we would give to anyone starting with Intune Endpoint Privilege Management, it is this: <strong>do not start by removing local admin rights. Start by listening.</strong></p>
+<p data-block-type="core">The recommended deployment follows two phases before you ever touch a single user’s admin rights:</p>
+<p data-block-type="core"><strong>Phase 1 – Audit.</strong> Enable the EPM client in reporting mode. Collect elevation data across your environment. Let the agent observe what is actually being elevated, by whom, and how often. The EPM Overview Dashboard in the Intune admin center aggregates this data, showing you your top elevated applications, devices with local admin accounts, and the full landscape of managed vs. unmanaged elevations.</p>
+<p data-block-type="core"><strong>Phase 2 – Persona mapping.</strong> Use the audit data to identify groups of users with common elevation needs. A developer cohort. An IT operations team. Finance users who run a legacy reconciliation tool. Build your elevation rules around these personas before you remove any admin rights.</p>
+<p data-block-type="core">Only after Phases 1 and 2 are complete should you begin transitioning users from local administrators to standard users, with confidence that your rules cover their actual workflows.</p>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#integration-with-your-security-stack" id="integration-with-your-security-stack"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Integration with Your Security Stack</h3>
+<p data-block-type="core">Intune Endpoint Privilege Management integrates directly with Microsoft Defender for Endpoint. If you have Defender integrated, elevation events are available in Advanced Hunting, enabling your SOC to correlate privilege-escalation events with broader threat signals. You can also forward EPM logs to your SIEM for centralized visibility across your environment.</p>
+<hr class="wp-block-separator has-alpha-channel-opacity" data-block-type="core"/>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#licensing-what-changes-on-july-1-2026" id="licensing-what-changes-on-july-1-2026"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Licensing: What Changes on July 1, 2026</h2>
+<p data-block-type="core">This is where the conversation gets important for budget owners and architects planning for the next 12 months.</p>
+<p data-block-type="core">Intune Endpoint Privilege Management has historically required the Microsoft Intune Suite as a paid add-on, approximately $10 per user per month on top of your base Microsoft 365 license. For many organizations, that cost was the primary reason EPM never made it past the proof-of-concept stage.</p>
+<p data-block-type="core">That changes on July 1, 2026.</p>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#what-is-included-in-each-license-tier" id="what-is-included-in-each-license-tier"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>What is included in each license tier</h3>
+<p data-block-type="core"><strong>Microsoft 365 E3</strong> will include:</p>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core">Intune Remote Help</li>
+<li data-block-type="core">Microsoft Intune Advanced Analytics</li>
+<li data-block-type="core">Intune Plan 2 capabilities</li>
+</ul>
+<p data-block-type="core"><strong>Microsoft 365 E5</strong> will include everything in E3, plus:</p>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core"><strong>Intune Endpoint Privilege Management</strong></li>
+<li data-block-type="core">Microsoft Cloud PKI</li>
+<li data-block-type="core">Intune Enterprise Application Management</li>
+<li data-block-type="core">Microsoft Security Copilot</li>
+</ul>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#the-rollout-timeline" id="the-rollout-timeline"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>The Rollout Timeline</h3>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core">Pricing changes take effect <strong>July 1, 2026</strong></li>
+<li data-block-type="core">Feature rollout for eligible tenants begins in CY26 Q3 and completes by <strong>August 1, 2026</strong></li>
+<li data-block-type="core">No customer action is required – capabilities are added automatically</li>
+<li data-block-type="core">Tenants receive 30 days’ notice in the Message Center before the update becomes available in their tenant</li>
+<li data-block-type="core">Standalone Microsoft Intune Suite and individual add-ons remain available for organizations not on E3/E5</li>
+</ul>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#what-this-means-architecturally" id="what-this-means-architecturally"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>What This Means Architecturally</h3>
+<p data-block-type="core">If your organization is on Microsoft 365 E5, you will have access to Intune Endpoint Privilege Management as part of your existing license by August 2026. The business case for deploying it is straightforward:</p>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core"><strong>Replace third-party tooling.</strong> Many organizations are currently paying for separate endpoint privilege management products. Those costs can be eliminated.</li>
+<li data-block-type="core"><strong>Strengthen your Zero Trust posture</strong> without new procurement cycles.</li>
+<li data-block-type="core"><strong>Consolidate your management plane</strong> – EPM is managed from the same Intune admin center you are already using for device compliance, configuration profiles, and app protection policies.</li>
+</ul>
+<p data-block-type="core">The price increase for Microsoft 365 E5 – from $57 to $60 per user per month – reflects the addition of these capabilities. For most organizations, the value of eliminating the Intune Suite add-on alone offsets the increase.</p>
+<hr class="wp-block-separator has-alpha-channel-opacity" data-block-type="core"/>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#where-to-start" id="where-to-start"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Where to Start</h2>
+<p data-block-type="core">If you are an architect or IT lead reading this and thinking about how to move forward, here is the practical sequence we recommend:</p>
+<ol class="wp-block-list" data-block-type="core">
+<li data-block-type="core"><strong>Verify your license tier.</strong> Confirm whether your organization is on Microsoft 365 E3 or E5, and check the Microsoft 365 Message Center for your rollout notification.</li>
+<li data-block-type="core"><strong>Enable EPM in audit mode first.</strong> Deploy the Elevation Settings Policy in reporting-only mode. Give it two to four weeks to collect data across your endpoint estate.</li>
+<li data-block-type="core"><strong>Review the EPM Overview Dashboard.</strong> Identify your top elevated applications and the users running them. This is your rule backlog.</li>
+<li data-block-type="core"><strong>Build elevation rules before removing admin rights.</strong> Target the top 10-15 applications that account for the majority of elevation events in your environment.</li>
+<li data-block-type="core"><strong>Define your user personas.</strong> Segment your users by role and elevation need. Different personas get different elevation policies – automatic for well-understood developer tools, user-initiated for less frequent tasks, support-approved for high-risk applications.</li>
+<li data-block-type="core"><strong>Begin the transition.</strong> Use the Local Users and Groups configuration in Intune to start removing users from the local administrators group, cohort by cohort, starting with your lowest-risk user segments.</li>
+<li data-block-type="core"><strong>Monitor and adjust.</strong> Use the EPM reports in the Intune admin center to track elevation trends. Forward events to your SIEM for full visibility.</li>
+</ol>
+<hr class="wp-block-separator has-alpha-channel-opacity" data-block-type="core"/>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#closing-thoughts" id="closing-thoughts"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Closing Thoughts</h2>
+<p data-block-type="core">The local admin problem has never been a technical problem. It has always been an organizational one – a tension between security and productivity that most tools forced you to resolve in favor of one or the other.</p>
+<p data-block-type="core">Intune Endpoint Privilege Management resolves that tension. Standard users stay productive. IT retains control. Every elevation is logged and auditable. As of July 1, 2026, if your organization is on Microsoft 365 E5, this capability is already included in your license.</p>
+<p data-block-type="core">The question is no longer whether you can afford to deploy it. The question is how quickly you can get started.</p>
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="" class="wp-image-26590" decoding="async" src="assets/fbca43bb937c6a9a/img_2.png"/></figure>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#faq" id="faq"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>FAQ</h2>
+<div class="rank-math-block" id="rank-math-faq">
+<div class="rank-math-list">
+<div class="rank-math-list-item" id="faq-question-1780685633562">
+<h4 class="rank-math-question"><a aria-hidden="true" class="aal_anchor" href="#what-problem-does-intune-endpoint-privilege-management-actually-solve" id="what-problem-does-intune-endpoint-privilege-management-actually-solve"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>What problem does Intune Endpoint Privilege Management actually solve?</h4>
+<div class="rank-math-answer">
+<p>EPM solves the long-standing trade-off between productivity and security by allowing users to run as standard users while still performing specific privileged tasks without needing full local admin rights.</p>
+</div>
+</div>
+<div class="rank-math-list-item" id="faq-question-1780685658373">
+<h4 class="rank-math-question"><a aria-hidden="true" class="aal_anchor" href="#how-is-epm-different-from-simply-granting-local-admin-rights" id="how-is-epm-different-from-simply-granting-local-admin-rights"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>How is EPM different from simply granting local admin rights?</h4>
+<div class="rank-math-answer">
+<p>Unlike local admin access, EPM provides <strong>temporary, scoped elevations</strong> that are isolated and fully audited, meaning no permanent privilege and no residual access after the task is complete.</p>
+</div>
+</div>
+<div class="rank-math-list-item" id="faq-question-1780685683200">
+<h4 class="rank-math-question"><a aria-hidden="true" class="aal_anchor" href="#what-are-the-different-elevation-types-in-epm" id="what-are-the-different-elevation-types-in-epm"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>What are the different elevation types in EPM?</h4>
+<div class="rank-math-answer">
+<p>EPM supports three core models:<br/>– Automatic elevation (silent)<br/>– User-initiated elevation (with justification)<br/>– Support-approved elevation<br/>These allow you to align privilege elevation with user personas and risk levels.</p>
+</div>
+</div>
+<div class="rank-math-list-item" id="faq-question-1780685712183">
+<h4 class="rank-math-question"><a aria-hidden="true" class="aal_anchor" href="#when-should-i-use-elevate-as-current-user" id="when-should-i-use-elevate-as-current-user"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>When should I use “Elevate as current user”?</h4>
+<div class="rank-math-answer">
+<p>Use <strong>virtual account</strong> for system-level changes (more secure, isolated)<br/>Use <strong>current user</strong> when applications depend on user context (e.g., HKCU or user profile paths)<br/>Choosing incorrectly may result in apps installing but not working for the user.</p>
+</div>
+</div>
+<div class="rank-math-list-item" id="faq-question-1780685748175">
+<h4 class="rank-math-question"><a aria-hidden="true" class="aal_anchor" href="#why-do-some-applications-fail-after-being-installed-with-epm" id="why-do-some-applications-fail-after-being-installed-with-epm"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Why do some applications fail after being installed with EPM?</h4>
+<div class="rank-math-answer">
+<p>Some installers write configuration data to user-specific locations (HKCU, AppData).<br/>When using the virtual account, this data ends up in a temporary profile, causing apps to fail or reset after launch.</p>
+</div>
+</div>
+<div class="rank-math-list-item" id="faq-question-1780685765828">
+<h4 class="rank-math-question"><a aria-hidden="true" class="aal_anchor" href="#should-i-remove-local-admin-rights-before-deploying-epm" id="should-i-remove-local-admin-rights-before-deploying-epm"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Should I remove local admin rights before deploying EPM?</h4>
+<div class="rank-math-answer">
+<p>No, start with EPM <strong>audit mode first</strong>.<br/>Use collected data to understand real elevation patterns, then build policies before removing admin rights.</p>
+</div>
+</div>
+<div class="rank-math-list-item" id="faq-question-1780685787951">
+<h4 class="rank-math-question"><a aria-hidden="true" class="aal_anchor" href="#how-do-i-decide-what-elevation-rules-to-create" id="how-do-i-decide-what-elevation-rules-to-create"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>How do I decide what elevation rules to create?</h4>
+<div class="rank-math-answer">
+<p>Use audit data to:<br/>– Identify frequently elevated apps<br/>– Group users into personas (e.g., developers, finance, field workers)<br/>– Build rules that match real-world usage—not assumptions</p>
+</div>
+</div>
+<div class="rank-math-list-item" id="faq-question-1780685815788">
+<h4 class="rank-math-question"><a aria-hidden="true" class="aal_anchor" href="#is-epm-enough-for-developer-workstations" id="is-epm-enough-for-developer-workstations"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Is EPM enough for developer workstations?</h4>
+<div class="rank-math-answer">
+<p>Not always.<br/>Developers often have highly dynamic tooling needs, making rule maintenance challenging.<br/>For higher maturity environments, a <strong>segmented or two-device model</strong> may be a better long-term approach for developers.</p>
+</div>
+</div>
+<div class="rank-math-list-item" id="faq-question-1780685844512">
+<h4 class="rank-math-question"><a aria-hidden="true" class="aal_anchor" href="#how-does-epm-improve-security-in-a-zero-trust-architecture" id="how-does-epm-improve-security-in-a-zero-trust-architecture"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>How does EPM improve security in a Zero Trust architecture?</h4>
+<div class="rank-math-answer">
+<p>EPM enforces <strong>least privilege</strong> by ensuring users only receive elevation when needed, reducing the attack surface and maintaining the auditability of all privileged actions.</p>
+</div>
+</div>
+<div class="rank-math-list-item" id="faq-question-1780685863751">
+<h4 class="rank-math-question"><a aria-hidden="true" class="aal_anchor" href="#what-changes-with-licensing-after-july-1-2026" id="what-changes-with-licensing-after-july-1-2026"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>What changes with licensing after July 1, 2026?</h4>
+<div class="rank-math-answer">
+<p>EPM is included in Microsoft 365 E5, removing the need for a separate Intune Suite add-on and making it easier to justify deployment from both technical and financial perspectives.</p>
+</div>
+</div>
+</div>
+</div><p class="post-views content-post post-26587 entry-meta load-static">
+<span class="post-views-icon dashicons dashicons-chart-bar"></span> <span class="post-views-label">Views:</span> <span class="post-views-count">162</span>
+</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
