@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Models in 2026: What I Would Actually Pick</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">June 15, 2026</span>
+  </div>
+  <h1>AI Models in 2026: What I Would Actually Pick</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/2026/06/15/ai-models-2026-comparison-europe/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p class="wp-block-paragraph">Almost every week someone asks me the same question: “Which AI model should we use?” I work not in a research lab, so I look at these models the way most of you do — from the outside, with a budget, a compliance team, and real data I am not allowed to leak. In this blog post I go through the latest AI models in June 2026 and sort them by price, capability and use case. I also do something most comparison posts skip: I look at what this means for <strong>European companies</strong> and <strong>data sovereignty</strong>. At the end I tell you plainly what I would choose.</p>
+<p class="wp-block-paragraph">A short warning first: this is the fastest moving topic I have ever written about. Almost every model below was released between April and June 2026. So treat this as a snapshot, not a law. The way of thinking will last longer than the model names.</p>
+<span id="more-18839"></span>
+<h2 class="wp-block-heading">Who are the players in June 2026?</h2>
+<p class="wp-block-paragraph">It helps to group the models by where they come from. That is not politics — for a European company the origin of a model decides a lot about price, licensing and data control.</p>
+<p class="wp-block-paragraph"><strong>United States — the frontier labs.</strong><br/>
+– <strong>OpenAI</strong> ships <em>GPT-5.5</em> (April 2026) as the flagship, with <em>GPT-5.5-pro</em> on top and the cheaper <em>GPT-5.2</em> below it.<br/>
+– <strong>Anthropic</strong> ships <em>Claude Opus 4.8</em> (May 2026) as the flagship, with <em>Claude Sonnet 4.6</em> for daily work and <em>Claude Haiku 4.5</em> as the small, fast one.<br/>
+– <strong>Google</strong> ships <em>Gemini 3.1 Pro</em> (the biggest context window on the market, 2M tokens) and the newer, cheaper <em>Gemini 3.5 Flash</em>.<br/>
+– <strong>Microsoft</strong> is new on this list. At Build 2026 the Microsoft AI team released its first own family, including <em>MAI-Thinking-1</em> — a mid-sized reasoning model trained from scratch, not distilled from someone else’s model. There is also <em>MAI-Code-1</em> inside GitHub Copilot.<br/>
+– <em>xAI</em> (Grok) is also out there, but for the European, enterprise-focused view of this post it plays a smaller role, so I keep the focus on the labs above.</p>
+<p class="wp-block-paragraph"><strong>Europe — the sovereign option.</strong><br/>
+– <strong>Mistral</strong> (France) ships <em>Mistral Large 3</em>, an open-weight model under the Apache 2.0 license, plus <em>Medium 3</em> and the tiny <em>Small 3.1</em>. This is the model most European companies look at first.<br/>
+– <strong>Aleph Alpha</strong> (Germany) with its <em>PhariaAI</em> platform is less a single model and more a full sovereign stack that runs inside German jurisdiction. After the Cohere merger in April 2026 it is the heavyweight for public sector and regulated industries.</p>
+<p class="wp-block-paragraph"><strong>China — the open-weight powerhouse.</strong><br/>
+– <strong>DeepSeek V4</strong> (April 2026, MIT license) — the largest open-weight model right now.<br/>
+– <strong>Alibaba Qwen</strong> — the open <em>Qwen3.6-27B</em> (Apache 2.0), but note the new flagships <em>Qwen 3.6-Max</em> and <em>Qwen 3.7-Max</em> are now <strong>closed</strong>.<br/>
+– <strong>Moonshot Kimi K2.6</strong> — a very strong agentic model, extremely cheap.<br/>
+– <strong>Zhipu GLM-5.1</strong> and <strong>MiniMax</strong> round out the field.</p>
+<p class="wp-block-paragraph">Note: “China” here mostly means <strong>open weights you can download and run yourself</strong>. That is a very different thing from sending your data to a Chinese API, and it matters a lot for the sovereignty part later.</p>
+<h2 class="wp-block-heading">What does performance look like?</h2>
+<p class="wp-block-paragraph">Here is how I see price against capability. The price (x-axis) is the real, public output price per 1M tokens. The capability (y-axis) is <strong>my own read</strong> across coding, reasoning and agentic work — not a single benchmark, because every lab picks the benchmark that makes it look best.</p>
+<figure class="wp-block-image"><img alt="Price versus capability of the leading AI models in June 2026" class="wp-image-18881" data-recalc-dims="1" decoding="async" src="assets/3592012c008c98f4/img_0.jpg"/></figure>
+<p class="wp-block-paragraph"></p>
+<p class="wp-block-paragraph">Two things jump out:</p>
+<ol class="wp-block-list">
+<li><strong>The top is crowded.</strong> GPT-5.5, Claude Opus 4.8 and Gemini 3.1 Pro sit at the very top. The gap between them is small and changes with every release. If someone tells you one of them is clearly “the best”, be careful.</li>
+<li><strong>The open-weight models (the dots with a dark ring) moved up and left.</strong> DeepSeek V4 and the Chinese models now sit close to last year’s frontier — but at a fraction of the price. The US labs CAISI / NIST evaluation put the best open weights about <strong>8 months behind</strong> the closed frontier. Eight months, not years. That is the real story of 2026.</li>
+</ol>
+<p class="wp-block-paragraph">Hint: when you read “beats GPT-5.5 on benchmark X”, check <em>which</em> benchmark and <em>whose</em> numbers. A model that wins on a coding benchmark can still feel worse in your actual workflow.</p>
+<h2 class="wp-block-heading">What does it cost?</h2>
+<p class="wp-block-paragraph">Capability is only half the decision. The other half is the bill at the end of the month. This is the output price per 1M tokens — the part you pay for every answer the model writes.</p>
+<figure class="wp-block-image"><img alt="Output price per one million tokens across the latest 2026 AI models" class="wp-image-18883" data-recalc-dims="1" decoding="async" src="assets/3592012c008c98f4/img_1.jpg"/></figure>
+<p class="wp-block-paragraph"></p>
+<p class="wp-block-paragraph">The spread is huge. A frontier US model can cost <strong>30–60x</strong> more per answer than a strong Chinese open-weight model. For a chat assistant used by a few people, the price does not matter much. For an agent that runs thousands of tool calls a day, it decides whether the project is affordable at all.</p>
+<p class="wp-block-paragraph">Hint: two levers cut these prices a lot. <strong>Prompt caching</strong> (up to ~90% off repeated input) and <strong>batch processing</strong> (about 50% off when you can wait). Use them before you switch to a weaker model.</p>
+<h2 class="wp-block-heading">The cheat sheet</h2>
+<figure class="wp-block-table"><table class="has-fixed-layout"><thead><tr><th>Model</th><th>Origin</th><th>Open weights</th><th>Price in / out ($/1M)</th><th>Context</th><th>I reach for it when…</th></tr></thead><tbody><tr><td>GPT-5.5</td><td>USA (OpenAI)</td><td>No</td><td>5 / 30</td><td>1M</td><td>I want the strongest all-rounder and budget is not the issue</td></tr><tr><td>Claude Opus 4.8</td><td>USA (Anthropic)</td><td>No</td><td>5 / 25</td><td>1M</td><td>I do long, careful coding and agent work</td></tr><tr><td>Claude Sonnet 4.6</td><td>USA (Anthropic)</td><td>No</td><td>3 / 15</td><td>1M</td><td>Daily driver — most of my real work</td></tr><tr><td>Claude Haiku 4.5</td><td>USA (Anthropic)</td><td>No</td><td>1 / 5</td><td>—</td><td>High volume, simple tasks, low latency</td></tr><tr><td>Gemini 3.1 Pro</td><td>USA (Google)</td><td>No</td><td>2 / 12</td><td>2M</td><td>I need the biggest context (huge docs, whole repos)</td></tr><tr><td>Gemini 3.5 Flash</td><td>USA (Google)</td><td>No</td><td>1.5 / 9</td><td>1M</td><td>Fast, cheap, still strong on coding</td></tr><tr><td>MAI-Thinking-1</td><td>USA (Microsoft)</td><td>(in rollout)</td><td>low</td><td>—</td><td>I already live in the Microsoft / Copilot stack</td></tr><tr><td>Mistral Large 3</td><td>Europe (FR)</td><td>Yes (Apache 2.0)</td><td>2 / 6</td><td>—</td><td>I want a strong model I can self-host in the EU</td></tr><tr><td>Mistral Small 3.1</td><td>Europe (FR)</td><td>Yes</td><td>0.2 / 0.6</td><td>—</td><td>Cheap on-prem tasks, edge, classification</td></tr><tr><td>Aleph Alpha Pharia</td><td>Europe (DE)</td><td>Yes</td><td>sovereign stack</td><td>—</td><td>Public sector / regulated, German jurisdiction</td></tr><tr><td>DeepSeek V4 Pro</td><td>China</td><td>Yes (MIT)</td><td>~0.3 / ~0.9</td><td>1M</td><td>Near-frontier quality at the lowest price</td></tr><tr><td>Kimi K2.6</td><td>China</td><td>Yes (mod. MIT)</td><td>very low</td><td>—</td><td>Long agentic runs, thousands of tool calls</td></tr><tr><td>GLM-5.1</td><td>China</td><td>Yes (MIT)</td><td>low</td><td>—</td><td>Strong coding model to self-host</td></tr></tbody></table></figure>
+<p class="wp-block-paragraph">Note: prices change almost monthly and the cheap open-weight models cost you <strong>GPU time</strong>, not a per-token fee, when you run them yourself. Read the table as “order of magnitude”, not as a quote.</p>
+<h2 class="wp-block-heading">What about data sovereignty for European companies?</h2>
+<p class="wp-block-paragraph">This is the part I care about most, and the part most US comparison posts ignore. From <strong>2 August 2026</strong> the main rules of the <strong>EU AI Act</strong> apply, with fines up to €35M or 7% of global revenue. At the same time, the discussion has moved from “where does the data sit” to “who controls the stack”.</p>
+<p class="wp-block-paragraph">Here is the uncomfortable truth: the <strong>US CLOUD Act</strong> lets US authorities compel a US company to hand over data — even if the servers are in Frankfurt or Zurich. So “EU region” on a US cloud is <strong>data residency</strong>, not full <strong>sovereignty</strong>. For many companies that is fine. For a hospital, a bank, a defence supplier or a public authority, it is often not.</p>
+<p class="wp-block-paragraph">I find it easiest to look at it as a map: data control on one axis, capability on the other.</p>
+<figure class="wp-block-image"><img alt="Data sovereignty versus capability of AI models for European companies in 2026" class="wp-image-18882" data-recalc-dims="1" decoding="async" src="assets/3592012c008c98f4/img_2.jpg"/></figure>
+<p class="wp-block-paragraph"></p>
+<ul class="wp-block-list">
+<li><strong>Top left — US closed APIs (GPT, Claude, Gemini, MAI).</strong> Highest capability, lowest data control for an EU company. Great models, US jurisdiction. Mitigate with EU regions, zero-retention agreements and Azure/Bedrock data boundaries — but it stays a US stack.</li>
+<li><strong>Right side — open weights you run yourself.</strong> This is where sovereignty lives. The Chinese open-weight models (DeepSeek V4, GLM-5.1, Kimi K2.6) are MIT/Apache licensed, so you can download them and run them on a GPU server in a German data center. <strong>No personal data leaves your system.</strong> The model is Chinese; the deployment is fully yours.</li>
+<li><strong>Far right — Mistral and Aleph Alpha.</strong> A European vendor, open weights or a sovereign on-prem stack, EU jurisdiction. This is the cleanest answer when “no US and no China dependency” is a hard requirement.</li>
+</ul>
+<p class="wp-block-paragraph">Note: a managed GPU server with ~96 GB VRAM for local inference is around €1,500/month. That is not nothing, but for a regulated company it is often cheaper and calmer than the compliance fight over a US API.</p>
+<p class="wp-block-paragraph">Important pitfall on “open”: <strong>Meta’s Llama 4</strong> is often called open source, but its license <strong>restricts EU usage</strong> and adds a large-company clause. The Open Source Initiative does not accept it as open source. So for a European company, the truly clean open-weight options are Mistral and the Chinese MIT/Apache models — not Llama.</p>
+<h2 class="wp-block-heading">Strengths and weaknesses — the short version</h2>
+<ul class="wp-block-list">
+<li><strong>OpenAI GPT-5.5</strong> — strongest all-rounder, huge ecosystem. Weakness: premium price, US jurisdiction.</li>
+<li><strong>Anthropic Claude (Opus 4.8 / Sonnet 4.6)</strong> — my favourite for coding and long agent runs, very steady. Weakness: price at the top, US jurisdiction.</li>
+<li><strong>Google Gemini 3.1 Pro</strong> — unbeatable 2M context and good price for the class. Weakness: behaviour changes a lot between versions.</li>
+<li><strong>Microsoft MAI</strong> — interesting because it is cheap, efficient and sits right inside the Microsoft stack many of us already run. Weakness: brand new, still proving itself.</li>
+<li><strong>Mistral</strong> — the European default: open weights, EU hosting, fair price. Weakness: a step below the absolute frontier on the hardest tasks.</li>
+<li><strong>Aleph Alpha</strong> — the sovereign choice for public sector and regulated industry. Weakness: you pay for sovereignty, not for top benchmark scores.</li>
+<li><strong>DeepSeek / Qwen / Kimi / GLM</strong> — frontier-near quality at the lowest price, open weights. Weakness: Chinese origin (a trust and governance question, even when you self-host) and a worrying trend of moving the <em>best</em> models to closed weights (Qwen-Max).</li>
+</ul>
+<h2 class="wp-block-heading">What I would actually choose</h2>
+<p class="wp-block-paragraph">I do not use one model for everything. Here is how I split it:</p>
+<ol class="wp-block-list">
+<li><strong>Daily coding and agents, no special data rules</strong> — Claude Sonnet 4.6, with Opus 4.8 for the hard parts. GPT-5.5 is an equally fine choice.</li>
+<li><strong>Huge documents or whole-repo context</strong> — Gemini 3.1 Pro for the 2M window.</li>
+<li><strong>High volume, cost-sensitive</strong> — a cheap open-weight model (DeepSeek V4 or Kimi K2.6), or Gemini 3.5 Flash / Haiku 4.5 if I want to stay on a managed API.</li>
+<li><strong>Sensitive data, must stay in the EU</strong> — self-hosted <strong>Mistral Large 3</strong>. If “no US, no China” is a hard rule, this is my answer.</li>
+<li><strong>Public sector / heavily regulated</strong> — <strong>Aleph Alpha Pharia</strong>, because German jurisdiction and the compliance story matter more than a benchmark point.</li>
+</ol>
+<p class="wp-block-paragraph">The honest summary: I would not give one model a “sovereignty pass” or a “quality pass”. I match the model to the task and to the data classification. The frontier US models for the hard, non-sensitive work — a European or self-hosted open-weight model the moment real data is involved.</p>
+<h2 class="wp-block-heading">Pitfalls I now avoid</h2>
+<ul class="wp-block-list">
+<li><strong>Trusting a single benchmark.</strong> Every lab cherry-picks. Test on <em>your</em> tasks for one afternoon — it beats any leaderboard.</li>
+<li><strong>Ignoring the bill until production.</strong> A model that is 30x cheaper can be “good enough” and save a project. Decide price <em>before</em> you fall in love with a model.</li>
+<li><strong>Reading “EU region” as “sovereign”.</strong> It is data residency. The CLOUD Act still reaches a US provider.</li>
+<li><strong>Assuming “open” means open.</strong> Check the license (Llama restricts EU use; some Chinese flagships went closed). Apache 2.0 and MIT are the clean ones.</li>
+<li><strong>Building hard against one API.</strong> Keep a thin abstraction so you can swap models. In 2026 the leader changes every few weeks.</li>
+</ul>
+<h2 class="wp-block-heading">Where this is heading</h2>
+<p class="wp-block-paragraph">Two trends will shape the rest of 2026. First, <strong>open weights keep closing the gap</strong> — about 8 months behind the frontier today, and falling. For a European company that is the most important number on this whole page, because it means “sovereign” and “good enough” are finally landing in the same model. Second, <strong>price keeps collapsing</strong>, which makes agents that run all day actually affordable.</p>
+<p class="wp-block-paragraph">My advice has not really changed since I started writing about AI: pick the simplest model that does the job, keep your data where your compliance team can sleep at night, and stay flexible — because next month this whole list will look a little different again.</p>
+<p class="wp-block-paragraph">If you want to go one level deeper on running agents cost-effectively, I also wrote about the <a href="https://jannikreinhard.com/">AI coding token budget</a>. And for the rules themselves, the official <a href="https://artificialintelligenceact.eu/" rel="noopener" target="_blank">EU AI Act timeline</a> is the source I keep open.</p>
+<p class="wp-block-paragraph">I hope this is a little help when the next “which model should we use?” question lands on your desk.</p>
+<p class="wp-block-paragraph">Stay healthy, Cheers Jannik</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Autopatch Client Broker Fails During Autopilot Pre-Provisioning</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Call4Cloud (Rudy Ooms)</span>
+    <span class="date">June 15, 2026</span>
+  </div>
+  <h1>Autopatch Client Broker Fails During Autopilot Pre-Provisioning</h1>
+  <div class="orig">Saved for offline reading · <a href="https://patchmypc.com/blog/autopatch-client-broker-fails-during-autopilot-pre-provisioning/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="post-content">
+<p>This blog will show you why configuring the <strong>Autopatch Client Broker</strong> as a blocking app in the  Enrollment Status Page can break your enrollment. The issue is not the broker itself, but a custom action in the MSI that checks the Windows CloudDomainJoin TenantInfo registry key after Windows Autopilot pre-provisioning has already deleted it</p>
+<h2 class="wp-block-heading" id="h-what-is-the-autopatch-client-broker">What is the Autopatch Client Broker<span class="clth-copy-icon" data-heading-id="h-what-is-the-autopatch-client-broker"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>Sometimes an installer fails because it cannot copy files. Sometimes it fails because the service behind it is unavailable. And sometimes it fails because the installer asks Windows a question after Windows has already removed the information to do so. This one belongs in that last category. The Windows Autopatch Client Broker can be deployed as a Win32 app.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-10.png"><picture class="wp-image-186950" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-10.png.webp 624w, https://patchmypc.com/app/uploads/2026/06/image-10-300x53.png.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-10.png 624w, https://patchmypc.com/app/uploads/2026/06/image-10-300x53.png 300w" decoding="async" src="assets/c8e95dc343d03b5b/img_0.png"/><noscript><img alt="" decoding="async" src="assets/c8e95dc343d03b5b/img_1.png"/></noscript>
+</picture>
+</a></figure>
+<p>That sounds like a normal and supported approach, especially because the broker is a local component that helps Windows Autopatch understand whether a device is ready and healthy enough to be managed. Microsoft describes the broker, along with the Microsoft Cloud Managed Desktop Extension, as part of the readiness flow that collects device readiness results and sends them back to the Windows Autopatch service.</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-21-1024x409.png"><picture class="wp-image-186963" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-21-1024x409.png.webp 1024w, https://patchmypc.com/app/uploads/2026/06/image-21-300x120.png.webp 300w, https://patchmypc.com/app/uploads/2026/06/image-21-768x306.png.webp 768w, https://patchmypc.com/app/uploads/2026/06/image-21-1536x613.png.webp 1536w, https://patchmypc.com/app/uploads/2026/06/image-21-2048x817.png.webp 2048w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-21-1024x409.png 1024w, https://patchmypc.com/app/uploads/2026/06/image-21-300x120.png 300w, https://patchmypc.com/app/uploads/2026/06/image-21-768x306.png 768w, https://patchmypc.com/app/uploads/2026/06/image-21-1536x613.png 1536w, https://patchmypc.com/app/uploads/2026/06/image-21-2048x817.png 2048w" decoding="async" src="assets/c8e95dc343d03b5b/img_2.png"/><noscript><img alt="" decoding="async" src="assets/c8e95dc343d03b5b/img_3.png"/></noscript>
+</picture>
+</a></figure>
+<p>So far, nothing strange. The broker needs local configuration. It needs to know which environment it belongs to, which manifest it should use, and which service endpoint it should talk to. For a normal commercial tenant, that means the normal Autopatch endpoints. For a US government tenant, also known as Fairfax, that means different endpoints. That small environment check is where the story starts to get funny.</p>
+<h2 class="wp-block-heading" id="h-the-autopatch-client-broker-and-the-autopilot-esp">The Autopatch client Broker and the Autopilot ESP<span class="clth-copy-icon" data-heading-id="h-the-autopatch-client-broker-and-the-autopilot-esp"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>The issue only seems to occur when the Autopatch Client Broker is deployed as a required, blocking Win32 app during Autopilot pre-provisioning.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-11.png"><picture class="wp-image-186951" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-11.png.webp 624w, https://patchmypc.com/app/uploads/2026/06/image-11-300x77.png.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-11.png 624w, https://patchmypc.com/app/uploads/2026/06/image-11-300x77.png 300w" decoding="async" src="assets/c8e95dc343d03b5b/img_4.png"/><noscript><img alt="" decoding="async" src="assets/c8e95dc343d03b5b/img_5.png"/></noscript>
+</picture>
+</a></figure>
+<p>Once you start the Autopilot Pre-Provisioning, the device will go through the Entra and Intune enrollment. Once that is done, the ESP will start installing required apps… This is the moment the Autopatch broker MSI starts as part of that required app flow. Instead of installing it cleanly, the Autopatch Client Broker <strong>MSI fails with error 1603</strong>.</p>
+<p>That alone would be annoying, but there is a second part that makes it worse. When the same MSI is installed later, after the device is fully enrolled and the Windows identity state has settled, it installs successfully? That’s a bit weird?</p>
+<p>That tells us something important. The installer is not simply broken. The timing is!  The MSI log points directly to the failing custom action:</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-7.jpg"><picture class="wp-image-186955" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-7.jpg.webp 834w, https://patchmypc.com/app/uploads/2026/06/image-7-300x54.jpg.webp 300w, https://patchmypc.com/app/uploads/2026/06/image-7-768x138.jpg.webp 768w" sizes="(max-width: 834px) 100vw, 834px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 834px) 100vw, 834px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-7.jpg 834w, https://patchmypc.com/app/uploads/2026/06/image-7-300x54.jpg 300w, https://patchmypc.com/app/uploads/2026/06/image-7-768x138.jpg 768w" decoding="async" src="assets/c8e95dc343d03b5b/img_6.jpg"/><noscript><img alt="" decoding="async" src="assets/c8e95dc343d03b5b/img_7.jpg"/></noscript>
+</picture>
+</a></figure>
+<p>Calling custom action CustomActions!ClientBroker.Setup.CustomActions.CustomActions.CreateRegistryKeyAndValues:  CreateRegistryKeyAndValues: Begin</p>
+<p>That log line is the breadcrumb we need. The Autopatch Client Broker installer starts the <strong>CreateRegistryKeyAndValues</strong> custom action. That action then calls another function called <strong>OverrideEnvironmentRegistryKeys.</strong> Inside that function, the custom action hits a <strong>NullReferenceException.</strong> The MSI log says “<strong>ignore”,</strong> but the code does not ignore it. It catches the exception, logs the message, and then returns failure. Windows Installer receives that failure and turns it into a <strong>1603.</strong></p>
+<p>So the word <strong>“ignore</strong>” is doing a lot of heavy lifting there. The ESP does not ignore it. The Autopatch client broker MSI does not ignore it… With it, the required app fails.</p>
+<h2 class="wp-block-heading" id="h-why-msi-custom-actions-are-important">Why MSI custom actions are important<span class="clth-copy-icon" data-heading-id="h-why-msi-custom-actions-are-important"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>An MSI is not always just a package that copies files, creates folders, writes registry keys, and drops a shortcut somewhere. MSI packages can also contain custom actions. A custom action is extra code that runs during install, repair, upgrade, or uninstall.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-14.png"><picture class="wp-image-186957" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-14.png.webp 624w, https://patchmypc.com/app/uploads/2026/06/image-14-300x97.png.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-14.png 624w, https://patchmypc.com/app/uploads/2026/06/image-14-300x97.png 300w" decoding="async" src="assets/c8e95dc343d03b5b/img_8.png"/><noscript><img alt="" decoding="async" src="assets/c8e95dc343d03b5b/img_9.png"/></noscript>
+</picture>
+</a></figure>
+<p>That extra code can be useful. It can create scheduled tasks, repair a missing file, write configuration that depends on runtime information, or perform checks that are difficult to express in the normal MSI tables.</p>
+<p>But that flexibility comes with risk. A normal MSI table is mostly declarative. A custom action is real code. If that code assumes something exists and that something does not yet exist, the whole installer can fail in an unexpected place just by looking at the files in the package.</p>
+<p>We have seen this kind of installer story before. In the <a href="https://patchmypc.com/blog/it1272653-company-portal-stuck-on-downloading/">IME incident around IT1272653</a>, the MSI behavior for the Intune Management Extension config file changed, and later Microsoft added a targeted custom action, EnsureAppConfigExists, to restore the missing config file from an embedded resource. In that case, a custom action became the safety net for a very specific installer problem.</p>
+<p>The Autopatch Client Broker MSI also contains a managed custom action DLL: CustomActions.dll. The failing action in that DLL is <strong>ClientBroker.Setup.CustomActions.CustomActions.CreateRegistryKeyAndValues</strong></p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-13.png"><picture class="wp-image-186959" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-13.png.webp 414w, https://patchmypc.com/app/uploads/2026/06/image-13-300x126.png.webp 300w" sizes="(max-width: 414px) 100vw, 414px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 414px) 100vw, 414px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-13.png 414w, https://patchmypc.com/app/uploads/2026/06/image-13-300x126.png 300w" decoding="async" src="assets/c8e95dc343d03b5b/img_10.png"/><noscript><img alt="" decoding="async" src="assets/c8e95dc343d03b5b/img_11.png"/></noscript>
+</picture>
+</a></figure>
+<p>That sounds boring enough to skip. It is not.</p>
+<h2 class="wp-block-heading" id="h-the-check-that-should-have-been-harmless">The check that should have been harmless<span class="clth-copy-icon" data-heading-id="h-the-check-that-should-have-been-harmless"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>The important part is not just that the custom action writes broker configuration. The important part is what it does after that. After the custom action prepares the normal broker configuration, it calls this function: <strong>OverrideEnvironmentRegistryKeys</strong>(subKey1, session);</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-23-1024x203.png"><picture class="wp-image-186965" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-23-1024x203.png.webp 1024w, https://patchmypc.com/app/uploads/2026/06/image-23-300x60.png.webp 300w, https://patchmypc.com/app/uploads/2026/06/image-23-768x152.png.webp 768w, https://patchmypc.com/app/uploads/2026/06/image-23-1536x305.png.webp 1536w, https://patchmypc.com/app/uploads/2026/06/image-23-2048x406.png.webp 2048w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-23-1024x203.png 1024w, https://patchmypc.com/app/uploads/2026/06/image-23-300x60.png 300w, https://patchmypc.com/app/uploads/2026/06/image-23-768x152.png 768w, https://patchmypc.com/app/uploads/2026/06/image-23-1536x305.png 1536w, https://patchmypc.com/app/uploads/2026/06/image-23-2048x406.png 2048w" decoding="async" src="assets/c8e95dc343d03b5b/img_12.png"/><noscript><img alt="" decoding="async" src="assets/c8e95dc343d03b5b/img_13.png"/></noscript>
+</picture>
+</a></figure>
+<p>That function does not try to register the broker with Autopatch. It does not request a token, and it does not use that token to authenticate to the Autopatch service. The only simple job of the Override function is trying to detect which Microsoft cloud the device belongs to.</p>
+<p>The code opens this registry path: HKLM\SYSTEM\CurrentControlSet\Control\CloudDomainJoin\TenantInfo</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-15.png"><picture class="wp-image-186954" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-15.png.webp 624w, https://patchmypc.com/app/uploads/2026/06/image-15-300x49.png.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-15.png 624w, https://patchmypc.com/app/uploads/2026/06/image-15-300x49.png 300w" decoding="async" src="assets/c8e95dc343d03b5b/img_14.png"/><noscript><img alt="" decoding="async" src="assets/c8e95dc343d03b5b/img_15.png"/></noscript>
+</picture>
+</a></figure>
+<p>Then it loops through the tenant subkeys and reads this value: AccessTokenUrl</p>
+<p>On a normal commercial tenant, that value looks like this: https://login.microsoftonline.com/&lt;TenantId&gt;/oauth2/token</p>
+<p>For example: https://login.microsoftonline.com/b79783df-131e-4d00-8303-6f66c0fa4bfb/oauth2/token</p>
+<p>For a US government tenant, the host is different: <strong>login.microsoftonline.us</strong></p>
+<p>That is all the custom action is checking. The code reads <strong>AccessTokenUrl</strong><strong>, </strong>converts it into a URI, and checks whether the host contains login.microsoftonline.us.</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-19-1024x143.png"><picture class="wp-image-186958" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-19-1024x143.png.webp 1024w, https://patchmypc.com/app/uploads/2026/06/image-19-300x42.png.webp 300w, https://patchmypc.com/app/uploads/2026/06/image-19-768x107.png.webp 768w, https://patchmypc.com/app/uploads/2026/06/image-19.png.webp 1476w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-19-1024x143.png 1024w, https://patchmypc.com/app/uploads/2026/06/image-19-300x42.png 300w, https://patchmypc.com/app/uploads/2026/06/image-19-768x107.png 768w, https://patchmypc.com/app/uploads/2026/06/image-19.png 1476w" decoding="async" src="assets/c8e95dc343d03b5b/img_16.png"/><noscript><img alt="" decoding="async" src="assets/c8e95dc343d03b5b/img_17.png"/></noscript>
+</picture>
+</a></figure>
+<p>So the logic is simple. If the URL host is login.microsoftonline.com, the tenant is commercial, and this function does nothing. The Autopatch Client broker keeps the normal configuration that was already written earlier by the installer.</p>
+<p>If the URL host is login.microsoftonline.us, the tenant is Fairfax and the installer overwrites the broker configuration with Fairfax values. Those Fairfax values are written under the Autopatch Client Broker registry key: <strong>HKLM\SOFTWARE\Microsoft\WindowsAutopatch\ClientBroker</strong></p>
+<p>The values it writes are:<strong> </strong></p>
+<ul class="wp-block-list">
+<li><strong>Environment = Fairfax</strong></li>
+<li><strong>ServiceBaseUr</strong>i = https://services.autopatch.microsoft.us/device</li>
+<li><strong>ManifestDownloadUri</strong> = https://device.autopatch.microsoft.com/cdn/clientsetup/manifest_lts.json</li>
+</ul>
+<p>That means <strong>AccessTokenUrl</strong> is not used by the installer as a token source. It is used as a shortcut to answer one question. Which Microsoft cloud is this device joined to?</p>
+<h2 class="wp-block-heading" id="h-why-the-autopatch-client-broker-failed-to-be-installed">Why the Autopatch Client Broker failed to be installed<span class="clth-copy-icon" data-heading-id="h-why-the-autopatch-client-broker-failed-to-be-installed"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>This is the part that makes the failure feel silly. On a commercial tenant, the function only needs to do nothing. It only needs to see that the host is login.microsoftonline.com, decide that no Fairfax override is required, and continue. But the code assumes the CloudDomainJoin <strong>TenantInfo</strong> registry key <strong>ALWAYS</strong> exists.</p>
+<p>It does this: RegistryKey registryKey1 = Registry.LocalMachine.OpenSubKey<strong>(“SYSTEM\\CurrentControlSet\\Control\\CloudDomainJoin\\TenantInfo”);</strong> And then immediately does this: <strong>registryKey1.GetSubKeyNames(); there</strong> is no null check.</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-22-1024x203.png"><picture class="wp-image-186964" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-22-1024x203.png.webp 1024w, https://patchmypc.com/app/uploads/2026/06/image-22-300x59.png.webp 300w, https://patchmypc.com/app/uploads/2026/06/image-22-768x152.png.webp 768w, https://patchmypc.com/app/uploads/2026/06/image-22.png.webp 1474w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-22-1024x203.png 1024w, https://patchmypc.com/app/uploads/2026/06/image-22-300x59.png 300w, https://patchmypc.com/app/uploads/2026/06/image-22-768x152.png 768w, https://patchmypc.com/app/uploads/2026/06/image-22.png 1474w" decoding="async" src="assets/c8e95dc343d03b5b/img_18.png"/><noscript><img alt="" decoding="async" src="assets/c8e95dc343d03b5b/img_19.png"/></noscript>
+</picture>
+</a></figure>
+<p>So if Windows has already removed TenantInfo during the pre-provisioning cleanup, OpenSubKey() returns null.</p>
+<p><strong>System.NullReferenceException: Object reference not set to an instance of an object.</strong></p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-20-1024x20.png"><picture class="wp-image-186962" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-20-1024x20.png.webp 1024w, https://patchmypc.com/app/uploads/2026/06/image-20-300x6.png.webp 300w, https://patchmypc.com/app/uploads/2026/06/image-20-768x15.png.webp 768w, https://patchmypc.com/app/uploads/2026/06/image-20-1536x30.png.webp 1536w, https://patchmypc.com/app/uploads/2026/06/image-20-2048x40.png.webp 2048w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-20-1024x20.png 1024w, https://patchmypc.com/app/uploads/2026/06/image-20-300x6.png 300w, https://patchmypc.com/app/uploads/2026/06/image-20-768x15.png 768w, https://patchmypc.com/app/uploads/2026/06/image-20-1536x30.png 1536w, https://patchmypc.com/app/uploads/2026/06/image-20-2048x40.png 2048w" decoding="async" src="assets/c8e95dc343d03b5b/img_20.png"/><noscript><img alt="" decoding="async" src="assets/c8e95dc343d03b5b/img_21.png"/></noscript>
+</picture>
+</a></figure>
+<p>That is why the Autopatch Client Broker MSI can fail during ESP.  Autopatch itself does not have to be unreachable, the broker registration does not have to be broken, and the MSI does not have to fail while copying files. The failure occurs much earlier, in a much smaller piece of logic: the installer tries to check whether the tenant is Fairfax, but the Windows registry key it uses for that check does not yet exist.</p>
+<p>For a commercial tenant, that should not have been fatal. If <strong>TenantInfo</strong> is missing, the installer could simply keep the default commercial configuration and continue. Instead, it crashes.</p>
+<h2 class="wp-block-heading" id="the-worst-part-detection-still-says-installed">The worst part: detection still says installed<span class="clth-copy-icon" data-heading-id="the-worst-part-detection-still-says-installed"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>The ESP failure was only the first problem. The bigger problem was what the MSI left behind before it crashed. The Win32 app detection rule checks this registry path:</p>
+<p><strong>HKLM\SOFTWARE\Microsoft\WindowsAutopatch\ClientBroker\ProductInfo</strong></p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-25.png"><picture class="wp-image-187035" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-25.png.webp 806w, https://patchmypc.com/app/uploads/2026/06/image-25-300x61.png.webp 300w, https://patchmypc.com/app/uploads/2026/06/image-25-768x157.png.webp 768w" sizes="(max-width: 806px) 100vw, 806px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 806px) 100vw, 806px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-25.png 806w, https://patchmypc.com/app/uploads/2026/06/image-25-300x61.png 300w, https://patchmypc.com/app/uploads/2026/06/image-25-768x157.png 768w" decoding="async" src="assets/c8e95dc343d03b5b/img_22.png"/><noscript><img alt="" decoding="async" src="assets/c8e95dc343d03b5b/img_23.png"/></noscript>
+</picture>
+</a></figure>
+<p>That is exactly the registry key the custom action creates before it calls<strong> <code>OverrideEnvironmentRegistryKeys()</code>.</strong></p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-26.png"><img alt="" class="wp-image-187036" decoding="async" src="assets/c8e95dc343d03b5b/img_24.png"/><noscript><img alt="" class="wp-image-187036" decoding="async" src="assets/c8e95dc343d03b5b/img_25.png"/></noscript></a></figure>
+<p>So the order matters. First, the custom action creates the broker registry key, creates the <code>ProductInfo</code> subkey, and writes the version value. Only after that does it call the environment override function that tries to read CloudDomainJoin\TenantInfo.</p>
+<p>When that Fairfax detection check crashes, the MSI returns 1603, but the detection registry key is already there. That leaves the device in a very annoying state. ESP sees the required app fail, but the next detection check can still report the app as installed because the registry evidence exists. From IME’s point of view, there is nothing left to retry.  So effectively, you can end up with no healthy broker installation, no completed MSI, and possibly no broker binary or scheduled tasks, while the Win32 app detection rule still says everything is installed.</p>
+<p>That still leaves one important question: why was the installer looking at CloudDomainJoin\TenantInfo in the first place? To answer that, we need to look at the value the custom action tries to read from that key: AccessTokenUrl.</p>
+<h2 class="wp-block-heading" id="h-who-creates-accesstokenurl">Who creates AccessTokenUrl<span class="clth-copy-icon" data-heading-id="h-who-creates-accesstokenurl"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>The Autopatch Client Broker MSI does <strong>NOT</strong> create AccessTokenUrl. Windows creates it as part of the device registration and <strong>CloudDomainJoin</strong> discovery flow. Looking inside dsreg.dll, the relevant strings line up nicely with that flow:</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-12.png"><img alt="" class="wp-image-186952" data-lazy-sizes="(max-width: 958px) 100vw, 958px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-12.png 958w, https://patchmypc.com/app/uploads/2026/06/image-12-300x19.png 300w, https://patchmypc.com/app/uploads/2026/06/image-12-768x49.png 768w" decoding="async" src="assets/c8e95dc343d03b5b/img_26.png"/><noscript><img alt="" class="wp-image-186952" decoding="async" src="assets/c8e95dc343d03b5b/img_27.png"/></noscript></a></figure>
+<ul class="wp-block-list">
+<li>TenantInfo::Discover</li>
+<li>DiscoveryResponseParser::ParseTenantInfoNode</li>
+<li>JoinStatusStorage::SaveTenantKey</li>
+<li>AccessTokenUrl</li>
+<li>AuthCodeUrl</li>
+<li>SYSTEM\CurrentControlSet\Control\CloudDomainJoin</li>
+</ul>
+<p>That tells us what is happening at a high level. Windows performs tenant discovery, parses the discovery response, and stores the tenant information under CloudDomainJoin.</p>
+<p>The expected registry layout on a healthy joined device is: HKLM\SYSTEM\CurrentControlSet\Control\CloudDomainJoin\TenantInfo\&lt;TenantId&gt;. Inside that tenant key, you normally find values such as:</p>
+<ul class="wp-block-list">
+<li><strong>AccessTokenUrl</strong></li>
+<li><strong>AuthCodeUrl</strong></li>
+</ul>
+<p>Microsoft also documents that AuthCodeUrl and AccessTokenUrl under CloudDomainJoin\TenantInfo\&lt;TenantId&gt; are used in the PRT related authentication flow.</p>
+<p>So the key belongs to the Windows identity stack. The Autopatch installer is <strong>ONLY</strong> reading it. That distinction matters. The <strong>Autopatch Client broker</strong> MSI depends on identity metadata that is created by Windows during the join and discovery process. If the installer runs before that metadata exists, it fails on configuring the Environment.</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-24-1024x230.png"><picture class="wp-image-186980" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-24-1024x230.png.webp 1024w, https://patchmypc.com/app/uploads/2026/06/image-24-300x67.png.webp 300w, https://patchmypc.com/app/uploads/2026/06/image-24-768x173.png.webp 768w, https://patchmypc.com/app/uploads/2026/06/image-24.png.webp 1258w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-24-1024x230.png 1024w, https://patchmypc.com/app/uploads/2026/06/image-24-300x67.png 300w, https://patchmypc.com/app/uploads/2026/06/image-24-768x173.png 768w, https://patchmypc.com/app/uploads/2026/06/image-24.png 1258w" decoding="async" src="assets/c8e95dc343d03b5b/img_28.png"/><noscript><img alt="" decoding="async" src="assets/c8e95dc343d03b5b/img_29.png"/></noscript>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-why-autopilot-pre-provisioning-creates-the-timing-problem">Why Autopilot Pre-Provisioning creates the timing problem<span class="clth-copy-icon" data-heading-id="h-why-autopilot-pre-provisioning-creates-the-timing-problem"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>During Autopilot pre-provisioning, the device is not simply “joined” and done. It moves through a temporary identity flow first.</p>
+<p>Windows downloads the Autopilot profile, performs tenant discovery, registers the device, joins Entra ID, enrolls into MDM, processes policies, installs required apps, and later hands the device over to the user flow. During the technician phase, device-targeted apps can already be installed, which means a required Autopatch Client Broker Win32 app can run before the device has reached the same stable identity state you would expect after the user completed the full Autopilot flow.</p>
+<p>That detail matters here. As I explained in my <strong><a href="https://call4cloud.nl/autopilot-white-glove-pre-provisioning/">earlier White Glove flow</a></strong>, the tenant information is created during the join and discovery phase. After TPM trust is established, dsreg.dll performs discovery, sends the device registration request, the Entra device certificate arrives, and the device can proceed to MDM enrollment.</p>
+<p>At that moment, the device has enough identity information to create the CloudDomainJoin tenant metadata, including:  <strong>HKLM\SYSTEM\CurrentControlSet\Control\CloudDomainJoin\TenantInfo\&lt;TenantId&gt;AccessTokenUrl</strong></p>
+<p>But pre-provisioning does NOT stop there. After the Intune MDM enrollment completes, the pre-provisioning flow cleans up the temporary Entra join state. The Entra device certificate has been removed, and with it, the local unjoin cleanup can also remove the <strong>CloudDomainJoin tenant information.</strong></p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-8.jpg"><picture class="wp-image-186960" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-8.jpg.webp 474w, https://patchmypc.com/app/uploads/2026/06/image-8-300x119.jpg.webp 300w" sizes="(max-width: 474px) 100vw, 474px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 474px) 100vw, 474px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-8.jpg 474w, https://patchmypc.com/app/uploads/2026/06/image-8-300x119.jpg 300w" decoding="async" src="assets/c8e95dc343d03b5b/img_30.jpg"/><noscript><img alt="" decoding="async" src="assets/c8e95dc343d03b5b/img_31.jpg"/></noscript>
+</picture>
+</a></figure>
+<h3 class="wp-block-heading" id="h-the-tenant-info-and-the-unjoin">The Tenant Info And the Unjoin<span class="clth-copy-icon" data-heading-id="h-the-tenant-info-and-the-unjoin"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p>With the unjoin happening during Autopilot pre-provisioning, the flow looks like this</p>
+<ul class="wp-block-list">
+<li>That gives us the actual timing problem:</li>
+<li>Autopilot pre-provisioning starts</li>
+<li>Windows performs tenant discovery and device registration</li>
+<li>CloudDomainJoin TenantInfo is created</li>
+<li>MDM enrollment starts</li>
+<li>The local join cleanup removes the Entra certificate</li>
+<li>CloudDomainJoin TenantInfo is removed</li>
+<li>Required device context Win32 apps start installing</li>
+<li>The Autopatch Client Broker MSI runs</li>
+<li>The custom action tries to read CloudDomainJoin\TenantInfo</li>
+<li>TenantInfo is missing because the temporary join state was cleaned up</li>
+<li>The custom action crashes with a NullReferenceException</li>
+<li>The MSI returns 1603</li>
+<li> ESP reports the required app failure</li>
+</ul>
+<p>That explains why the same installer can fail during pre-provisioning and succeed later. Later, during the user flow, Windows completes the identity work again. The device is joined again, TenantInfo exists again, and AccessTokenUrl is present again. The Autopatch custom action can then read the value, see login.microsoftonline.com, skip the Fairfax override, and continue.</p>
+<p>So the real issue is not only that the <strong>Autopatch Client Broker</strong> runs too early. It runs in a phase where Windows may have already created the tenant information and then removed it again as part of the Autopilot pre-provisioning identity cleanup.</p>
+<h2 class="wp-block-heading" id="h-the-practical-fix">The practical fix<span class="clth-copy-icon" data-heading-id="h-the-practical-fix"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>The real fix belongs in the MSI. The Autopatch Client Broker installer should not fail due to an inability to read <strong>CloudDomainJoin\TenantInfo</strong>. That registry key is used only by the custom action to determine whether the tenant is commercial or Fairfax. If the key is missing, the installer could simply keep the default commercial configuration and continue.</p>
+<p>For now, the practical workaround is to stop treating the broker as an <strong>ESP blocking app.</strong> Keep the Autopatch Client Broker assigned as a required Win32 app, but do not make Autopilot wait for it during ESP or pre-provisioning. Once the device has finished the fragile identity phase, the Intune Management Extension can resume the required assignment and install it during a normal Win32 app check-in.</p>
+<p>To make it even safer, add a requirement script that only allows the install when CloudDomainJoin\TenantInfo exists and contains an AccessTokenUrl. That way, the MSI only runs when the exact registry state its custom action depends on is actually present.</p>
+<h2 class="wp-block-heading" id="h-a-quick-note-about-update-readiness-checker">A quick note about Update Readiness Checker<span class="clth-copy-icon" data-heading-id="h-a-quick-note-about-update-readiness-checker"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>There is also a bigger Autopatch story here. Microsoft is moving away from the Autopatch Client Broker and toward proactive update readiness checks in the Intune admin center.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-16.png"><picture class="wp-image-186956" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-16.png.webp 951w, https://patchmypc.com/app/uploads/2026/06/image-16-300x47.png.webp 300w, https://patchmypc.com/app/uploads/2026/06/image-16-768x121.png.webp 768w" sizes="(max-width: 951px) 100vw, 951px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 951px) 100vw, 951px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-16.png 951w, https://patchmypc.com/app/uploads/2026/06/image-16-300x47.png 300w, https://patchmypc.com/app/uploads/2026/06/image-16-768x121.png 768w" decoding="async" src="assets/c8e95dc343d03b5b/img_32.png"/><noscript><img alt="" decoding="async" src="assets/c8e95dc343d03b5b/img_33.png"/></noscript>
+</picture>
+</a></figure>
+<p>The Update Readiness Checker evaluates Intune-managed Windows devices before updates are offered or deployed. It checks whether devices are ready for feature, quality, and hotpatch updates, and groups devices by result (passed, failed, or already on the update). </p>
+<p>That may also explain why Microsoft support might steer customers toward the newer update readiness experience when questions arise about the Autopatch Client Broker. Still, that does not change the installer issue shown here. If the Client Broker is deployed as a required Win32 app and marked as blocking during ESP, the MSI can still fail due to the custom action timing bug.</p>
+<h2 class="wp-block-heading" id="h-conclusion">Conclusion<span class="clth-copy-icon" data-heading-id="h-conclusion"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>The Autopatch Client Broker MSI fails during Autopilot ESP because of a custom action inside <strong>CustomActions.dll</strong><strong>. </strong>That custom action reads AccessTokenUrl from the Windows CloudDomainJoin tenant information. It does not read that value to authenticate to Autopatch, and it does not use it to register the broker. It reads it only to detect whether the device belongs to the commercial cloud or Fairfax.</p>
+<p>If it detects login.microsoftonline.us, it writes Fairfax-specific Autopatch endpoints into the broker configuration. If it sees login.microsoftonline.com, it should simply keep the normal commercial configuration and continue.</p>
+<p>The problem is that during Autopilot ESP or pre-provisioning, the CloudDomainJoin\TenantInfo registry key is not guaranteed to exist yet. The custom action does not check for that. It assumes the key is there, calls GetSubKeyNames() on a null object, crashes with a NullReferenceException, and returns failure.</p>
+<p>That failure becomes MSI error 1603. The installer says “ignore” in the log, but nothing is ignored. And because the broker registry key may already exist before the crash, a weak Intune detection rule can still be fooled.</p>
+<p>So the real lesson is simple: the Autopatch Client Broker did not fail because Autopatch was unavailable. It failed because the installer tried to decide whether login.microsoftonline.com was actually login.microsoftonline.us, before Windows had created the registry data needed to answer that question.</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
