@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Turning off account notifications in Start and multi-app kiosk mode</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Peter van der Woude</span>
+    <span class="date">June 15, 2026</span>
+  </div>
+  <h1>Turning off account notifications in Start and multi-app kiosk mode</h1>
+  <div class="orig">Saved for offline reading · <a href="https://petervanderwoude.nl/post/turning-off-account-notifications-in-start-and-multi-app-kiosk-mode/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text">
+<p class="wp-block-paragraph">This week is also all about another relatively small, but nowadays essential, configuration to further enhance the Start layout experience. Especially when using multi-app kiosk mode with local accounts. That configuration is to turn off account notifications for Microsoft accounts (MSA) and local users in the user tile of Start. Turning off account notifications is especially relevant when using multi-app kiosk mode with local accounts, as that includes getting users to sign with a Microsoft account to backup their device, to manage cloud storage quotas, and more. Those account notifications might trigger users to perform actions that do not belong on managed devices and that are not available. Especially not on kiosk devices. It is actually pretty strange that those account notifications show on managed devices, especially after already turning of the consumer experiences. That means that there are definitely scenarios in which it is useful to turn off account notifications. This post will provide a closer look at turning off account notifications and experiencing that in multi-app kiosk mode.</p>
+<h2 class="wp-block-heading" id="configuring-turning-off-account-notifications-e61693e3-5101-433e-b689-56b83519521b">Configuring turning off account notifications</h2>
+<p class="wp-block-paragraph">When looking at turning off account notifications in the user tile of Start, there are actually multiple configurations to look at. After introducing the new behavior, Microsoft also introduced a specific policy setting to address that behavior. That policy could be the first option to look at. The second option is to just completely block the usage of Microsoft accounts.</p>
+<h3 class="wp-block-heading" id="option-1-turning-off-account-notifications-585dd648-475a-471d-ab71-2c2bd9d747cf">Option 1: Turning off account notifications</h3>
+<p class="wp-block-paragraph">The first option is the <strong>Turn off account notifications in Start</strong> policy setting that was specifically introduced to address this behavior. The values are pretty straightforward, as it can be configured to <em>Disabled</em> (0) or <em>Enabled</em> (1). The only detail is that the setting is only available in the user scope, which can be challenging with local accounts. That setting is available via the Policy CSP as an ADMX-backed setting, as it relies on the <em>AccountNotifications.admx</em>. It is, however, not available via the <em>Settings Catalog</em> at this moment. That means that the configuration still relies on using <em>Custom</em> configuration profiles. The following nine steps walk through the configuration of turning off notification in the user tile in Start.</p>
+<ol class="wp-block-list">
+<li>Open the <a href="https://intune.microsoft.com/">Microsoft Intune admin center</a> navigate to <strong>Devices </strong>&gt; <strong>Windows</strong> &gt;<strong> Configuration</strong></li>
+<li>On the <strong>Windows | Configuration </strong>blade, click <strong>Create</strong> &gt; <strong>New policy</strong></li>
+<li>On the <strong>Create a profile</strong> page, select <strong>Windows 10 and later</strong> &gt; <strong>Templates </strong>&gt; <strong>Custom </strong>and click <strong>Create</strong></li>
+<li>On the <strong>Basics</strong> page, provide a unique <strong>Name</strong> to distinguish the profile from other custom profiles and click <strong>Next</strong></li>
+<li>On the <strong>Configuration settings</strong> page, as shown below in Figure 1, click <strong>Add</strong> to add the following row and click <strong>Next</strong></li>
+</ol>
+<ul class="wp-block-list">
+<li><strong>OMA-URI setting</strong> – This setting is used to turn off notifications in the user tile in Start
+<ul class="wp-block-list">
+<li><strong>Name</strong>: Provide a name for the OMA-URI setting to distinguish it from other similar settings</li>
+<li><strong>Description</strong>: (Optional) Provide a description for the OMA-URI setting to further differentiate settings</li>
+<li><strong>OMA-URI</strong> (1): Specify <em>./User/Vendor/MSFT/Policy/Config/Notifications/DisableAccountNotifications</em></li>
+<li><strong>Data type</strong> (2): Select <em>Integer </em>as value</li>
+<li><strong>Value</strong> (3): Specify <em>1 </em>as value</li>
+</ul>
+</li>
+</ul>
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-1 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><a href="https://petervanderwoude.nl/wordpress/wp-content/uploads/DAN-ConfigurationSettings01.png"><img alt="" class="wp-image-23261" data-id="23261" decoding="async" src="assets/6780f93a2d765c75/img_0.png"/></a><figcaption class="wp-element-caption">Figure 1: Overview of configuring the custom setting</figcaption></figure>
+</figure>
+<ol class="wp-block-list" start="6">
+<li>On the <strong>Scope tags</strong> page, configure the applicable scopes and click <strong>Next</strong></li>
+<li>On the <strong>Assignments</strong> page, configure the assignment for the required devices and click <strong>Next</strong></li>
+<li>On the <strong>Applicability rules</strong> page, configure the applicability rules, and click <strong>Next</strong></li>
+<li>On the <strong>Review + create</strong> page, verify the configuration and click <strong>Create</strong></li>
+</ol>
+<p class="has-background wp-block-paragraph"><strong>Note</strong>: The challenge with local accounts is that the policy does not always applies to all users. This only works when there are also Entra accounts logging on to the device and successfully applying the configuration.</p>
+<h3 class="wp-block-heading" id="option-2-completely-blocking-microsoft-accounts-on-the-device-b5d9806b-79c9-4096-baca-8bb7fb118f45">Option 2: Completely blocking Microsoft accounts on the device</h3>
+<p class="wp-block-paragraph">The second option is the <strong>Accounts Block Microsoft Accounts</strong> policy setting that was already introduced in the early days of Windows 10. That setting can be used to prevent users from adding Microsoft accounts on the device and is available via the Policy CSP. The available values are pretty straightforward, as it can be configured to <em>Disabled (users will be able to use Microsoft accounts with Windows)</em> (0), <em>Enabled (users can’t add Microsoft accounts)</em> (1), or <em>Users can’t add or log on with Microsoft accounts</em> (3). Luckily, the configuration is also pretty straightforward, as the setting is available within the <em>Local Policies Security Options</em> category in the <em>Settings Catalog</em>. The following eight steps walk through the configuration to prevent users from adding Microsoft accounts, and with that prevent notification around Microsoft accounts.</p>
+<ol class="wp-block-list">
+<li>Open the <a href="https://intune.microsoft.com/">Microsoft Intune admin center</a> portal and navigate to <strong>Devices</strong> &gt; <strong>Windows</strong> &gt; <strong>Configuration profiles</strong></li>
+<li>On the <strong>Windows | Configuration profiles</strong> blade, click <strong>Create</strong> &gt; <strong>New Policy</strong></li>
+<li>On the <strong>Create a profile</strong> blade, select <strong>Windows 10 and later</strong> &gt; <strong>Settings catalog</strong> and click <strong>Create</strong></li>
+<li>On the <strong>Basics </strong>page, provide at least a unique name to distinguish it from similar profiles and click <strong>Next</strong></li>
+<li>On the <strong>Configuration settings</strong> page, as shown below in Figure 1, perform the following actions and click <strong>Next</strong></li>
+</ol>
+<ul class="wp-block-list">
+<li>Click <strong>Add settings</strong>, navigate to <strong>Local Policies Security Options </strong>and select <em>Accounts Block Microsoft Accounts</em> in <strong>Settings picker</strong></li>
+<li>Select <strong>Users can’t add or log on with Microsoft accounts</strong> with <em>Accounts Block Microsoft Accounts</em> to completely block the usage of Microsoft accounts</li>
+</ul>
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-2 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><a href="https://petervanderwoude.nl/wordpress/wp-content/uploads/DAN-ConfigurationSettings02.png"><img alt="" class="wp-image-23260" data-id="23260" decoding="async" src="assets/6780f93a2d765c75/img_1.png"/></a><figcaption class="wp-element-caption">Figure 2: Overview of configuring the generic block setting</figcaption></figure>
+</figure>
+<ol class="wp-block-list" start="6">
+<li>On the <strong>Scope tags</strong> page, configure the required scope tags and click <strong>Next</strong></li>
+<li>On the <strong>Assignments</strong> page, configure the assignment for the required user or devices and click <strong>Next</strong></li>
+<li>On the <strong>Review + create</strong> page, verify the configuration and click <strong>Create</strong></li>
+</ol>
+<p class="has-background wp-block-paragraph"><strong>Note</strong>: This configuration will block Microsoft accounts completely, which is actually perfect on multi-app kiosk devices.</p>
+<h2 class="wp-block-heading" id="experiencing-turning-off-account-notifications-c54d2a0e-9d49-4e07-bc26-f53895d3b026">Experiencing turning off account notifications</h2>
+<p class="wp-block-paragraph">After applying the configuration of turning off account notifications from the user tile in Start, experiencing the configuration is pretty straightforward. For the best overview it is probably the best and easiest to show a before and after. When creating a multi-app kiosk mode with a local user account, it will by default eventually show a red dot with the user icon. Opening the user tile will show a message that would trigger the user to try and sign in with a Microsoft account. That breaks the user experience. That is the main reason why that section is better left out on multi-app kiosk devices. Below in Figure 2 and Figure 3 is an overview of the before and after situation, when using the provided configuration. Pretty straightforward and nice and clean.</p>
+<div class="wp-block-columns is-layout-flex wp-container-core-columns-is-layout-8f761849 wp-block-columns-is-layout-flex">
+<div class="wp-block-column is-layout-flow wp-block-column-is-layout-flow">
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-3 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><a href="https://petervanderwoude.nl/wordpress/wp-content/uploads/DAN-ConfigurationExperienceBefore.png"><img alt="" class="wp-image-23259" data-id="23259" decoding="async" src="assets/6780f93a2d765c75/img_2.png"/></a><figcaption class="wp-element-caption">Figure 3: Overview of the experience before the configuration</figcaption></figure>
+</figure>
+</div>
+<div class="wp-block-column is-layout-flow wp-block-column-is-layout-flow">
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-4 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><a href="https://petervanderwoude.nl/wordpress/wp-content/uploads/DAN-ConfigurationExperienceAfter.png"><img alt="" class="wp-image-23258" data-id="23258" decoding="async" src="assets/6780f93a2d765c75/img_3.png"/></a><figcaption class="wp-element-caption">Figure 4: Overview of the experience after the configuration</figcaption></figure>
+</figure>
+</div>
+</div>
+<h2 class="wp-block-heading" id="more-information-6c4d0827-5b6d-4d15-9ee5-f1ee2af0f710">More information</h2>
+<p class="wp-block-paragraph">For more information about managing notifications, refer to the following docs.</p>
+<div class="wp-block-group has-border-color"><div class="wp-block-group__inner-container is-layout-flow wp-block-group-is-layout-flow">
+<hr class="wp-block-separator has-alpha-channel-opacity is-style-wide"/>
+<h3 class="wp-block-heading has-text-align-center">Discover more from All about Microsoft Intune</h3>
+<p class="has-text-align-center wp-block-paragraph">Subscribe to get the latest posts sent to your email.</p>
+</div></div>
+</div>
+</div></div>
+</article>
+</body>
+</html>
