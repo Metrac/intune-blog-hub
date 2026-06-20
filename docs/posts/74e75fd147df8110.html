@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Microsoft Defender for Endpoint EDR Updates are now Separate from Monthly Windows Security Updates for Faster Protection</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">HTMD / Anoop C Nair</span>
+    <span class="date">June 19, 2026</span>
+  </div>
+  <h1>Microsoft Defender for Endpoint EDR Updates are now Separate from Monthly Windows Security Updates for Faster Protection</h1>
+  <div class="orig">Saved for offline reading · <a href="https://www.anoopcnair.com/microsoft-defender-for-endpoint-edr-updates-are/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text"><p class="code-block code-block-6">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><h2 class="wp-block-heading" id="key-takeaways"><strong>Key Takeaways</strong></h2><ul class="wp-block-list has-medium-font-size"><li>Microsoft Defender for Endpoint <strong>EDR </strong>updates is moving from monthly Windows security updates to <strong>Microsoft Update.</strong></li><li>The rollout started with <strong>Windows 10</strong> in late May 2026.</li><li><strong>Windows 11</strong> and other supported Windows versions will receive the change by 2026.</li><li><strong>EDR security</strong> improvements can now be delivered in Windows cumulative updates.</li></ul><p class="wp-block-paragraph">In this post, we are discussing how <a href="https://www.anoopcnair.com/microsoft-defender-custom-data-collection-lets/" rel="noreferrer noopener" target="_blank"><strong>Microsoft Defender </strong></a>for Endpoint EDR Updates Will Be Delivered Through Microsoft Update. Microsoft has introduced a<strong> new update </strong>model for <strong>Microsoft Defender for Endpoint Detection and Response</strong> (EDR) <strong>security updates. </strong>Previously, these updates were included with the monthly Windows <strong>security updates.</strong> This change enables Microsoft to deliver security improvements more quickly and independently of the <strong>Windows update cycle.</strong></p><details class="wp-block-details has-contrast-3-background-color has-background is-layout-flow wp-block-details-is-layout-flow"><summary><strong>Table of Contents</strong></summary>
+</details><h2 class="wp-block-heading" id="how-microsoft-defender-for-endpoint-edr-updates-will-be-delivered-through-microsoft-update"><strong>Microsoft Defender for Endpoint EDR Updates are now Separate from Monthly Windows Security Updates for Faster Protection</strong></h2><p class="wp-block-paragraph">This change allows Microsoft to release <strong>EDR </strong>security improvements faster without waiting for the monthly Windows update cycle. It also provides a more flexible way to keep <strong>Microsoft Defender</strong> for Endpoint protected with the latest security enhancements. The rollout began with Windows 10 in late May 2026 and will gradually expand to<strong> Windows 11 </strong>and other supported Windows versions by fall <strong>2026. </strong></p><p class="wp-block-paragraph">Organisations using Microsoft Update do not need to take any action, while those using <strong>manual update </strong>deployment should include the new<strong> Defender update</strong> package in their regular update process.</p><h2 class="wp-block-heading" id="what-changing-in-this-update"><strong>What’s changing in this Update</strong></h2><p class="wp-block-paragraph">Microsoft Defender <strong>endpoint detection and response</strong> security updates will no longer be bundled with monthly Windows security updates. Instead, they will be delivered through Microsoft Update using KB5005292 after the required prerequisite updates are installed. This change EDR servicing with other Microsoft Defender components and enables Microsoft to release<strong> security improvements</strong> more quickly without waiting for monthly <strong>Windows updates.</strong></p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><p class="wp-block-paragraph"><strong>Rollout Schedule:</strong></p><ul class="wp-block-list"><li class="has-medium-font-size">Rollout starts with Windows 10 in <strong>late May 2026</strong>.</li><li class="has-medium-font-size">Rollout will expand to Windows 11, followed by the remaining supported Windows versions.</li><li class="has-medium-font-size">We expect the rollout for Windows 10 and 11 to be completed by <strong>fall 2026</strong>.</li></ul><figure class="wp-block-table aligncenter"><table class="has-contrast-3-background-color has-background has-fixed-layout"><thead><tr><th>Why is Microsoft Making This Change?</th></tr></thead><tbody><tr><td>Faster delivery of<strong> security improvements</strong></td></tr><tr><td>Reduced dependency on<strong> monthly Windows updates</strong></td></tr><tr><td>Improved flexibility for <strong>Microsoft Defender servicing</strong></td></tr><tr><td>More consistent update experience across <strong>Microsoft Defender components</strong></td></tr></tbody></table><figcaption class="wp-element-caption">Microsoft Defender for Endpoint EDR Updates are now Separate from Monthly Windows Security Updates for Faster Protection – Table 1</figcaption></figure><h2 class="wp-block-heading" id="how-the-new-microsoft-defender-for-endpoint-update-works"><strong>How the New Microsoft Defender for Endpoint Update Works</strong></h2><p class="wp-block-paragraph">EDR security updates will no longer be included with the monthly Windows security updates. Instead, they will be delivered separately through Microsoft Update using KB5005292. To receive these updates, devices must be running Sense version 10.8798.25857.1000 or later and have the required cumulative update (or a later version) installed.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><p class="wp-block-paragraph">During the first<strong> EDR update</strong>, Windows installs a new Defender Update Service and creates the %ProgramData%\<strong>Microsoft</strong>\Microsoft Defender\<strong>Defender Update folder.</strong> Most EDR updates do not require a restart, but a reboot may be needed in rare cases if an update fails.</p><p class="wp-block-paragraph">If needed, administrators can use the <strong>MpCmdRun.exe</strong> command-line tool to roll back an EDR update. You can revert to the inbox EDR version stored in <strong>%ProgramFiles%\Windows Defender</strong> Advanced Threat Protection or restore the previous (N-1) version if a backup is available in %ProgramData%\Microsoft\Windows Defender Advanced Threat <strong>Protection\Platform.</strong></p><h2 class="wp-block-heading" id="verify-windows-update-ring-policies-in-intune"><strong>Check Microsoft Defender Version Information</strong></h2><p class="wp-block-paragraph">Windows Security lists the installed Microsoft Defender versions, including the antimalware client, engine, antivirus, and antispyware. Administrators can use this information to <strong>confirm </strong>that Microsoft Defender is <strong>installed </strong>and updated on the device.</p><div class="wp-block-image"><figure class="aligncenter size-full"><img alt="Microsoft Defender for Endpoint EDR Updates are now Separate from Monthly Windows Security Updates for Faster Protection - Fig.1" class="wp-image-369135" data-lazyloaded="1" data-sizes="(max-width: 906px) 100vw, 906px" decoding="async" src="assets/74e75fd147df8110/img_0.webp" title="Microsoft Defender for Endpoint EDR Updates are now Separate from Monthly Windows Security Updates for Faster Protection 2"/><figcaption class="wp-element-caption">Microsoft Defender for Endpoint EDR Updates are now Separate from Monthly Windows Security Updates for Faster Protection – Fig.1</figcaption></figure></div><h2 class="wp-block-heading" id="verify-microsoft-updates-settings"><strong>Configure Microsoft Defender Update Channels in Intune</strong></h2><p class="wp-block-paragraph">Microsoft Intune lets administrators manage Microsoft Defender <strong>Antivirus update channels. </strong>You can configure the Engine Updates Channel, <strong>Platform Updates Channel</strong>, and Security Intelligence Updates Channel to control how Defender Antivirus updates are delivered. Microsoft Defender for Endpoint<strong> EDR updates </strong>is now delivered separately through <strong>Microsoft Update</strong> under the new update model.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><p class="wp-block-paragraph">Enable this policy to specify when devices receive <strong>Microsoft Defender</strong> engine updates during the monthly <strong>gradual rollout</strong>. Enable this policy to specify when devices receive Microsoft Defender platform updates during the monthly<strong> gradual rollout.</strong></p><div class="wp-block-image"><figure class="aligncenter size-full"><img alt="Microsoft Defender for Endpoint EDR Updates are now Separate from Monthly Windows Security Updates for Faster Protection - Fig.2" class="wp-image-369136" data-lazyloaded="1" data-sizes="(max-width: 847px) 100vw, 847px" decoding="async" src="assets/74e75fd147df8110/img_1.webp" title="Microsoft Defender for Endpoint EDR Updates are now Separate from Monthly Windows Security Updates for Faster Protection 3"/><figcaption class="wp-element-caption">Microsoft Defender for Endpoint EDR Updates are now Separate from Monthly Windows Security Updates for Faster Protection – Fig.2</figcaption></figure></div><h2 class="wp-block-heading" id="need-further-assistance-or-have-technical-questions"><strong>Need Further Assistance or Have Technical Questions?</strong></h2><p class="has-contrast-3-background-color has-background wp-block-paragraph">Join the <a href="https://www.linkedin.com/company/how-to-manage-devices/" rel="noreferrer noopener nofollow" target="_blank"><strong>LinkedIn Page</strong></a> and <a href="https://t.me/+Q9lE6G1_BO_bGq97" rel="noreferrer noopener nofollow" target="_blank"><strong>Telegram group</strong></a> to get the step-by-step guides and news updates. Join our <a href="https://www.meetup.com/htmd-community-meetup-group/" rel="noreferrer noopener nofollow" target="_blank"><strong>Meetup Page</strong></a> to participate in User group meetings. Also, Join the <strong><a href="https://htmd.in/WACM2" rel="noreferrer noopener nofollow" target="_blank">WhatsApp Community</a></strong>  and <strong><a href="https://htmd.in/wachanel" rel="noreferrer noopener nofollow" target="_blank">WhatsApp Channel</a></strong> to get the latest news on Microsoft Technologies. We are there on <a href="https://www.reddit.com/r/ImpMSNews/" rel="noreferrer noopener nofollow" target="_blank"><strong>Reddit</strong></a> as well.</p><h2 class="wp-block-heading" id="author"><strong>Author</strong></h2><p class="wp-block-paragraph"><a href="https://www.linkedin.com/in/anoopcnair/" rel="noreferrer noopener nofollow" target="_blank"><strong>Anoop C Nair</strong></a> has been Microsoft MVP for 10 consecutive years from 2015 onwards. He is a Workplace Solution Architect with more than 22+ years of experience in Workplace technologies. He is a Blogger, Speaker, and Local User Group Community leader. His primary focus is on Device Management technologies like SCCM and Intune. He writes about technologies like Intune, SCCM,   Windows,  Cloud PC,  Windows, Entra, Microsoft Security, Career, etc.</p><p class="code-block code-block-8">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="1286776600" data-full-width-responsive="true"></ins> </p><p class="code-block code-block-9">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="8125570634" data-full-width-responsive="true"></ins> </p></div></div></div>
+</article>
+</body>
+</html>
