@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EPM Part 2: Before you remove local admin: How to use Intune Endpoint Privilege Management audit mode to understand your environment</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">MSEndpointMgr</span>
+    <span class="date">June 22, 2026</span>
+  </div>
+  <h1>EPM Part 2: Before you remove local admin: How to use Intune Endpoint Privilege Management audit mode to understand your environment</h1>
+  <div class="orig">Saved for offline reading · <a href="https://msendpointmgr.com/2026/06/22/epm-part-2-before-you-remove-local-admin-how-to-use-intune-endpoint-privilege-management-audit-mode-to-understand-your-environment/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p data-block-type="core"><em>This is the second post in a series on Microsoft Intune Endpoint Privilege Management (EPM). If you haven’t read the first post, “</em><a href="https://msendpointmgr.com/2026/06/15/epm-part-1-the-end-of-local-admin-how-intune-endpoint-privilege-management-solves-a-problem-it-has-lived-with-for-decades/" rel="noreferrer noopener" target="_blank"><em>The End of Local Admin</em></a>“, <em>we recommend starting there. It covers what Intune Endpoint Privilege Management is, why it matters architecturally, and how the elevation model works under the hood. This post picks up where that one left off.</em></p>
+<hr class="wp-block-separator has-alpha-channel-opacity" data-block-type="core"/>
+<nav aria-label="Table of Contents" class="wp-block-kadence-tableofcontents kb-table-of-content-nav kb-table-of-content-id26610_5f6f2d-b4" role="navigation"></nav>
+<hr class="wp-block-separator has-alpha-channel-opacity" data-block-type="core"/>
+<h2 class="wp-block-heading" id="the-mistake-most-deployments-make"><a aria-hidden="true" class="aal_anchor" href="#the-mistake-most-deployments-make" id="the-mistake-most-deployments-make"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>The mistake most deployments make</h2>
+<p data-block-type="core">In the first post, we made a recommendation: <strong>don’t start by removing local admin rights. Start by listening.</strong></p>
+<p data-block-type="core">It sounds obvious. In practice, it’s the step most organizations skip.</p>
+<p data-block-type="core">The typical deployment pattern goes like this: IT reads the documentation, builds a few elevation rules for the applications they think users need, deploys the policy, and removes local admin rights. Then the helpdesk lights up. Users are blocked on things IT didn’t anticipate. Exceptions start getting granted. The rollout stalls, confidence drops, and Intune Endpoint Privilege Management gets labeled as “too disruptive to deploy at scale.”</p>
+<p data-block-type="core">None of that is a product problem. It is a sequencing problem. The elevation rules were built on assumptions rather than data, and assumptions about what users elevate are almost always wrong.</p>
+<p data-block-type="core">The good news is that Intune Endpoint Privilege Management has a built-in mechanism for exactly this problem – audit mode. Used properly, it tells you everything you need to know about what is actually being elevated in your environment before you change a single thing for end users.</p>
+<p data-block-type="core">This post walks you through how to set up audit mode, what to look for, and how to turn the data into a deployment plan.</p>
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="" class="wp-image-26616" decoding="async" src="assets/2e2c5f22f9eab65d/img_0.png"/></figure>
+<hr class="wp-block-separator has-alpha-channel-opacity" data-block-type="core"/>
+<h2 class="wp-block-heading" id="what-audit-mode-actually-is"><a aria-hidden="true" class="aal_anchor" href="#what-audit-mode-actually-is" id="what-audit-mode-actually-is"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>What audit mode actually is</h2>
+<p data-block-type="core">When people say “audit mode” in the context of Intune Endpoint Privilege Management, they mean deploying the EPM client to collect elevation data without enforcing any rules or changing the user experience.</p>
+<p data-block-type="core">Technically, this means:</p>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core">The EPM agent is deployed to devices via an Elevation Settings Policy</li>
+<li data-block-type="core">Reporting is enabled and scoped to collect elevation activity, both managed elevations through EPM and unmanaged elevations that occur outside it.</li>
+<li data-block-type="core">The default elevation behaviour is set so that nothing legitimate is blocked during discovery</li>
+<li data-block-type="core">No Elevation Rules Policy is deployed yet – you are observing, not controlling</li>
+</ul>
+<p data-block-type="core">Users continue to work much as before, and behind the scenes elevation activity is being logged and sent to the Intune admin center, where you can start building a picture of what your environment looks like.</p>
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow" data-block-type="core">
+<p data-block-type="core"><strong><span class="stk-highlight">Important:</span> EPM is not a complete discovery solution for existing local admins</strong></p>
+<p data-block-type="core">Pair EPM reporting with Microsoft Defender for Endpoint Advanced Hunting.</p>
+</blockquote>
+<p data-block-type="core">This is your baseline. </p>
+<hr class="wp-block-separator has-alpha-channel-opacity" data-block-type="core"/>
+<h2 class="wp-block-heading" id="step-1-prerequisites"><a aria-hidden="true" class="aal_anchor" href="#step-1-prerequisites" id="step-1-prerequisites"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Step 1: Prerequisites</h2>
+<p data-block-type="core">Before you deploy anything, confirm the following:</p>
+<p data-block-type="core"><strong>Licensing</strong> Intune Endpoint Privilege Management requires either the Microsoft Intune Suite or, as of July 1st, 2026, Microsoft 365 E5. Verify your license status in the Intune admin center under <strong>Tenant administration &gt; Intune add-ons</strong>. You should see Endpoint Privilege Management listed and active. If you are on Microsoft 365 E5 and the capability has not yet appeared in your tenant, check Microsoft 365 Message Center – rollout completes by August 1st, 2026, and tenants receive 30 days’ notice before activation.</p>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-26635" decoding="async" src="assets/2e2c5f22f9eab65d/img_1.png"/></figure>
+<p data-block-type="core"><strong>Supported devices:</strong> Intune Endpoint Privilege Management supports Windows 11 devices enrolled in Microsoft Intune. The device must be managed, co-managed, or Intune-only.</p>
+<p data-block-type="core"><strong>Device scope</strong>: For the audit phase, target a representative cross-section of your device estate – not just a small pilot group. The value of audit mode is in seeing what real users across different roles actually elevate. If you target only 20 devices, your data will not reflect the long tail of applications that emerges when you scale. A good starting point is a stratified sample across your key user personas: office workers, operations, finance, IT, and any power-user groups you already know about.</p>
+<hr class="wp-block-separator has-alpha-channel-opacity" data-block-type="core"/>
+<h2 class="wp-block-heading" id="step-2-create-the-elevation-settings-policy"><a aria-hidden="true" class="aal_anchor" href="#step-2-create-the-elevation-settings-policy" id="step-2-create-the-elevation-settings-policy"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Step 2: Create the Elevation Settings Policy</h2>
+<p data-block-type="core">The Elevation Settings Policy is the foundation of every Intune Endpoint Privilege Management deployment. It controls whether EPM is enabled on a device, how the agent behaves by default, and what data gets reported back to Intune.</p>
+<p data-block-type="core">Navigate to the Intune admin center: <strong>Endpoint security &gt; Endpoint Privilege Management &gt; Policies &gt; Create policy</strong></p>
+<p data-block-type="core">Select <strong>Windows</strong> as the platform and <strong>Elevation settings policy</strong> as the profile type.</p>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-26636" decoding="async" src="assets/2e2c5f22f9eab65d/img_2.png"/></figure>
+<p data-block-type="core">Before you name and configure the policy, there is one fact about how EPM treats existing local administrators that should shape the whole audit phase, and it is easy to get wrong.</p>
+<p data-block-type="core"><strong>EPM does not manage elevations for users who already have local admin rights.</strong> This is stated directly in Microsoft’s documentation: Endpoint Privilege Management doesn’t manage elevation requests by users that have administrative permissions on a device. If an administrator launches a file with a matching elevation rule, the application launches as it normally does for the administrator and is reported as an unmanaged elevation. <a href="https://learn.microsoft.com/en-us/intune/epm/frequently-asked-questions#what-happens-when-someone-with-administrative-privileges-uses-a-device-that-is-enabled-for-epm" rel="noreferrer noopener" target="_blank">Frequently asked questions for Endpoint Privilege Management – Microsoft Intune | Microsoft Learn</a></p>
+<p data-block-type="core">Read that carefully, because it simplifies your design. For a user who is still a local administrator, the EPM elevation workflow and the default elevation response are bypassed, their elevations run through normal Windows behaviour and are simply <em>reported</em> to EPM as unmanaged. EPM is observing them, not governing them. The default elevation response only governs users who are already standard users.</p>
+<p data-block-type="core">That single fact means <strong>you do not need separate policies for your admin and standard-user populations during the audit phase.</strong> A single Elevation Settings Policy, deployed across your managed Windows estate, produces exactly the outcome you want:</p>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core">For users who still hold local admin rights, EPM enables the agent and reports their activity as unmanaged elevations – the default response is moot for them, so it does no harm.</li>
+<li data-block-type="core">For users who are already standard users, the same policy’s default response safely governs them, and since you have not built any rules yet, you set it so nothing is inadvertently opened up.</li>
+</ul>
+<p data-block-type="core">One policy, one place to reason about, no risk of a population landing in the wrong group. Configure it as follows.</p>
+<p data-block-type="core"><strong>Name:</strong> Something clear like <code>EPM Onboarding - All Managed Windows</code>, so it is easy to identify..</p>
+<p data-block-type="core"><strong>Endpoint Privilege Management:</strong> Set to <strong>Enabled</strong>. This deploys the EPM agent to the targeted devices.</p>
+<p data-block-type="core"><strong>Default elevation response:</strong> Set to <strong>Deny all requests</strong> or <strong>Require support approval</strong>, in line with Microsoft’s recommendation. Remember this only affects users who are already standard users, for them, it ensures EPM does not inadvertently enable elevation before you have built any rules. For users who still have admin rights, this setting has no practical effect. <strong>Require support approval</strong> has a useful side benefit during audit: where it does apply, it surfaces what standard users are actually trying to do through an approval queue, which is richer signal than a flat denial.</p>
+<p data-block-type="core"><strong>Send elevation data for reporting:</strong> Set to <strong>Yes</strong>.</p>
+<p data-block-type="core"><strong>Reporting scope:</strong> Set to <strong>Diagnostic data and all endpoint elevations</strong>. This is the broadest scope and is what surfaces unmanaged elevations, including all the activity from your still-admin population in your reports. This is the heart of your audit data.</p>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-26638" decoding="async" src="assets/2e2c5f22f9eab65d/img_3.png"/></figure>
+<p data-block-type="core"><strong>Assignments:</strong> Assign to a group containing your managed Windows devices. A single device group covering the estate (or the representative cross-section you scoped in the prerequisites) is all you need.</p>
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow" data-block-type="core">
+<p data-block-type="core"><strong><span class="stk-highlight">A realistic caveat, restated:</span></strong> even with all of this in place, EPM does not capture every privileged action an existing admin performs. It reports what it can observe, but a local admin operating entirely through standard Windows UAC will not generate the rule-level detail you get from managed elevations. <strong>For your still-admin population, pair EPM reporting with Microsoft Defender for Endpoint process telemetry and Advanced Hunting</strong>, which capture privileged activity regardless of whether it touched EPM. During audit, Defender is doing much of the real investigative work for admins; EPM is the supporting view that comes into its own once users become standard users.</p>
+</blockquote>
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow" data-block-type="core">
+<p data-block-type="core"><strong><span class="stk-highlight">When a second policy does make sense:</span></strong> Not now, but later. As you migrate cohorts off local admin rights and start applying <em>rules</em>, you may want different Elevation <strong>Rules</strong> policies per persona, that is a migration-staging decision covered in the next post, and it concerns rules, not these settings. Some teams also choose to split Elevation Settings policies once they are enforcing, to apply different default responses to different populations. For the audit phase, a single settings policy is simpler and equally effective.</p>
+</blockquote>
+<p data-block-type="core">Save and deploy. Once devices check in and receive the policy, the EPM agent is provisioned automatically. There is no end-user notification or visible change at this point.</p>
+<hr class="wp-block-separator has-alpha-channel-opacity" data-block-type="core"/>
+<h2 class="wp-block-heading" id="step-3-let-it-run---and-how-long-to-wait"><a aria-hidden="true" class="aal_anchor" href="#step-3-let-it-run-and-how-long-to-wait" id="step-3-let-it-run-and-how-long-to-wait"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Step 3: Let It Run – and How Long to Wait</h2>
+<p data-block-type="core">Patience here is not optional. Elevation behavior is not evenly distributed across days or weeks. Users elevate when they have a reason to – a software update arrives, a project requires a new tool, a quarterly process kicks off that needs a specific utility.</p>
+<p data-block-type="core"><strong>Our recommendation: run audit mode for at least 4 weeks before drawing conclusions.</strong></p>
+<p data-block-type="core">Two weeks will catch the day-to-day patterns. Four weeks will start surfacing the less frequent events – the monthly finance reconciliation tool, the quarterly reporting utility, and the vendor diagnostic that only gets run when something breaks. These low-frequency elevations are exactly the ones that cause helpdesk calls after you remove local admin rights, because they are easy to miss in a shorter audit window.</p>
+<p data-block-type="core">During this period, resist the urge to start building rules. Let the data accumulate. You will build better rules from four weeks of data than from two.</p>
+<hr class="wp-block-separator has-alpha-channel-opacity" data-block-type="core"/>
+<h2 class="wp-block-heading" id="step-4-reading-the-epm-overview-dashboard"><a aria-hidden="true" class="aal_anchor" href="#step-4-reading-the-epm-overview-dashboard" id="step-4-reading-the-epm-overview-dashboard"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Step 4: Reading the EPM Overview Dashboard</h2>
+<p data-block-type="core">Once data starts flowing – typically within 24 to 48 hours of the first devices checking in – navigate to:</p>
+<p data-block-type="core"><strong>Endpoint security &gt; Endpoint Privilege Management &gt; Overview</strong></p>
+<p data-block-type="core">This is your readiness dashboard. It is designed specifically to help you assess how ready your environment is to transition users from local admin accounts to standard users. Here is what each tile tells you and how to interpret it. Due to the amount of data, this report might take some time to generate, and it will expire after 72 hours.</p>
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="" class="wp-image-26639" decoding="async" src="assets/2e2c5f22f9eab65d/img_4.png"/></figure>
+<p data-block-type="core"><strong>Users who have only unmanaged file elevations</strong> These are users whose elevations are all being reported as unmanaged none are flowing through an EPM rule. Two different situations land here, and it is worth distinguishing them. First, standard users who elevate outside EPM. Second,  and this catches people out, users who <em>still hold local admin rights</em>, because as Microsoft’s documentation makes clear, EPM does not manage elevations for existing admins and always reports their activity as unmanaged. So a large “only unmanaged” population is expected early on; it is largely your not-yet-migrated admin base. Drill in and export the list. The applications surfacing here are your rule-building backlog, and the users are who you will migrate once rules exist.</p>
+<p data-block-type="core"><strong>Users who have both managed and unmanaged file elevations</strong>: These users are partially covered – some of their elevations are already going through EPM (perhaps from a rule you deployed as a test, or from using the right-click “Run with elevated access” option), but some are still going through the unmanaged path. Investigate the unmanaged elevations for this group. These are the gaps in your coverage.</p>
+<p data-block-type="core"><strong>Users who have only managed file elevations</strong>: These users are already operating cleanly through EPM. If they also have local admin rights, they are your best candidates for an early transition to standard users – your low-risk pilot group for Phase 5.</p>
+<hr class="wp-block-separator has-alpha-channel-opacity" data-block-type="core"/>
+<h2 class="wp-block-heading" id="step-5-going-deeper---the-reports-tab"><a aria-hidden="true" class="aal_anchor" href="#step-5-going-deeper-the-reports-tab" id="step-5-going-deeper-the-reports-tab"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Step 5: Going Deeper – The Reports Tab</h2>
+<p data-block-type="core">The Overview dashboard provides a summary. The Reports tab gives you the details you need to actually build rules.</p>
+<p data-block-type="core">Navigate to: <strong>Endpoint security &gt; Endpoint Privilege Management &gt; Reports</strong></p>
+<p data-block-type="core">The reports available here include:</p>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-26640" decoding="async" src="assets/2e2c5f22f9eab65d/img_5.png"/></figure>
+<p data-block-type="core"><strong>Elevation report:</strong> A full log of elevation events with timestamp, device name, user, file name, file path, file hash, publisher, and elevation type. This is your raw data. Export this to CSV and work through it – look for patterns by file name, publisher, and path. Applications that appear repeatedly across different users and devices are the ones that need rules. Applications that appear once, from an unusual path, from an unsigned binary, are the ones that should make you pause before you build a rule for them.</p>
+<p data-block-type="core"><strong>The 30-day retention window matters here.</strong> EPM report data is only retained for 30 days. This is another reason to run your audit for at least four weeks and then act – if you wait too long after data starts arriving, the early events will have aged out before you can analyze them. Export the data regularly during the audit period and keep your own records.</p>
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="" class="wp-image-26641" decoding="async" src="assets/2e2c5f22f9eab65d/img_6.png"/></figure>
+<hr class="wp-block-separator has-alpha-channel-opacity" data-block-type="core"/>
+<h2 class="wp-block-heading" id="step-6-identifying-your-user-personas"><a aria-hidden="true" class="aal_anchor" href="#step-6-identifying-your-user-personas" id="step-6-identifying-your-user-personas"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Step 6: Identifying Your User Personas</h2>
+<p data-block-type="core">The elevation data will start to reveal natural groupings among your users. This is persona identification – one of the most important outputs of the audit phase, and one that most documentation skips over too quickly.</p>
+<p data-block-type="core">A persona in this context is a group of users with sufficiently similar elevation needs to be governed by the same set of elevation rules. You are not mapping to job titles – you are mapping to elevation behavior.</p>
+<p data-block-type="core">Some patterns you are likely to see:</p>
+<p data-block-type="core"><strong>The standard office worker:</strong> Elevates rarely, usually for software updates on personal productivity tools, occasionally for a printer driver. Low complexity, low volume. A small set of automatic elevation rules covers this persona almost completely.</p>
+<p data-block-type="core"><strong>The IT operations team:</strong> Elevates frequently, for a wide range of system utilities, scripts, and diagnostic tools. High complexity. This persona needs its own rule set, and is also a candidate for the developer-style segmentation discussion from Post 1 if the tools are sufficiently sensitive.</p>
+<p data-block-type="core"><strong>The power user:</strong> Elevates regularly for a consistent set of specialist applications – a financial modeling tool, a CAD package, an industry-specific utility. Medium complexity, but predictable. A well-built rule set reliably covers this persona.</p>
+<p data-block-type="core"><strong>The irregular elevator:</strong> Elevates infrequently and unpredictably – different applications each time, no clear pattern. This persona is often best served by the support-approved elevation workflow rather than trying to build rules for every possible scenario.</p>
+<p data-block-type="core">Document your personas before you start building rules. The persona becomes the assignment scope for your Elevation Rules Policy – different personas get different rule sets.</p>
+<hr class="wp-block-separator has-alpha-channel-opacity" data-block-type="core"/>
+<h2 class="wp-block-heading" id="step-7-building-your-rule-backlog"><a aria-hidden="true" class="aal_anchor" href="#step-7-building-your-rule-backlog" id="step-7-building-your-rule-backlog"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Step 7: Building Your Rule Backlog</h2>
+<p data-block-type="core">By the end of the audit period, you should have:</p>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core">A ranked list of the top elevated applications across your environment</li>
+<li data-block-type="core">A user list segmented by persona</li>
+<li data-block-type="core">An identified pilot group <br/>(users with only managed elevations who already have local admin rights)</li>
+<li data-block-type="core">A clear picture of your unmanaged elevation volume – the gap you need to close before you remove admin rights</li>
+</ul>
+<p data-block-type="core">From this, build a prioritized rule backlog. A simple structure:</p>
+<figure class="wp-block-table" data-block-type="core"><table class="has-fixed-layout"><thead><tr><th class="has-text-align-left" data-align="left">Priority</th><th class="has-text-align-left" data-align="left">Application</th><th class="has-text-align-left" data-align="left">Elevation type</th><th class="has-text-align-left" data-align="left">Persona</th><th class="has-text-align-left" data-align="left">Detection attributes available</th></tr></thead><tbody><tr><td>1</td><td>[App name]</td><td>Automatic</td><td>All users</td><td>Certificate + file hash</td></tr><tr><td>2</td><td>[App name]</td><td>User-initiated</td><td>Power users</td><td>Certificate + product version</td></tr><tr><td>3</td><td>[App name]</td><td>Support-approved</td><td>IT ops</td><td>File hash only</td></tr></tbody></table></figure>
+<p data-block-type="core">The priority is determined by two factors: how frequently the application is elevated (frequency from the top elevated apps report) and how many users are affected (breadth from the elevation usage report). Start with high-frequency, broad-reach applications. These give you the most coverage for the least rule-building effort.</p>
+<p data-block-type="core">Post 3 in this series goes deep on how to actually build these rules – choosing the right detection attributes, handling application updates, and testing before you roll out. But before you get there, your rule backlog from the audit phase is the input you need.</p>
+<hr class="wp-block-separator has-alpha-channel-opacity" data-block-type="core"/>
+<h2 class="wp-block-heading" id="what-healthy-vs-unhealthy-looks-like"><a aria-hidden="true" class="aal_anchor" href="#what-healthy-vs-unhealthy-looks-like" id="what-healthy-vs-unhealthy-looks-like"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>What Healthy vs. Unhealthy Looks Like</h2>
+<p data-block-type="core">Before you close out the audit phase, it is worth knowing what the data is telling you beyond just the rule backlog. A few patterns worth watching for:</p>
+<p data-block-type="core"><strong>High unmanaged elevation volume from a small number of users</strong>: If a handful of users account for a disproportionate share of unmanaged elevations, investigate why. Are they using local admin rights for tasks that should be going through IT? Are they running unsigned or unusual binaries? This can surface shadow IT or security risks that exist independently of EPM.</p>
+<p data-block-type="core"><strong>Elevations from unusual paths:</strong> Legitimate applications installed to known locations – <code>C:\Program Files</code>, <code>C:\Program Files (x86)</code>. Elevations from <code>%TEMP%</code>, <code>%APPDATA%</code>, or user-writable paths are a red flag. These may represent legitimate portable tools, but they are also the signature of malware attempting to run with elevated rights. Flag these for security review before you consider building a rule for them.</p>
+<p data-block-type="core"><strong>Unsigned binary elevations</strong>: The elevation usage report includes publisher information. Elevations with an empty or unknown publisher field warrant scrutiny. Most legitimate enterprise software is signed. An unsigned binary being elevated regularly is either a legacy internal tool that needs attention or something you do not want to be elevating at all.</p>
+<p data-block-type="core"><strong>Very high total elevation volume</strong>: If your environment shows thousands of elevation events per week across a modest number of users, that is worth investigating before you move to enforcement. It may indicate that local admin rights are being used habitually for things that do not actually require elevation, or that some users are relying on elevation as a workaround for misconfigured application permissions. Understanding the root cause matters – some of these may resolve themselves once users no longer have admin rights, others will surface as helpdesk calls if you don’t build rules for them.</p>
+<hr class="wp-block-separator has-alpha-channel-opacity" data-block-type="core"/>
+<h2 class="wp-block-heading" id="closing-the-audit-phase"><a aria-hidden="true" class="aal_anchor" href="#closing-the-audit-phase" id="closing-the-audit-phase"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Closing the Audit Phase</h2>
+<p data-block-type="core">The audit phase is complete when you can answer these questions with confidence:</p>
+<ol class="wp-block-list" data-block-type="core">
+<li data-block-type="core">What are the top 15 applications being elevated across my environment?</li>
+<li data-block-type="core">Which users have only unmanaged elevations – and what are they elevating?</li>
+<li data-block-type="core">What are my user personas, and what does each one need?</li>
+<li data-block-type="core">Who is my pilot group for the first standard-user transition?</li>
+<li data-block-type="core">Are there any elevation patterns in my data that represent a security concern?</li>
+</ol>
+<p data-block-type="core">If you can answer all five, you are ready to move to Part 3 – building your elevation rules. That is the subject of the next post in this series.</p>
+<p data-block-type="core">If you cannot answer them yet, the audit period is not over. Give it more time, or extend the reporting scope to capture more of your device estate.</p>
+<p data-block-type="core">The temptation to skip ahead is real, especially if leadership is pushing for visible progress. Resist it. The audit phase is the work that makes the rest of the deployment succeed. Every hour you spend here saves days of firefighting later.</p>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#faq" id="faq"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>FAQ</h2>
+<div class="rank-math-block" id="rank-math-faq">
+<div class="rank-math-list">
+<div class="rank-math-list-item" id="faq-question-1780686189030">
+<h4 class="rank-math-question"><a aria-hidden="true" class="aal_anchor" href="#why-shouldnt-i-remove-local-admin-rights-before-enabling-epm" id="why-shouldnt-i-remove-local-admin-rights-before-enabling-epm"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Why shouldn’t I remove local admin rights before enabling EPM?</h4>
+<div class="rank-math-answer">
+<p>Because you don’t yet know what users actually elevate.<br/>Removing admin rights too early leads to user disruption, helpdesk overload, and failed rollouts driven by incorrect assumptions.</p>
+</div>
+</div>
+<div class="rank-math-list-item" id="faq-question-1780686209098">
+<h4 class="rank-math-question"><a aria-hidden="true" class="aal_anchor" href="#what-is-audit-mode-in-intune-endpoint-privilege-management" id="what-is-audit-mode-in-intune-endpoint-privilege-management"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>What is audit mode in Intune Endpoint Privilege Management?</h4>
+<div class="rank-math-answer">
+<p>Audit mode means deploying the EPM agent to <strong>collect elevation data without enforcing rules or changing user behavior</strong>.<br/>Users continue working as normal while all elevation activity is logged.</p>
+</div>
+</div>
+<div class="rank-math-list-item" id="faq-question-1780686230412">
+<h4 class="rank-math-question"><a aria-hidden="true" class="aal_anchor" href="#does-epm-audit-mode-impact-end-users" id="does-epm-audit-mode-impact-end-users"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Does EPM audit mode impact end users?</h4>
+<div class="rank-math-answer">
+<p>No – when configured correctly:<br/>– Users with admin rights can still elevate<br/>– Standard users remain blocked<br/>The goal is <strong>visibility without disruption</strong>.</p>
+</div>
+</div>
+<div class="rank-math-list-item" id="faq-question-1780686273899">
+<h4 class="rank-math-question"><a aria-hidden="true" class="aal_anchor" href="#how-long-should-i-run-epm-audit-mode" id="how-long-should-i-run-epm-audit-mode"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>How long should I run EPM audit mode?</h4>
+<div class="rank-math-answer">
+<p>At least <strong>4 weeks</strong>.<br/>Shorter periods miss low-frequency but critical events (e.g., finance tools, vendor diagnostics) that will otherwise cause issues later.</p>
+</div>
+</div>
+<div class="rank-math-list-item" id="faq-question-1780686294484">
+<h4 class="rank-math-question"><a aria-hidden="true" class="aal_anchor" href="#what-should-i-look-for-in-the-epm-overview-dashboard" id="what-should-i-look-for-in-the-epm-overview-dashboard"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>What should I look for in the EPM Overview dashboard?</h4>
+<div class="rank-math-answer">
+<p>Focus on:<br/>– Users with only unmanaged elevations → highest risk when removing admin rights<br/>– Users already using managed elevations → best pilot candidates<br/>This helps prioritize your rollout strategy.</p>
+</div>
+</div>
+<div class="rank-math-list-item" id="faq-question-1780686329604">
+<h4 class="rank-math-question"><a aria-hidden="true" class="aal_anchor" href="#what-data-should-i-use-to-build-epm-elevation-rules" id="what-data-should-i-use-to-build-epm-elevation-rules"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>What data should I use to build EPM elevation rules?</h4>
+<div class="rank-math-answer">
+<p>Use the <strong>Elevation report</strong> to identify:<br/>– Frequently used applications (high priority)<br/>– Broad usage across users (high impact)<br/>– Suspicious or rare events (review before allowing)</p>
+</div>
+</div>
+<div class="rank-math-list-item" id="faq-question-1780686363936">
+<h4 class="rank-math-question"><a aria-hidden="true" class="aal_anchor" href="#what-are-epm-user-personas-and-why-do-they-matter" id="what-are-epm-user-personas-and-why-do-they-matter"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>What are EPM “user personas” and why do they matter?</h4>
+<div class="rank-math-answer">
+<p>Personas group users based on <strong>elevation behavior </strong>rather than job titles.<br/>Policies should be built per persona (e.g., standard users, IT ops, power users) to reduce complexity and improve accuracy.</p>
+</div>
+</div>
+<div class="rank-math-list-item" id="faq-question-1780686396052">
+<h4 class="rank-math-question"><a aria-hidden="true" class="aal_anchor" href="#what-are-the-signs-of-unhealthy-elevation-patterns" id="what-are-the-signs-of-unhealthy-elevation-patterns"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>What are the signs of unhealthy elevation patterns?</h4>
+<div class="rank-math-answer">
+<p>Watch for:<br/>– High elevation volume from a few users<br/>– Elevations from user-writable paths (%APPDATA%, %TEMP%)<br/>– Unsigned binaries being elevated<br/>These may indicate security risks—not candidates for automatic rules.</p>
+</div>
+</div>
+<div class="rank-math-list-item" id="faq-question-1780686424443">
+<h4 class="rank-math-question"><a aria-hidden="true" class="aal_anchor" href="#when-is-the-epm-audit-phase-complete" id="when-is-the-epm-audit-phase-complete"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>When is the EPM audit phase complete?</h4>
+<div class="rank-math-answer">
+<p>When you can confidently answer:<br/>– What are the top elevated applications?<br/>– Who relies on unmanaged elevation?<br/>– What user personas exist?<br/>– Who should be your pilot group?<br/>– Are there any risky patterns?<br/>Only then should you move to rule creation.</p>
+</div>
+</div>
+<div class="rank-math-list-item" id="faq-question-1780686510386">
+<h4 class="rank-math-question"><a aria-hidden="true" class="aal_anchor" href="#will-epm-fail-if-i-skip-audit-mode" id="will-epm-fail-if-i-skip-audit-mode"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Will EPM fail if I skip audit mode?</h4>
+<div class="rank-math-answer">
+<p>Yes. Not maybe – <strong>yes</strong>.<br/>If you build rules based on assumptions instead of real data, you will miss critical applications, block users, and end up reintroducing local admin rights just to keep the business running.</p>
+</div>
+</div>
+<div class="rank-math-list-item" id="faq-question-1780686526710">
+<h4 class="rank-math-question"><a aria-hidden="true" class="aal_anchor" href="#can-i-speed-up-epm-audit-mode-and-just-run-it-for-a-week" id="can-i-speed-up-epm-audit-mode-and-just-run-it-for-a-week"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Can I speed up EPM audit mode and just run it for a week?</h4>
+<div class="rank-math-answer">
+<p>You can, but you’ll regret it.<br/>Short audit periods only capture daily behavior. The real problems come from <strong>low-frequency events</strong> that show up later as “why is this broken?” tickets after rollout.</p>
+</div>
+</div>
+<div class="rank-math-list-item" id="faq-question-1780686546415">
+<h4 class="rank-math-question"><a aria-hidden="true" class="aal_anchor" href="#isnt-audit-mode-just-delaying-the-epm-progress" id="isnt-audit-mode-just-delaying-the-epm-progress"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Isn’t audit mode just delaying the EPM progress?</h4>
+<div class="rank-math-answer">
+<p>No, it <em>is</em> the progress.<br/>Everything after audit mode (rules, rollout, removal of admin rights) depends entirely on the data you collect here. Skipping it doesn’t save time; it just shifts the pain to production.</p>
+</div>
+</div>
+<div class="rank-math-list-item" id="faq-question-1780686591705">
+<h4 class="rank-math-question"><a aria-hidden="true" class="aal_anchor" href="#cant-i-just-build-epm-rules-for-the-known-apps-and-move-on" id="cant-i-just-build-epm-rules-for-the-known-apps-and-move-on"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Can’t I just build EPM rules for the “known apps” and move on?</h4>
+<div class="rank-math-answer">
+<p>This is the exact trap most deployments fall into.<br/>You’ll cover the obvious apps and completely miss the long tail that generates most user friction and helpdesk noise.</p>
+</div>
+</div>
+<div class="rank-math-list-item" id="faq-question-1780686632656">
+<h4 class="rank-math-question"><a aria-hidden="true" class="aal_anchor" href="#should-i-try-to-cover-100-of-elevation-scenarios-with-epm-rules" id="should-i-try-to-cover-100-of-elevation-scenarios-with-epm-rules"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Should I try to cover 100% of elevation scenarios with EPM rules?</h4>
+<div class="rank-math-answer">
+<p>No. That’s not the goal.<br/>Trying to automate everything leads to fragile, over-engineered policies.<br/>Use rules for predictable patterns and <strong>support-approved elevation for the rest</strong>.</p>
+</div>
+</div>
+<div class="rank-math-list-item" id="faq-question-1780686667107">
+<h4 class="rank-math-question"><a aria-hidden="true" class="aal_anchor" href="#is-high-elevation-volume-a-sign-that-i-need-more-epm-rules" id="is-high-elevation-volume-a-sign-that-i-need-more-epm-rules"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Is high elevation volume a sign that I need more EPM rules?</h4>
+<div class="rank-math-answer">
+<p>Not necessarily.<br/>It can also mean:<br/>– Users are overusing admin rights<br/>– Apps are misconfigured<br/>– Permissions are wrong<br/>Sometimes the right fix is <strong>not to allow elevation at all</strong>.</p>
+</div>
+</div>
+<div class="rank-math-list-item" id="faq-question-1780686702760">
+<h4 class="rank-math-question"><a aria-hidden="true" class="aal_anchor" href="#can-i-trust-all-elevation-data-equally" id="can-i-trust-all-elevation-data-equally"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Can I trust all elevation data equally?</h4>
+<div class="rank-math-answer">
+<p>Absolutely not.<br/>If an app is:<br/>– Running from %APPDATA% or %TEMP%<br/>– Unsigned<br/>– Seen only once<br/>You should question it before you ever consider building a rule for it.</p>
+</div>
+</div>
+<div class="rank-math-list-item" id="faq-question-1780686739224">
+<h4 class="rank-math-question"><a aria-hidden="true" class="aal_anchor" href="#whats-the-biggest-mistake-you-can-make-during-epm-audit-mode" id="whats-the-biggest-mistake-you-can-make-during-epm-audit-mode"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>What’s the biggest mistake you can make during EPM audit mode?</h4>
+<div class="rank-math-answer">
+<p>Interfering too early.<br/>The moment you start tweaking policies, adding rules, or “cleaning things up” during an audit, you’re no longer observing reality. You’re biasing your own data.</p>
+</div>
+</div>
+</div>
+</div><p class="post-views content-post post-26610 entry-meta load-static">
+<span class="post-views-icon dashicons dashicons-chart-bar"></span> <span class="post-views-label">Views:</span> <span class="post-views-count">42</span>
+</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
