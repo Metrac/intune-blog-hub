@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Ultimate Intune Troubleshooting Guide: How It Works and How I Fix It</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">June 23, 2026</span>
+  </div>
+  <h1>The Ultimate Intune Troubleshooting Guide: How It Works and How I Fix It</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/2026/06/23/intune-troubleshooting-guide/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p class="wp-block-paragraph">In this blog post I explain how I approach <strong>Intune troubleshooting</strong> from end to end. This is not a list of error codes you can already find in the docs — it is the full picture: how Intune actually works under the hood, how a device proves who it is, where the logs live, which tools I reach for, and a clear method I follow every time. When you understand <em>how</em> a device talks to Intune, most problems stop being a mystery. You stop guessing and you start reading the right log, which is what real Intune troubleshooting is about.</p>
+<p class="wp-block-paragraph">This is a long one, on purpose. I wanted the single Intune troubleshooting guide I can send to a colleague and say “read this and you can fix most things yourself.” So we go all the way down — including the new <strong>MMP-C</strong> and <strong>Declared Configuration</strong> plumbing that almost no admin knows is already running on their devices — and then back up to the errors you hit most.</p>
+<p class="wp-block-paragraph">A note on honesty before we start: a lot of the deepest details here are not in the official Microsoft docs. They were reverse-engineered by people like Rudy Ooms, Oliver Kieselbach and Michael Niehaus. I will say clearly when something is community knowledge rather than documented, because internals like this change between Windows builds. Let us start with the part most guides skip — the mental model.</p>
+<span id="more-18830"></span>
+<h2 class="wp-block-heading">Intune troubleshooting starts here: how Intune actually works under the hood</h2>
+<p class="wp-block-paragraph">Before you troubleshoot anything, you need to know who delivers what. Almost every Intune troubleshooting session that goes wrong goes wrong here: on Windows there are <strong>two separate channels</strong> that have almost nothing to do with each other, and most confusion I see comes from people not knowing which channel owns their setting.</p>
+<figure class="wp-block-image"><img alt="Diagram showing how Microsoft Intune talks to a Windows device through two channels: the native MDM channel over OMA-DM that maps settings to CSPs, and the Intune Management Extension that runs Win32 apps and PowerShell scripts on its own schedule" data-recalc-dims="1" decoding="async" src="assets/e0b61d1a9a6d47f1/img_0.jpg"/></figure>
+<p class="wp-block-paragraph"></p>
+<p class="wp-block-paragraph"><strong>Channel 1 — the native MDM channel.</strong> This is built into Windows. Intune talks to the device using the OMA-DM protocol, and the messages are SyncML (XML). The device does not get raw registry keys. Instead, every setting maps to a <strong>Configuration Service Provider (CSP)</strong> — a small interface in Windows that knows how to apply that one setting. Profiles, compliance, certificates and Wi-Fi all come down this channel.</p>
+<p class="wp-block-paragraph"><strong>Channel 2 — the Intune Management Extension (IME).</strong> This is a real agent (the old name was the “Sidecar” agent). It is installed automatically the first time you assign a Win32 app, a PowerShell script, a remediation or a custom compliance script. It does the things the native MDM channel cannot. It has its own service (<code>IntuneManagementExtension</code>) and <strong>its own clock</strong>, independent from the MDM check-in.</p>
+<p class="wp-block-paragraph"><strong>Note:</strong> This is the single most useful Intune troubleshooting habit to internalise. If a <em>configuration profile</em> is broken, you look at the MDM channel and Event Viewer. If a <em>Win32 app or a script</em> is broken, you look at the IME and its logs. Two problems, two places.</p>
+<h3 class="wp-block-heading">How do CSPs really work?</h3>
+<p class="wp-block-paragraph">This is worth understanding properly, because it explains the error codes later and makes Intune troubleshooting far less guesswork. A CSP is the bridge between the SyncML command Intune sends and the actual Windows setting. The command targets an <strong>OMA-URI</strong> (also called a LocURI) — a path like:</p>
+<p class="wp-block-paragraph">For Intune troubleshooting, the very first part decides the scope: <strong><code>./Device</code></strong> for a device setting, <strong><code>./User</code></strong> for a user setting. If there is no prefix, Windows treats it as device-targeted by default.</p>
+<p class="wp-block-paragraph">The <strong>Policy CSP</strong> is the workhorse for most settings, and it has one detail that helps enormously when troubleshooting: it has a <strong><code>Config</code></strong> path (read/write — where Intune sets the value) and a <strong><code>Result</code></strong> path (read-only — where you read the <em>conflict-resolved</em> value the device actually applied). So when two sources fight over a setting, the <code>Result</code> path tells you who won.</p>
+<p class="wp-block-paragraph">When Intune sends a Settings Catalog profile, each setting becomes a SyncML command — usually a <code>Replace</code> (set a value), an <code>Add</code> (create a node) or a <code>Delete</code> (remove it). “Not configured” is literally a <code>Delete</code>. Microsoft recommends wrapping each setting in an <strong><code>Atomic</code></strong> block so it is applied as a single transaction. The on-the-wire command looks like this:</p>
+<p class="wp-block-paragraph"><strong>Hint:</strong> You can watch these commands live with Oliver Kieselbach’s <strong><a href="https://oliverkieselbach.com/2023/12/12/new-syncml-viewer-version/" rel="noopener" target="_blank">SyncML Viewer</a></strong>. It traces the MDM session and shows you the exact XML the client sent and received. It is the fastest way to prove whether a setting was actually delivered or silently dropped.</p>
+<h3 class="wp-block-heading">How often does a device check in?</h3>
+<p class="wp-block-paragraph">Microsoft states the maintenance check-in happens <strong>about every 8 hours</strong>, and the IME also checks in on its own schedule. But you rarely wait that long. When you assign something or hit <strong>Sync</strong>, Intune sends a <strong>Windows Push Notification Service (WNS)</strong> notification that triggers a near-immediate check-in. So the famous “8-hour sync” is misleading — targeted changes push almost right away, which is the first thing I confirm in any Intune troubleshooting case before I assume something is broken.</p>
+<p class="wp-block-paragraph">For Intune troubleshooting, the trigger on the device is a set of <strong>scheduled tasks</strong> created at enrollment under <code>Task Scheduler Library &gt; Microsoft &gt; Windows &gt; EnterpriseMgmt &gt; {EnrollmentGUID}</code>. The key one is <strong>PushLaunch</strong>, which reacts to the WNS push and starts an OMA-DM session.</p>
+<p class="wp-block-paragraph"><strong>Hint:</strong> A <code>LastTaskResult</code> of <code>0x82AC0204</code> on the PushLaunch task is <em>not</em> an error. It just means “queued, will run later.” I have seen people chase that for an hour.</p>
+<h2 class="wp-block-heading">MMP-C and Declared Configuration: the second brain Intune troubleshooting now has to cover</h2>
+<p class="wp-block-paragraph">Here is the part that surprises most admins, and increasingly trips up Intune troubleshooting: on a modern, fully patched Windows device, there is now a <strong>second enrollment</strong> running quietly next to the classic one. If you have not heard of MMP-C yet, you will — it is already on your devices.</p>
+<figure class="wp-block-image"><img alt="Comparison of the classic imperative Intune MDM channel over OMA-DM versus the new declarative MMP-C Declared Configuration channel: different models, endpoints, sync cadence and workloads, with two enrollment GUIDs now present in the registry" data-recalc-dims="1" decoding="async" src="assets/e0b61d1a9a6d47f1/img_1.jpg"/></figure>
+<p class="wp-block-paragraph"></p>
+<p class="wp-block-paragraph"><strong>MMP-C</strong> stands for <strong>Microsoft Management Platform – Cloud</strong>. It is a new cloud management plane that runs <em>alongside</em> — not instead of — the classic Intune/OMA-DM channel. It exists to carry <strong>Windows Declared Configuration (WinDC)</strong>, a new way of delivering policy.</p>
+<p class="wp-block-paragraph">The difference between the two models is the whole point:</p>
+<ul class="wp-block-list">
+<li>The <strong>classic OMA-DM</strong> channel is <strong>imperative</strong>. The server issues commands one at a time — get, set, get — and only checks the result at the next sync. If the setting drifts in between, nothing happens until the device checks in again.</li>
+<li><strong>Declared Configuration</strong> is <strong>declarative</strong> and <strong>idempotent</strong> (think Windows DSC). The server sends the <em>whole desired state</em> in one batch per scenario, the client validates it synchronously, and the device itself owns keeping it that way. If a setting drifts, the device re-applies it on its own — non-destructively. This is the same desired-state idea Apple uses for declarative device management.</li>
+</ul>
+<p class="wp-block-paragraph">Microsoft says plainly that WinDC requires a <strong>separate OMA-DM enrollment</strong> that depends on the device already being enrolled in a primary MDM server. So a managed device now has <strong>two enrollments</strong>: the classic one (the “MS DM Server”, using <code>*.manage.microsoft.com</code>) and a linked second one for Declared Configuration (using the <code>*.dm.microsoft.com</code> endpoints).</p>
+<h3 class="wp-block-heading">What triggers it, and what runs on it?</h3>
+<p class="wp-block-paragraph">The linked enrollment first showed up with <strong>Endpoint Privilege Management (EPM)</strong>, which is still the flagship workload. But the big change is <strong>Windows Advanced Device Inventory</strong> (the Properties Catalog) — because that feature runs on MMP-C, the dual enrollment is now rolling out to effectively <em>all</em> managed devices, without you doing anything. <strong>Resource access</strong> policies (Wi-Fi, VPN and certificates) are moving over too.</p>
+<p class="wp-block-paragraph">Microsoft has <em>signalled</em> that security baselines, Defender settings and Account Protection are on the same pipeline — but as of writing none of those are confirmed generally available on the Declared Configuration channel, so I treat them as “coming, not here.” That distinction matters for Intune troubleshooting: if a baseline misbehaves today, it is still travelling down the classic OMA-DM channel, not WinDC. This is the direction of travel for Windows management, but read the channel before you read the log.</p>
+<p class="wp-block-paragraph"><strong>Note:</strong> The acronym, the enrollment “type” numbers, the <code>*.dm.microsoft.com</code> host names and the 4-hour cadence below were reverse-engineered by <strong>Rudy Ooms (call4cloud)</strong>, not published by Microsoft. The desired-state model, the dedicated enrollment requirement and the refresh interval <em>are</em> documented. I am separating the two so you know what to trust.</p>
+<h3 class="wp-block-heading">How does it work, and how do I see it on a device?</h3>
+<p class="wp-block-paragraph">The second enrollment is set up through new <strong><code>LinkedEnrollment</code></strong> nodes on the DMClient CSP — you set a <code>DiscoveryEndpoint</code>, then <code>Exec</code> an <code>Enroll</code>. On the device the linked OMA-DM enrollment is named <strong><code>MicrosoftManagementPlatformCloud</code></strong>, so that string in the registry or in a log is your confirmation that MMP-C is live. The engine that processes Declared Configuration documents runs as the Windows service <strong><code>dcsvc</code></strong> (backed by <code>dcsvc.dll</code>), and a scheduled task runs <code>deviceenroller.exe /DeclaredConfigurationRefresh</code> to reconcile drift — by default about <strong>every 4 hours</strong> (the classic MDM channel is every 8). The refresh interval is configurable via <code>DeclaredConfiguration/ManagementServiceConfiguration/RefreshInterval</code>. So MMP-C is not only a different model, it also checks in twice as often.</p>
+<p class="wp-block-paragraph">The first Intune troubleshooting step for MMP-C is to confirm it on a device by opening the registry:</p>
+<p class="wp-block-paragraph">You will now see <strong>two enrollment GUIDs</strong>. Under the classic Intune enrollment there is a <strong><code>LinkedEnrollment</code></strong> subkey with values like <code>EnrollStatus</code>, <code>LastError</code> and <code>MMPCLocked</code>. The second GUID is the MMP-C enrollment itself, with its own folder under <code>EnterpriseMgmt</code> in Task Scheduler.</p>
+<p class="wp-block-paragraph"><strong>Hint:</strong> Declared Configuration does <em>not</em> get its own Event Viewer log. Its events ride inside the normal <code>DeviceManagement-Enterprise-Diagnostics-Provider</code> channels — look for lines that say <code>MDM Declared Configuration:</code> or <code>Provider Name: (DeclaredConfiguration)</code>. I will come back to the MMP-C errors I see most later in the guide.</p>
+<h2 class="wp-block-heading">Identity and Intune troubleshooting: how a device proves who it is</h2>
+<p class="wp-block-paragraph">A huge share of “Intune is broken” tickets are really <em>identity</em> problems, so identity is where a lot of Intune troubleshooting actually ends — the device cannot prove who it is, so sync, enrollment or Conditional Access fails. So it is worth understanding the identity layer. Your first command, always, is:</p>
+<p class="wp-block-paragraph">Read three sections (Microsoft documents every field in the <a href="https://learn.microsoft.com/en-us/entra/identity/devices/troubleshoot-device-dsregcmd" rel="noopener" target="_blank">dsregcmd troubleshooting reference</a>):</p>
+<ul class="wp-block-list">
+<li><strong>Device State</strong> — the first thing I check in identity Intune troubleshooting: <code>AzureAdJoined</code>, <code>DomainJoined</code>, <code>EnterpriseJoined</code>. The combination tells you the join type. <code>AzureAdJoined: YES</code> alone is cloud-native (Entra joined); <code>YES</code> + <code>DomainJoined: YES</code> is hybrid. (Entra <em>registered</em> shows up lower, as <code>WorkplaceJoined</code> in the User State.)</li>
+<li><strong>Device Details</strong> — the device certificate thumbprint, and <code>TpmProtected: YES</code> (the private key lives in the TPM).</li>
+<li><strong>SSO State</strong> — <code>AzureAdPrt: YES/NO</code>, <code>AzureAdPrtUpdateTime</code> (if it is more than ~4 hours old, the PRT is failing to refresh) and <code>AcquirePrtDiagnostics</code>. This is the Primary Refresh Token, and it matters more than people think. Tip: locking and unlocking the device forces a PRT refresh attempt — one of the fastest Intune troubleshooting moves there is.</li>
+</ul>
+<h3 class="wp-block-heading">The two certificates you must not confuse</h3>
+<p class="wp-block-paragraph">A managed, Entra-joined device has <strong>two</strong> certificates that do very different jobs, and mixing them up wastes hours:</p>
+<ul class="wp-block-list">
+<li><strong>MS-Organization-Access</strong> — this is the <strong>device identity</strong> for Entra. It is issued when the device registers, lasts about 10 years, and its presence <em>is</em> the Azure AD join. This certificate is what gets the device a PRT. Remove it and the device is effectively unjoined.</li>
+<li><strong>Microsoft Intune MDM Device CA</strong> — this authenticates the <strong>OMA-DM management channel</strong> to Intune. This is the certificate that breaks when sync dies with <code>0x80190190</code>.</li>
+</ul>
+<p class="wp-block-paragraph">They fail independently, and confusing the two is one of the most common Intune troubleshooting mistakes. A device can be perfectly Entra-joined with a healthy PRT and <em>still</em> have an expired MDM certificate that blocks all sync. (The pairing of these two certs and their OID details is documented best by Rudy Ooms; the Entra device-identity half is also in Microsoft’s own device FAQ.)</p>
+<h3 class="wp-block-heading">What is the PRT, and why does it break things?</h3>
+<p class="wp-block-paragraph">The <strong>Primary Refresh Token (PRT)</strong> is the key artifact behind single sign-on, and a recurring root cause in Intune troubleshooting. Microsoft describes it as an opaque blob issued to the token brokers on the device. The important part for troubleshooting is <em>how it is protected</em>:</p>
+<ul class="wp-block-list">
+<li>At registration the device generates a <strong>device key</strong> and a <strong>transport key</strong>, both bound to the <strong>TPM</strong>.</li>
+<li>Entra issues the PRT plus a <strong>session key</strong> that is encrypted to the transport key — so only that device’s TPM can decrypt it. That session key is then used to sign every later token request.</li>
+<li><strong>CloudAP</strong> (the Cloud Authentication Provider, loaded into LSASS) caches and renews the PRT <strong>every 4 hours</strong>. That is exactly what <code>AzureAdPrtUpdateTime</code> reflects.</li>
+</ul>
+<p class="wp-block-paragraph">So when the TPM has a problem, or the device object is deleted or disabled, the PRT cannot refresh — and because device-compliance claims for Conditional Access ride <em>inside</em> the PRT, a broken PRT can cascade into sign-in prompts, CA blocks and sync failures all at once. To dig in, read the SSO State in <code>dsregcmd /status</code>, then Event Viewer under <code>Microsoft &gt; Windows &gt; AAD &gt; Operational</code> (the PRT flow is bracketed by event <strong>1006</strong> start and <strong>1007</strong> end).</p>
+<p class="wp-block-paragraph"><strong>Note:</strong> Microsoft says explicitly <em>not</em> to use Fiddler to capture PRT traffic — use <code>netsh trace</code> instead. Fiddler is great for the OMA-DM channel (more on that below), but it breaks the PRT flow.</p>
+<h2 class="wp-block-heading">Where the logs live: the Intune troubleshooting log map</h2>
+<p class="wp-block-paragraph">Once you know the channels and the identity layer, the log locations make sense. Here is the map I keep in my head.</p>
+<figure class="wp-block-image"><img alt="Intune troubleshooting log map on Windows: IntuneManagementExtension.log, AppWorkload.log, AgentExecutor.log and ClientHealth.log in the IntuneManagementExtension Logs folder, plus the DeviceManagement-Enterprise-Diagnostics-Provider and ModernDeployment Autopilot channels in Event Viewer" data-recalc-dims="1" decoding="async" src="assets/e0b61d1a9a6d47f1/img_2.jpg"/></figure>
+<p class="wp-block-paragraph">Before the long-form notes, here is the quick reference I keep pinned. When someone asks “where are Intune logs stored on Windows?”, this table is the answer. Everything for apps and scripts lives under <code>C:\\ProgramData\\Microsoft\\IntuneManagementExtension\\Logs\\</code> and is best read with CMTrace.</p>
+<figure class="wp-block-table"><table class="has-fixed-layout"><thead><tr><th>Log file</th><th>What it is for</th></tr></thead><tbody><tr><td><code>IntuneManagementExtension.log</code></td><td>Main IME log: check-ins, policy requests, processing and reporting — the big picture.</td></tr><tr><td><code>AppWorkload.log</code></td><td>Win32 app deployment and install detail (primary log for Win32 apps on current builds).</td></tr><tr><td><code>AppActionProcessor.log</code></td><td>Detection and applicability (requirement) checks.</td></tr><tr><td><code>AgentExecutor.log</code></td><td>PowerShell platform-script and remediation execution, with the output.</td></tr><tr><td><code>HealthScripts.log</code></td><td>Remediations (proactive remediation) run detail.</td></tr><tr><td><code>Win32AppInventory.log</code></td><td>Win32 app inventory collector.</td></tr><tr><td><code>Sensor.log</code></td><td>Endpoint Analytics data collector.</td></tr><tr><td><code>ClientHealth.log</code></td><td>Health of the IME agent itself.</td></tr></tbody></table><figcaption class="wp-element-caption">The Intune troubleshooting log map — all under the IntuneManagementExtension\\Logs folder.</figcaption></figure>
+<p class="wp-block-paragraph"><strong>For apps and scripts (the IME):</strong> everything is in<br/>
+<code>C:\ProgramData\Microsoft\IntuneManagementExtension\Logs</code>.</p>
+<ul class="wp-block-list">
+<li><strong>IntuneManagementExtension.log</strong> — the main log. IME check-ins, policy requests, the big picture.</li>
+<li><strong>AppWorkload.log</strong> — Win32 app install detail. On newer builds (service release 2408 and later) this is where the real app detail moved, so check both this and the main log.</li>
+<li><strong>AgentExecutor.log</strong> — the actual PowerShell script and remediation execution, with the output.</li>
+<li><strong>ClientHealth.log</strong> — the health of the IME agent itself.</li>
+</ul>
+<p class="wp-block-paragraph"><strong>For profiles, CSPs and enrollment (the MDM channel):</strong> open Event Viewer and go to<br/>
+<code>Applications and Services Logs &gt; Microsoft &gt; Windows &gt; DeviceManagement-Enterprise-Diagnostics-Provider &gt; Admin</code>.<br/>
+Turn on the Debug channel (View &gt; Show Analytic and Debug Logs) when you need more detail. Some event IDs worth knowing here:</p>
+<ul class="wp-block-list">
+<li><strong>75</strong> = enrollment success, <strong>76</strong> = enrollment failure (with the <code>0x8018xxxx</code> code).</li>
+<li><strong>208 / 813 / 814</strong> = OMA-DM session and policy applied.</li>
+<li><strong>809</strong> = a policy failed with an “Unknown Win32 error code” — a frequent Intune troubleshooting clue — the line usually prints the decoded error right there.</li>
+</ul>
+<p class="wp-block-paragraph"><strong>For Autopilot:</strong> <code>Applications and Services Logs &gt; Microsoft &gt; Windows &gt; ModernDeployment-Diagnostics-Provider &gt; Autopilot</code>.</p>
+<h3 class="wp-block-heading">How do I read an IME log like an expert?</h3>
+<p class="wp-block-paragraph">Reading <code>IntuneManagementExtension.log</code> raw is painful — it is full of GUIDs, and that friction is where a lot of Intune troubleshooting stalls. Here is how the people who do this all day actually work:</p>
+<ol class="wp-block-list">
+<li><strong>Turn GUIDs into names first.</strong> Use Petri Paavola’s <strong><a href="https://github.com/petripaavola/Get-IntuneManagementExtensionDiagnostics" rel="noopener" target="_blank">Get-IntuneManagementExtensionDiagnostics</a></strong> with <code>-ConvertAllKnownGuidsToClearText</code>. It turns the log into a readable <strong>timeline</strong> of every app, script and ESP phase, with the GUIDs replaced by real names. It honestly makes the log a thousand times easier to read.</li>
+<li><strong>Know the lifecycle markers to search for.</strong> For Win32 apps, grep for <code>[Win32App]</code>, and especially <code>GRSManager</code> and <code>ReevaluationScheduleManager</code> — those tell you about the retry cooldown (more on that below). A line saying an app “is not expired” means it is still in its cooldown window.</li>
+<li><strong>Open it in a proper viewer.</strong> Use CMTrace or, on any machine without ConfigMgr, <strong><a href="https://cmtrace.dev/" rel="noopener" target="_blank">cmtrace.dev</a></strong> — the free browser version Florian Salzmann and I built. It colours errors red, follows the file live, and has a built-in error-code lookup.</li>
+</ol>
+<p class="wp-block-paragraph"><strong>Hint:</strong> With verbose IME logging enabled, the log even contains the download URL, AES key and IV needed to decrypt the <code>.intunewin</code> package — Oliver Kieselbach documented this. Useful, but it writes secrets to disk, so turn verbose logging back off and clean up afterwards.</p>
+<h2 class="wp-block-heading">The Intune troubleshooting tools I use</h2>
+<p class="wp-block-paragraph">I always start my Intune troubleshooting with what is already on the device or in the portal, and only then reach for community tools. Here is my toolbox.</p>
+<figure class="wp-block-image"><img alt="My Intune troubleshooting toolbox: MdmDiagnosticsTool.exe, the Collect diagnostics remote action, CMTrace and cmtrace.dev, IntuneDeviceTroubleshooter, Get-IntuneManagementExtensionDiagnostics and the Intune Debug Toolkit" data-recalc-dims="1" decoding="async" src="assets/e0b61d1a9a6d47f1/img_3.jpg"/></figure>
+<p class="wp-block-paragraph"></p>
+<h3 class="wp-block-heading">MdmDiagnosticsTool.exe — the in-box collector</h3>
+<p class="wp-block-paragraph">This ships with Windows and is my go-to first-line Intune troubleshooting collector. It gathers the logs, registry exports and event logs into one package, plus an HTML summary:</p>
+<p class="wp-block-paragraph">Save the output to a folder you can write to (like <code>C:\Temp</code>). This is also what the portal’s <strong>Collect diagnostics</strong> action runs under the hood.</p>
+<h3 class="wp-block-heading">Collect diagnostics — the same thing, remotely</h3>
+<p class="wp-block-paragraph">For remote Intune troubleshooting, open a Windows device in the admin center and click <strong>Collect diagnostics</strong>. It pulls the full log set without bothering the user, and you can run it on up to 25 devices at once. The collection stays for 28 days. This is my first move when the device is not in front of me.</p>
+<h3 class="wp-block-heading">The community tools I keep on hand</h3>
+<ul class="wp-block-list">
+<li><strong><a href="https://github.com/JayRHa/IntuneDeviceTroubleshooter" rel="noopener" target="_blank">IntuneDeviceTroubleshooter</a></strong> — a tool I built. It pulls a device’s compliance, configuration and app state from Microsoft Graph into a single pane, so you do not have to click through five blades to see why a device is unhappy. It also does one-click actions like sync and restart.</li>
+<li><strong><a href="https://errorhunter.msnugget.com/" rel="noopener" target="_blank">Error Hunter</a></strong> — my free MSNugget lookup for Intune and Windows error codes: 350+ codes with meaning, cause, fix and a Microsoft Learn link, all client-side.</li>
+<li><strong><a href="https://github.com/petripaavola/Get-IntuneManagementExtensionDiagnostics" rel="noopener" target="_blank">Get-IntuneManagementExtensionDiagnostics</a></strong> by Petri Paavola — the IME log timeline tool I mentioned above. Essential.</li>
+<li><strong><a href="https://github.com/MSEndpointMgr/IntuneDebugToolkit" rel="noopener" target="_blank">Intune Debug Toolkit</a></strong> from MSEndpointMgr — a Windows GUI with a Win32 app redeploy button, a SyncML viewer, a registry change monitor and bundled CMTrace. Many of us in the community contributed to it.</li>
+<li><strong><a href="https://github.com/okieselbach/SyncMLViewer" rel="noopener" target="_blank">SyncML Viewer</a></strong> by Oliver Kieselbach — live OMA-DM protocol tracing, and newer versions can even trigger an MMP-C sync and decode an Autopilot hardware hash.</li>
+<li>For Autopilot specifically: <strong><code>Get-AutopilotDiagnostics</code></strong> (Michael Niehaus) builds a clean OOBE/ESP timeline, and <strong><code>OA3Tool.exe</code></strong> from the Windows ADK decodes a hardware hash (it is not a hash at all — it is a base64 list of hardware attributes).</li>
+</ul>
+<p class="wp-block-paragraph"><strong>Hint:</strong> For quick, focused tips I also write short “nuggets” with Florian over at <strong><a href="https://msnugget.com/" rel="noopener" target="_blank">MSNugget</a></strong>, and the people who taught me most of the internals in this post are worth following directly: <strong><a href="https://call4cloud.nl/" rel="noopener" target="_blank">Rudy Ooms</a></strong>, <strong><a href="https://oliverkieselbach.com/" rel="noopener" target="_blank">Oliver Kieselbach</a></strong> and <strong><a href="https://oofhours.com/" rel="noopener" target="_blank">Michael Niehaus</a></strong>.</p>
+<h2 class="wp-block-heading">How does a Win32 app really reach the device?</h2>
+<p class="wp-block-paragraph">Win32 apps cause more Intune troubleshooting than anything else, so it pays to know exactly what happens. Here is the full journey of an <code>.intunewin</code> file. If you want even more on the agent that drives this, I wrote a separate deep dive: <a href="https://jannikreinhard.com/2022/07/31/summary-of-the-intune-management-extension/">Intune Management Extension Deep Dive: How IME Works</a>.</p>
+<figure class="wp-block-image"><img alt="The seven stages of how a Win32 .intunewin app reaches a Windows device: encrypted package, download to Content Incoming, hash verify and decrypt past the 48-byte header, unpack to IMECache, install and capture exit code, re-run the detection rule, and report with the GRS retry cooldown" data-recalc-dims="1" decoding="async" src="assets/e0b61d1a9a6d47f1/img_4.jpg"/></figure>
+<p class="wp-block-paragraph"></p>
+<p class="wp-block-paragraph">The <code>.intunewin</code> is just a ZIP that has been encrypted. The Content Prep Tool encrypts your payload with <strong>AES-256 in CBC mode</strong>, and stores the keys in <code>Detection.xml</code> inside the package (the <code>EncryptionKey</code>, the <code>MacKey</code>, the <code>InitializationVector</code> and a MAC). The encrypted <code>.bin</code> has a fixed layout: the first <strong>32 bytes are an HMAC</strong>, the next <strong>16 bytes are the IV</strong>, and the rest is the ciphertext — so a decoder literally skips the first 48 bytes before decrypting. Oliver Kieselbach and Stephan van Rooij reverse-engineered all of this; Microsoft only documents <em>that</em> it is encrypted, not how.</p>
+<p class="wp-block-paragraph"><strong>Note:</strong> The keys are not shipped to the client inside the package — the IME receives them from the Intune service by policy when it requests the app. That is why you cannot just unzip a <code>.intunewin</code> and read it.</p>
+<p class="wp-block-paragraph">For Intune troubleshooting, this is the chain to picture: on the device the IME downloads the <code>.bin</code> to <code>Content\Incoming</code>, verifies the hash, decrypts it, and unpacks the result to <code>C:\Windows\IMECache\&lt;AppId&gt;</code>. Then it runs your install command and captures the exit code. After the install, it <strong>re-runs the detection rule</strong> to confirm the app is there.</p>
+<p class="wp-block-paragraph">This is where the two classic failures live — and Microsoft’s <a href="https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-management/app-install-error-codes" rel="noopener" target="_blank">app install error codes</a> reference is the canonical list to keep alongside this section:</p>
+<ul class="wp-block-list">
+<li><strong>“Installed but reported as failed” (<code>0x87D1041C</code>)</strong> — the installer returned success, but the detection rule did not find the app afterwards. Almost always the detection rule is wrong: wrong path, wrong version, wrong registry value, or a mismatched MSI product code.</li>
+<li><strong>The IME cleans the <code>IMECache</code> folder a few seconds after detection.</strong> If your installer is a wrapper that calls files from that folder <em>after</em> the detection result, it fails with a “source not found” error. Fix it by zipping all your files and expanding them yourself first.</li>
+</ul>
+<h3 class="wp-block-heading">The retry trap: GRS</h3>
+<p class="wp-block-paragraph">Here is the one that catches everyone. After a failed install, the IME does <strong>not</strong> keep trying every check-in. It retries a failed app <strong>three times at five-minute intervals</strong>, then locks it into the <strong>Global Retry Schedule (GRS)</strong> — a roughly <strong>24-hour cooldown</strong> during which it skips the app on every sync. So when you fix the detection rule and <em>nothing happens</em>, the app is not broken — it is just in its cooldown. Knowing this single fact prevents more wasted Intune troubleshooting time than almost anything else in this guide.</p>
+<p class="wp-block-paragraph">To force an immediate retry on a test device, you clear the IME’s state and restart the service:</p>
+<p class="wp-block-paragraph"><strong>Note:</strong> The app state lives under <code>HKLM\SOFTWARE\Microsoft\IntuneManagementExtension\Win32Apps\&lt;SID&gt;\&lt;AppGUID&gt;</code> — the SID is <code>S-0-0-00...</code> for a device-targeted app, or the real user SID for a user-targeted one. The retry cooldown itself is a <em>separate</em> <strong>GRS hash</strong> key under <code>...\Win32Apps\&lt;SID&gt;\GRS\&lt;hash&gt;</code>. To properly clear the cooldown you delete <strong>both</strong> the <code>&lt;AppGUID&gt;</code> key <strong>and</strong> its matching <code>GRS\&lt;hash&gt;</code> key, then restart the <code>IntuneManagementExtension</code> service — which is why I just clear the whole <code>Win32Apps</code> branch in the script above and restart. GRS is community-documented (Rudy Ooms, MSEndpointMgr) and the exact layout shifts between versions, so do this on a test device, not in production. And remember: clearing GRS only resets the <em>retry timer</em> — it does not fix the underlying failure.</p>
+<h3 class="wp-block-heading">Win32 app return codes you must map correctly</h3>
+<p class="wp-block-paragraph">The detection rule is the source of truth for “installed or failed,” but the installer’s <em>exit code</em> still has to be mapped correctly in the app’s return-code list, or a perfectly good install gets reported as a failure. This is the table I check whenever a Win32 app result looks wrong. Any code that is <em>not</em> in the return-code list is treated as <strong>Failed</strong> — the classic trap is a <code>3010</code> soft reboot that nobody mapped as success.</p>
+<figure class="wp-block-table"><table class="has-fixed-layout"><thead><tr><th>Return code</th><th>Meaning in Intune</th></tr></thead><tbody><tr><td><code>0</code></td><td>Success.</td></tr><tr><td><code>1707</code></td><td>Success (legacy installer success code).</td></tr><tr><td><code>3010</code></td><td>Soft reboot — success, reboot is batched (deferred until after the ESP). Must be mapped as success.</td></tr><tr><td><code>1641</code></td><td>Hard reboot — success, the IME reboots the device immediately.</td></tr><tr><td><code>1618</code></td><td>Retry — another installation is already running (TrustedInstaller is busy); the IME tries again later.</td></tr></tbody></table><figcaption class="wp-element-caption">Win32 app return codes and how Intune interprets them.</figcaption></figure>
+<h2 class="wp-block-heading">The method I actually use</h2>
+<p class="wp-block-paragraph">Tools are not a method. Here is the Intune troubleshooting order I follow, every time. It keeps me from rabbit-holing.</p>
+<figure class="wp-block-image"><img alt="The four-step Intune troubleshooting method: scope it before you touch it, force a sync and read the right log, translate the error code and find the root cause, and re-stage the device if you pass two hours" data-recalc-dims="1" decoding="async" src="assets/e0b61d1a9a6d47f1/img_5.jpg"/></figure>
+<p class="wp-block-paragraph"></p>
+<ol class="wp-block-list">
+<li><strong>Scope it before you touch it.</strong> Good Intune troubleshooting starts here: is it one device or many? Is the user licensed? Are the required network endpoints reachable? In my experience most “Intune bugs” are not bugs at all — they are scope, licence or network. This is also the approach the team at <a href="https://www.oceanleaf.ch/the-ultimate-intune-troubleshooting-guide/" rel="noopener" target="_blank">OceanLeaf describe in their troubleshooting guide</a>, and I agree with it.</li>
+<li><strong>Force a sync, then read the right log.</strong> Most Intune troubleshooting lives in this step: profiles and CSPs go to Event Viewer (Diagnostics-Provider). Apps and scripts go to the IME logs in CMTrace. Do not read the app log for a profile problem.</li>
+<li><strong>Translate the code, find the root cause.</strong> Convert the status code, look it up, and <em>check for a conflict</em> before you blame the policy. Two profiles fighting over the same setting is one of the most common causes.</li>
+<li><strong>Re-stage if you pass about two hours.</strong> If a single device keeps fighting you past two hours, wipe and re-enroll it. Your time is worth more than one stubborn machine. (For a fleet-wide problem you keep digging — re-staging only makes sense for a single device.)</li>
+</ol>
+<h2 class="wp-block-heading">The Intune troubleshooting errors I hit most — and how I fix them</h2>
+<p class="wp-block-paragraph">Now the practical part. These are the categories that fill my week, and the bulk of day-to-day Intune troubleshooting.</p>
+<p class="wp-block-paragraph">Before the category-by-category notes, here is the fast lookup. These are the codes that come up most in real Intune troubleshooting, grouped by where they fire, with the fix I reach for first.</p>
+<figure class="wp-block-table"><table class="has-fixed-layout"><thead><tr><th>Code</th><th>Meaning</th><th>First fix</th></tr></thead><tbody><tr><td><code>0x80180014</code></td><td>MDM enrollment blocked by an enrollment restriction.</td><td>Allow Windows (MDM) under Devices &gt; Enrollment; check the device cap.</td></tr><tr><td><code>0x8018000a</code></td><td>Device is already enrolled in another MDM.</td><td>Clear the stale enrollment and its <code>EnterpriseMgmt</code> scheduled tasks, then re-enroll.</td></tr><tr><td><code>0x80180018</code></td><td>No or invalid licence.</td><td>Assign an Intune licence; confirm the user is in MDM user scope.</td></tr><tr><td><code>0x8018002b</code></td><td>Unverified / non-routable UPN suffix, or user out of MDM scope.</td><td>Fix the UPN suffix; set MDM user scope to All or the right group.</td></tr><tr><td><code>0x801c03ea</code></td><td>TPM attestation failed (Autopilot self-deploying / pre-provisioning).</td><td>Update TPM firmware; <code>tpmtool getdeviceinformation</code>; confirm physical TPM 2.0.</td></tr><tr><td><code>0x801c0003</code></td><td>Entra join not authorized.</td><td>Allow device join; check the device quota.</td></tr><tr><td><code>0x80070774</code></td><td>Hybrid join: domain mismatch / DC unreachable.</td><td>Unassign user on the Autopilot profile; check the ODJ Connector (30120/30130/30140).</td></tr><tr><td><code>0x87d1041c</code></td><td>Win32 app installed but detection rule did not find it.</td><td>Fix the detection rule (path, version, MSI ProductCode); remember GRS cooldown.</td></tr><tr><td><code>0x87d1fde8</code></td><td>Generic IME install failure / will retry.</td><td>Fix detection, test the install as SYSTEM, check <code>AppWorkload.log</code>.</td></tr><tr><td><code>0x80190190</code></td><td>Sync fails — expired Intune MDM Device CA certificate.</td><td>Check the cert in <code>certlm.msc</code> directly; re-enroll if expired.</td></tr></tbody></table><figcaption class="wp-element-caption">Common Intune error codes — enrollment, Autopilot/TPM and Win32.</figcaption></figure>
+<h3 class="wp-block-heading">Enrollment fails</h3>
+<p class="wp-block-paragraph">For enrollment Intune troubleshooting, look first in Event Viewer at the Diagnostics-Provider log and at the <code>EnterpriseMgmt</code> scheduled task result (Event ID 76). The codes I see most:</p>
+<ul class="wp-block-list">
+<li><strong>0x8018002b</strong> — the classic. Usually the user’s UPN uses a domain that is not verified or not routable (like <code>.local</code>), or the <strong>MDM user scope</strong> in Entra is not set to include the user. Fix the UPN suffix, and set Entra &gt; Mobility (MDM and MAM) &gt; Microsoft Intune &gt; MDM user scope to All or the right group.</li>
+<li><strong>0x80180014</strong> — Windows (MDM) enrollment is blocked by an enrollment restriction. Devices &gt; Enrollment &gt; set Windows (MDM) to Allow.</li>
+<li><strong>DeviceCapReached</strong> — the user hit the device enrollment limit. Remove stale device records or raise the limit.</li>
+<li><strong>0x8007064c / 0x8018000a</strong> — the device is already enrolled (often a cloned image or a leftover work account). Remove the old connection or clean the stale enrollment certificate, then re-enroll.</li>
+</ul>
+<p class="wp-block-paragraph">Rudy Ooms has a <a href="https://call4cloud.nl/intune-device-enrollment-errors-mdm-enrollment/" rel="noopener" target="_blank">deep write-up of these enrollment codes at call4cloud</a> if you want the registry-level internals.</p>
+<h3 class="wp-block-heading">A Win32 app says “installed” but shows as failed</h3>
+<p class="wp-block-paragraph">This is the <code>0x87D1041C</code> / GRS situation I covered in the journey section above — open <code>AppWorkload.log</code>, confirm the install succeeded and the detection failed, fix the detection rule, and remember the cooldown.</p>
+<h3 class="wp-block-heading">A configuration profile shows “Error”</h3>
+<p class="wp-block-paragraph">In profile Intune troubleshooting, errors show up as a long <strong>decimal status code</strong> in the portal. They are SyncML statuses with an underlying Win32 code. The pattern:</p>
+<ul class="wp-block-list">
+<li>A SyncML(404)-style code means the CSP node was not found or is not applicable to that platform.</li>
+<li>A SyncML(405) means you wrote to a read-only node, and 418 means the node already exists.</li>
+<li>A SyncML(500) on the <strong>firewall</strong> compliance setting is very often <em>benign and transient</em> — the MDM agent starts before the firewall service finishes initialising at boot. It clears on the next sync.</li>
+</ul>
+<p class="wp-block-paragraph">Before you change anything, check the <strong>Conflict</strong> state — two profiles setting the same value differently is the cause more often than people think.</p>
+<h3 class="wp-block-heading">How do I decode an error code fast?</h3>
+<p class="wp-block-paragraph">Most of these numbers are not random — and decoding them is core Intune troubleshooting. They follow a pattern, and once you see it you can decode the portal’s cryptic decimals in your head.</p>
+<figure class="wp-block-image"><img alt="How to decode an Intune error code: a portal decimal converts to hex which is a SyncML status, plus a table of common error code families such as 0x8018xxxx enrollment, 0x87D1xxxx Win32 app, and 0x80072Fxx certificate and TLS" data-recalc-dims="1" decoding="async" src="assets/e0b61d1a9a6d47f1/img_6.jpg"/></figure>
+<p class="wp-block-paragraph"></p>
+<p class="wp-block-paragraph">For configuration profiles, the rule is <strong><code>0x87D10000</code> + the SyncML status code</strong>. So a portal value of <code>-2016345708</code> is <code>0x87D10194</code> in hex, which is <code>0x87D10000 + 0x194</code> — and <code>0x194</code> is 404. The setting failed because the <strong>CSP node was not found</strong>. That is a real example from the Intune portal.</p>
+<p class="wp-block-paragraph">It also helps Intune troubleshooting to read the <strong>family</strong> of a code and jump straight to the area:</p>
+<ul class="wp-block-list">
+<li><strong>0x8018xxxx</strong> — enrollment / MDM (the MENROLL family). Look at Event 76.</li>
+<li><strong>0x87D1xxxx</strong> — a Win32 app (e.g. <code>0x87D1041C</code>, not detected after install).</li>
+<li><strong>0x80072Fxx</strong> — WinHTTP / certificate / TLS. Sync and check-in problems.</li>
+<li><strong>0x800705b4</strong> — a timeout, usually TPM attestation or the ESP running past its limit.</li>
+</ul>
+<p class="wp-block-paragraph">To get the plain-English text of any Win32 code fast, use Microsoft’s <code>Err.exe</code>, or in PowerShell:</p>
+<p class="wp-block-paragraph"><strong>Hint:</strong> Even faster, paste the code straight into <strong><a href="https://errorhunter.msnugget.com/" rel="noopener" target="_blank">ErrorHunter</a></strong> — a free error-code lookup Florian and I built that translates Win32, HRESULT and MDM/SyncML codes into plain English in the browser. It is the one I keep open in a tab while reading logs.</p>
+<h3 class="wp-block-heading">A device is non-compliant for no obvious reason</h3>
+<p class="wp-block-paragraph">In compliance Intune troubleshooting, a few things bite here:</p>
+<ul class="wp-block-list">
+<li>Every compliance policy has a built-in <strong>“Mark device noncompliant”</strong> action set to <strong>0 days</strong>. Fail one setting and the device is non-compliant immediately. Add a <strong>grace period</strong>.</li>
+<li>The tenant setting <strong>“Mark devices with no compliance policy assigned as”</strong> — if this is <em>Not compliant</em> and a Conditional Access policy requires compliance, a device with simply no policy targeted gets locked out.</li>
+<li>A device that has not checked in for ~30 days drifts to non-compliant — the classic “back from holiday” case.</li>
+</ul>
+<p class="wp-block-paragraph">Watch out for the <strong>Conditional Access compliance loop</strong>: a device is blocked for being non-compliant, but because it is blocked it cannot reach the service to sync and report itself compliant — so it stays blocked. The fix is to target compliance policies to <strong>devices</strong> (so compliance can be evaluated before the user signs in), and to use offline-licensed Store apps.</p>
+<h3 class="wp-block-heading">Autopilot or the Enrollment Status Page hangs</h3>
+<p class="wp-block-paragraph">Autopilot and ESP Intune troubleshooting starts with the three phases: <strong>Device preparation</strong> (TPM attestation, MDM enrollment, the IME gets installed), <strong>Device setup</strong> (device-context apps, policies, certs) and <strong>Account setup</strong> (user sign-in and user-context apps). Press <strong>Shift+F10</strong> during OOBE for a command prompt and collect logs there.</p>
+<p class="wp-block-paragraph">How ESP knows what to wait for is worth understanding: the DMClient CSP sends the device a set of <strong><code>Expected</code></strong> lists (expected apps, policies, certificates), and ESP blocks until each one reports back. Michael Niehaus found — and Microsoft’s own docs now confirm — that the “security policies” step does not track real policies at all; it tracks a single dummy entry called <code>EntDMID</code>. So if that step looks odd, that is by design.</p>
+<p class="wp-block-paragraph">The errors I see most:</p>
+<ul class="wp-block-list">
+<li><strong>0x800705b4</strong> — a timeout. Either TPM attestation cannot complete (a virtual TPM or TPM 1.2 does not meet the requirements for self-deploying or pre-provisioning — you need a physical TPM 2.0), or the ESP simply ran past its time-out because too many or too-large apps were installing. The TPM attestation chain reaches out to the manufacturer’s EK certificate service and then Microsoft’s attestation service at <code>*.microsoftaik.azure.net</code>; if a proxy inspects and breaks that traffic, attestation fails. Raise the time-out, reduce required apps, confirm TPM 2.0, and exempt those URLs from inspection.</li>
+<li><strong>0x80070774</strong> — almost always <strong>hybrid</strong> Entra join with the “Assign user” option set on the Autopilot profile. Unassign the user. Also check the <strong>ODJ Connector</strong> log on the connector server for the event flow 30120 → 30130 → 30140; if the blob never arrives, the device times out.</li>
+<li><strong>Stuck on “Identifying”</strong> — Intune is still computing ESP policies. It never finishes if the user has <strong>no Intune licence</strong>.</li>
+<li><strong>“Another installation is in progress”</strong> — you mixed a line-of-business MSI app and a Win32 app, and both use TrustedInstaller, which cannot run two installs at once. Do not mix them, or move to Autopilot device preparation.</li>
+</ul>
+<p class="wp-block-paragraph">Hybrid Entra join is genuinely fragile, and it is worth knowing why before you promise it: the join is asynchronous and happens in the background, the device has to reach a domain controller twice, the on-prem-to-cloud device sync can take half an hour or more, and if the user signs in before that sync finishes they have no Entra user token yet — so the user phase of ESP breaks. Microsoft and Michael Niehaus both now recommend against deploying <em>new</em> devices as hybrid where you can avoid it. Rudy Ooms’ <a href="https://call4cloud.nl/autopilot-white-glove-pre-provisioning/" rel="noopener" target="_blank">Autopilot pre-provisioning deep dive</a> is the best read on what happens behind that progress bar.</p>
+<h3 class="wp-block-heading">A device stops syncing</h3>
+<p class="wp-block-paragraph">This is bread-and-butter Intune troubleshooting: if a device has not checked in for over a day, it cannot get policy. Force a sync from <strong>Settings &gt; Accounts &gt; Access work or school &gt; Info &gt; Sync</strong>, or from the device blade in the portal.</p>
+<p class="wp-block-paragraph">The root cause I have been burned by: the <strong>dmwappushservice</strong> (“Device Management WAP Push Message Routing Service”) is disabled. This service orchestrates the MDM sync sessions. If a hardening baseline disabled it before enrollment, the PushLaunch and PushRenewal scheduled tasks are never created and the device silently stops syncing — with <strong>no error logged</strong>. Set the service to <strong>Automatic (Delayed Start)</strong>, start it, and re-trigger enrollment. Call4Cloud documents this failure mode <a href="https://call4cloud.nl/intune-sync-issue-dmwappushservice-missing/" rel="noopener" target="_blank">in detail here</a>.</p>
+<p class="wp-block-paragraph">If sync fails with a certificate error like <strong>0x80190190</strong>, that is the <em>Intune MDM Device CA</em> certificate (from the identity section earlier), not the Entra device cert. The “Last check-in” time can look recent while the certificate is already expired, so verify the certificate in the store directly rather than trusting the timestamp.</p>
+<h3 class="wp-block-heading">A PowerShell script or remediation does not run</h3>
+<p class="wp-block-paragraph">For script Intune troubleshooting, open <code>AgentExecutor.log</code>. The facts that explain most “it did not run” cases:</p>
+<ul class="wp-block-list">
+<li>Platform scripts run <strong>once</strong> — only on first assignment or when the script changes. They do not re-run every sign-in.</li>
+<li>Scripts run <strong>only on Entra-joined or hybrid-joined devices</strong>, not on Workplace-Registered ones.</li>
+<li>A badly <strong>wrong system clock</strong> silently blocks execution.</li>
+<li>The big one: by default scripts run in a <strong>32-bit PowerShell host</strong>. The IME agent itself is a 32-bit process (it lives under <code>Program Files (x86)</code>), so on 64-bit Windows your <code>HKLM\SOFTWARE\...</code> writes land in <code>WOW6432Node</code> and 64-bit paths get redirected. Either set <strong>“Run script in 64-bit PowerShell host” = Yes</strong>, or call <code>%SystemRoot%\Sysnative\WindowsPowerShell\v1.0\powershell.exe</code> from inside the script. Only <code>Sysnative</code> reaches the true System32 from a 32-bit process.</li>
+</ul>
+<p class="wp-block-paragraph"><strong>Hint:</strong> There is a nasty org-wide failure worth knowing: the Entra service principal the IME authenticates against — <strong>“Microsoft Intune Windows Agent”</strong> — can get continuously disabled, and when it is, all <strong>user-targeted</strong> scripts and apps stop working. Re-enabling it often does not stick; Microsoft’s current fix is to <em>delete</em> the service principal via Graph so Entra recreates a clean one.</p>
+<h3 class="wp-block-heading">MMP-C or Declared Configuration is not working</h3>
+<p class="wp-block-paragraph">Now that you know MMP-C exists, here is how to approach Intune troubleshooting for it. First confirm the second enrollment is actually there: look for the second GUID under <code>HKLM\SOFTWARE\Microsoft\Enrollments</code> and a populated <code>LinkedEnrollment\EnrollStatus</code> with <code>MMPCLocked</code> under the primary enrollment. If EPM is working and its agent installed within minutes, MMP-C enrolled fine.</p>
+<p class="wp-block-paragraph">The problems Rudy Ooms has documented:</p>
+<ul class="wp-block-list">
+<li><strong>The second enrollment never starts</strong> — almost always because the <code>DiscoveryEndpoint</code> was never set, so the <code>Enroll</code> runs with nothing to point at and you see <code>0x80070002</code> (file not found) and no dual-enrollment scheduled task is ever created.</li>
+<li><strong><code>400 Invalid Request</code></strong> — the tenant is not onboarded to MMP-C.</li>
+<li><strong>EPM fails with <code>2147749902</code></strong> — a Device Health Monitoring policy failed (often a pre-October-2022 Windows build or missing DeviceHealthMonitoring registry keys), which blocks the whole thing.</li>
+<li><strong>A Declared Configuration document fails to apply</strong> — in the Diagnostics-Provider log you will see a <code>MDM Declared Configuration:</code> line with a result like <code>0x8000FFFF</code> (a document-ID mismatch) or <code>0x86000002</code> (a typo in the OMA-URI inside the document) and the scenario name (for example <code>MSFTVPN</code>).</li>
+</ul>
+<p class="wp-block-paragraph"><strong>Note:</strong> All the MMP-C error specifics above are from call4cloud’s reverse-engineering, not Microsoft documentation. This area is changing fast, so verify against your build before acting widely.</p>
+<h2 class="wp-block-heading">Intune troubleshooting pitfalls I now avoid</h2>
+<ul class="wp-block-list">
+<li><strong>Reading the wrong log.</strong> The most common Intune troubleshooting mistake there is — a profile problem is never in the app log. Pick the channel first.</li>
+<li><strong>Confusing the two certificates.</strong> MS-Organization-Access is the Entra identity; the Intune MDM Device CA is the management channel. They fail independently.</li>
+<li><strong>Trusting “Last check-in.”</strong> It can look healthy while a certificate has already expired. Verify the certificate, not the timestamp.</li>
+<li><strong>Fixing a Win32 app and expecting an instant retry.</strong> The GRS cooldown means nothing happens until the window passes. Clear the state on a test device or just wait.</li>
+<li><strong>Forgetting the 32-bit context.</strong> This one cost me hours early on. Always ask which architecture the script ran in.</li>
+<li><strong>Disabling services with a hardening baseline without checking.</strong> <code>dmwappushservice</code> is the famous victim. Hardening that breaks management is not hardening.</li>
+<li><strong>Forgetting MMP-C exists.</strong> When EPM, Device Inventory or Wi-Fi/VPN policies misbehave, remember there is a <em>second</em> enrollment now, with its own logs and its own 4-hour clock.</li>
+<li><strong>Chasing one device forever.</strong> Past two hours on a single machine, re-stage it.</li>
+</ul>
+<h2 class="wp-block-heading">Frequently asked questions</h2>
+<p class="wp-block-paragraph">The Intune troubleshooting questions I get asked most, with short, accurate answers you can act on.</p>
+<h3 class="wp-block-heading">Where are Intune logs stored on Windows?</h3>
+<p class="wp-block-paragraph">App and script logs (the Intune Management Extension) live in <code>C:\ProgramData\Microsoft\IntuneManagementExtension\Logs\</code> — <code>IntuneManagementExtension.log</code>, <code>AppWorkload.log</code> and <code>AgentExecutor.log</code> are the ones you read most. Read them with CMTrace or <a href="https://cmtrace.dev/" rel="noopener" target="_blank">cmtrace.dev</a>.</p>
+<p class="wp-block-paragraph">Profile, CSP and enrollment events are not files — they are in Event Viewer under <code>Applications and Services Logs &gt; Microsoft &gt; Windows &gt; DeviceManagement-Enterprise-Diagnostics-Provider &gt; Admin</code>.</p>
+<h3 class="wp-block-heading">How do I force an Intune sync?</h3>
+<p class="wp-block-paragraph">On the device, go to <strong>Settings &gt; Accounts &gt; Access work or school &gt; Info &gt; Sync</strong>, or use Company Portal &gt; Settings &gt; Sync. The admin center’s <strong>Sync</strong> action triggers the MDM (OMA-DM) channel only — it does <em>not</em> force the IME.</p>
+<p class="wp-block-paragraph">To force the IME (apps and scripts), restart the <code>IntuneManagementExtension</code> service. Company Portal &gt; Sync triggers both channels, which is why I send users there.</p>
+<h3 class="wp-block-heading">How do I clear the Win32 app retry (GRS)?</h3>
+<p class="wp-block-paragraph">On a <strong>test device only</strong>, stop the <code>IntuneManagementExtension</code> service, delete the app’s state under <code>HKLM\SOFTWARE\Microsoft\IntuneManagementExtension\Win32Apps\&lt;SID&gt;</code> — including its <code>GRS\&lt;hash&gt;</code> key — then start the service again. The script earlier in this guide does exactly that.</p>
+<p class="wp-block-paragraph">Remember: clearing GRS only resets the ~24-hour retry timer. It does not fix the underlying failure, so fix the detection rule or install first.</p>
+<h3 class="wp-block-heading">Why does my device show non-compliant when it isn’t?</h3>
+<p class="wp-block-paragraph">Usually one of three things: evaluation timing (compliance re-checks roughly every 8 hours, so a fresh device can lag), a single failing setting with the built-in “Mark device noncompliant” action set to 0 days, or a PRT problem feeding a bad compliance claim into Conditional Access.</p>
+<p class="wp-block-paragraph">Add a grace period, check the device hasn’t been offline ~30 days, and confirm the PRT with <code>dsregcmd /status</code>. “InGracePeriod” still counts as compliant for Conditional Access.</p>
+<h3 class="wp-block-heading">What is MMP-C in Intune?</h3>
+<p class="wp-block-paragraph">MMP-C (Microsoft Management Platform – Cloud) is a second cloud management service that runs alongside classic Intune MDM. On the device it appears as a separate OMA-DM enrollment named <code>MicrosoftManagementPlatformCloud</code>, created only after the device is already MDM-enrolled.</p>
+<p class="wp-block-paragraph">It carries <strong>Windows Declared Configuration</strong> (desired-state policy) and currently powers Endpoint Privilege Management, Windows Advanced Device Inventory and resource access. The <code>dcsvc</code> service enforces it and refreshes about every 4 hours.</p>
+<h3 class="wp-block-heading">How do I fix error 0x8018000a?</h3>
+<p class="wp-block-paragraph"><code>0x8018000a</code> means the device is already enrolled in another MDM — a leftover work account, a cloned image, or a stale enrollment. Remove the existing connection under <strong>Access work or school</strong>, clear the stale enrollment certificate, and delete the orphaned <code>EnterpriseMgmt</code> scheduled tasks.</p>
+<p class="wp-block-paragraph">Then re-enroll. If it recurs on imaged devices, fix the image so it ships without an existing enrollment.</p>
+<h3 class="wp-block-heading">Why does my Win32 app say installed but failed?</h3>
+<p class="wp-block-paragraph">Because the detection rule — not the installer exit code — is the source of truth. The installer returned success, but the detection rule did not find the app afterwards, so Intune reports <code>0x87D1041C</code>. Almost always the detection rule is wrong: wrong path, wrong version operator, wrong registry value, or a mismatched MSI product code.</p>
+<p class="wp-block-paragraph">Fix the detection rule to match the real installed artifact, then clear GRS or wait out the cooldown.</p>
+<h3 class="wp-block-heading">How do I read the IME log?</h3>
+<p class="wp-block-paragraph">Open <code>IntuneManagementExtension.log</code> (and <code>AppWorkload.log</code> for Win32 apps) in CMTrace or <a href="https://cmtrace.dev/" rel="noopener" target="_blank">cmtrace.dev</a> so errors show in red and the file follows live. Search for <code>[Win32App]</code>, <code>GRSManager</code> and <code>ReevaluationScheduleManager</code> to follow an app’s lifecycle.</p>
+<p class="wp-block-paragraph">To turn the GUIDs into real names, run Petri Paavola’s <a href="https://github.com/petripaavola/Get-IntuneManagementExtensionDiagnostics" rel="noopener" target="_blank">Get-IntuneManagementExtensionDiagnostics</a> with <code>-ConvertAllKnownGuidsToClearText</code> — it builds a readable timeline of every app, script and ESP phase.</p>
+<h3 class="wp-block-heading">What is the difference between the two Intune device certificates?</h3>
+<p class="wp-block-paragraph"><strong>MS-Organization-Access</strong> is the Entra device identity — it proves the Entra (Azure AD) registration and underpins the PRT. Lose it and the device effectively drops out of Entra.</p>
+<p class="wp-block-paragraph"><strong>Microsoft Intune MDM Device CA</strong> authenticates the OMA-DM management channel. When it expires, sync dies with <code>0x80190190</code> even though the Entra join is still fine. They fail independently — a core Intune troubleshooting distinction.</p>
+<h2 class="wp-block-heading">Where this is heading</h2>
+<p class="wp-block-paragraph">The clearest signal in all of this is the move from the <strong>imperative</strong> OMA-DM model to the <strong>declarative</strong> MMP-C / Declared Configuration model. Microsoft is steadily shifting workloads onto MMP-C — EPM first, then Device Inventory, now resource access, with baselines and Defender on the way. Desired-state management that the device enforces itself is simply more reliable than firing commands once and hoping they stick. If you learn one new thing this year, learn MMP-C.</p>
+<p class="wp-block-paragraph">Intune troubleshooting is shifting too — from reading logs by hand to letting tools read them for you. The error-code lookup in <a href="https://cmtrace.dev/" rel="noopener" target="_blank">cmtrace.dev</a>, the timeline in Petri’s tool, and the AI log summarisers I have been experimenting with all point the same way: less scrolling, more root cause. I wrote more about where device management is going in <a href="https://jannikreinhard.com/2025/05/25/lets-look-in-the-future-of-device-management/">AI-driven endpoint management: the future with Intune</a>.</p>
+<p class="wp-block-paragraph">For the official references I keep open, the <a href="https://learn.microsoft.com/en-us/intune/intune-service/apps/intune-management-extension" rel="noopener" target="_blank">Understand the Intune Management Extension</a> page, the <a href="https://learn.microsoft.com/en-us/windows/client-management/mdm-collect-logs" rel="noopener" target="_blank">Collect MDM logs</a> page, and the <a href="https://learn.microsoft.com/en-us/windows/client-management/declared-configuration" rel="noopener" target="_blank">Windows Declared Configuration</a> page on Microsoft Learn are the three I use most for accurate Intune troubleshooting.</p>
+<p class="wp-block-paragraph">I hope this Intune troubleshooting guide is a real help the next time a device fights you. Bookmark it, send it to a colleague, and remember the core idea: understand the channel, prove the identity, read the right log, find the root cause.</p>
+<p class="wp-block-paragraph">Stay healthy, Cheers Jannik</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
