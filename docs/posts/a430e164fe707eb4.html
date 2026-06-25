@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What do I really get with Intune Suite?</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Andrew Taylor</span>
+    <span class="date">June 24, 2026</span>
+  </div>
+  <h1>What do I really get with Intune Suite?</h1>
+  <div class="orig">Saved for offline reading · <a href="https://andrewstaylor.com/2026/06/24/what-do-i-really-get-with-intune-suite/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text">
+<p>With Intune Suite now included in E5 (and partly in E3), I imagine a lot of you are wondering what you are now getting and how much of it you will actually use.</p>
+<p>In this post I’ll look at what’s included for both E3 and E5 users and then run through what each does and how useful they can be.  This is all my personal opinion of course and what works or doesn’t work for one person doesn’t necessarily mean the same for others.</p>
+<p>I will describe what they do, some links to Microsoft docs and a look at what other 3rd party options you have which you may be using and want to save money on, or you may decide works better for your org.</p>
+<p>Let’s first start with what is included in your E3 and E5 before looking at each in detail:</p>
+<p>E3 includes:</p>
+<p>E5 adds:</p>
+<p>Obviously E5 adds more stuff outside of Intune suite so don’t just use this to decide if it is worth it, there are a lot of other advantages in there.</p>
+<h1>E3 and E5</h1>
+<h2><a id="remotehelp"></a>Remote Help</h2>
+<p>A must have in any support persons armory is a reliable way of accessing the other persons computer and Remote Help is Microsoft’s answer to that.</p>
+<p>Let’s address the elephant in the room first though, no iOS support.  Keep that in mind.</p>
+<p>When first launched, it lacked Unattended access and was no better than Quick Assist (until that became a risk) or a Teams call.  Now it’s due to be added on Windows soon, it holds its ground better.  Yes, it’s missing file transfer and remote command line access, but on these licenses, you have Live Response within the Defender portal anyway.</p>
+<p>If you don’t have anything in place now, this is native to Intune, won’t cost you anything and works well enough to get by.  For those with existing solutions, give Remote Help a try.  Best case it works fine for what you need and you can save some money, worst case you’ve spent a few hours testing.</p>
+<p>Competitors in this space: Screen Connect, Beyond Trust, TeamViewer, Ninja, loads of others (is Dameware still a thing)?</p>
+<p>Official docs: <a href="https://learn.microsoft.com/en-us/intune/remote-help">https://learn.microsoft.com/en-us/intune/remote-help</a></p>
+<h2><a id="analytics"></a>Advanced Analytics</h2>
+<p>I make no secret that this is my favourite tool in Suite as it really helps support teams elevate their standing.</p>
+<p>It’s basically a free DEX tool, gives insights into battery health, app crashes, device reliability, startup times, everything a user is likely to complain about.</p>
+<p>This gives you as an IT person 2 superpowers:</p>
+<ol>
+<li>You can prove a user is a liar</li>
+<li>You can call users having actual issues before they report them and look like a hero.  “We have noticed your machine is taking a long time to boot, can we run some fixes on it for you”</li>
+</ol>
+<p>The model based scores can help you look at your hardware lifecycle and prioritise those with issues, especially useful with RAM being the most expensive thing in the world right now (written during the great AI RAM crisis of 2026)</p>
+<p>As if that isn’t enough, this part of the suite also includes Device Query and Multi-Device Query which let you create a Properties Catalog to grab even more information from your devices and then query with KQL</p>
+<p>This should in my opinion be top of your list of things to test</p>
+<p>Competitors: Nexthink, ControlUp</p>
+<p>Links: Endpoint Analytics: <a href="https://learn.microsoft.com/en-us/intune/endpoint-analytics/?pivots=intune">https://learn.microsoft.com/en-us/intune/endpoint-analytics/?pivots=intune</a></p>
+<p>Advanced Analysis (Device query etc.): <a href="https://learn.microsoft.com/en-us/intune/advanced-analytics/">https://learn.microsoft.com/en-us/intune/advanced-analytics/</a></p>
+<h2><a id="tunnel"></a>Microsoft Tunnel for MAM</h2>
+<p>This is quite a niche one.  If you have mobile applications which need access to on-prem resources and you want to be able to install and run those apps on personal, unmanaged devices, Microsoft Tunnel is your answer.</p>
+<p>For those who need it, game-changer, but that market is pretty small these days</p>
+<p>Competitors: Pretty much any VPN</p>
+<p>Links: <a href="https://learn.microsoft.com/en-us/intune/device-security/microsoft-tunnel/overview">https://learn.microsoft.com/en-us/intune/device-security/microsoft-tunnel/overview</a></p>
+<h2><a id="specialty"></a>Specialty Device Management</h2>
+<p>From niche, to more niche.  If you’re one of the 10 people managing Hololens, you probably know this exists already, but for those running Surface Hubs, this is a way to manage those devices using Intune.  Why you needed a different license to manage Microsoft hardware which was already expensive enough is beyond me, but here we are.</p>
+<p>As I said, you are probably aware already, but if you are managing them, at least that’s one less additional license to buy now.</p>
+<p>Competitors: Strangely enough none</p>
+<p>Links: <a href="https://learn.microsoft.com/en-us/intune/device-management/specialty-devices">https://learn.microsoft.com/en-us/intune/device-management/specialty-devices</a></p>
+<h2><a id="fota"></a>FOTA Updates</h2>
+<p>Firmware-Over-the-Air Updates, shortened to FOTA because we love an acronym in IT</p>
+<p>This is oddly enough a way to update firmware on some Android devices remotely.  At present it only supports Samsung and Zebra devices and is really for those hospital or shop-floor type Zebra devices, not so much for your CEO at home.</p>
+<p>Pretty useful if you manage those, again a little bit niche, but I imagine a lot more of you than Hololens users.</p>
+<p>Competitors: Other MDMs such as SOTI and Zebra tools</p>
+<p>Links: <a href="https://learn.microsoft.com/en-us/intune/device-updates/android/manage-fota">https://learn.microsoft.com/en-us/intune/device-updates/android/manage-fota</a></p>
+<h1>E5 Only</h1>
+<h2><a id="epm"></a>Endpoint Privilege Management (EPM)</h2>
+<p>Another excellent tool available, EPM is a way to manage those pesky apps which need elevated rights to launch, usually because of some update mechanism built in.  No longer do you need to give the users admin rights, or mess with file and registry permissions.  Just whitelist the app and let them elevate that and nothing else.</p>
+<p>When first released it was a bit rough and ready, but it’s now a very solid product with direct integration into the right-click menu.  Deploying in Support Approved mode will save having to manually create the rules as well as you can create from the requests.</p>
+<p>Downside is it’s Windows only, if you need macOS, Admin by Request is your best option (it’s also free up to 25 devices)</p>
+<p>Competitors: Admin By Request is probably the main one here</p>
+<p>Links: <a href="https://learn.microsoft.com/en-us/intune/epm/overview">https://learn.microsoft.com/en-us/intune/epm/overview</a></p>
+<h2><a id="eam"></a>Enterprise App Management (EAM)</h2>
+<p>Managing third party app updates is something no-one wants to handle and this was Microsoft’s response.</p>
+<p>A fantastic idea, but poorly implemented.  I know, working for Robopack makes me biased, but even so, this just isn’t great.</p>
+<p>The app list looks reasonable, until you look at them, very dev focused and probably less than 50% of what you actually need:</p>
+<p><a href="https://learn.microsoft.com/en-us/intune/app-management/deployment/enterprise-app-management#apps-available-in-the-enterprise-app-catalog">https://learn.microsoft.com/en-us/intune/app-management/deployment/enterprise-app-management#apps-available-in-the-enterprise-app-catalog</a></p>
+<p>It still can’t do icons either</p>
+<p>If you have nothing, this is obviously slightly better than that, but it won’t replace your existing tools</p>
+<p>Competitors: Robopack, Patch My PC, Pckgr, Action1</p>
+<p>Links: <a href="https://learn.microsoft.com/en-us/intune/app-management/deployment/enterprise-app-management">https://learn.microsoft.com/en-us/intune/app-management/deployment/enterprise-app-management</a></p>
+<h2><a id="cloudpki"></a>Cloud PKI</h2>
+<p>Many of you are still running on-prem CA servers for cert based authentication to wireless networks and all sorts of other things.  Cloud PKI lifts that CA server and moves it directly into Intune and does a pretty good job of it.</p>
+<p>BUT, that’s all it does, you’ll still need a radius of some sort and they often come with something included</p>
+<p>There are limits on the number of certificates (check the limitations at the bottom of the page linked below), but they did finally add a Delete button</p>
+<p>It does what is says, but is that enough?</p>
+<p>Competitors: Scepman, RadiuSaas, most Wi-Fi hardware suppliers</p>
+<p>Links: <a href="https://learn.microsoft.com/en-us/intune/cloud-pki/">https://learn.microsoft.com/en-us/intune/cloud-pki/</a></p>
+<p> </p>
+<hr/>
+<p>Hopefully this has been useful, comments always welcome!</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

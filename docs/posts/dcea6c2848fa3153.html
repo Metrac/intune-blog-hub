@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intune Multi Admin Approval: The x-msft-approval-justification Error</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Call4Cloud (Rudy Ooms)</span>
+    <span class="date">June 24, 2026</span>
+  </div>
+  <h1>Intune Multi Admin Approval: The x-msft-approval-justification Error</h1>
+  <div class="orig">Saved for offline reading · <a href="https://patchmypc.com/blog/intune-multi-admin-approval-the-x-msft-approval-justification-error/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="post-content">
+<p id="h-">This blog is about the moment Microsoft expanded Multi Admin Approval to app-based Graph automation, and how Intune app updates suddenly began failing with the <strong>x-msft-approval-justification</strong> error. We’ll show what changed in App MAA enforcement, what the x-msft-approval-justification error looks like, why Intune app automation started failing, and how the new app exclusion keeps trusted patching automation running.</p>
+<h2 class="wp-block-heading" id="h-introduction">Introduction<span class="clth-copy-icon" data-heading-id="h-introduction"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>Some security features only get interesting when something breaks. Multi-Admin Approval in Microsoft Intune is one such feature. At first glance, it sounds simple. One admin wants to make a sensitive change. Another admin needs to approve it before Intune applies that change.</p>
+<figure class="wp-block-image size-full"><a data-caption="Multi Admin Approval" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-13.jpg"><picture class="wp-image-187611" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-13.jpg.webp 624w, https://patchmypc.com/app/uploads/2026/06/image-13-300x169.jpg.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="Multi Admin Approval" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-13.jpg 624w, https://patchmypc.com/app/uploads/2026/06/image-13-300x169.jpg 300w" decoding="async" src="assets/dcea6c2848fa3153/img_0.jpg"/><noscript><img alt="Multi Admin Approval" decoding="async" src="assets/dcea6c2848fa3153/img_1.jpg"/></noscript>
+</picture>
+</a></figure>
+<p>That is it. No magic. No fancy dashboard. Just another person standing between a request and the button that can change something important in your tenant. And honestly, that part makes sense.</p>
+<h2 class="wp-block-heading" id="h-why-microsoft-is-pushing-multi-admin-approval">Why Microsoft Is Pushing Multi-Admin Approval<span class="clth-copy-icon" data-heading-id="h-why-microsoft-is-pushing-multi-admin-approval"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>Microsoft is pretty clear about the reason. <strong><a href="https://learn.microsoft.com/en-us/intune/fundamentals/role-based-access-control/multi-admin-approval">Multi Admin Approval</a></strong>, or <strong>MAA</strong>, is designed to help protect Intune against a single compromised administrative account.</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-44-1024x42.png"><picture class="wp-image-187612" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-44-1024x42.png.webp 1024w, https://patchmypc.com/app/uploads/2026/06/image-44-300x12.png.webp 300w, https://patchmypc.com/app/uploads/2026/06/image-44-768x32.png.webp 768w, https://patchmypc.com/app/uploads/2026/06/image-44.png.webp 1400w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-44-1024x42.png 1024w, https://patchmypc.com/app/uploads/2026/06/image-44-300x12.png 300w, https://patchmypc.com/app/uploads/2026/06/image-44-768x32.png 768w, https://patchmypc.com/app/uploads/2026/06/image-44.png 1400w" decoding="async" src="assets/dcea6c2848fa3153/img_2.png"/><noscript><img alt="" decoding="async" src="assets/dcea6c2848fa3153/img_3.png"/></noscript>
+</picture>
+</a></figure>
+<p> If one admin account gets stolen, that account should not be able to quietly make high-impact changes on its own.</p>
+<p>That is exactly why the <a href="https://www.lumos.com/blog/stryker-hack">Stryker incident ended up in so many Intune security discussions.</a> Stryker confirmed a cyberattack caused a global disruption to its Microsoft environment. Public reporting then linked the disruption to abuse of Microsoft Intune, with reports saying attackers compromised an Intune admin account and used it to trigger a large-scale device wipe. Some reports mention around 80,000 wiped devices, while the attacker claims went as high as 200,000. So I would not treat every number as gospel, but the lesson is clear: a trusted management tool can become a weapon when the admin identity behind it is compromised.</p>
+<p>That is where MAA comes in. After that type of incident, many organizations began to view Multi Admin Approval differently. Not as another annoying checkbox, but as a way to prevent one compromised admin account from immediately triggering something destructive. With MAA enabled for device actions, a wipe request does not run automatically just because one admin account requested it. A second admin has to approve it first.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-45.png"><picture class="wp-image-187614" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-45.png.webp 624w, https://patchmypc.com/app/uploads/2026/06/image-45-300x40.png.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-45.png 624w, https://patchmypc.com/app/uploads/2026/06/image-45-300x40.png 300w" decoding="async" src="assets/dcea6c2848fa3153/img_4.png"/><noscript><img alt="" decoding="async" src="assets/dcea6c2848fa3153/img_5.png"/></noscript>
+</picture>
+</a></figure>
+<p><strong>Multi Admin Approval</strong> helps with that. But we also need to stay honest. Multi-admin approval does not solve every single security problem. It does NOT stop the first account from being compromised, and it does not replace all other security measures you should have in place. It is another barrier. A useful one, yes. But still a barrier.</p>
+<h2 class="wp-block-heading" id="h-the-four-eyes-principle-in-intune">The Four Eyes Principle In Intune<span class="clth-copy-icon" data-heading-id="h-the-four-eyes-principle-in-intune"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>MAA is essentially the four-eyes principle in Intune. One admin creates the request. Another admin reviews it.</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-62-1024x110.png"><picture class="wp-image-187637" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-62-1024x110.png.webp 1024w, https://patchmypc.com/app/uploads/2026/06/image-62-300x32.png.webp 300w, https://patchmypc.com/app/uploads/2026/06/image-62-768x82.png.webp 768w, https://patchmypc.com/app/uploads/2026/06/image-62-1536x165.png.webp 1536w, https://patchmypc.com/app/uploads/2026/06/image-62-2048x220.png.webp 2048w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-62-1024x110.png 1024w, https://patchmypc.com/app/uploads/2026/06/image-62-300x32.png 300w, https://patchmypc.com/app/uploads/2026/06/image-62-768x82.png 768w, https://patchmypc.com/app/uploads/2026/06/image-62-1536x165.png 1536w, https://patchmypc.com/app/uploads/2026/06/image-62-2048x220.png 2048w" decoding="async" src="assets/dcea6c2848fa3153/img_6.png"/><noscript><img alt="" decoding="async" src="assets/dcea6c2848fa3153/img_7.png"/></noscript>
+</picture>
+</a></figure>
+<p>If it makes sense, the request gets approved. If it looks wrong, unexpected, or does not match the change ticket, it can be rejected. That is the clean version of the story.</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-59-1024x493.png"><picture class="wp-image-187631" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-59-1024x493.png.webp 1024w, https://patchmypc.com/app/uploads/2026/06/image-59-300x144.png.webp 300w, https://patchmypc.com/app/uploads/2026/06/image-59-768x370.png.webp 768w, https://patchmypc.com/app/uploads/2026/06/image-59.png.webp 1373w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-59-1024x493.png 1024w, https://patchmypc.com/app/uploads/2026/06/image-59-300x144.png 300w, https://patchmypc.com/app/uploads/2026/06/image-59-768x370.png 768w, https://patchmypc.com/app/uploads/2026/06/image-59.png 1373w" decoding="async" src="assets/dcea6c2848fa3153/img_8.png"/><noscript><img alt="" decoding="async" src="assets/dcea6c2848fa3153/img_9.png"/></noscript>
+</picture>
+</a></figure>
+<p>In practice, the requester still needs to finish the change after approval. So the flow is not just approved and done. The original admin submits the change, the approver approves it, and then the requestor completes it so Intune can apply the change.</p>
+<p>That extra step is important. It gives organizations a place to slow down risky changes before they become real. And when we are talking about wipe, retire, delete, scripts, apps, or RBAC changes, slowing down is not always a bad thing.</p>
+<h2 class="wp-block-heading" id="h-the-old-multi-admin-approval-behavior-was-easier-to-understand">The old multi-admin approval behavior was easier to understand<span class="clth-copy-icon" data-heading-id="h-the-old-multi-admin-approval-behavior-was-easier-to-understand"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>Historically, Multi Admin Approval mostly made sense in the portal world. An admin opened the Intune admin center, changed an app, submitted the request, and another admin approved it. That flow can be annoying when you are in a hurry, but at least it is easy to understand. A human asked for a change. Another human approves it…. Yes, IT Admins are human beings…</p>
+<p>That was also why many <strong>automation flows</strong> were <strong>NOT</strong> affected before. Third-party tools using application authentication, service principals, or app registrations could still do their job because they were not acting as a signed-in delegated admin.</p>
+<p>For third-party patching products, that distinction mattered a lot. Patch automation is not someone manually editing one app at a time. It is a service principal or app registration that creates and updates Intune apps, assignments, metadata, detection rules, and content via Microsoft Graph. That is the whole point.</p>
+<h2 class="wp-block-heading" id="h-then-microsoft-changed-the-scope">Then Microsoft Changed The Scope<span class="clth-copy-icon" data-heading-id="h-then-microsoft-changed-the-scope"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>Microsoft has now documented that Multi Admin Approval also applies to automation using Microsoft Graph.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-15.jpg"><picture class="wp-image-187616" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-15.jpg.webp 623w, https://patchmypc.com/app/uploads/2026/06/image-15-300x230.jpg.webp 300w" sizes="(max-width: 623px) 100vw, 623px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 623px) 100vw, 623px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-15.jpg 623w, https://patchmypc.com/app/uploads/2026/06/image-15-300x230.jpg 300w" decoding="async" src="assets/dcea6c2848fa3153/img_10.jpg"/><noscript><img alt="" decoding="async" src="assets/dcea6c2848fa3153/img_11.jpg"/></noscript>
+</picture>
+</a></figure>
+<p>That includes service principals, automation scripts, and third-party applications when they modify protected Intune resources. Read-only calls are not affected, but writes, such as create, update, assign, delete, or similar changes, can be intercepted.</p>
+<p>That is the part that changes the conversation. This is no longer only about admins clicking around in the Intune portal. This is now also about every tool that writes into Intune through Graph. And yes, for a third-party patching company, that becomes a problem very quickly.</p>
+<p>If an App MAA Access policy protects Intune apps and a patching product attempts to create or update a Win32 app, the request can fail unless the automation supports the MAA approval flow or the application is excluded from enforcement.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-48.png"><picture class="wp-image-187613" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-48.png.webp 624w, https://patchmypc.com/app/uploads/2026/06/image-48-300x138.png.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-48.png 624w, https://patchmypc.com/app/uploads/2026/06/image-48-300x138.png 300w" decoding="async" src="assets/dcea6c2848fa3153/img_12.png"/><noscript><img alt="" decoding="async" src="assets/dcea6c2848fa3153/img_13.png"/></noscript>
+</picture>
+</a></figure>
+<p>Microsoft documents both paths: update the automation to use the approval workflow, OR exclude a specific application from MAA enforcement when that code change is not immediately possible.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-46.png"><picture class="wp-image-187610" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-46.png.webp 421w, https://patchmypc.com/app/uploads/2026/06/image-46-300x252.png.webp 300w" sizes="(max-width: 421px) 100vw, 421px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 421px) 100vw, 421px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-46.png 421w, https://patchmypc.com/app/uploads/2026/06/image-46-300x252.png 300w" decoding="async" src="assets/dcea6c2848fa3153/img_14.png"/><noscript><img alt="" decoding="async" src="assets/dcea6c2848fa3153/img_15.png"/></noscript>
+</picture>
+</a></figure>
+<p>This is also why some older MAA guidance is now outdated. Earlier, it was fair to say that App Registrations and service principals were not covered in the same way as delegated admin actions were. That changed. App authenticated Graph calls are now part of the story.</p>
+<h2 class="wp-block-heading" id="h-the-x-msft-approval-justification-multi-admin-approval-nbsp-error">The x-msft-approval-justification <strong>Multi Admin Approval</strong> error<span class="clth-copy-icon" data-heading-id="h-the-x-msft-approval-justification-multi-admin-approval-nbsp-error"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>This is where most admins will first notice the change. Not in a nice warning. Not in a clean message saying your automation is now waiting for approval. It usually starts with a failed Graph call.</p>
+<p>When an application attempts to modify a protected Intune resource and Multi Admin Approval is in the way, Microsoft Graph can return an error indicating a missing approval header. The important part is that this is not always a normal permission problem. It can mean the request was caught by MAA and now needs to go through the approval flow.</p>
+<p>The error you want to look for is this one: <strong>Header ‘x-msft-approval-justification’ is required to request approval</strong></p>
+<figure class="wp-block-image size-large"><a data-caption="Header 'x-msft-approval-justification' is required to request approval" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-56-1024x294.png"><picture class="wp-image-187628" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-56-1024x294.png.webp 1024w, https://patchmypc.com/app/uploads/2026/06/image-56-300x86.png.webp 300w, https://patchmypc.com/app/uploads/2026/06/image-56-768x221.png.webp 768w, https://patchmypc.com/app/uploads/2026/06/image-56-1536x442.png.webp 1536w, https://patchmypc.com/app/uploads/2026/06/image-56-2048x589.png.webp 2048w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="Header 'x-msft-approval-justification' is required to request approval" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-56-1024x294.png 1024w, https://patchmypc.com/app/uploads/2026/06/image-56-300x86.png 300w, https://patchmypc.com/app/uploads/2026/06/image-56-768x221.png 768w, https://patchmypc.com/app/uploads/2026/06/image-56-1536x442.png 1536w, https://patchmypc.com/app/uploads/2026/06/image-56-2048x589.png 2048w" decoding="async" src="assets/dcea6c2848fa3153/img_16.png"/><noscript><img alt="Header 'x-msft-approval-justification' is required to request approval" decoding="async" src="assets/dcea6c2848fa3153/img_17.png"/></noscript>
+</picture>
+</a></figure>
+<p>That is the money shot. If you are troubleshooting Intune automation and you see <strong>x-msft-approval-justification</strong>, you are not just looking at a broken Graph request. You are looking at Multi Admin Approval enforcement.</p>
+<p>The app may still have the correct Graph permissions. The token may still be valid. The service principal may still be allowed to manage Intune apps. But MAA is now standing between the request and the actual change.</p>
+<p>Microsoft also documents that the first request needs a Base64 <strong><a href="https://learn.microsoft.com/en-us/intune/fundamentals/role-based-access-control/multi-admin-approval-graph-api#step-1-submit-a-request-with-a-justification-header">encoded x-msft-approval-justification</a></strong> header. After approval, the original request must be sent again with the x-msft-approval-code header. That flow makes sense when you own the automation code and can build the approval workflow around it.</p>
+<p>It becomes a lot harder when the automation is part of a third-party patching product that is expected to run quietly in the background. That is why the <strong>x-msft-approval-justification</strong> error matters. It tells you this is not just Microsoft Graph being broken. It may be Intune Multi Admin Approval doing exactly what it was told to do.</p>
+<h2 class="wp-block-heading" id="h-the-multi-admin-approval-x-msft-approval-justification-test">The <strong>Multi Admin Approval</strong> x-msft-approval-justification Test.<span class="clth-copy-icon" data-heading-id="h-the-multi-admin-approval-x-msft-approval-justification-test"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>To test it, we used a small test script. The important part is not the test app itself. The important part is how the script authenticates.</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-60-1024x170.png"><picture class="wp-image-187632" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-60-1024x170.png.webp 1024w, https://patchmypc.com/app/uploads/2026/06/image-60-300x50.png.webp 300w, https://patchmypc.com/app/uploads/2026/06/image-60-768x127.png.webp 768w, https://patchmypc.com/app/uploads/2026/06/image-60-1536x255.png.webp 1536w, https://patchmypc.com/app/uploads/2026/06/image-60-2048x340.png.webp 2048w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-60-1024x170.png 1024w, https://patchmypc.com/app/uploads/2026/06/image-60-300x50.png 300w, https://patchmypc.com/app/uploads/2026/06/image-60-768x127.png 768w, https://patchmypc.com/app/uploads/2026/06/image-60-1536x255.png 1536w, https://patchmypc.com/app/uploads/2026/06/image-60-2048x340.png 2048w" decoding="async" src="assets/dcea6c2848fa3153/img_18.png"/><noscript><img alt="" decoding="async" src="assets/dcea6c2848fa3153/img_19.png"/></noscript>
+</picture>
+</a></figure>
+<p>It does not use a signed-in Intune admin clicking around in the portal. It uses app auth. You feed it a tenant ID, an app ID, and a client secret. The app registration needs DeviceManagementApps.ReadWrite.All, and then the script connects to Microsoft Graph using the client secret credential.</p>
+<p>That matters because this is exactly the kind of flow many automation tools use. The script then builds a small .intunewin package, creates a Win32 app record in Intune, creates a content version, uploads the content to Azure Storage, commits the file content back to Intune, waits for commitFileSuccess, and finally updates the Win32 app with the committed content version.</p>
+<p>That last part is where the fun starts. The package was uploaded. The commit came back as successful. The file state showed commitFile Success and then the final PATCH request failed. Not because the package was broken, or because the app registration suddenly lost access. It failed because Multi Admin Approval stepped in.</p>
+<figure class="wp-block-image size-large"><a data-caption="Header 'x-msft-approval-justification' is required to request approval" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-61-1024x294.png"><picture class="wp-image-187633" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-61-1024x294.png.webp 1024w, https://patchmypc.com/app/uploads/2026/06/image-61-300x86.png.webp 300w, https://patchmypc.com/app/uploads/2026/06/image-61-768x221.png.webp 768w, https://patchmypc.com/app/uploads/2026/06/image-61-1536x442.png.webp 1536w, https://patchmypc.com/app/uploads/2026/06/image-61.png.webp 1903w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="Header 'x-msft-approval-justification' is required to request approval" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-61-1024x294.png 1024w, https://patchmypc.com/app/uploads/2026/06/image-61-300x86.png 300w, https://patchmypc.com/app/uploads/2026/06/image-61-768x221.png 768w, https://patchmypc.com/app/uploads/2026/06/image-61-1536x442.png 1536w, https://patchmypc.com/app/uploads/2026/06/image-61.png 1903w" decoding="async" src="assets/dcea6c2848fa3153/img_20.png"/><noscript><img alt="Header 'x-msft-approval-justification' is required to request approval" decoding="async" src="assets/dcea6c2848fa3153/img_21.png"/></noscript>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-the-before-and-after-x-msft-approval-justification-proof">The Before And After x-msft-approval-justification Proof<span class="clth-copy-icon" data-heading-id="h-the-before-and-after-x-msft-approval-justification-proof"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>This is where the theory becomes visible. In the failing run, the script already uploaded the Win32 content. The blocks were committed to Azure Storage. The upload state was verified. The commit request was sent. Intune returned commitFileSuccess.</p>
+<figure class="wp-block-image size-full"><a data-caption="Header 'x-msft-approval-justification' is required to request approval" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-49.png"><picture class="wp-image-187622" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-49.png.webp 624w, https://patchmypc.com/app/uploads/2026/06/image-49-300x40.png.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="Header 'x-msft-approval-justification' is required to request approval" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-49.png 624w, https://patchmypc.com/app/uploads/2026/06/image-49-300x40.png 300w" decoding="async" src="assets/dcea6c2848fa3153/img_22.png"/><noscript><img alt="Header 'x-msft-approval-justification' is required to request approval" decoding="async" src="assets/dcea6c2848fa3153/img_23.png"/></noscript>
+</picture>
+</a></figure>
+<p>So the content pipeline did its job. The failure happened when the automation tried to update the Win32 app with the committed content version. MAA Graph error before exclusion. The important part is this message: Header ‘x-msft-approval-justification’ is required to request approval</p>
+<figure class="wp-block-image size-large"><a data-caption="Header 'x-msft-approval-justification' is required to request approval" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-57-1024x294.png"><picture class="wp-image-187629" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-57-1024x294.png.webp 1024w, https://patchmypc.com/app/uploads/2026/06/image-57-300x86.png.webp 300w, https://patchmypc.com/app/uploads/2026/06/image-57-768x221.png.webp 768w, https://patchmypc.com/app/uploads/2026/06/image-57-1536x442.png.webp 1536w, https://patchmypc.com/app/uploads/2026/06/image-57.png.webp 1903w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="Header 'x-msft-approval-justification' is required to request approval" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-57-1024x294.png 1024w, https://patchmypc.com/app/uploads/2026/06/image-57-300x86.png 300w, https://patchmypc.com/app/uploads/2026/06/image-57-768x221.png 768w, https://patchmypc.com/app/uploads/2026/06/image-57-1536x442.png 1536w, https://patchmypc.com/app/uploads/2026/06/image-57.png 1903w" decoding="async" src="assets/dcea6c2848fa3153/img_24.png"/><noscript><img alt="Header 'x-msft-approval-justification' is required to request approval" decoding="async" src="assets/dcea6c2848fa3153/img_25.png"/></noscript>
+</picture>
+</a></figure>
+<p>That tells us this is not a normal Win32 app upload issue. It is Multi Admin Approval enforcement. You can see the same type of response in Graph as well. The request fails with Bad Request 400, and the response body points directly to the missing MAA approval header. If you see x-msft-approval-justification in the error, you are no longer looking at a generic Graph permission issue. You are looking at an Intune change that is being forced into the <strong>Multi Admin Approval flow.</strong></p>
+<h3 class="wp-block-heading" id="h-the-fix-for-x-msft-approval-justification">The Fix For x-msft-approval-justification<span class="clth-copy-icon" data-heading-id="h-the-fix-for-x-msft-approval-justification"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p>To fix this x-msft-approval-justification MAA issue you need to add the enterprise application exclusion that <a href="https://patchmypc.com/kb/how-does-microsoft-intune-multi/">Ben also mentions in the Patch My PC KB</a></p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-50.png"><picture class="wp-image-187615" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-50.png.webp 624w, https://patchmypc.com/app/uploads/2026/06/image-50-300x162.png.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-50.png 624w, https://patchmypc.com/app/uploads/2026/06/image-50-300x162.png 300w" decoding="async" src="assets/dcea6c2848fa3153/img_26.png"/><noscript><img alt="" decoding="async" src="assets/dcea6c2848fa3153/img_27.png"/></noscript>
+</picture>
+</a></figure>
+<p>After adding the Patch My PC Cloud Enterprise Application to the exclusions, the same app auth flow completed successfully.</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-58-1024x164.png"><picture class="wp-image-187630" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-58-1024x164.png.webp 1024w, https://patchmypc.com/app/uploads/2026/06/image-58-300x48.png.webp 300w, https://patchmypc.com/app/uploads/2026/06/image-58-768x123.png.webp 768w, https://patchmypc.com/app/uploads/2026/06/image-58-1536x246.png.webp 1536w, https://patchmypc.com/app/uploads/2026/06/image-58.png.webp 1943w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-58-1024x164.png 1024w, https://patchmypc.com/app/uploads/2026/06/image-58-300x48.png 300w, https://patchmypc.com/app/uploads/2026/06/image-58-768x123.png 768w, https://patchmypc.com/app/uploads/2026/06/image-58-1536x246.png 1536w, https://patchmypc.com/app/uploads/2026/06/image-58.png 1943w" decoding="async" src="assets/dcea6c2848fa3153/img_28.png"/><noscript><img alt="" decoding="async" src="assets/dcea6c2848fa3153/img_29.png"/></noscript>
+</picture>
+</a></figure>
+<p>That is the difference the exclusion makes. MAA still protects the workload, but the trusted automation identity is no longer required to go through a manual approval flow. For patching, that distinction matters. You keep the approval barrier for risky human changes, but you do not turn every normal app update into a stuck approval request.</p>
+<h2 class="wp-block-heading" id="h-automation-is-now-part-of-the-app-maa-story"><strong><strong>Automation Is Now Part Of The App MAA Story</strong></strong><span class="clth-copy-icon" data-heading-id="h-automation-is-now-part-of-the-app-maa-story"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>From a security perspective, I get it. A service principal with write access to Intune apps is powerful. If that identity is abused, someone could change what gets deployed to devices. Microsoft saying app write actions should also be governed is not strange. But this is where the App MAA access policy starts to hit automation.</p>
+<p>It is not only commercial third-party patching products. It also affects internal scripts: app assignment updates, Win32 app creation, metadata changes, or that small helper tool someone built because the portal takes too long. If that automation uses app-based authentication and writes to Intune apps protected by an App MAA access policy, it must now understand the MAA approval flow or be excluded from that policy.</p>
+<p>That is where patching gets tricky. During testing, the failure occurred when the script attempted to PATCH the Win32 app object with the committed content version. Because that PATCH is an app write action covered by App MAA, Intune expected an <strong>x-msft-approval-justification header. </strong>Without that header, the request failed. That is the difference.</p>
+<p>This does not silently become a nice pending approval unless the automation was built to request approval in the first place. Without that MAA aware request flow, the app update just fails. For patching automation, that matters. A normal app update, assignment change, metadata change, or content version update can stop at the Graph request if it is protected by App MAA and the automation does not send the required approval headers.</p>
+<p>That is not great for patching, and it is not great for app automation in general. If it writes to Intune apps, and an App MAA access policy protects that workload, it is now part of the Multi Admin Approval story.</p>
+<h2 class="wp-block-heading" id="h-multi-admin-approval-app-access-policy-exclusion"><strong>Multi Admin Approval</strong> App Access Policy Exclusion<span class="clth-copy-icon" data-heading-id="h-multi-admin-approval-app-access-policy-exclusion"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>The practical answer for trusted automation is the exclusion that just showed up in your tenants!!</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-55.png"><picture class="wp-image-187626" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-55.png.webp 709w, https://patchmypc.com/app/uploads/2026/06/image-55-300x73.png.webp 300w" sizes="(max-width: 709px) 100vw, 709px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 709px) 100vw, 709px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-55.png 709w, https://patchmypc.com/app/uploads/2026/06/image-55-300x73.png 300w" decoding="async" src="assets/dcea6c2848fa3153/img_30.png"/><noscript><img alt="" decoding="async" src="assets/dcea6c2848fa3153/img_31.png"/></noscript>
+</picture>
+</a></figure>
+<p>Microsoft added the option to exclude specific enterprise applications from MAA enforcement for app-authenticated calls. Funny enough, the App Exclusion option already showed up before the flow fully worked. You could see the setting, but Graph still did not allow the PATCH to go through. That changed once Microsoft finished rolling out the app exclusion behavior. </p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-63.png"><picture class="wp-image-187638" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-63.png.webp 519w, https://patchmypc.com/app/uploads/2026/06/image-63-300x195.png.webp 300w" sizes="(max-width: 519px) 100vw, 519px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 519px) 100vw, 519px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-63.png 519w, https://patchmypc.com/app/uploads/2026/06/image-63-300x195.png 300w" decoding="async" src="assets/dcea6c2848fa3153/img_32.png"/><noscript><img alt="" decoding="async" src="assets/dcea6c2848fa3153/img_33.png"/></noscript>
+</picture>
+</a></figure>
+<p class="has-small-font-size"><strong>Note</strong>: Did you also spotted the userExclusion??  –&gt; <strong>Select users that will be excluded from requiring Multi Admin Approval for this policy. This also impacts delegated authentication using user credentials.</strong></p>
+<p>But with the App Exclusion active for the App MAA policy, customers can keep Multi Admin Approval enabled for human admins while still allowing trusted automation to continue running.</p>
+<p>That is the balance. You do not disable the entire security feature just because patching needs to work. You exclude the trusted app identity that performs the patching automation while keeping the rest of the MAA policy in place.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-53.png"><picture class="wp-image-187623" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-53.png.webp 624w, https://patchmypc.com/app/uploads/2026/06/image-53-300x162.png.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-53.png 624w, https://patchmypc.com/app/uploads/2026/06/image-53-300x162.png 300w" decoding="async" src="assets/dcea6c2848fa3153/img_34.png"/><noscript><img alt="" decoding="async" src="assets/dcea6c2848fa3153/img_35.png"/></noscript>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-multi-admin-approval-needs-a-real-process">Multi-Admin Approval Needs A Real Process<span class="clth-copy-icon" data-heading-id="h-multi-admin-approval-needs-a-real-process"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>The mistake would be treating MAA as a checkbox. If you enable it without thinking, you can break automation. If you protect RBAC before your approver groups and role assignments are correct, you can create your own admin headache. Also, if no one monitors the approval queue, urgent changes can sit there. If every normal patching update needs manual approval, your patch process becomes slower by design.</p>
+<p>So yes, enable Multi Admin Approval where it makes sense. Implement it for high-impact areas. Use it for wipe, retire, delete, scripts, apps, RBAC, and other sensitive Intune changes where a second set of eyes makes sense.</p>
+<p>But also document who approves, how fast they approve, document what gets excluded, and document which automation identities are trusted. Security without process just becomes another place where things fail quietly.</p>
+<h2 class="wp-block-heading" id="h-the-real-multi-admin-approval-takeaway">The Real <strong>Multi Admin Approval</strong> Takeaway<span class="clth-copy-icon" data-heading-id="h-the-real-multi-admin-approval-takeaway"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>Multi Admin Approval is <strong>NOT</strong> bad. Microsoft recommending it is not strange. Intune has too much power for one compromised admin account to be the only thing standing between an attacker and a destructive change.</p>
+<p>But MAA is not the whole castle. It is one more gate.</p>
+<p>For human admin actions, that gate makes sense. Automation needs more care. Third-party patching tools do not work like a person in the portal. They need predictable Graph access to keep apps updated and devices patched. That is why the MAA App Access Policy exclusion story matters so much.</p>
+<p>Because at the end of the day, a security feature that delays patching can become a risk in itself.</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
