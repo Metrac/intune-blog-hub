@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Best way to Uninstall 3rd-Party Dev Tools from Windows 11 Dev Cloud PC using Intune</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">HTMD / Anoop C Nair</span>
+    <span class="date">June 26, 2026</span>
+  </div>
+  <h1>Best way to Uninstall 3rd-Party Dev Tools from Windows 11 Dev Cloud PC using Intune</h1>
+  <div class="orig">Saved for offline reading · <a href="https://www.anoopcnair.com/uninstall-3rd-party-dev-tools-windows-intune/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text"><p class="code-block code-block-6">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><h2 class="wp-block-heading" id="key-takeways"><strong>Key Takeways</strong></h2><ul class="wp-block-list"><li class="has-medium-font-size">Provides a ready-to-use <strong>developer</strong> environment with preinstalled tools and standardized configurations.</li><li class="has-medium-font-size">Reduces onboarding time and eliminates manual setup for developers.</li><li class="has-medium-font-size">Includes <strong>Windows</strong>, <strong>WSL</strong> <strong>Ubuntu</strong>, and essential development tools such as <strong>VS Code</strong>, <strong>PowerShell 7</strong>, <strong>Python</strong>, <strong>Node.js</strong>, <strong>Git</strong>, and <strong>Azure CLI</strong>.</li><li class="has-medium-font-size">An <strong>uninstall script</strong> is available to remove preinstalled third-party developer tools when they are no longer required.</li></ul><p class="wp-block-paragraph">In this article, I’ll walk you through how to uninstall the <strong>3rd-party Dev tools from Windows 11 Dev Cloud PC</strong> using the <strong>Microsoft Intune</strong> <strong>PowerShell Script</strong>. If you no longer require the preinstalled third-party developer tools included in the <a data-id="https://www.anoopcnair.com/windows-11-enterprise-developer-configuration-intune/" data-type="link" href="https://www.anoopcnair.com/windows-11-enterprise-developer-configuration-intune/" rel="noreferrer noopener" target="_blank">Windows 11 Developer Configuration image</a>, Microsoft provides an uninstall script to remove them. This script helps administrators clean up the development environment by uninstalling tools such as <strong>Visual Studio Code</strong>, <strong>Python</strong>, <strong>Node.js</strong>, <strong>Git</strong>, <strong>PowerToys</strong>, <strong>Azure CLI</strong>, and other developer utilities, thereby allowing the Cloud PC to be repurposed or customized to meet organizational requirements.</p><details class="wp-block-details has-contrast-3-background-color has-background is-layout-flow wp-block-details-is-layout-flow"><summary><strong>Table of Content</strong></summary>
+</details><p class="wp-block-paragraph">Here’s a concise table for <strong>What Gets Removed</strong>. The script removes selected third-party developer tools and related configurations while preserving the core Windows operating system and Windows 11 Developer Configuration image functionality.</p><figure class="wp-block-table aligncenter has-medium-font-size"><table class="has-contrast-3-background-color has-background has-fixed-layout"><thead><tr><th>Component</th><th>What Gets Removed</th></tr></thead><tbody><tr><td><strong>Python 3.13</strong></td><td>MSI installation and the <code>C:\Python313</code> installation directory</td></tr><tr><td><strong>Node.js LTS</strong></td><td>Node.js installed via WinGet package</td></tr><tr><td><strong>nvm-windows</strong></td><td><code>%ProgramData%\nvm</code> directory and <code>%ProgramFiles%\nodejs</code> symlink</td></tr><tr><td><strong>Oh My Posh</strong></td><td><code>%ProgramFiles%\oh-my-posh</code> installation directory</td></tr><tr><td><strong>Nerd Fonts</strong></td><td>Cascadia Code Nerd Font and Cascadia Mono Nerd Font variants (font files and registry entries)</td></tr><tr><td><strong>UV Tools</strong></td><td><code>%ProgramData%\UVTools</code> directory</td></tr><tr><td><strong>Ubuntu WSL Distribution</strong></td><td>Ubuntu WSL instance, VHDX files, installation folder, and related registry entries</td></tr><tr><td><strong>WSL Registry Entries</strong></td><td><code>HKCU\Software\Microsoft\Windows\CurrentVersion\Lxss</code> keys, including default-user settings</td></tr><tr><td><strong>PATH Environment Variables</strong></td><td>Tool-specific entries added to the machine PATH</td></tr><tr><td><strong>Windows Terminal Configuration</strong></td><td>Oh My Posh configuration blocks from <code>settings.json</code></td></tr><tr><td><strong>PowerShell Profiles</strong></td><td>Oh My Posh entries from <code>Microsoft.PowerShell_profile.ps1</code> for all local users</td></tr></tbody></table><figcaption class="wp-element-caption">     Best Way to Uninstall the 3rd-Party Dev Tools from Windows 11 Dev Cloud PC. Table. 1</figcaption></figure><p class="wp-block-paragraph">To uninstall the third-party development tools from a Windows 11 Dev Cloud PC using an Intune PowerShell script, follow these steps. I will be utilizing the <strong>platform script</strong> for this configuration. First, log in to the <a data-id="https://intune.microsoft.com" data-type="link" href="https://intune.microsoft.com" rel="noreferrer noopener nofollow" target="_blank"><strong>Microsoft Intune Admin Center</strong></a> using your administrator credentials. Alternatively, you can use the remediation script here to enable on-demand remediation.</p><ul class="wp-block-list"><li class="has-medium-font-size">Navigate to <strong>Devices</strong> &gt; <strong>Windows</strong> &gt; <strong>Scripts and remediations</strong></li><li class="has-medium-font-size">Click on <strong>Platform scripts </strong>&gt; <strong>+Add</strong></li></ul><div class="wp-block-image"><figure class="aligncenter size-large"><img alt="Best Way to Uninstall 3rd-Party Dev Tools from Windows 11 Dev Cloud PC using Intune. Fig. 1" class="wp-image-369571" data-lazyloaded="1" data-sizes="(max-width: 1024px) 100vw, 1024px" decoding="async" src="assets/11aef4c3db26b7a7/img_0.webp" title="Best way to Uninstall 3rd-Party Dev Tools from Windows 11 Dev Cloud PC using Intune 2"/><figcaption class="wp-element-caption">Best Way to Uninstall 3rd-Party Dev Tools from Windows 11 Dev Cloud PC using Intune. Fig. 1</figcaption></figure></div><p class="wp-block-paragraph">In the <strong>Basics</strong> details pane, we can name the PowerShell Script “<strong>Uninstall the 3rd-Party Dev Tools from Windows 11 Dev Cloud PC.</strong>” It is helpful to provide a brief description about the script and click <strong>Next</strong>.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><div class="wp-block-image"><figure class="aligncenter size-large"><img alt="Best Way to Uninstall 3rd-Party Dev Tools from Windows 11 Dev Cloud PC using Intune. Fig. 2" class="wp-image-369576" data-lazyloaded="1" data-sizes="(max-width: 1024px) 100vw, 1024px" decoding="async" src="assets/11aef4c3db26b7a7/img_1.webp" title="Best way to Uninstall 3rd-Party Dev Tools from Windows 11 Dev Cloud PC using Intune 3"/><figcaption class="wp-element-caption">Best Way to Uninstall 3rd-Party Dev Tools from Windows 11 Dev Cloud PC using Intune. Fig. 2</figcaption></figure></div><p class="wp-block-paragraph">Let’s create a <strong>PowerShell script</strong> from scratch to <strong>Uninstall 3rd-Party Dev Tools from Windows 11 Dev Cloud PC</strong>. This PowerShell script is designed for users who have deployed a Cloud PC using the Windows 365 Dev Ready Image and want to remove the preinstalled third-party developer tools from their device.</p><p class="wp-block-paragraph">As part of the cleanup process, the script uninstalls Node.js and then reinstalls GitHub Copilot CLI as a standalone application. This ensures that the Copilot command continues to work even after Node.js has been removed.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><pre class="wp-block-code has-contrast-3-background-color has-background"><code><strong>#####################################################################################################################################################################&gt;
+# &lt;copyright company="Microsoft"&gt;
+#   Copyright (c) Microsoft Corporation.  All rights reserved.
+# &lt;/copyright&gt;
+#
+# .SYNOPSIS
+#  Uninstalls third-party developer tools installed in Dev Ready Image:
+#    - Python 3.13 (winget)
+#    - Node.js LTS (winget)
+#    - nvm-windows (%ProgramData%\nvm + %ProgramFiles%\nodejs symlink)
+#    - oh-my-posh (%ProgramFiles%\oh-my-posh) + Cascadia fonts
+#    - uv tools (%ProgramData%\UVTools)
+#    - Ubuntu WSL (VHDX, folder, and registry keys)
+#
+#  After removing Node.js, reinstalls GitHub Copilot CLI as a standalone
+#  exe (winget: GitHub.Copilot) and patches the npm shims (copilot.ps1,
+#  copilot.cmd) so the 'copilot' command and Start Menu shortcut keep
+#  working without Node.js.
+#
+# .REQUIREMENTS
+#   1). Run from an elevated PowerShell window (Windows PowerShell 5.1 or PowerShell 7+).
+#   2). A reboot is recommended after execution.
+#
+# .EXAMPLE
+#   .\Uninstall-ThirdPartyTools.ps1
+#####################################################################################################################################################################&gt;
+
+#Requires -Version 5.1
+#Requires -RunAsAdministrator
+
+Set-StrictMode -Version Latest
+$ErrorActionPreference = "Stop"
+$ProgressPreference    = "SilentlyContinue"
+
+#region Helpers
+
+function Write-Section([string]$Title)
+{
+    Write-Host ""
+    Write-Host "============================================================" -ForegroundColor DarkCyan
+    Write-Host $Title -ForegroundColor Cyan
+    Write-Host "============================================================" -ForegroundColor DarkCyan
+}
+
+function Assert-Admin
+{
+    $id = [Security.Principal.WindowsIdentity]::GetCurrent()
+    $p  = New-Object Security.Principal.WindowsPrincipal($id)
+    if (-not $p.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator))
+    {
+        throw "Please run this script in an elevated PowerShell (Run as Administrator)."
+    }
+}
+
+function Remove-FromMachinePath([string]$PathToRemove)
+{
+    $machinePath = [Environment]::GetEnvironmentVariable("Path", "Machine")
+    $entries = $machinePath -split ';' | Where-Object { $_.TrimEnd('\') -ne $PathToRemove.TrimEnd('\') }
+    $newPath = ($entries | Where-Object { $_ -ne '' }) -join ';'
+    [Environment]::SetEnvironmentVariable("Path", $newPath, "Machine")
+}
+
+function Test-WinGetPackageInstalled([string]$Id)
+{
+    # winget can exit 0 even when nothing matches, so parse the output instead
+    # of trusting $LASTEXITCODE. Pass --accept-source-agreements to avoid the
+    # first-run interactive source-acceptance prompt on a fresh image.
+    $output = winget list --id $Id --exact --source winget --accept-source-agreements --disable-interactivity 2&gt;&amp;1 | Out-String
+    if ($LASTEXITCODE -ne 0) { return $false }
+    if ($output -match 'No installed package found') { return $false }
+    # winget prints the package id in the result table only when a match exists.
+    return ($output -match [regex]::Escape($Id))
+}
+
+#endregion Helpers
+
+#region Discovery — build a manifest of what exists on this machine
+
+function Find-ItemsToRemove
+{
+    $items = [ordered]@{}
+
+    # --- Winget packages ---
+    $items.WingetPackages = @()
+    $wingetTools = @(
+        @{ Ids = @("Python.Python.3.13"); Name = "Python" }
+        @{ Ids = @("OpenJS.NodeJS.LTS");  Name = "Node.js" }
+    )
+    foreach ($tool in $wingetTools)
+    {
+        foreach ($id in $tool.Ids)
+        {
+            if (Test-WinGetPackageInstalled $id)
+            {
+                $items.WingetPackages += @{ Id = $id; Name = "$($tool.Name) ($id)" }
+            }
+        }
+    }
+
+    # --- Python 3.13 MSI fallback (winget registration may be lost after sysprep) ---
+    $items.PythonMsiGuids = @()
+    $pythonFoundViaWinget = @($items.WingetPackages | Where-Object { $_.Id -eq "Python.Python.3.13" }).Count -gt 0
+    if (-not $pythonFoundViaWinget)
+    {
+        $arpPaths = @(
+            "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"
+            "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall"
+        )
+        foreach ($arpPath in $arpPaths)
+        {
+            Get-ChildItem $arpPath -ErrorAction SilentlyContinue | ForEach-Object {
+                $props = Get-ItemProperty $_.PSPath -ErrorAction SilentlyContinue
+                if ($props -and $props.PSObject.Properties['DisplayName'] -and $props.DisplayName -match '^Python 3\.13')
+                {
+                    $items.PythonMsiGuids += @{
+                        Guid        = $_.PSChildName
+                        DisplayName = $props.DisplayName
+                        Uninstall   = $props.UninstallString
+                    }
+                }
+            }
+        }
+    }
+
+    # --- Python 3.13 install directory (may remain after MSI uninstall) ---
+    $items.PythonDir = $null
+    $pythonDir = Join-Path $env:ProgramFiles "Python313"
+    if (Test-Path $pythonDir)
+    {
+        $items.PythonDir = $pythonDir
+    }
+
+    # --- Folders ---
+    $items.Folders = @()
+    $folderCandidates = @(
+        @{ Path = (Join-Path $env:ProgramData "nvm");          Label = "nvm-windows" }
+        @{ Path = (Join-Path $env:ProgramFiles "nodejs");      Label = "nvm Node.js symlink" }
+        @{ Path = (Join-Path $env:ProgramFiles "oh-my-posh");  Label = "oh-my-posh (bin + themes)" }
+        @{ Path = (Join-Path $env:ProgramData "UVTools");      Label = "uv binary" }
+        @{ Path = (Join-Path $env:ProgramData "UbuntuDistro"); Label = "Ubuntu VHDX" }
+    )
+    if ($items.PythonDir)
+    {
+        $folderCandidates += @{ Path = $items.PythonDir; Label = "Python 3.13" }
+    }
+    foreach ($f in $folderCandidates)
+    {
+        if (Test-Path $f.Path)
+        {
+            $items.Folders += $f
+        }
+    }
+
+    # --- Fonts ---
+    $items.Fonts = @()
+    $cascadiaFonts = Get-ChildItem "$env:WINDIR\Fonts" -Filter "Cascadia*.ttf" -ErrorAction SilentlyContinue
+    foreach ($font in $cascadiaFonts)
+    {
+        $items.Fonts += $font.FullName
+    }
+
+    # --- Registry: Ubuntu Lxss (HKCU) ---
+    $items.UbuntuLxss = @{ Found = $false; Guid = $null; LxssPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Lxss" }
+    $lxssPath = $items.UbuntuLxss.LxssPath
+    if (Test-Path $lxssPath)
+    {
+        $subKeys = Get-ChildItem -Path $lxssPath -ErrorAction SilentlyContinue
+        foreach ($key in $subKeys)
+        {
+            $distroName = (Get-ItemProperty -Path $key.PSPath -Name "DistributionName" -ErrorAction SilentlyContinue).DistributionName
+            if ($distroName -eq "Ubuntu")
+            {
+                $items.UbuntuLxss.Found = $true
+                $items.UbuntuLxss.Guid = $key.PSChildName
+                break
+            }
+        }
+    }
+
+    # --- Registry: Ubuntu Lxss (Default User hive) ---
+    $items.DefaultUserLxss = @{ Found = $false; HivePath = "HKU\TempUninstall\SOFTWARE\Microsoft\Windows\CurrentVersion\Lxss" }
+    $ntUserDat = Join-Path $env:SystemDrive "Users\Default\NTUSER.DAT"
+    if (Test-Path $ntUserDat)
+    {
+        # Defensive unload in case a prior aborted run left the hive mounted.
+        $null = cmd /c "reg.exe unload `"HKU\TempUninstall`" 2&gt;nul"
+        $null = cmd /c "reg.exe load `"HKU\TempUninstall`" `"$ntUserDat`" 2&gt;nul"
+        $loadOk = ($LASTEXITCODE -eq 0)
+        if ($loadOk)
+        {
+            try
+            {
+                $null = cmd /c "reg.exe query `"$($items.DefaultUserLxss.HivePath)`" 2&gt;nul"
+                if ($LASTEXITCODE -eq 0)
+                {
+                    $items.DefaultUserLxss.Found = $true
+                }
+            }
+            finally
+            {
+                [gc]::Collect()
+                Start-Sleep -Seconds 1
+                $null = cmd /c "reg.exe unload `"HKU\TempUninstall`" 2&gt;nul"
+            }
+        }
+        else
+        {
+            Write-Warning "Could not load Default User hive ($ntUserDat); skipping Default User Lxss discovery."
+        }
+    }
+
+    # --- Registry: Cascadia font entries ---
+    $items.FontRegistryEntries = @()
+    $fontRegPath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts"
+    foreach ($font in $cascadiaFonts)
+    {
+        $prop = Get-ItemProperty -Path $fontRegPath -Name $font.Name -ErrorAction SilentlyContinue
+        if ($prop)
+        {
+            $items.FontRegistryEntries += "$fontRegPath\$($font.Name)"
+        }
+    }
+
+    # --- Machine PATH entries ---
+    $items.PathEntries = @()
+    $machinePath = [Environment]::GetEnvironmentVariable("Path", "Machine")
+    $pathCandidates = @(
+        (Join-Path $env:ProgramData "nvm")
+        (Join-Path $env:ProgramFiles "nodejs")
+        (Join-Path $env:ProgramFiles "oh-my-posh\bin")
+        (Join-Path $env:ProgramFiles "oh-my-posh\themes")
+        (Join-Path $env:ProgramData "UVTools")
+    )
+    foreach ($p in $pathCandidates)
+    {
+        if ($machinePath -match [regex]::Escape($p))
+        {
+            $items.PathEntries += $p
+        }
+    }
+
+    # --- Files ---
+    $items.Files = @()
+    $profilePaths = @(
+        (Join-Path $env:SystemDrive "Users\Default\Documents\PowerShell\Microsoft.PowerShell_profile.ps1")
+        (Join-Path $env:USERPROFILE "Documents\PowerShell\Microsoft.PowerShell_profile.ps1")
+    )
+    foreach ($profilePath in $profilePaths)
+    {
+        if (Test-Path $profilePath)
+        {
+            $content = Get-Content $profilePath -Raw -ErrorAction SilentlyContinue
+            if ($content -match 'oh-my-posh')
+            {
+                $items.Files += $profilePath
+            }
+        }
+    }
+
+
+    # --- Windows Terminal settings with Cascadia Mono NF font ---
+    $items.WTSettingsFiles = @()
+    $wtPackage = "Microsoft.WindowsTerminal_8wekyb3d8bbwe"
+    $wtSettingsPaths = @(
+        (Join-Path $env:SystemDrive "Users\Default\AppData\Local\Packages\$wtPackage\LocalState\settings.json")
+        (Join-Path $env:LOCALAPPDATA "Packages\$wtPackage\LocalState\settings.json")
+    )
+    foreach ($wtPath in $wtSettingsPaths)
+    {
+        if (Test-Path $wtPath)
+        {
+            $content = Get-Content $wtPath -Raw -ErrorAction SilentlyContinue
+            if ($content -match 'Cascadia Mono NF')
+            {
+                $items.WTSettingsFiles += $wtPath
+            }
+        }
+    }
+
+    return $items
+}
+
+#endregion Discovery
+
+#region Display — show user exactly what will be removed
+
+function Show-RemovalPlan($items)
+{
+    Write-Section "Discovery complete - the following items will be removed"
+
+    $hasAnything = $false
+
+    if ($items.WingetPackages.Count -gt 0)
+    {
+        $hasAnything = $true
+        Write-Host ""
+        Write-Host "  Winget packages:" -ForegroundColor Yellow
+        foreach ($pkg in $items.WingetPackages)
+        {
+            Write-Host "    - $($pkg.Name) ($($pkg.Id))"
+        }
+    }
+
+    if ($items.PythonMsiGuids.Count -gt 0)
+    {
+        $hasAnything = $true
+        Write-Host ""
+        Write-Host "  Python 3.13 (MSI fallback):" -ForegroundColor Yellow
+        foreach ($msi in $items.PythonMsiGuids)
+        {
+            Write-Host "    - $($msi.DisplayName) (MSI: $($msi.Guid))"
+        }
+    }
+
+    if ($items.Folders.Count -gt 0)
+    {
+        $hasAnything = $true
+        Write-Host ""
+        Write-Host "  Folders:" -ForegroundColor Yellow
+        foreach ($f in $items.Folders)
+        {
+            Write-Host "    - $($f.Path)  ($($f.Label))"
+        }
+    }
+
+    if ($items.Fonts.Count -gt 0)
+    {
+        $hasAnything = $true
+        Write-Host ""
+        Write-Host "  Fonts:" -ForegroundColor Yellow
+        foreach ($font in $items.Fonts)
+        {
+            Write-Host "    - $font"
+        }
+    }
+
+    $hasRegistry = $items.UbuntuLxss.Found -or $items.DefaultUserLxss.Found -or ($items.FontRegistryEntries.Count -gt 0)
+    if ($hasRegistry)
+    {
+        $hasAnything = $true
+        Write-Host ""
+        Write-Host "  Registry:" -ForegroundColor Yellow
+        if ($items.UbuntuLxss.Found)
+        {
+            $lxss = $items.UbuntuLxss
+            Write-Host "    - Registry key:   $($lxss.LxssPath)\$($lxss.Guid)"
+        }
+        if ($items.DefaultUserLxss.Found)
+        {
+            Write-Host "    - Registry key:   $($items.DefaultUserLxss.HivePath)"
+        }
+        if ($items.UbuntuLxss.Found)
+        {
+            $lxss = $items.UbuntuLxss
+            Write-Host "    - Registry value: $($lxss.LxssPath)\DefaultDistribution"
+            Write-Host "    - Registry value: $($lxss.LxssPath)\OOBEComplete"
+        }
+        foreach ($entry in $items.FontRegistryEntries)
+        {
+            Write-Host "    - Registry value: $entry"
+        }
+    }
+
+    if ($items.PathEntries.Count -gt 0)
+    {
+        $hasAnything = $true
+        Write-Host ""
+        Write-Host "  Machine PATH entries:" -ForegroundColor Yellow
+        foreach ($p in $items.PathEntries)
+        {
+            Write-Host "    - $p"
+        }
+    }
+
+    if ($items.Files.Count -gt 0)
+    {
+        $hasAnything = $true
+        Write-Host ""
+        Write-Host "  Files:" -ForegroundColor Yellow
+        foreach ($f in $items.Files)
+        {
+            Write-Host "    - $f"
+        }
+    }
+
+
+    if ($items.WTSettingsFiles.Count -gt 0)
+    {
+        $hasAnything = $true
+        Write-Host ""
+        Write-Host "  Windows Terminal settings (remove custom font):" -ForegroundColor Yellow
+        foreach ($f in $items.WTSettingsFiles)
+        {
+            Write-Host "    - $f"
+        }
+    }
+
+    # Always show the reinstall notice when Node.js is being removed
+    $removingNode = @($items.WingetPackages | Where-Object { $_.Id -eq "OpenJS.NodeJS.LTS" }).Count -gt 0
+    if ($removingNode)
+    {
+        $hasAnything = $true
+    }
+
+    Write-Host ""
+
+    if (-not $hasAnything)
+    {
+        Write-Host "  Nothing to remove. All tools are already uninstalled." -ForegroundColor Green
+        return $false
+    }
+
+    return $true
+}
+
+#endregion Display
+
+#region Execute — perform the actual removal
+
+function Uninstall-WingetPackages($packages)
+{
+    foreach ($pkg in $packages)
+    {
+        Write-Host "  Uninstalling: $($pkg.Name) ($($pkg.Id)) via winget..."
+        winget uninstall --id $pkg.Id --exact --source winget --silent --disable-interactivity --accept-source-agreements 2&gt;&amp;1 | Out-Host
+        if ($LASTEXITCODE -eq 0)
+        {
+            Write-Host "  [OK] $($pkg.Name) uninstalled." -ForegroundColor Green
+        }
+        else
+        {
+            Write-Warning "  winget uninstall for $($pkg.Name) returned exit code $LASTEXITCODE."
+        }
+    }
+}
+
+function Uninstall-PythonMsiComponents($msiGuids)
+{
+    # Uninstall in reverse order: dependent components first, core interpreter last.
+    # MSI exit code 1603 occurs when a dependency (e.g., Core Interpreter) is removed
+    # before components that depend on it (e.g., Standard Library, pip Bootstrap).
+    $sorted = @()
+    foreach ($msi in $msiGuids)
+    {
+        if ($msi.DisplayName -match 'Core Interpreter|Executables')
+        {
+            continue
+        }
+        $sorted += $msi
+    }
+    foreach ($msi in $msiGuids)
+    {
+        if ($msi.DisplayName -match 'Executables')
+        {
+            $sorted += $msi
+        }
+    }
+    foreach ($msi in $msiGuids)
+    {
+        if ($msi.DisplayName -match 'Core Interpreter')
+        {
+            $sorted += $msi
+        }
+    }
+
+    foreach ($msi in $sorted)
+    {
+        Write-Host "  Uninstalling: $($msi.DisplayName) via msiexec..."
+        $proc = Start-Process msiexec.exe -ArgumentList "/X$($msi.Guid) /qn /norestart" -Wait -PassThru -NoNewWindow
+        if ($proc.ExitCode -eq 0)
+        {
+            Write-Host "  [OK] $($msi.DisplayName) uninstalled." -ForegroundColor Green
+        }
+        else
+        {
+            Write-Warning "  msiexec uninstall for $($msi.DisplayName) returned exit code $($proc.ExitCode)."
+        }
+    }
+}
+
+function Remove-Folders($folders)
+{
+    foreach ($f in $folders)
+    {
+        # Shut down WSL before deleting Ubuntu VHDX to release file locks
+        if ($f.Label -eq "Ubuntu VHDX")
+        {
+            $wsl = Join-Path $env:SystemRoot "System32\wsl.exe"
+            if (Test-Path $wsl) { &amp; wsl --shutdown 2&gt;$null | Out-Null }
+        }
+
+        Remove-Item -Path $f.Path -Recurse -Force
+        Write-Host "  Removed $($f.Path)" -ForegroundColor Green
+    }
+}
+
+function Remove-Fonts($fonts)
+{
+    $FontRegPath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts"
+    foreach ($fontPath in $fonts)
+    {
+        $fontName = [System.IO.Path]::GetFileName($fontPath)
+        Remove-Item -Path $fontPath -Force -ErrorAction SilentlyContinue
+        Remove-ItemProperty -Path $FontRegPath -Name $fontName -ErrorAction SilentlyContinue
+    }
+    Write-Host "  Removed $($fonts.Count) Cascadia font(s)" -ForegroundColor Green
+}
+
+function Remove-UbuntuRegistry($ubuntuLxss, $defaultUserLxss)
+{
+    # HKCU: remove only the Ubuntu distro subkey
+    if ($ubuntuLxss.Found)
+    {
+        $lxssPath = $ubuntuLxss.LxssPath
+        $guidPath = Join-Path $lxssPath $ubuntuLxss.Guid
+        Remove-Item -Path $guidPath -Recurse -Force
+        Write-Host "  Removed $guidPath" -ForegroundColor Green
+
+        $defaultDist = (Get-ItemProperty -Path $lxssPath -Name "DefaultDistribution" -ErrorAction SilentlyContinue).DefaultDistribution
+        if ($defaultDist -eq $ubuntuLxss.Guid)
+        {
+            Remove-ItemProperty -Path $lxssPath -Name "DefaultDistribution" -ErrorAction SilentlyContinue
+            Remove-ItemProperty -Path $lxssPath -Name "OOBEComplete" -ErrorAction SilentlyContinue
+            Write-Host "  Cleared DefaultDistribution and OOBEComplete" -ForegroundColor Green
+        }
+    }
+
+    # Default User hive
+    if ($defaultUserLxss.Found)
+    {
+        $ntUserDat = Join-Path $env:SystemDrive "Users\Default\NTUSER.DAT"
+        $null = cmd /c "reg.exe load `"HKU\TempUninstall`" `"$ntUserDat`" 2&gt;nul"
+        $null = cmd /c "reg.exe delete `"$($defaultUserLxss.HivePath)`" /f 2&gt;nul"
+        Write-Host "  Removed Default User Lxss registry keys" -ForegroundColor Green
+        [gc]::Collect()
+        Start-Sleep -Seconds 1
+        $null = cmd /c "reg.exe unload `"HKU\TempUninstall`" 2&gt;nul"
+    }
+}
+
+function Remove-PathEntries($entries)
+{
+    foreach ($p in $entries)
+    {
+        Remove-FromMachinePath $p
+        Write-Host "  Removed from PATH: $p" -ForegroundColor Green
+    }
+}
+
+function Remove-Files($files)
+{
+    foreach ($f in $files)
+    {
+        Remove-Item -Path $f -Force
+        Write-Host "  Removed $f" -ForegroundColor Green
+    }
+}
+
+function Install-StandaloneCopilotCli
+{
+    Write-Host "  Installing standalone GitHub Copilot CLI (winget)..."
+    winget install --id GitHub.Copilot --exact --source winget --accept-package-agreements --accept-source-agreements --disable-interactivity 2&gt;&amp;1 | Out-Host
+
+    # winget portable installs create a symlink in WinGet\Links
+    $copilotExe = Join-Path $env:LOCALAPPDATA "Microsoft\WinGet\Links\copilot.exe"
+    if (-not (Test-Path $copilotExe))
+    {
+        throw "GitHub.Copilot installed via winget but copilot.exe not found at $copilotExe."
+    }
+    Write-Host "  Found copilot.exe at: $copilotExe" -ForegroundColor Green
+
+    # Patch the npm shims so 'copilot' command uses the standalone exe instead of node
+    $npmDir = Join-Path $env:ProgramData "npm"
+    if (Test-Path $npmDir)
+    {
+        $ps1Shim = Join-Path $npmDir "copilot.ps1"
+        if (Test-Path $ps1Shim)
+        {
+            $ps1Content = @(
+                '#!/usr/bin/env pwsh'
+                '&amp; "' + $copilotExe + '" @args'
+            ) -join "`n"
+            Set-Content -Path $ps1Shim -Value $ps1Content -Encoding UTF8 -NoNewline
+            Write-Host "  Patched $ps1Shim" -ForegroundColor Green
+        }
+
+        $cmdShim = Join-Path $npmDir "copilot.cmd"
+        if (Test-Path $cmdShim)
+        {
+            $cmdContent = @(
+                '@ECHO off'
+                '"' + $copilotExe + '" %*'
+            ) -join "`r`n"
+            Set-Content -Path $cmdShim -Value $cmdContent -Encoding ASCII -NoNewline
+            Write-Host "  Patched $cmdShim" -ForegroundColor Green
+        }
+    }
+
+    Write-Host "  [OK] GitHub Copilot CLI reinstalled as standalone." -ForegroundColor Green
+}
+
+function Reset-WTFontSettings($settingsFiles)
+{
+    foreach ($f in $settingsFiles)
+    {
+        $content = Get-Content $f -Raw
+        # Remove the font block: "font": { "face": "Cascadia Mono NF" }
+        # Windows Terminal defaults to Cascadia Mono when no font is specified.
+        $updated = $content -replace '(?m)\s*"font"\s*:\s*\{[^}]*\}\s*,?', ''
+        Set-Content -Path $f -Value $updated -Encoding UTF8 -NoNewline
+        Write-Host "  Removed custom font setting from $f" -ForegroundColor Green
+    }
+}
+
+#endregion Execute
+
+# -----------------------------------------
+# MAIN
+# -----------------------------------------
+
+$LogFile = Join-Path $env:TEMP "Uninstall-ThirdPartyTools_$(Get-Date -Format 'yyyyMMdd_HHmmss').log"
+Start-Transcript -Path $LogFile -Force
+Write-Host "Logging to: $LogFile"
+
+try
+{
+    $executionTime = Measure-Command {
+
+        # Phase 1: Precheck
+        Assert-Admin
+
+        # Phase 2: Discover what is installed
+        Write-Section "Scanning for installed tools..."
+        $items = Find-ItemsToRemove
+
+        # Phase 3: Show the user what will be removed
+        $hasWork = Show-RemovalPlan $items
+        if (-not $hasWork)
+        {
+            Stop-Transcript
+            exit 0
+        }
+
+        $confirm = Read-Host "Do you want to continue? (Y/N)"
+        if ($confirm -notin @('Y', 'y', 'Yes', 'yes'))
+        {
+            Write-Host "Uninstall cancelled by user." -ForegroundColor Yellow
+            Stop-Transcript
+            exit 0
+        }
+
+        # Phase 4: Execute removal with per-step fault tolerance
+        $removingNode = @($items.WingetPackages | Where-Object { $_.Id -eq "OpenJS.NodeJS.LTS" }).Count -gt 0
+        $steps = @(
+            @{ Name = "Uninstall winget packages";       Action = { Uninstall-WingetPackages $items.WingetPackages };       Skip = ($items.WingetPackages.Count -eq 0) }
+            @{ Name = "Reinstall Copilot CLI (standalone)"; Action = { Install-StandaloneCopilotCli };              Skip = (-not $removingNode) }
+            @{ Name = "Uninstall Python 3.13 MSI";        Action = { Uninstall-PythonMsiComponents $items.PythonMsiGuids }; Skip = ($items.PythonMsiGuids.Count -eq 0) }
+            @{ Name = "Remove folders";              Action = { Remove-Folders $items.Folders };                  Skip = ($items.Folders.Count -eq 0) }
+            @{ Name = "Remove Cascadia fonts and registry"; Action = { Remove-Fonts $items.Fonts };                     Skip = ($items.Fonts.Count -eq 0) }
+            @{ Name = "Remove Ubuntu registry keys"; Action = { Remove-UbuntuRegistry $items.UbuntuLxss $items.DefaultUserLxss }; Skip = (-not $items.UbuntuLxss.Found -and -not $items.DefaultUserLxss.Found) }
+            @{ Name = "Remove Machine PATH entries"; Action = { Remove-PathEntries $items.PathEntries };          Skip = ($items.PathEntries.Count -eq 0) }
+            @{ Name = "Remove files";                Action = { Remove-Files $items.Files };                      Skip = ($items.Files.Count -eq 0) }
+            @{ Name = "Reset Windows Terminal font"; Action = { Reset-WTFontSettings $items.WTSettingsFiles };    Skip = ($items.WTSettingsFiles.Count -eq 0) }
+        )
+
+        $failures = @()
+        foreach ($step in $steps)
+        {
+            if ($step.Skip) { continue }
+
+            Write-Section $step.Name
+            try
+            {
+                &amp; $step.Action
+            }
+            catch
+            {
+                Write-Host "  FAILED: $($_.Exception.Message)" -ForegroundColor Red
+                $failures += $step.Name
+            }
+        }
+
+        if ($failures.Count -gt 0)
+        {
+            Write-Host ""
+            Write-Host "The following steps failed:" -ForegroundColor Red
+            $failures | ForEach-Object { Write-Host "  - $_" -ForegroundColor Red }
+            Write-Host "Review the log for details. You may re-run the script to retry." -ForegroundColor Yellow
+        }
+    }
+
+    Write-Section "DONE. Total Run Time: $($executionTime.TotalSeconds) Seconds."
+    Write-Warning "Please restart the system for all changes to take effect."
+
+    Stop-Transcript
+    exit 0
+}
+catch
+{
+    Write-Host ""
+    Write-Host "FAILED: $($_.Exception.Message)" -ForegroundColor Red
+    Stop-Transcript
+    throw
+}</strong></code></pre><p class="has-contrast-3-background-color has-background wp-block-paragraph"><strong>Note!</strong> I’ve uploaded the <strong>PowerShell Script</strong> to my <strong>GitHub Repo</strong>, so feel free to check it out for your needs. <strong>Download from here</strong>: <a data-id="https://github.com/VaishnavKuruvaikandy/Intune/blob/main/Uninstall-ThirdPartyDevTools.ps1" data-type="link" href="https://github.com/VaishnavKuruvaikandy/Intune/blob/main/Uninstall-ThirdPartyDevTools.ps1" rel="noreferrer noopener nofollow" target="_blank"><strong>Uninstall-ThirdPartyDevTools.ps1</strong></a> (Credit: Microsoft)</p><p class="wp-block-paragraph">In the <strong>Script settings</strong> pane, we can set the configurations according to our requirements. The first option is mandatory; we must browse and select our saved <strong>PS Script</strong> here.</p><ul class="wp-block-list"><li class="has-medium-font-size">Script location – Browse and select the saved script <strong>Uninstall-ThirdPartyDevTools.ps1</strong></li><li class="has-medium-font-size">Run this script using the logged on credentials – <strong>No</strong></li><li class="has-medium-font-size">Enforce script signature check – <strong>No</strong></li><li class="has-medium-font-size">Run script in 64 bit PowerShell Host – <strong>Yes</strong></li></ul><div class="wp-block-image"><figure class="aligncenter size-large"><img alt="Best Way to Uninstall 3rd-Party Dev Tools from Windows 11 Dev Cloud PC using Intune. Fig. 3" class="wp-image-369617" data-lazyloaded="1" data-sizes="auto, (max-width: 1024px) 100vw, 1024px" decoding="async" src="assets/11aef4c3db26b7a7/img_2.webp" title="Best way to Uninstall 3rd-Party Dev Tools from Windows 11 Dev Cloud PC using Intune 4"/><figcaption class="wp-element-caption">Best Way to Uninstall 3rd-Party Dev Tools from Windows 11 Dev Cloud PC using Intune. Fig. 3</figcaption></figure></div><p class="wp-block-paragraph">On the next page, keep the <strong>default scope tags</strong>. If any <strong>custom scope tags</strong> are available based on your requirements, you can select them for this script deployment.</p><div class="wp-block-image"><figure class="aligncenter size-large"><img alt="Best Way to Uninstall 3rd-Party Dev Tools from Windows 11 Dev Cloud PC using Intune. Fig. 4" class="wp-image-369619" data-lazyloaded="1" data-sizes="auto, (max-width: 1024px) 100vw, 1024px" decoding="async" src="assets/11aef4c3db26b7a7/img_3.webp" title="Best way to Uninstall 3rd-Party Dev Tools from Windows 11 Dev Cloud PC using Intune 5"/><figcaption class="wp-element-caption">Best Way to Uninstall 3rd-Party Dev Tools from Windows 11 Dev Cloud PC using Intune. Fig. 4</figcaption></figure></div><p class="wp-block-paragraph">Click on <strong>Next</strong> and assign the script to <strong>Windows 11 Dev Cloud PC</strong>. You can click <strong>Add groups</strong> and select the desired Cloud PC device group in the <strong>Included groups</strong> section.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><div class="wp-block-image"><figure class="aligncenter size-large"><img alt="Best Way to Uninstall 3rd-Party Dev Tools from Windows 11 Dev Cloud PC using Intune. Fig. 5" class="wp-image-369623" data-lazyloaded="1" data-sizes="auto, (max-width: 1024px) 100vw, 1024px" decoding="async" src="assets/11aef4c3db26b7a7/img_4.webp" title="Best way to Uninstall 3rd-Party Dev Tools from Windows 11 Dev Cloud PC using Intune 6"/><figcaption class="wp-element-caption">Best Way to Uninstall 3rd-Party Dev Tools from Windows 11 Dev Cloud PC using Intune. Fig. 5</figcaption></figure></div><p class="wp-block-paragraph">On the <strong>Review + create </strong>pane, carefully check all settings for Uninstall 3rd-Party Dev Tools from Windows 11 Dev Cloud PC <strong>Script and remediation</strong>. Once you confirm everything is correct, select <strong>Create</strong> to apply the changes.</p><div class="wp-block-image"><figure class="aligncenter size-large"><img alt="Best Way to Uninstall 3rd-Party Dev Tools from Windows 11 Dev Cloud PC using Intune. Fig. 6" class="wp-image-369626" data-lazyloaded="1" data-sizes="auto, (max-width: 941px) 100vw, 941px" decoding="async" src="assets/11aef4c3db26b7a7/img_5.webp" title="Best way to Uninstall 3rd-Party Dev Tools from Windows 11 Dev Cloud PC using Intune 7"/><figcaption class="wp-element-caption">Best Way to Uninstall 3rd-Party Dev Tools from Windows 11 Dev Cloud PC using Intune. Fig. 6</figcaption></figure></div><p class="wp-block-paragraph">This Intune PowerShell Script has been deployed to the Windows 365 Cloud PCs<strong> group</strong> (<strong><strong>Windows 11 Dev Cloud PC</strong></strong>). The script will run <strong>as soon as possible</strong> once the device is synced. To <strong>monitor </strong>the policy deployment status from the <a href="https://intune.microsoft.com/" rel="noreferrer noopener nofollow" target="_blank"><strong>Intune Portal</strong></a>, follow the steps below.</p><ul class="wp-block-list"><li class="has-medium-font-size">Navigate to <strong>Devices</strong> &gt; <strong>Windows</strong> &gt; <strong>Scripts and remediations</strong> &gt; <strong>Platform scripts</strong></li></ul><p class="wp-block-paragraph">Search for the “<strong>Uninstall the 3rd-Party Dev Tools from Windows 11 Dev Cloud PC</strong>” Script. The deployment status for this script can be seen under the <strong>Overview</strong> status. We can see that both the <strong>Device and User</strong> statuses have <strong>succeeded</strong>.</p><div class="wp-block-image"><figure class="aligncenter size-large"><img alt="Best Way to Uninstall 3rd-Party Dev Tools from Windows 11 Dev Cloud PC using Intune. Fig. 7" class="wp-image-369629" data-lazyloaded="1" data-sizes="auto, (max-width: 1024px) 100vw, 1024px" decoding="async" src="assets/11aef4c3db26b7a7/img_6.webp" title="Best way to Uninstall 3rd-Party Dev Tools from Windows 11 Dev Cloud PC using Intune 8"/><figcaption class="wp-element-caption">Best Way to Uninstall 3rd-Party Dev Tools from Windows 11 Dev Cloud PC using Intune. Fig. 7</figcaption></figure></div><h2 class="wp-block-heading" id="need-further-assistance-or-have-technical-questions"><strong>Need Further Assistance or Have Technical Questions?</strong></h2><p class="has-contrast-3-background-color has-background wp-block-paragraph">Join the <a href="https://www.linkedin.com/company/how-to-manage-devices/" rel="noreferrer noopener nofollow" target="_blank"><strong>LinkedIn Page</strong></a> and <a href="https://t.me/+Q9lE6G1_BO_bGq97" rel="noreferrer noopener nofollow" target="_blank"><strong>Telegram group</strong></a> to get the latest step-by-step guides and news updates. Join our <a href="https://www.meetup.com/htmd-community-meetup-group/" rel="noreferrer noopener nofollow" target="_blank"><strong>Meetup Page</strong></a> to participate in User group meetings. Also, join the <a href="https://chat.whatsapp.com/CeMXHSD61HtDBJwe78IZwV" rel="noreferrer noopener nofollow" target="_blank"><strong>WhatsApp Community</strong></a> to get the latest news on Microsoft Technologies. We are there on <a href="https://www.reddit.com/r/ImpMSNews/" rel="noreferrer noopener nofollow" target="_blank"><strong>Reddit</strong> </a>as well.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><h2 class="wp-block-heading" id="author"><strong>Author</strong></h2><p class="wp-block-paragraph"><a href="https://www.linkedin.com/in/vaishnav-k-957b0589/" rel="noreferrer noopener nofollow" target="_blank"><strong>Vaishnav K</strong></a> has over 12 years of experience in SCCM, Intune, Modern Device Management, and Automation Solutions. He writes and shares knowledge about Microsoft Intune, Windows 365, Azure, Entra, PowerShell Scripting, and Automation. Check out his profile on <a href="https://www.linkedin.com/in/vaishnav-k-957b0589/" rel="noreferrer noopener nofollow" target="_blank"><strong>LinkedIn</strong></a>.</p><p class="code-block code-block-8">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="1286776600" data-full-width-responsive="true"></ins> </p><p class="code-block code-block-9">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="8125570634" data-full-width-responsive="true"></ins> </p></div></div></div>
+</article>
+</body>
+</html>
