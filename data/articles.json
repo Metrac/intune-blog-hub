@@ -1,5 +1,61 @@
 [
   {
+    "id": "https://call4cloud.nl/five-eyes-intelligence-alliance-says-its-time-to-speed-up-patching/",
+    "title": "Five Eyes Intelligence Alliance Says It’s Time to Speed Up Patching",
+    "link": "https://patchmypc.com/blog/five-eyes-intelligence-alliance-says-its-time-to-speed-up-patching/",
+    "source": "Call4Cloud (Rudy Ooms)",
+    "source_category": "Community",
+    "published": "2026-06-26T18:41:24+00:00",
+    "summary": "Four days ago, on June 22, 2026, the Five Eyes intelligence alliance released a joint statement. The message, echoed through the government channels of its member countries, was simple: Get rid of unsupported systems, […]",
+    "first_seen": "2026-06-27T08:21:32.190954+00:00",
+    "offline_path": "posts/9fc10b9fc986e29c.html",
+    "scraped_at": "2026-06-27T08:21:37.218526+00:00",
+    "image_count": 4,
+    "scrape_error": null
+  },
+  {
+    "id": "https://jannikreinhard.com/?p=19467",
+    "title": "Protect AI Agents with Microsoft Defender for Endpoint",
+    "link": "https://jannikreinhard.com/2026/06/26/defender-ai-agent-runtime-protection/",
+    "source": "Jannik Reinhard",
+    "source_category": "Community",
+    "published": "2026-06-26T12:23:38+00:00",
+    "summary": "AI agents like Claude Code and Copilot CLI run with your privileges. See how AI agent runtime protection in Defender for Endpoint blocks prompt injection.",
+    "first_seen": "2026-06-27T08:21:32.190954+00:00",
+    "offline_path": "posts/c0b76600be1e339f.html",
+    "scraped_at": "2026-06-27T08:21:39.055173+00:00",
+    "image_count": 0,
+    "scrape_error": null
+  },
+  {
+    "id": "https://www.anoopcnair.com/?p=369154",
+    "title": "Configure Copilot Page Context Access in Microsoft Edge using Intune for Secure AI Assistance",
+    "link": "https://www.anoopcnair.com/copilot-page-context-access-edge-using-intune/",
+    "source": "HTMD / Anoop C Nair",
+    "source_category": "Community",
+    "published": "2026-06-26T09:30:44+00:00",
+    "summary": "Hello - Here is the new HTMD Blog Article for you. Enjoy reading it. Subscribe to YouTube Channel https://www.youtube.com/c/AnoopCNairSCCM?sub_confirmation=1 and LinkedIn page for latest updates https://www.linkedin.com/company/how-to-manage-devices/ The post Configure Copilot Page Context Access in Microsoft Edge…",
+    "first_seen": "2026-06-27T08:21:32.190954+00:00",
+    "offline_path": "posts/403688c9c6947ad8.html",
+    "scraped_at": "2026-06-27T08:21:40.624670+00:00",
+    "image_count": 13,
+    "scrape_error": null
+  },
+  {
+    "id": "https://call4cloud.nl/intune-epm-system-settings-network-and-time-sync-elevation/",
+    "title": "Intune EPM System Settings: Network and Time Sync Elevation",
+    "link": "https://patchmypc.com/blog/intune-epm-system-settings-network-and-time-sync-elevation/",
+    "source": "Call4Cloud (Rudy Ooms)",
+    "source_category": "Community",
+    "published": "2026-06-26T08:44:27+00:00",
+    "summary": "This blog looks at a new Endpoint Privilege Management / EPM system settings experience that appears to be in the works, starting with Network Settings and Time Sync. With Microsoft […]",
+    "first_seen": "2026-06-27T08:21:32.190954+00:00",
+    "offline_path": "posts/0c9d72a703de4cca.html",
+    "scraped_at": "2026-06-27T08:21:41.763000+00:00",
+    "image_count": 20,
+    "scrape_error": null
+  },
+  {
     "id": "https://www.anoopcnair.com/?p=367410",
     "title": "Best way to Uninstall 3rd-Party Dev Tools from Windows 11 Dev Cloud PC using Intune",
     "link": "https://www.anoopcnair.com/uninstall-3rd-party-dev-tools-windows-intune/",
@@ -37,8 +93,8 @@
     "summary": "By Benjamin Flamm | Product Manager, Iris Yuning Ye | Product Manager - Microsoft Intune Apple’s Worldwide Developers Conference (WWDC) is the annual starting point for the next wave of Apple platform changes. For Microsoft Intune customers, WWDC is also the moment when IT teams begin planning how new operating system…",
     "first_seen": "2026-06-26T08:44:47.762475+00:00",
     "offline_path": null,
-    "scrape_error": "no main content",
-    "scraped_at": "2026-06-26T08:47:08.721373+00:00"
+    "scraped_at": "2026-06-27T08:21:43.554009+00:00",
+    "scrape_error": "no main content"
   },
   {
     "id": "https://techcommunity.microsoft.com/t5/microsoft-intune-blog/what-s-new-in-microsoft-intune-june/ba-p/4491983",
@@ -50,8 +106,8 @@
     "summary": "AI agents are beginning to act on behalf of users, interact with company data, and even make decisions independently. Trusting AI depends on three endpoint fundamentals: they must be compliant, up to date, and secure from the moment they enroll. This month’s new capabilities for Intune emphasizes these important…",
     "first_seen": "2026-06-26T08:44:47.762475+00:00",
     "offline_path": null,
-    "scrape_error": "no main content",
-    "scraped_at": "2026-06-26T08:47:10.777109+00:00"
+    "scraped_at": "2026-06-27T08:21:45.630221+00:00",
+    "scrape_error": "no main content"
   },
   {
     "id": "https://www.anoopcnair.com/?p=368279",
@@ -77,8 +133,8 @@
     "summary": "By: Chris Kunze - Principal Product Manager | Microsoft Intune Privacy Preferences Policy Control (PPPC) settings on macOS are used to pre-approve privacy permissions for apps so users aren't repeatedly prompted by macOS for access requests. Common examples include Full Disk Access, Screen Recording, Camera,…",
     "first_seen": "2026-06-26T08:44:47.762475+00:00",
     "offline_path": null,
-    "scrape_error": "no main content",
-    "scraped_at": "2026-06-26T08:47:18.351363+00:00"
+    "scraped_at": "2026-06-27T08:21:48.215322+00:00",
+    "scrape_error": "no main content"
   },
   {
     "id": "https://call4cloud.nl/intune-multi-admin-approval-the-x-msft-approval-justification-error/",
@@ -174,7 +230,7 @@
     "summary": "By: Joe Lurie, Sr. Product Manager | Microsoft Intune Managing applications at scale is one of the biggest time-consuming tasks for IT admins. Between packaging installers, writing detection rules, and keeping everything up to date - it adds up fast. That's exactly the problem Enterprise App Management in Microsoft…",
     "first_seen": "2026-06-24T08:48:29.437421+00:00",
     "offline_path": null,
-    "scraped_at": "2026-06-26T08:47:21.461119+00:00",
+    "scraped_at": "2026-06-27T08:21:50.354143+00:00",
     "scrape_error": "no main content"
   },
   {
@@ -187,7 +243,7 @@
     "summary": "By Iris Yuning Ye, Product Manager – Microsoft Intune & Justin Ploegert, Principal Product Manager – Microsoft Entra A new setting ‘Enable Registration During Setup’ for Platform single sign-on (PSSO) during Automated Device Enrollment (ADE) is now generally available for macOS devices in Microsoft Intune. With this…",
     "first_seen": "2026-06-13T20:40:40.612529+00:00",
     "offline_path": null,
-    "scraped_at": "2026-06-26T08:47:24.042117+00:00",
+    "scraped_at": "2026-06-27T08:21:52.343850+00:00",
     "scrape_error": "no main content"
   },
   {
@@ -256,7 +312,7 @@
     "summary": "By: Joe Lurie – Sr. Product Manager | Microsoft Intune On April 14, 2026, the Microsoft Desktop Optimization Pack (MDOP) reached the end of extended support. Microsoft no longer provides security updates, bug fixes, or technical support for MDOP components. For more information, refer to: Microsoft Desktop…",
     "first_seen": "2026-06-13T20:40:40.612529+00:00",
     "offline_path": null,
-    "scraped_at": "2026-06-26T08:47:28.624225+00:00",
+    "scraped_at": "2026-06-27T08:21:56.636909+00:00",
     "scrape_error": "no main content"
   },
   {
@@ -269,7 +325,7 @@
     "summary": "As automation and AI accelerate the pace of vulnerability discovery, the window between disclosure and exploitation continues to shrink. For IT and security teams, the challenge is no longer just finding vulnerabilities - it's prioritizing the ones that matter and acting on them before they can be exploited. To help…",
     "first_seen": "2026-06-17T10:20:53.826824+00:00",
     "offline_path": null,
-    "scraped_at": "2026-06-26T08:47:32.690850+00:00",
+    "scraped_at": "2026-06-27T08:21:59.474987+00:00",
     "scrape_error": "no main content"
   },
   {
@@ -282,7 +338,7 @@
     "summary": "By: Naveen Akkugari, Sr. Service Engineer and Michael Griswold, Principal Service Engineering Manager | Microsoft Intune Who we are Our internal Intune administration team at Microsoft is responsible for running Intune and Configuration Manager for the devices used by employees. We receive early access to features for…",
     "first_seen": "2026-06-19T10:07:28.341123+00:00",
     "offline_path": null,
-    "scraped_at": "2026-06-26T08:47:35.395197+00:00",
+    "scraped_at": "2026-06-27T08:22:01.535934+00:00",
     "scrape_error": "no main content"
   },
   {
@@ -295,7 +351,7 @@
     "summary": "By: Joe Lurie, Sr. Product Manager | Microsoft Intune One of the most common questions I get from customers when I talk about Enterprise App Management is some version of: \"Okay, but how do I know these apps are safe?\" It's a fair question. You're trusting a catalog of pre-packaged Win32 apps to land on thousands of…",
     "first_seen": "2026-06-16T10:48:11.585159+00:00",
     "offline_path": null,
-    "scraped_at": "2026-06-26T08:47:38.887271+00:00",
+    "scraped_at": "2026-06-27T08:22:03.930406+00:00",
     "scrape_error": "no main content"
   },
   {
@@ -308,7 +364,7 @@
     "summary": "If you've been missing real, candid conversations about endpoint management, good news! Unpacking Endpoint Management is officially back. This series is all about what actually works. No fluff, just practical tips, proven strategies, and honest discussions to help you optimize and simplify the way you manage and…",
     "first_seen": "2026-06-13T20:40:40.612529+00:00",
     "offline_path": null,
-    "scraped_at": "2026-06-26T08:47:41.425940+00:00",
+    "scraped_at": "2026-06-27T08:22:06.351408+00:00",
     "scrape_error": "no main content"
   },
   {
@@ -363,7 +419,7 @@
     "summary": "Note : New capabilities will begin to roll out CY26 Q3. Customers will receive a 30‑day notice in Message Center before the update becomes available in their tenant. In the last three years, Microsoft launched multiple endpoint management solutions with advanced capabilities that enable IT professionals to unify…",
     "first_seen": "2026-06-13T20:40:40.612529+00:00",
     "offline_path": null,
-    "scraped_at": "2026-06-26T08:47:45.225819+00:00",
+    "scraped_at": "2026-06-27T08:22:08.817710+00:00",
     "scrape_error": "no main content"
   },
   {
@@ -376,7 +432,7 @@
     "summary": "Back on December 4th, we shared that advanced capabilities from the Microsoft Intune Suite were coming to Microsoft 365 E3 and Microsoft 365 E5 . These packaging changes become effective on July 1st, with existing eligible customers expected to receive the capabilities in their tenants by August 1 . So you can…",
     "first_seen": "2026-06-20T08:36:49.815656+00:00",
     "offline_path": null,
-    "scraped_at": "2026-06-26T08:47:49.963842+00:00",
+    "scraped_at": "2026-06-27T08:22:12.830146+00:00",
     "scrape_error": "no main content"
   },
   {
@@ -417,7 +473,7 @@
     "summary": "By: Aditya Middha | Product Manager 2 - Microsoft Connected Cache Starting on June 16 th , 2026 , or soon after, Intune will enforce HTTPS content delivery for customers using Microsoft Connected Cache for Enterprise and Education. To continue using Microsoft Connected Cache to localize Intune Win32 app downloads and…",
     "first_seen": "2026-06-13T20:40:40.612529+00:00",
     "offline_path": null,
-    "scraped_at": "2026-06-26T08:47:53.425320+00:00",
+    "scraped_at": "2026-06-27T08:22:16.340809+00:00",
     "scrape_error": "no main content"
   },
   {
@@ -458,7 +514,7 @@
     "summary": "We identified an upgrade issue with the early March release of Microsoft Tunnel version 20260129.1 that caused servers to become stuck and unable to complete the upgrade. The issue can be resolved by uninstalling and reinstalling the server to a newer version ( 20260330.1 or later ). Alternatively, we’ve created a…",
     "first_seen": "2026-06-13T20:40:40.612529+00:00",
     "offline_path": null,
-    "scraped_at": "2026-06-26T08:47:56.828845+00:00",
+    "scraped_at": "2026-06-27T08:22:20.400506+00:00",
     "scrape_error": "no main content"
   },
   {
@@ -793,7 +849,7 @@
     "summary": "Whether it's Android app deployment, identity setup on macOS, certificate authority renewal, or faster compliance evaluations, the throughline is the same: less friction for the IT admins doing the work. More control over how admins manage and protect Android devices A device that never got properly enrolled is still…",
     "first_seen": "2026-06-13T20:40:40.612529+00:00",
     "offline_path": null,
-    "scraped_at": "2026-06-26T08:48:00.092001+00:00",
+    "scraped_at": "2026-06-27T08:22:25.582404+00:00",
     "scrape_error": "no main content"
   },
   {
@@ -1044,7 +1100,7 @@
     "summary": "Using a Mobile Threat Defense (MTD) solution, such as Microsoft Defender for Endpoint, with Microsoft Intune helps keep your organization’s resources protected and allows you to block devices that aren’t compliant with your organization’s policies. When an MTD detects a threat or determines that a device is…",
     "first_seen": "2026-06-13T20:40:40.612529+00:00",
     "offline_path": null,
-    "scraped_at": "2026-06-26T08:48:03.227192+00:00",
+    "scraped_at": "2026-06-27T08:22:28.240488+00:00",
     "scrape_error": "no main content"
   },
   {
@@ -1085,7 +1141,7 @@
     "summary": "By: Carol Burns - Principal Product Manager | Microsoft Intune and Sucheta Gawade, Microsoft MVP (Azure & Security / Intune) Practitioner perspective from Sucheta Gawade, Microsoft MVP (Azure & Security / Intune), with deep experience in secure frontline mobility, including regulated healthcare environments. In the…",
     "first_seen": "2026-06-13T20:40:40.612529+00:00",
     "offline_path": null,
-    "scraped_at": "2026-06-26T08:48:05.822882+00:00",
+    "scraped_at": "2026-06-27T08:22:30.783287+00:00",
     "scrape_error": "no main content"
   },
   {
@@ -1112,7 +1168,7 @@
     "summary": "April's Intune updates focus on three areas administrators have consistently asked us to improve: fresher device data, streamlined identity foundations across platforms, and simpler management for non-traditional endpoints. This month includes advancements in Windows app inventory, Linux single sign-on (SSO), and…",
     "first_seen": "2026-06-13T20:40:40.612529+00:00",
     "offline_path": null,
-    "scraped_at": "2026-06-26T08:48:08.721230+00:00",
+    "scraped_at": "2026-06-27T08:22:33.270671+00:00",
     "scrape_error": "no main content"
   },
   {
@@ -1125,7 +1181,7 @@
     "summary": "By: Albert Cabello Serrano | Principal Product Manager - Microsoft Intune A closer look at how Intune delivers updates to devices and the investments we’re making to help important changes move faster and more predictably. A common concern we hear from IT admins is, “How quickly will this change actually reach my…",
     "first_seen": "2026-06-13T20:40:40.612529+00:00",
     "offline_path": null,
-    "scraped_at": "2026-06-26T08:48:12.448083+00:00",
+    "scraped_at": "2026-06-27T08:22:36.649904+00:00",
     "scrape_error": "no main content"
   },
   {
@@ -1180,7 +1236,7 @@
     "summary": "Recent advances in automation and AI are accelerating vulnerability discovery and shortening the window between disclosure and exploitation. As Microsoft outlined in our recent Security blog , this shift raises the bar for how quickly organizations need to reduce exposure across their environments. For IT and security…",
     "first_seen": "2026-06-13T20:40:40.612529+00:00",
     "offline_path": null,
-    "scraped_at": "2026-06-26T08:48:15.621145+00:00",
+    "scraped_at": "2026-06-27T08:22:40.107763+00:00",
     "scrape_error": "no main content"
   },
   {
@@ -1235,7 +1291,7 @@
     "summary": "By: Carol Burns - Principal Product Manager | Microsoft Intune and Sucheta Gawade, Microsoft MVP (Azure & Security / Intune) Practitioner perspective from Sucheta Gawade , Microsoft MVP (Azure & Security / Intune), with deep experience in secure frontline mobility, including regulated healthcare environments.…",
     "first_seen": "2026-06-13T20:40:40.612529+00:00",
     "offline_path": null,
-    "scraped_at": "2026-06-26T08:48:18.616226+00:00",
+    "scraped_at": "2026-06-27T08:22:42.777874+00:00",
     "scrape_error": "no main content"
   },
   {
@@ -1290,7 +1346,7 @@
     "summary": "By: Janusz Gal – Sr Product Manager | Microsoft Intune Azure Log Analytics gives Intune admins a flexible way to create custom reports from diagnostic data, especially when you need longer history or tailored calculations that go beyond what the Microsoft Intune admin center’s built-in reports provide. By using the…",
     "first_seen": "2026-06-13T20:40:40.612529+00:00",
     "offline_path": null,
-    "scraped_at": "2026-06-26T08:48:21.941422+00:00",
+    "scraped_at": "2026-06-27T08:22:45.432647+00:00",
     "scrape_error": "no main content"
   },
   {
@@ -1303,7 +1359,7 @@
     "summary": "Microsoft Intune now supports the Android XR platform, including management of the Samsung Galaxy XR headset, which is built on Android XR platform. This means that IT admins can begin evaluating and deploying Android XR devices using familiar Intune management capabilities, building on the Android Enterprise security…",
     "first_seen": "2026-06-13T20:40:40.612529+00:00",
     "offline_path": null,
-    "scraped_at": "2026-06-26T08:48:26.096982+00:00",
+    "scraped_at": "2026-06-27T08:22:48.316122+00:00",
     "scrape_error": "no main content"
   },
   {
@@ -1330,7 +1386,7 @@
     "summary": "Overview Windows 365 and Microsoft Intune form a tightly integrated solution for modern endpoint management. With Windows 365 delivering secure Cloud PCs (full Windows desktops hosted in the Microsoft cloud) and Intune’s recently extended advanced endpoint management capabilities, organizations can manage Cloud PCs…",
     "first_seen": "2026-06-13T20:40:40.612529+00:00",
     "offline_path": null,
-    "scraped_at": "2026-06-26T08:48:28.767539+00:00",
+    "scraped_at": "2026-06-27T08:22:50.867026+00:00",
     "scrape_error": "no main content"
   },
   {
@@ -1343,7 +1399,7 @@
     "summary": "In a typical week, IT admins are enrolling devices, deploying apps, enforcing policies, and making a hundred small decisions that keep their organizations running. This month’s updates focus on improving the experience around daily actions, compliance visibility, and management capabilities for Apple devices and…",
     "first_seen": "2026-06-13T20:40:40.612529+00:00",
     "offline_path": null,
-    "scraped_at": "2026-06-26T08:48:31.999397+00:00",
+    "scraped_at": "2026-06-27T08:22:53.599837+00:00",
     "scrape_error": "no main content"
   },
   {
@@ -1356,7 +1412,7 @@
     "summary": "By: Neil Johnson and Chris Kunze - Principal Product Managers | Microsoft Intune Intune provides a broad and mature set of capabilities for managing macOS devices across security, compliance, applications, and user onboarding. Many customers, however, aren’t always aware of just how much functionality is available or…",
     "first_seen": "2026-06-13T20:40:40.612529+00:00",
     "offline_path": null,
-    "scraped_at": "2026-06-26T08:48:34.782386+00:00",
+    "scraped_at": "2026-06-27T08:22:56.243079+00:00",
     "scrape_error": "no main content"
   },
   {
@@ -1369,7 +1425,7 @@
     "summary": "Frontline organizations consistently tell us that unified management is the goal but the challenge is getting there without disrupting day-to-day operations. Smartphones, Android handhelds, rugged scanners, and shared tablets now sit at the center of how retail stores run, how clinicians deliver care, how supply…",
     "first_seen": "2026-06-13T20:40:40.612529+00:00",
     "offline_path": null,
-    "scraped_at": "2026-06-26T08:48:37.800247+00:00",
+    "scraped_at": "2026-06-27T08:22:58.923791+00:00",
     "scrape_error": "no main content"
   },
   {
@@ -1424,7 +1480,7 @@
     "summary": "At RSAC, Microsoft is highlighting a foundational truth: more and more AI interactions—whether through Copilot, an agent, or an automated workflow—ultimately run through an application on a device. As organizations adopt more AI-driven workflows, the application layer is becoming an increasingly important enforcement…",
     "first_seen": "2026-06-13T20:40:40.612529+00:00",
     "offline_path": null,
-    "scraped_at": "2026-06-26T08:48:40.533715+00:00",
+    "scraped_at": "2026-06-27T08:23:01.512012+00:00",
     "scrape_error": "no main content"
   },
   {
@@ -1437,7 +1493,7 @@
     "summary": "The challenge: S caling Intune across customer environments Managed service providers (MSPs) of all sizes are under pressure to manage an expanding portfolio of customer environments efficiently, securely, and profitably. Historically, MSPs have had to choose between building custom multi-tenant tooling or relying on…",
     "first_seen": "2026-06-13T20:40:40.612529+00:00",
     "offline_path": null,
-    "scraped_at": "2026-06-26T08:48:43.500058+00:00",
+    "scraped_at": "2026-06-27T08:23:04.134122+00:00",
     "scrape_error": "no main content"
   },
   {
@@ -1450,7 +1506,7 @@
     "summary": "Microsoft Intune gives IT and security teams a powerful way to manage endpoints at scale - deploying apps, enforcing security baselines, and configuring the settings that keep users productive and your organization protected. That’s why strong admin protections matter, so the right people can make the right changes,…",
     "first_seen": "2026-06-13T20:40:40.612529+00:00",
     "offline_path": null,
-    "scraped_at": "2026-06-26T08:48:47.090622+00:00",
+    "scraped_at": "2026-06-27T08:23:07.027701+00:00",
     "scrape_error": "no main content"
   },
   {
@@ -1463,7 +1519,7 @@
     "summary": "By: Ramya B Sharma – Senior Software Engineer | Microsoft Intune A new public preview feature in Microsoft Intune, we’ve introduced a toggle that allows admins to block automatic mobile device management (MDM) enrollment during the modern app sign-in flow on Windows. This enhancement directly responds to frequent…",
     "first_seen": "2026-06-13T20:40:40.612529+00:00",
     "offline_path": null,
-    "scraped_at": "2026-06-26T08:48:49.628373+00:00",
+    "scraped_at": "2026-06-27T08:23:09.685139+00:00",
     "scrape_error": "no main content"
   },
   {
@@ -1490,7 +1546,7 @@
     "summary": "Every IT environment has workarounds. Policies are duplicated instead of edited because there's no approval process. Apple software updates are pushed to every device because Declarative Device Management (DDM) policies couldn't filter by ownership type. Workarounds aren't just inconvenient. They can increase risk.…",
     "first_seen": "2026-06-13T20:40:40.612529+00:00",
     "offline_path": null,
-    "scraped_at": "2026-06-26T08:48:52.461349+00:00",
+    "scraped_at": "2026-06-27T08:23:12.912116+00:00",
     "scrape_error": "no main content"
   },
   {
@@ -1517,7 +1573,7 @@
     "summary": "From SaaS apps and internal web portals to AI-powered tools, the browser is now a major workspace for many employees and contractors alike. This shift has introduced new opportunities for organizations to enable an extended workforce. At the same time, it creates new data protection complexities for IT administrators.…",
     "first_seen": "2026-06-13T20:40:40.612529+00:00",
     "offline_path": null,
-    "scraped_at": "2026-06-26T08:48:55.466645+00:00",
+    "scraped_at": "2026-06-27T08:23:16.064660+00:00",
     "scrape_error": "no main content"
   },
   {
@@ -1586,7 +1642,7 @@
     "summary": "When trees lose their leaves, you see the structure beneath. The branches you couldn’t see. The shape that was always there. January is like that for IT admins. You get a fresh view of your endpoint management landscape, such as where elevation can get sharper, where application deployment process can be improved, and…",
     "first_seen": "2026-06-13T20:40:40.612529+00:00",
     "offline_path": null,
-    "scraped_at": "2026-06-26T08:48:58.320632+00:00",
+    "scraped_at": "2026-06-27T08:23:19.664994+00:00",
     "scrape_error": "no main content"
   },
   {
@@ -1599,7 +1655,7 @@
     "summary": "IT admins make daily, quiet decisions that determine whether an organization stays secure, compliant, and productive. They review privilege requests, security remediation actions, and high-impact configuration changes across multiple consoles. Given the growing breadth of their daily responsibilities, scattered…",
     "first_seen": "2026-06-13T20:40:40.612529+00:00",
     "offline_path": null,
-    "scraped_at": "2026-06-26T08:49:01.078114+00:00",
+    "scraped_at": "2026-06-27T08:23:22.092085+00:00",
     "scrape_error": "no main content"
   },
   {
@@ -1612,7 +1668,7 @@
     "summary": "It’s almost time for Microsoft Technical Takeoff, our month‑long digital skilling event designed to help IT admins and technical decision-makers go deeper with Windows, Microsoft Intune, and Windows 365. Every Monday in March, you’ll get fresh technical content, hands‑on guidance, and direct engagement with the…",
     "first_seen": "2026-06-13T20:40:40.612529+00:00",
     "offline_path": null,
-    "scraped_at": "2026-06-26T08:49:03.908081+00:00",
+    "scraped_at": "2026-06-27T08:23:24.859034+00:00",
     "scrape_error": "no main content"
   },
   {
@@ -1625,7 +1681,7 @@
     "summary": "Level up your endpoint management skills at Tech Community Live: Intune Edition . IT professionals: mark your calendars for Monday, January 26, 2026. If you manage endpoints with Microsoft Intune, this is your chance to connect directly with the experts and get answers to your toughest questions. This isn’t your…",
     "first_seen": "2026-06-13T20:40:40.612529+00:00",
     "offline_path": null,
-    "scraped_at": "2026-06-26T08:49:06.627012+00:00",
+    "scraped_at": "2026-06-27T08:23:27.390312+00:00",
     "scrape_error": "no main content"
   },
   {
@@ -1680,7 +1736,7 @@
     "summary": "Following Microsoft Ignite 2025, I caught up with colleagues and Intune MVPs who made the trip to San Francisco. There was a lot to talk about, but one conversation stood out: When I asked what surprised them most about this year for Microsoft Intune, the answer wasn't a single capability. It was witnessing busy IT…",
     "first_seen": "2026-06-13T20:40:40.612529+00:00",
     "offline_path": null,
-    "scraped_at": "2026-06-26T08:49:09.521562+00:00",
+    "scraped_at": "2026-06-27T08:23:30.109979+00:00",
     "scrape_error": "no main content"
   },
   {
@@ -1693,7 +1749,7 @@
     "summary": "As we head into the holiday season, I wanted to take a moment to celebrate something truly special: the incredible contributions from our Microsoft Intune MVP community this year. Last year, I released our first Holiday Reading post , which got a lot of traction, and I was asked to do it again this year — so I guess…",
     "first_seen": "2026-06-13T20:40:40.612529+00:00",
     "offline_path": null,
-    "scraped_at": "2026-06-26T08:49:12.367113+00:00",
+    "scraped_at": "2026-06-27T08:23:32.668744+00:00",
     "scrape_error": "no main content"
   },
   {
@@ -1706,7 +1762,7 @@
     "summary": "Welcome to Microsoft Ignite, where the future of IT is being reimagined. Today we’re unveiling how Microsoft Intune is transforming endpoint management by putting AI at its core, with assistive chat-based and agentic experiences to help you streamline operations, unify cross-service insights, and enable scalable…",
     "first_seen": "2026-06-13T20:40:40.612529+00:00",
     "offline_path": null,
-    "scraped_at": "2026-06-26T08:49:15.730214+00:00",
+    "scraped_at": "2026-06-27T08:23:35.549295+00:00",
     "scrape_error": "no main content"
   },
   {
@@ -1733,7 +1789,7 @@
     "summary": "By: Tania Lima – Sr Product Manager | Windows 365 Editor’s Note - Updated 11/19/25: The new User Experience Sync for Windows 365 Frontline in shared mode, announced at Ignite, delivers a consistent and seamless experience for users who frequently switch between shared Cloud PCs. This feature ensures that user settings…",
     "first_seen": "2026-06-13T20:40:40.612529+00:00",
     "offline_path": null,
-    "scraped_at": "2026-06-26T08:49:18.915393+00:00",
+    "scraped_at": "2026-06-27T08:23:38.684334+00:00",
     "scrape_error": "no main content"
   },
   {
@@ -1746,7 +1802,7 @@
     "summary": "By: Roger Southgate - Sr. Product Manager | Microsoft Intune Myth vs reality Myth : Cloud-native Windows devices can’t access on-premises resources such as file shares or legacy applications. Reality : With minimal or no configuration, cloud-native devices can seamlessly access on-premises resources using NTLM or…",
     "first_seen": "2026-06-13T20:40:40.612529+00:00",
     "offline_path": null,
-    "scraped_at": "2026-06-26T08:49:22.214019+00:00",
+    "scraped_at": "2026-06-27T08:23:41.238639+00:00",
     "scrape_error": "no main content"
   },
   {
@@ -1759,7 +1815,7 @@
     "summary": "By: Jon Callahan – Sr Product Manager | Microsoft Intune Cloud services don’t just rely on the network. They redefine it. As organizations adopt Microsoft Intune and advance their Zero Trust strategies, many discover that traditional, perimeter-based architectures no longer align with modern security expectations or…",
     "first_seen": "2026-06-13T20:40:40.612529+00:00",
     "offline_path": null,
-    "scraped_at": "2026-06-26T08:49:25.607402+00:00",
+    "scraped_at": "2026-06-27T08:23:44.077119+00:00",
     "scrape_error": "no main content"
   },
   {
@@ -1772,7 +1828,7 @@
     "summary": "The Microsoft Intune team is gearing up for Microsoft Ignite, happening November 17-21 in San Francisco! Whether you'll be joining in person or online, this guide is the best place to learn all about the sessions and experiences where you can connect with the Intune team, learn about the latest innovations, and boost…",
     "first_seen": "2026-06-13T20:40:40.612529+00:00",
     "offline_path": null,
-    "scraped_at": "2026-06-26T08:49:28.280603+00:00",
+    "scraped_at": "2026-06-27T08:23:46.670954+00:00",
     "scrape_error": "no main content"
   },
   {
@@ -1785,7 +1841,7 @@
     "summary": "Last week, someone asked me what keeps me up at night when it comes to endpoint management. The answer surprised them; it was not the sophisticated threats or latest vulnerabilities we read about in headlines. What concerns me most is the friction between security and productivity, that invisible tax we've all paid…",
     "first_seen": "2026-06-13T20:40:40.612529+00:00",
     "offline_path": null,
-    "scraped_at": "2026-06-26T08:49:31.349123+00:00",
+    "scraped_at": "2026-06-27T08:23:49.352359+00:00",
     "scrape_error": "no main content"
   },
   {
@@ -1798,7 +1854,7 @@
     "summary": "By: Harish S | Sr. Product Manager - Microsoft Defender & Rishita Sarin | Product Manager 2 - Microsoft Intune One tap to compliance: Introducing the Resolve workflow for Compliance Remediation in Microsoft Intune and Microsoft Defender on iOS. We’re thrilled to announce a major step forward in simplifying the…",
     "first_seen": "2026-06-13T20:40:40.612529+00:00",
     "offline_path": null,
-    "scraped_at": "2026-06-26T08:49:34.034675+00:00",
+    "scraped_at": "2026-06-27T08:23:51.857408+00:00",
     "scrape_error": "no main content"
   },
   {
@@ -1811,7 +1867,7 @@
     "summary": "By Mayur Jahdav, Product Manager | Microsoft Intune With the recent release of Windows 11, version 25H2 , Microsoft Intune delivered support for 36 new 25H2 settings. IT admins can confidently manage devices running the latest Windows OS version from the moment they deploy it in their environment for testing or…",
     "first_seen": "2026-06-13T20:40:40.612529+00:00",
     "offline_path": null,
-    "scraped_at": "2026-06-26T08:49:36.856930+00:00",
+    "scraped_at": "2026-06-27T08:23:54.623491+00:00",
     "scrape_error": "no main content"
   },
   {
@@ -1824,7 +1880,7 @@
     "summary": "Upgrade to Windows 11 with confidence — 10 Intune tips from Microsoft engineers, MVPs, and guides. Windows 10 reached end of support on October 14, 2025 for most editions. After this date, devices no longer receive new features, quality updates, security fixes, or support. Organizations that need more time can enroll…",
     "first_seen": "2026-06-13T20:40:40.612529+00:00",
     "offline_path": null,
-    "scraped_at": "2026-06-26T08:49:40.069964+00:00",
+    "scraped_at": "2026-06-27T08:23:57.997079+00:00",
     "scrape_error": "no main content"
   },
   {

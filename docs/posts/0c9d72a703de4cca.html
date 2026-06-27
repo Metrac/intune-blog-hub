@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intune EPM System Settings: Network and Time Sync Elevation</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Call4Cloud (Rudy Ooms)</span>
+    <span class="date">June 26, 2026</span>
+  </div>
+  <h1>Intune EPM System Settings: Network and Time Sync Elevation</h1>
+  <div class="orig">Saved for offline reading · <a href="https://patchmypc.com/blog/intune-epm-system-settings-network-and-time-sync-elevation/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="post-content">
+<p>This blog looks at a new <strong><a href="https://learn.microsoft.com/en-us/intune/epm/overview">Endpoint Privilege Management</a> / EPM</strong> system settings experience that appears to be in the works, starting with <strong>Network Settings and Time Sync.</strong> With Microsoft announcing it in the “<a href="https://techcommunity.microsoft.com/blog/microsoftintuneblog/what%E2%80%99s-new-in-microsoft-intune-%E2%80%93-june/4491983">What’s new in Microsoft Intune – June</a>” … looks like I am okay to talk about it!</p>
+<p>So, I’ll walk through the flight names, the <code>EpmElevate.exe</code> helper, the claim validation, and why this looks like more than just another file elevation rule.</p>
+<p><strong>Please note: </strong>I am not in any private preview! This is all based on OSINT and my own investigation.</p>
+<h2 class="wp-block-heading" id="h-introduction">Introduction<span class="clth-copy-icon" data-heading-id="h-introduction"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>Endpoint Privilege Management has always worked best when the elevation target is obvious. You define a rule for an executable, MSI, or PowerShell script, EPM matches the file, and the user can perform that specific action without becoming a local administrator.</p>
+<p>That model works well for applications and installers, but Windows administration does not always use a simple executable. Changing the configuration of a network adapter or changing the Time is just different.</p>
+<p>Those actions never fitted comfortably into the normal EPM file elevation model. While looking through the latest EPM components, I noticed several new flight names suggesting Microsoft was working to address that gap.</p>
+<h2 class="wp-block-heading" id="h-the-epm-flights-that-showed-the-epm-system-settings">The EPM flights that showed the EPM system settings<span class="clth-copy-icon" data-heading-id="h-the-epm-flights-that-showed-the-epm-system-settings"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>While investigating the EPM files on my own test device, I noticed that some new constants appeared inside the EPM agent</p>
+<ul class="wp-block-list">
+<li>EnableNetworkSettings</li>
+<li>EnableTimeSync</li>
+<li>EnableElevationRuleSystemSettingsEnrichment</li>
+</ul>
+<p>The first two are fairly clear. Microsoft is working on network settings and time synchronization scenarios. The other one that also feels important is: <strong>EnableElevationRuleSystemSettingsEnrichment</strong></p>
+<p>A normal EPM rule describes a file. It can use the filename, path, publisher, certificate, or file hash to decide whether elevation is allowed. A system setting needs more context than that.</p>
+<p>EPM does not only need to know which executable started. It also needs to understand which Windows setting the user is trying to change and whether that specific action is permitted by policy. That flight name suggests Microsoft is adding that extra context to the elevation rule.</p>
+<h2 class="wp-block-heading" id="h-finding-epmelevate-exe">Finding EpmElevate.exe<span class="clth-copy-icon" data-heading-id="h-finding-epmelevate-exe"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>The next clue was already sitting inside the Microsoft EPM Agent folder. C:\Program Files\Microsoft EPM Agent\EPMService\EpmElevate.exe</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-9.jpg"><picture class="wp-image-187194" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-9.jpg.webp 624w, https://patchmypc.com/app/uploads/2026/06/image-9-300x147.jpg.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-9.jpg 624w, https://patchmypc.com/app/uploads/2026/06/image-9-300x147.jpg 300w" decoding="async" src="assets/0c9d72a703de4cca/img_0.jpg"/><noscript><img alt="" decoding="async" src="assets/0c9d72a703de4cca/img_1.jpg"/></noscript>
+</picture>
+</a></figure>
+<p>At first, the filename made it look like a generic EPM elevation helper. After decompiling it, it became clear that the executable contains dedicated implementations for network settings and time synchronization. The binary contains three relevant windows:</p>
+<ul class="wp-block-list">
+<li>NetworkSettings.MainWindow</li>
+<li>TimeSync.MainWindow</li>
+<li>CombinedSettings.CombinedSettingsWindow</li>
+</ul>
+<figure class="wp-block-image size-full is-resized"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-37.png"><img alt="" class="wp-image-187188" data-lazy-sizes="(max-width: 559px) 100vw, 559px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-37.png 559w, https://patchmypc.com/app/uploads/2026/06/image-37-300x72.png 300w" decoding="async" src="assets/0c9d72a703de4cca/img_2.png"/><noscript><img alt="" class="wp-image-187188" decoding="async" src="assets/0c9d72a703de4cca/img_3.png"/></noscript></a></figure>
+<p>That means EPM can open a standalone network window, a standalone time sync window, or one combined system settings window containing both experiences. The command line parser confirms how those windows are selected. The (<strong>EpmElevate.exe -SystemSettings NetworkSettings</strong>)  argument opens the Network Settings window.  When looking at the time sync settings, we notice that this command line will do the trick: <strong>EpmElevate.exe -SystemSettings TimeSync</strong></p>
+<figure class="wp-block-image size-full"><a data-caption="EPM system settings: Network Settings And Time Sync" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-39.png"><picture class="wp-image-187191" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-39.png.webp 624w, https://patchmypc.com/app/uploads/2026/06/image-39-300x133.png.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="EPM system settings: Network Settings And Time Sync" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-39.png 624w, https://patchmypc.com/app/uploads/2026/06/image-39-300x133.png 300w" decoding="async" src="assets/0c9d72a703de4cca/img_4.png"/><noscript><img alt="EPM system settings: Network Settings And Time Sync" decoding="async" src="assets/0c9d72a703de4cca/img_5.png"/></noscript>
+</picture>
+</a></figure>
+<p>When both options are passed, EPM opens the combined window.</p>
+<p>EpmElevate.exe -SystemSettings NetworkSettings TimeSync</p>
+<p>The combined window is called:</p>
+<p>Endpoint Privilege Management – System Settings</p>
+<p>So the code does not contain a generic selection screen that asks the user what they want to manage. EPM decides which panels are available before starting the executable and then passes the appropriate arguments.</p>
+<h2 class="wp-block-heading" id="h-trying-to-launch-the-epm-system-settings-manually">Trying to launch the EPM System Settings manually<span class="clth-copy-icon" data-heading-id="h-trying-to-launch-the-epm-system-settings-manually"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>Finding the command line naturally led to the next test. I tried launching EpmElevate.exe manually with the system settings arguments and without elevating it with EPM. The executable started, but immediately closed.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-36.png"><picture class="wp-image-187189" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-36.png.webp 552w, https://patchmypc.com/app/uploads/2026/06/image-36-300x109.png.webp 300w" sizes="(max-width: 552px) 100vw, 552px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 552px) 100vw, 552px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-36.png 552w, https://patchmypc.com/app/uploads/2026/06/image-36-300x109.png 300w" decoding="async" src="assets/0c9d72a703de4cca/img_6.png"/><noscript><img alt="" decoding="async" src="assets/0c9d72a703de4cca/img_7.png"/></noscript>
+</picture>
+</a></figure>
+<p>The log explained why.</p>
+<p>EpmElevate claim validation failed:<br/>Required claim MEMEPM_RULE_ID is missing or empty.<br/>Process was not launched through the EPM pipeline.<br/>Exiting with ACCESS_DENIED.</p>
+<p>The executable validates several EPM claims before parsing the system settings arguments.</p>
+<ul class="wp-block-list">
+<li>MEMEPM_RULE_ID</li>
+<li>MEMEPM_POLICY_ID</li>
+<li>MEMEPM_INITIATING_PROCESS</li>
+</ul>
+<p>The initiating process must also be: EpmService. This is an important part of the design. Running the executable as an administrator is not enough. Launching it as SYSTEM does not help either.</p>
+<p>EpmElevate.exe expects to be started by the EPM service with the correct EPM claims attached to its process token. Without those claims, it refuses to continue.</p>
+<p>Microsoft did not simply install a privileged network and time configuration tool on the device. The helper only works when EPM launches it from an approved policy context.</p>
+<h2 class="wp-block-heading" id="h-a-system-settings-rule-is-probably-required">A system settings rule is probably required<span class="clth-copy-icon" data-heading-id="h-a-system-settings-rule-is-probably-required"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>The claim validation also tells us that an EPM rule is likely part of the final experience. EpmElevate.exe explicitly requires a rule ID and a policy ID. The expected flow appears to be straightforward.</p>
+<p>An administrator configures a system settings rule in Intune. That rule allows Network Settings, Time Sync, or both.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-40.png"><picture class="wp-image-187192" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-40.png.webp 375w, https://patchmypc.com/app/uploads/2026/06/image-40-238x300.png.webp 238w" sizes="(max-width: 375px) 100vw, 375px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 375px) 100vw, 375px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-40.png 375w, https://patchmypc.com/app/uploads/2026/06/image-40-238x300.png 238w" decoding="async" src="assets/0c9d72a703de4cca/img_8.png"/><noscript><img alt="" decoding="async" src="assets/0c9d72a703de4cca/img_9.png"/></noscript>
+</picture>
+</a></figure>
+<p>After adding the rule, I tried shortcuts I created before… but still no luck</p>
+<figure class="wp-block-image size-full"><a data-caption="EPM system settings: Network Settings And Time Sync" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-38.png"><picture class="wp-image-187190" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-38.png.webp 361w, https://patchmypc.com/app/uploads/2026/06/image-38-300x157.png.webp 300w" sizes="(max-width: 361px) 100vw, 361px" type="image/webp"/>
+<img alt="EPM system settings: Network Settings And Time Sync" data-lazy-sizes="(max-width: 361px) 100vw, 361px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-38.png 361w, https://patchmypc.com/app/uploads/2026/06/image-38-300x157.png 300w" decoding="async" src="assets/0c9d72a703de4cca/img_10.png"/><noscript><img alt="EPM system settings: Network Settings And Time Sync" decoding="async" src="assets/0c9d72a703de4cca/img_11.png"/></noscript>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-the-network-settings-and-time-sync-system-settings">The Network Settings and Time Sync System Settings<span class="clth-copy-icon" data-heading-id="h-the-network-settings-and-time-sync-system-settings"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>The implementation is already present in the EPM Agent, but the full Intune configuration does not appear to be available yet.</p>
+<p>A quick note here: I am not in a private preview, I do not have access to a flighted tenant, and I do not have any inside knowledge about how this should be enabled. This is based on what is already present in the client side components.</p>
+<h3 class="wp-block-heading" id="h-network-settings">Network Settings<span class="clth-copy-icon" data-heading-id="h-network-settings"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p>The Network Settings window is not just hinted at by a string or flight name. The EPM Elevate code contains an actual <code>NetworkSettings.MainWindow</code> implementation.</p>
+<figure class="wp-block-image size-full"><a data-caption="EPM system settings: Network Settings And Time Sync" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-41.png"><picture class="wp-image-187197" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-41.png.webp 1002w, https://patchmypc.com/app/uploads/2026/06/image-41-300x50.png.webp 300w, https://patchmypc.com/app/uploads/2026/06/image-41-768x127.png.webp 768w" sizes="(max-width: 1002px) 100vw, 1002px" type="image/webp"/>
+<img alt="EPM system settings: Network Settings And Time Sync" data-lazy-sizes="(max-width: 1002px) 100vw, 1002px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-41.png 1002w, https://patchmypc.com/app/uploads/2026/06/image-41-300x50.png 300w, https://patchmypc.com/app/uploads/2026/06/image-41-768x127.png 768w" decoding="async" src="assets/0c9d72a703de4cca/img_12.png"/><noscript><img alt="EPM system settings: Network Settings And Time Sync" decoding="async" src="assets/0c9d72a703de4cca/img_13.png"/></noscript>
+</picture>
+</a></figure>
+<p> Its constructor initializes the network configuration service, loads the WPF components, applies the base window setup, and prepares the refresh timer. In other words, this is already real client-side UI logic, not just a future placeholder… Well enough words… let’s look at it…</p>
+<figure class="wp-block-image size-full is-resized"><a data-caption="Network Settings EPM" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-42.png"><picture class="wp-image-187198" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-42.png.webp 987w, https://patchmypc.com/app/uploads/2026/06/image-42-300x147.png.webp 300w, https://patchmypc.com/app/uploads/2026/06/image-42-768x377.png.webp 768w" sizes="(max-width: 987px) 100vw, 987px" type="image/webp"/>
+<img alt="Network Settings EPM" data-lazy-sizes="(max-width: 987px) 100vw, 987px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-42.png 987w, https://patchmypc.com/app/uploads/2026/06/image-42-300x147.png 300w, https://patchmypc.com/app/uploads/2026/06/image-42-768x377.png 768w" decoding="async" src="assets/0c9d72a703de4cca/img_14.png"/><noscript><img alt="Network Settings EPM" decoding="async" src="assets/0c9d72a703de4cca/img_15.png"/></noscript>
+</picture>
+</a></figure>
+<p>Once we select the proper adapter we want to change, we will get this screen.</p>
+<figure class="wp-block-image size-full"><a data-caption="Network Settings EPM" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-43.png"><picture class="wp-image-187199" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-43.png.webp 842w, https://patchmypc.com/app/uploads/2026/06/image-43-300x300.png.webp 300w, https://patchmypc.com/app/uploads/2026/06/image-43-150x150.png.webp 150w, https://patchmypc.com/app/uploads/2026/06/image-43-768x771.png.webp 768w" sizes="(max-width: 842px) 100vw, 842px" type="image/webp"/>
+<img alt="Network Settings EPM" data-lazy-sizes="(max-width: 842px) 100vw, 842px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-43.png 842w, https://patchmypc.com/app/uploads/2026/06/image-43-300x300.png 300w, https://patchmypc.com/app/uploads/2026/06/image-43-150x150.png 150w, https://patchmypc.com/app/uploads/2026/06/image-43-768x771.png 768w" decoding="async" src="assets/0c9d72a703de4cca/img_16.png"/><noscript><img alt="Network Settings EPM" decoding="async" src="assets/0c9d72a703de4cca/img_17.png"/></noscript>
+</picture>
+</a></figure>
+<h3 class="wp-block-heading" id="h-time-sync">Time Sync<span class="clth-copy-icon" data-heading-id="h-time-sync"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p>For Time Sync, the code focuses on Windows Time synchronization and NTP configuration. So this should not be described as changing the system clock manually. It is about synchronising time and changing the configured time server.</p>
+<figure class="wp-block-image size-full"><a data-caption="Time Zone EPM system settings" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-12.jpg"><picture class="wp-image-187195" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-12.jpg.webp 624w, https://patchmypc.com/app/uploads/2026/06/image-12-300x249.jpg.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="Time Zone EPM system settings" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-12.jpg 624w, https://patchmypc.com/app/uploads/2026/06/image-12-300x249.jpg 300w" decoding="async" src="assets/0c9d72a703de4cca/img_18.jpg"/><noscript><img alt="Time Zone EPM system settings" decoding="async" src="assets/0c9d72a703de4cca/img_19.jpg"/></noscript>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-what-is-still-missing">What is still missing?<span class="clth-copy-icon" data-heading-id="h-what-is-still-missing"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>After configuring an EPM elevation rule and trying to allow <code>EpmElevate.exe</code>, there still seems to be a missing connection.</p>
+<p>Manually creating a shortcut with the right parameters is not user-friendly, and it also does not appear to be the intended flow. There needs to be an entry point. A place where the user can start the action without knowing anything about <code>EpmElevate.exe</code>, command line arguments, or EPM claims.</p>
+<p>That place would probably be Company Portal. At the moment, I cannot find the matching Company Portal implementation in the latest version I checked. That might mean the Company Portal side is not there yet, hidden behind flighting, or still being worked on.  So the device side pieces are visible, but the full user experience is not complete yet.</p>
+<h2 class="wp-block-heading" id="h-closing-thoughts">Closing thoughts<span class="clth-copy-icon" data-heading-id="h-closing-thoughts"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p>EPM appears to be moving beyond normal file elevation.</p>
+<p>That does not mean users are getting unrestricted access to Windows Settings, and it certainly does not mean they are becoming local administrators. It looks more controlled than that. An administrator approves a specific system setting. The Company Portal gives the user a place to start the action. EPM validates the rule and policy, then launches a trusted helper that performs only the allowed configuration.</p>
+<p>Network adapter settings and time synchronization appear to be the first two examples of this new model. That is a useful direction for EPM. Instead of trying to find the right executable to elevate, administrators can approve the Windows action itself.</p>
+<p></p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
