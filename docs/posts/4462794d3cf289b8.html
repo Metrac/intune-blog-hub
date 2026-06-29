@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BitLocker Prompt Issue After June Patch KB5094126 Secure Boot UEFI 2023 Certificate Update</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">HTMD / Anoop C Nair</span>
+    <span class="date">June 29, 2026</span>
+  </div>
+  <h1>BitLocker Prompt Issue After June Patch KB5094126 Secure Boot UEFI 2023 Certificate Update</h1>
+  <div class="orig">Saved for offline reading · <a href="https://www.anoopcnair.com/bitlocker-prompt-issue-after-june-kb5094126/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text"><p class="code-block code-block-6">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><h2 class="wp-block-heading" id="key-takeaways"><strong>Key Takeaways</strong></h2><ul class="wp-block-list"><li class="has-medium-font-size">BitLocker Recovery Prompts After <strong>KB5094126</strong></li><li class="has-medium-font-size">Issue Observed on <strong>HP EliteDesk 800 G6</strong></li><li class="has-medium-font-size">Secure Boot Update Not Fully Applied</li><li class="has-medium-font-size">Manual<strong> BIOS Update </strong>Resolves the Issue</li><li class="has-medium-font-size">Update the <strong>HP BIOS</strong> to the latest supported version.</li><li class="has-medium-font-size">Enable the Windows <strong>UEFI CA 2023 certificate </strong>in the BIOS.</li><li class="has-medium-font-size">Use the Intune <strong>Secure Boot report</strong> to identify affected devices.</li><li class="has-medium-font-size">If necessary, temporarily suspend BitLocker during remediation and <strong>re-enable it </strong>afterwards.</li></ul><p class="wp-block-paragraph"><strong>BitLocker Prompt Issue </strong>After June Patch KB5094126 <strong>Secure Boot UEFI 2023 Certificate </strong>Update! After deploying the June 2026 Windows update (<a href="https://www.anoopcnair.com/2026-june-kb5094126-kb5093998-windows-11-patch/" rel="noreferrer noopener" target="_blank"><strong>KB5094126</strong></a>), some HP EliteDesk 800 G6 devices began prompting for the BitLocker recovery key after every reboot. Based on our investigation, the <strong>Secure Boot UEFI </strong>2023 certificate update does not appear to be fully applied on the affected devices, with the <strong>UEFI2023Status </strong>registry value remaining unchanged and <strong>Event ID 1801</strong> indicating the update is incomplete.</p><details class="wp-block-details has-contrast-3-background-color has-background is-layout-flow wp-block-details-is-layout-flow"><summary><strong>Table of Content</strong></summary>
+</details><h2 class="wp-block-heading" id="bit-locker-prompt-issue-after-june-patch-kb-5094126-secure-boot-uefi-2023-certificate-update"><strong>BitLocker Prompt Issue After June Patch KB5094126 Secure Boot UEFI 2023 Certificate Update</strong></h2><p class="wp-block-paragraph">Manually enabling the Windows UEFI CA 2023 certificate in the BIOS resolved the issue by <strong>stopping </strong>the BitLocker recovery prompts and successfully updating the <strong>Secure Boot status</strong>. However, this manual approach is <strong>not practical</strong> for enterprise environments.</p><figure class="wp-block-table aligncenter"><table class="has-contrast-3-background-color has-background has-fixed-layout"><thead><tr><th>Category</th><th>Details</th></tr></thead><tbody><tr><td><strong>Issue</strong></td><td>Devices prompt for the BitLocker recovery key after every reboot.</td></tr><tr><td><strong>Affected</strong></td><td>June 2026 Windows Update KB5094126, which includes the Secure Boot UEFI<br/>2023 certificate update.</td></tr></tbody></table><figcaption class="wp-element-caption">BitLocker Prompt Issue After June Patch KB5094126 Secure Boot UEFI 2023 Certificate Update – Table 1</figcaption></figure><div class="wp-block-image"><figure class="aligncenter size-large"><img alt="BitLocker Prompt Issue After June Patch KB5094126 Secure Boot UEFI 2023 Certificate Update - Fig.1" data-lazyloaded="1" decoding="async" src="assets/4462794d3cf289b8/img_0.webp" title="BitLocker Prompt Issue After June Patch KB5094126 Secure Boot UEFI 2023 Certificate Update 2"/><figcaption class="wp-element-caption">BitLocker Prompt Issue After June Patch KB5094126 Secure Boot UEFI 2023 Certificate Update – Fig.1</figcaption></figure></div><h2 class="wp-block-heading" id="secure-boot-uefi-2023-certificate-update-fails-to-complete"><strong>Secure Boot UEFI 2023 Certificate Update Fails to Complete</strong></h2><p class="wp-block-paragraph">On the affected devices, the <strong>Secure Boot UEFI 2023 certificate</strong> update fails to complete. The HKLM\System\CurrentControlSet\Control\SecureBoot\Servicing\UEFI2023Status registry value remains unchanged, and Event ID <strong>1801</strong> indicates that the Secure Boot certificate is available but has not been fully applied to the firmware. During testing, manually enabling the Windows <strong>UEFI CA 2023 </strong>certificate in the BIOS resolved the issue and allowed the Secure Boot update to complete successfully.</p><h2 class="wp-block-heading" id="update-the-hp-bios-several-users-reported-that-hp-bios-version-2-25-was-causing-the-bit-locker-recovery-issue-while-upgrading-to-bios-version-2-26-resolved-it-if-your-affected-hp-devices-are-running-an-older-bios-version-update-the-bios-first-this-appears-to-fix-the-issue-on-many-devices"><strong>Update the HP BIOS</strong></h2><p class="wp-block-paragraph">Several users reported that <strong>HP BIOS </strong>version 2.25 was causing the BitLocker recovery issue, while upgrading to <strong>BIOS version 2.26</strong> resolved it. If your affected HP devices are running an older BIOS version, update the BIOS first. This appears to <strong>fix the issue </strong>on many devices.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><h2 class="wp-block-heading" id="enable-the-windows-uefi-ca-2023-certificate"><strong>Enable the Windows UEFI CA 2023 Certificate</strong></h2><p class="wp-block-paragraph">Some administrators confirmed that manually <strong>enabling </strong>the Windows UEFI CA 2023 certificate in the HP BIOS stopped the BitLocker <strong>recovery </strong>prompts. The certificate is already on the device, but is not being activated in the BIOS. Once it is enabled, <strong>BitLocker</strong> stops asking for the recovery key.</p><h2 class="wp-block-heading" id="hp-has-acknowledged-the-issue"><strong>HP Has Acknowledged the Issue</strong></h2><p class="wp-block-paragraph"><strong>Multiple users</strong> shared that HP has published a support document describing the BitLocker recovery loop on HP commercial devices. This indicates that the problem is<strong> not isolated </strong>to your environment. HP is aware that some devices can <strong>experience </strong>this issue.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><h2 class="wp-block-heading" id="bios-updates-are-important"><strong>BIOS Updates Are Important</strong></h2><p class="wp-block-paragraph">One organisation managing<strong> 5,000 HP devices</strong> found that nearly 4,800 systems were running <strong>BIOS 2.25</strong>. They paused the rollout, upgraded the BIOS across their fleet, and then forced the<strong> certificate update</strong>. Large organisations are resolving the problem by updating the BIOS before continuing the Secure Boot certificate deployment.</p><p class="wp-block-paragraph">Some users suggested using Microsoft’s <strong>registry</strong> method to force the certificate update. However, your testing showed that the certificate was already <strong>downloaded</strong>, but it was not being applied at the firmware level. Changing the registry may help if the certificate has not yet been installed. However, if<strong> Event ID 1801</strong> shows the certificate is already available but not applied, the registry fix alone may not resolve the issue.</p><h2 class="wp-block-heading" id="use-the-intune-secure-boot-report"><strong>Use the Intune Secure Boot Report</strong></h2><p class="wp-block-paragraph">Some administrators recommended using the Intune<strong> Secure Boot report</strong> to identify devices where the Secure Boot certificate update has not completed. The<strong> Intune report </strong>helps you quickly identify affected devices so you can target only those systems instead of checking <strong>every device</strong> manually.</p><ul class="wp-block-list"><li class="has-medium-font-size">Open the Microsoft <a href="https://intune.microsoft.com/" rel="noreferrer noopener nofollow" target="_blank">Intune admin center</a>.</li><li class="has-medium-font-size">Go to: Reports &gt; Windows Autopatch &gt; Windows quality updates &gt; Reports &gt; <strong>Secure Boot status</strong></li></ul><div class="wp-block-image"><figure class="aligncenter size-large"><img alt="BitLocker Prompt Issue After June Patch KB5094126 Secure Boot UEFI 2023 Certificate Update - Fig.2" class="wp-image-370080" data-lazyloaded="1" data-sizes="(max-width: 1024px) 100vw, 1024px" decoding="async" src="assets/4462794d3cf289b8/img_1.webp" title="BitLocker Prompt Issue After June Patch KB5094126 Secure Boot UEFI 2023 Certificate Update 3"/><figcaption class="wp-element-caption">BitLocker Prompt Issue After June Patch KB5094126 Secure Boot UEFI 2023 Certificate Update – Fig.2</figcaption></figure></div><h2 class="wp-block-heading" id="temporary-workaround"><strong>Temporary Workaround</strong></h2><p class="wp-block-paragraph">Some organizations temporarily suspended <strong>BitLocker </strong>while updating the BIOS and Secure Boot certificates to prevent recovery prompts. This avoids repeated BitLocker<strong> recovery prompts</strong> during remediation, but it should only be used temporarily because it reduces<strong> device protection</strong>.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><h2 class="wp-block-heading" id="need-further-assistance-or-have-technical-questions"><strong>Need Further Assistance or Have Technical Questions?</strong></h2><p class="has-contrast-3-background-color has-background wp-block-paragraph">Join the <a href="https://www.linkedin.com/company/how-to-manage-devices/" rel="nofollow noopener" target="_blank"><strong>LinkedIn Page</strong></a> and <a href="https://t.me/+Q9lE6G1_BO_bGq97" rel="nofollow"><strong>Telegram group</strong></a> to get the latest step-by-step guides and news updates. Join our <a href="https://www.meetup.com/htmd-community-meetup-group/" rel="nofollow noopener" target="_blank"><strong>Meetup Page</strong></a> to participate in User group meetings. Also, join the <a href="https://htmd.in/WACM2" rel="nofollow noopener" target="_blank"><strong>WhatsApp Community</strong></a>  and the <a href="https://htmd.in/whatsapp_channel" rel="nofollow noopener" target="_blank"><strong>Whatsapp channel</strong></a> to get the latest news on Microsoft Technologies. We are there on <a href="https://www.reddit.com/r/ImpMSNews/" rel="nofollow noopener" target="_blank"><strong>Reddit</strong></a> as well.</p><h2 class="wp-block-heading" id="author"><strong>Author</strong></h2><p class="wp-block-paragraph"><a href="https://www.linkedin.com/in/anoopcnair/" rel="nofollow noopener" target="_blank"><strong>Anoop C Nair</strong></a> is a Workplace Technology solution architect with 25+ years of experience. Microsoft Certified Trainer. Microsoft MVP from 2015 onwards for consecutive 11+ years! He is a blogger, Speaker, and Founder of HTMD Community and HTMD Conference. His main focus is on Device Management technologies like Intune, Windows, and Cloud PC. He writes about technologies like Intune, SCCM, Windows, Cloud PC, Entra, and Microsoft Security.</p><p class="code-block code-block-8">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="1286776600" data-full-width-responsive="true"></ins> </p><p class="code-block code-block-9">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="8125570634" data-full-width-responsive="true"></ins> </p></div></div></div>
+</article>
+</body>
+</html>
