@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Entra ID SSPR Improves Security with Registered Authentication Methods | Impact on Unregistered Users Starting September 2026</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">HTMD / Anoop C Nair</span>
+    <span class="date">June 29, 2026</span>
+  </div>
+  <h1>Entra ID SSPR Improves Security with Registered Authentication Methods | Impact on Unregistered Users Starting September 2026</h1>
+  <div class="orig">Saved for offline reading · <a href="https://www.anoopcnair.com/entra-id-sspr-registered-authentication/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text"><p class="code-block code-block-6">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><h2 class="wp-block-heading" id="key-takeaway"><strong>Key Takeaway</strong></h2><ul class="wp-block-list"><li class="has-medium-font-size">Registered <strong>Authentication</strong> Methods Become Mandatory</li><li class="has-medium-font-size">Registration <strong>Campaign </strong>Begins on August 6, 2026</li><li class="has-medium-font-size">Unregistered Users May Be <strong>Unable to Reset Passwords</strong></li><li class="has-medium-font-size">Organizations Should <strong>Verify Authentication</strong> Method Coverage</li><li class="has-medium-font-size">The Change Improves<strong> Identity Security</strong></li></ul><p class="wp-block-paragraph"><strong>Entra ID SSPR Improves Security with Registered Authentication Methods</strong>! Starting September 7, 2026, Microsoft<strong> </strong><a href="https://www.anoopcnair.com/enable-self-service-password-reset-sspr-intune/" rel="noreferrer noopener" target="_blank"><strong>Entra ID Self-Service Password Reset (SSPR)</strong> </a>will require users to verify their identity using explicitly registered authentication methods. Directory-sourced contact information, such as <strong>mobile phone</strong> numbers, <strong>business phone</strong> numbers, and alternate email addresses, will no longer be accepted for password reset verification unless those details have been registered as authentication methods. This change is part of Microsoft’s Secure Future Initiative (SFI) to improve the security and reliability of password resets.</p><details class="wp-block-details has-contrast-3-background-color has-background is-layout-flow wp-block-details-is-layout-flow"><summary><strong>Table of Content</strong></summary>
+</details><div class="rank-math-block" id="rank-math-faq"><div class="rank-math-list"><div class="rank-math-list-item" id="faq-question-1782727914229"><h2 class="rank-math-question"><strong>Does the Change Alter how Existing Customer Data is Processed, Stored, or Accessed?</strong></h2><div class="rank-math-answer"><p>Yes. <strong>Directory</strong> attributes such as phone numbers and email addresses will no longer be used for <strong>SSPR </strong>verification unless they are explicitly <strong>registered </strong>as authentication methods.</p></div></div><div class="rank-math-list-item" id="faq-question-1782728006774"><h2 class="rank-math-question"><strong>Does the Change Alter Admin Monitoring or Reporting?</strong></h2><div class="rank-math-answer"><p>Yes. Administrators will be able to <strong>monitor </strong>authentication method registration coverage using <strong>updated </strong>reporting in the Microsoft <strong>Entra </strong>admin center.</p></div></div><div class="rank-math-list-item" id="faq-question-1782728024384"><h2 class="rank-math-question"><strong>Does the Change include Admin Controls?</strong></h2><div class="rank-math-answer"><p>Yes. Administrators will continue to have control over <strong>SSPR policies</strong> and can manage authentication method <strong>registration</strong> requirements within the <strong>tenant</strong>.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p></div></div></div></div><h2 class="wp-block-heading" id="microsoft-entra-id-sspr-improves-security-and-reliability-with-registered-authentication-methods"><strong>MS Entra ID SSPR Improves Security with Registered Authentication Methods | Impact on Unregistered Users Starting September 2026</strong></h2><p class="wp-block-paragraph">To prepare for this change, Microsoft will begin an<strong> SSPR registration</strong> campaign on August 6, 2026, prompting users to register the required authentication methods. Organizations should review authentication method registration coverage, ensure <strong>all users</strong> and administrators have at least one supported authentication method registered, and communicate the upcoming change. Users who have not registered a valid authentication method by<strong> September 7, 2026</strong>, may be unable to perform self-service password resets and will need assistance from their IT administrator or helpdesk.</p><figure class="wp-block-table aligncenter"><table class="has-contrast-3-background-color has-background has-fixed-layout"><thead><tr><th>Field</th><th>Details</th></tr></thead><tbody><tr><td>Message ID</td><td><strong>MC1325414</strong></td></tr><tr><td>Service</td><td><strong>Microsoft Entra</strong></td></tr><tr><td><strong>User Impact</strong></td><td>SSPR will require explicitly registered authentication methods for password reset verification</td></tr><tr><td><strong>Admin Impact</strong></td><td>Admins must ensure all users have registered authentication methods and update SSPR readiness</td></tr></tbody></table><figcaption class="wp-element-caption">Entra ID SSPR Improves Security with Registered Authentication Methods | Impact on Unregistered Users Starting September 2026 – Table 1</figcaption></figure><div class="wp-block-image"><figure class="aligncenter size-full"><img alt="Entra ID SSPR Improves Security with Registered Authentication Methods | Impact on Unregistered Users Starting September 2026 - Fig.1" class="wp-image-370116" data-lazyloaded="1" data-sizes="(max-width: 882px) 100vw, 882px" decoding="async" src="assets/354b9131a7d4d8cc/img_0.webp" title="Entra ID SSPR Improves Security with Registered Authentication Methods | Impact on Unregistered Users Starting September 2026 2"/><figcaption class="wp-element-caption">Entra ID SSPR Improves Security with Registered Authentication Methods | Impact on Unregistered Users Starting September 2026 – Fig.1</figcaption></figure></div><h2 class="wp-block-heading" id="action-required-and-recommendations-for-microsoft-entra-id-sspr-update"><strong>Action Required and Recommendations for Microsoft Entra ID SSPR Update</strong></h2><p class="wp-block-paragraph">Action is required before <strong>September 7, 2026</strong>, to ensure users can continue using Self-Service Password Reset (<strong>SSPR</strong>) without disruption. Organizations must review their current authentication method registration coverage and prepare users for the upcoming <strong>enforcement change</strong>.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><ul class="wp-block-list"><li class="has-medium-font-size">Review <strong>authentication </strong>method registration coverage in Microsoft Entra admin center → Authentication methods → <strong>User registration details</strong></li><li class="has-medium-font-size">Ensure all users, including administrators, have <strong>at least one registered</strong> authentication method that meets the SSPR policy requirements</li><li class="has-medium-font-size">Enable or allow the <strong>SSPR registration campaign</strong> to automatically prompt users to register authentication methods</li><li class="has-medium-font-size">Plan fallback and support processes, including:</li><li class="has-medium-font-size"><strong>Helpdesk-assisted</strong> authentication method registration</li><li class="has-medium-font-size">Alternative onboarding <strong>workflows</strong> for users who cannot self-register</li><li class="has-medium-font-size">Communicate the change clearly to:</li><li class="has-medium-font-size"><strong>IT administrators</strong> and helpdesk teams</li><li class="has-medium-font-size">End users, encouraging registration through <strong>My Security Info</strong></li></ul><div class="wp-block-image"><figure class="aligncenter size-large"><img alt="Entra ID SSPR Improves Security with Registered Authentication Methods | Impact on Unregistered Users Starting September 2026 - Fig.2" class="wp-image-370113" data-lazyloaded="1" data-sizes="(max-width: 1024px) 100vw, 1024px" decoding="async" src="assets/354b9131a7d4d8cc/img_1.webp" title="Entra ID SSPR Improves Security with Registered Authentication Methods | Impact on Unregistered Users Starting September 2026 3"/><figcaption class="wp-element-caption">Entra ID SSPR Improves Security with Registered Authentication Methods | Impact on Unregistered Users Starting September 2026 – Fig.2</figcaption></figure></div><h2 class="wp-block-heading" id="need-further-assistance-or-have-technical-questions"><strong>Need Further Assistance or Have Technical Questions?</strong></h2><p class="has-contrast-3-background-color has-background wp-block-paragraph">Join the <a href="https://www.linkedin.com/company/how-to-manage-devices/" rel="nofollow noopener" target="_blank"><strong>LinkedIn Page</strong></a> and <a href="https://t.me/+Q9lE6G1_BO_bGq97" rel="nofollow"><strong>Telegram group</strong></a> to get the latest step-by-step guides and news updates. Join our <a href="https://www.meetup.com/htmd-community-meetup-group/" rel="nofollow noopener" target="_blank"><strong>Meetup Page</strong></a> to participate in User group meetings. Also, join the <a href="https://htmd.in/WACM2" rel="nofollow noopener" target="_blank"><strong>WhatsApp Community</strong></a>  and the <a href="https://htmd.in/whatsapp_channel" rel="nofollow noopener" target="_blank"><strong>Whatsapp channel</strong></a> to get the latest news on Microsoft Technologies. We are there on <a href="https://www.reddit.com/r/ImpMSNews/" rel="nofollow noopener" target="_blank"><strong>Reddit</strong></a> as well.</p><h2 class="wp-block-heading" id="author"><strong>Author</strong></h2><p class="wp-block-paragraph"><a href="https://www.linkedin.com/in/anoopcnair/" rel="nofollow noopener" target="_blank"><strong>Anoop C Nair</strong></a> is a Workplace Technology solution architect with 25+ years of experience. Microsoft Certified Trainer. Microsoft MVP from 2015 onwards for consecutive 11+ years! He is a blogger, Speaker, and Founder of HTMD Community and HTMD Conference. His main focus is on Device Management technologies like Intune, Windows, and Cloud PC. He writes about technologies like Intune, SCCM, Windows, Cloud PC, Entra, and Microsoft Security.</p><p class="code-block code-block-8">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="1286776600" data-full-width-responsive="true"></ins> </p><p class="code-block code-block-9">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="8125570634" data-full-width-responsive="true"></ins> </p></div></div></div>
+</article>
+</body>
+</html>

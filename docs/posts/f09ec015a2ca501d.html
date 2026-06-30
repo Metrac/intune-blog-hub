@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Getting started with Android Enterprise personally owned devices with work profile</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Peter van der Woude</span>
+    <span class="date">June 29, 2026</span>
+  </div>
+  <h1>Getting started with Android Enterprise personally owned devices with work profile</h1>
+  <div class="orig">Saved for offline reading · <a href="https://petervanderwoude.nl/post/getting-started-with-android-enterprise-personally-owned-devices-with-work-profile/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text">
+<p class="wp-block-paragraph">This week is all about the move of Android personally-owned devices to the Android Management API (also known as AMAPI). The Android Management API is the API that is already being used for all the different corporate-owned device flavors that might exist already within the environment. That API is the recommended path for Android device management, by Google. With that API, Google also provides its own companion app Android Device Policy. That means that it is no longer required to create and maintain a custom device policy controller (DPC) to talk to an API. Together, that should help with faster availability of new features and consistency between the all different Android Enterprise management flavors, as all of those flavors are now managed via the same API. That also means that the Microsoft Intune app will become the user facing app for device management, personally-owned devices as well. On top of that, this move also enables a web-based enrollment experience that is similar to personally-owned iOS devices. This post will look at configuring this new management experience for existing devices and new devices, followed with the user experience during the enrollment of new devices.</p>
+<p class="has-background wp-block-paragraph"><strong>Note</strong>: Keep in mind that the Company Portal app is still required for mobile application management.</p>
+<h2 class="wp-block-heading" id="migrating-existing-devices-to-thenbspandroid-management-api-c9a776b7-1a9a-4dcd-9c54-79a59759c956">Migrating existing devices to the Android Management API</h2>
+<p class="wp-block-paragraph">When looking at existing Intune managed personally-owned Android devices, it is all about looking at the migration path. Mainly because that enables the IT administrators to manage all of those device in the same manner. Luckily, that path is available. Microsoft created a device configuration policy that can be used to migrate those devices to the Android Management API. It is good, however, to keep in mind that the migration is a one-way street. Once migrated, there is no way back. That is why it is important to start small, test the experience, and notify the user about upcoming changes. The configuration of that migration policy is pretty straightforward and can be achieved by going through the following seven steps.</p>
+<ol class="wp-block-list">
+<li>Open the <a href="https://intune.microsoft.com/">Microsoft Intune admin center</a> portal and navigate to <strong>Devices</strong> &gt; <strong>Android </strong>&gt; <strong>Configuration</strong></li>
+<li>On the <strong>Android | Configuration </strong>blade, click <strong>Create</strong> &gt; <strong>New Policy</strong></li>
+<li>On the <strong>Create a profile</strong> blade, select <strong>Android Enterprise</strong> &gt; <strong>Move to Android Management API</strong> and click <strong>Create</strong></li>
+<li>On the <strong>Basics </strong>page, provide at least a unique name to distinguish it from similar profiles and click <strong>Next</strong></li>
+<li>On the <strong>Configuration settings</strong> page, as shown below in Figure 1, click <strong>Next</strong></li>
+</ol>
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-1 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><a href="https://petervanderwoude.nl/wordpress/wp-content/uploads/AEPWP-MigrationSettings.png"><img alt="" class="wp-image-23291" data-id="23291" decoding="async" src="assets/f09ec015a2ca501d/img_0.png"/></a><figcaption class="wp-element-caption">Figure 1: Overview of the configuration of the migration profile</figcaption></figure>
+</figure>
+<ol class="wp-block-list" start="6">
+<li>On the <strong>Assignments</strong> page, configure the assignment for the required devices and click <strong>Next</strong></li>
+<li>On the <strong>Review + create</strong> page, verify the configuration and click <strong>Create</strong></li>
+</ol>
+<p class="has-background wp-block-paragraph"><strong>Note</strong>: This configuration policy does not contain any settings, the configuration is done by Intune.</p>
+<p class="wp-block-paragraph">Once the policy is assigned to the required devices, those devices will start migrating to the Android Management API. That process sis performed without unenrolling the device, while the user keeps access to corporate resources throughout the whole process. During that process, the Microsoft Intune app is silently installed and becomes the primary user app. On top of that, the Android Device Policy app installs, in a hidden state, to enforce Android Management API policies.</p>
+<p class="has-background wp-block-paragraph"><strong>Note</strong>: Keep in mind that Wi-Fi access might be affected relying on username/password authentication.</p>
+<h2 class="wp-block-heading" id="using-webbased-enrollment-for-new-devices-14dbaa66-785b-4dc8-b831-4d9d5c04efe2">Using web-based enrollment for new devices</h2>
+<p class="wp-block-paragraph">When looking at personally-owned Android devices that are not yet enrolled, it is all about the enrollment process. The move towards using the Android Management API enables a new web-based enrollment flow. That enrollment flow provides a similar experience as the web-based enrollment flow that is already available for iOS devices. In the near future, that enrollment flow will be the default enrollment experiences for personally-owned Android devices. At this moment, however, that new web-based enrollment flow must still be enabled. That configuration is sort of an opt-in, but with no reverse option. Besides that, it is a tenant-wide configuration, so, make sure to carefully test the experience in a separate tenant and document the new enrollment steps for the users and the service desk. The following steps walk through that enablement process.</p>
+<ol class="wp-block-list">
+<li>Open the <a href="https://intune.microsoft.com/">Microsoft Intune admin center</a> portal and navigate to <strong>Devices</strong> &gt; <strong>Android </strong>&gt; <strong>Enrollment</strong> &gt; <strong>Personally owned devices with work profile</strong></li>
+<li>On the <strong>Personally owned devices with work profile </strong>page, as shown below in Figure 2, check the box with <strong>Use web enrollment for all users enrolling into Android personally owned work profile management.</strong>, that opens the confirmation message of <strong>Are you sure want to enable web-based enrollment for all users?</strong>, click <strong>Yes</strong> to confirm and click <strong>Ok</strong></li>
+</ol>
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-2 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><a href="https://petervanderwoude.nl/wordpress/wp-content/uploads/AEPWP-ConfigurationSettings.png"><img alt="" class="wp-image-23292" data-id="23292" decoding="async" src="assets/f09ec015a2ca501d/img_1.png"/></a><figcaption class="wp-element-caption">Figure 2: Overview of the configuration to enable web-based enrollment</figcaption></figure>
+</figure>
+<p class="has-background wp-block-paragraph"><strong>Note</strong>: Keep in mind that this configuration cannot be undone and somewhere in Q42026 this will be the default. </p>
+<h2 class="wp-block-heading" id="experiencing-the-new-webbased-enrollment-57adb83e-db47-4f66-ac0a-1440178414ef">Experiencing the new web-based enrollment</h2>
+<p class="wp-block-paragraph">When the configurations are in place, the most interesting to look at is the new web-based enrollment experience. The migration experience will only visually show the new Microsoft Intune app to the user. So, that whole process is mainly communication with the users. The new web-based enrollment experience, however, brings some changes to the enrollment process. The main thing being that the user does not need to download the Company Portal app first anymore. But it can still be done. To trigger the enrollment process, the user now has the following options.</p>
+<ul class="wp-block-list">
+<li><strong>Enrollment URL</strong>: Navigate to <a href="https://aka.ms/enrollmyandroid">https://aka.ms/enrollmyandroid</a> and follow the flow.</li>
+<li><strong>Productivity apps</strong> (preferably Teams or Outlook): Open the app and follow the flow (when Conditional Access requires a managed and compliant device.</li>
+<li><strong>Company Portal app</strong>: Download and install the Company Portal app and follow the flow.</li>
+</ul>
+<p class="wp-block-paragraph">The easiest methods to start the new enrollment experience is by simply navigating to the enrollment URL. That will tell the user how to start the enrollment process (see also the feature image). After that the user simply has to follow the enrollment flow. There is no need to manually download the Company Portal app anymore, and any required app will automatically be installed during the enrollment flow. The biggest part of that enrollment flow is still similar to how it was, as shown below in Figure 3, Figure 4, and Figure 5. The biggest difference is the web-based start of that enrollment flow and initial steps. The experience shown below is performed on an older personally-owned Android device, with Android 13, that was even still set to Dutch. </p>
+<div class="wp-block-columns is-layout-flex wp-container-core-columns-is-layout-8f761849 wp-block-columns-is-layout-flex">
+<div class="wp-block-column is-layout-flow wp-block-column-is-layout-flow">
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-3 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><a href="https://petervanderwoude.nl/wordpress/wp-content/uploads/AEPWP-Checklist.png"><img alt="" class="wp-image-23289" data-id="23289" decoding="async" src="assets/f09ec015a2ca501d/img_2.png"/></a><figcaption class="wp-element-caption">Figure 3: Overview of the checklist that needs to be finished</figcaption></figure>
+</figure>
+</div>
+<div class="wp-block-column is-layout-flow wp-block-column-is-layout-flow">
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-4 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><a href="https://petervanderwoude.nl/wordpress/wp-content/uploads/AEPWP-Progress.png"><img alt="" class="wp-image-23288" data-id="23288" decoding="async" src="assets/f09ec015a2ca501d/img_3.png"/></a><figcaption class="wp-element-caption">Figure 4: Overview of the enrollment status</figcaption></figure>
+</figure>
+</div>
+<div class="wp-block-column is-layout-flow wp-block-column-is-layout-flow">
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-5 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><a href="https://petervanderwoude.nl/wordpress/wp-content/uploads/AEPWP-Done.png"><img alt="" class="wp-image-23287" data-id="23287" decoding="async" src="assets/f09ec015a2ca501d/img_4.png"/></a><figcaption class="wp-element-caption">Figure 5: Overview of the successful enrollment</figcaption></figure>
+</figure>
+</div>
+</div>
+<h2 class="wp-block-heading" id="more-information-2ecc4cd1-c842-4d71-aa90-04e0828f6cf2">More information</h2>
+<p class="wp-block-paragraph">For more information about (moving to) the new web-based enrollment, refer to the following docs.</p>
+<div class="wp-block-group has-border-color"><div class="wp-block-group__inner-container is-layout-flow wp-block-group-is-layout-flow">
+<hr class="wp-block-separator has-alpha-channel-opacity is-style-wide"/>
+<h3 class="wp-block-heading has-text-align-center">Discover more from All about Microsoft Intune</h3>
+<p class="has-text-align-center wp-block-paragraph">Subscribe to get the latest posts sent to your email.</p>
+</div></div>
+</div>
+</div></div>
+</article>
+</body>
+</html>
