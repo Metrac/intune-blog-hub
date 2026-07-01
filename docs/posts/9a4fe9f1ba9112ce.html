@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Autopilot 0x800705b4: App Control Blocks the Intune Management Extension</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Call4Cloud (Rudy Ooms)</span>
+    <span class="date">July 1, 2026</span>
+  </div>
+  <h1>Autopilot 0x800705b4: App Control Blocks the Intune Management Extension</h1>
+  <div class="orig">Saved for offline reading · <a href="https://patchmypc.com/blog/autopilot-0x800705b4-app-control-blocks-the-intune-management-extension/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="post-content">
+<p class="wp-block-paragraph">This blog looks at an Autopilot failure where the device gets stuck at <strong>Preparing your device for mobile management</strong> and ends with <strong>0x800705b4</strong>. The root cause was not Autopilot itself, but App Control for Business blocking a new IME MSI custom action dependency during installation.</p>
+<h2 class="wp-block-heading" id="h-introduction">Introduction<span class="clth-copy-icon" data-heading-id="h-introduction"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The device went through the first parts of the Autopilot Enrollment just fine. Securing hardware completed. Joining the organization completed. Registering for mobile management completed. And then it stopped at the step I had already written about before: <strong><a href="https://call4cloud.nl/0x800705b4-preparing-mobile-management/">preparing your device for mobile management.</a></strong> In that earlier blog, which showed the exact same error, I looked at what happens during that “preparing” phase and why the Intune Management Extension is such an important part of that process. So when this device failed with <strong>0x800705b4</strong>, that was the first place to look again.</p>
+<figure class="wp-block-image size-full"><a data-caption=" 0x800705b4" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-34.png"><picture class="wp-image-187157" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-34.png.webp 615w, https://patchmypc.com/app/uploads/2026/06/image-34-300x170.png.webp 300w" sizes="(max-width: 615px) 100vw, 615px" type="image/webp"/>
+<img alt=" 0x800705b4" data-lazy-sizes="(max-width: 615px) 100vw, 615px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-34.png 615w, https://patchmypc.com/app/uploads/2026/06/image-34-300x170.png 300w" decoding="async" src="assets/9a4fe9f1ba9112ce/img_0.png"/><noscript><img alt=" 0x800705b4" decoding="async" src="assets/9a4fe9f1ba9112ce/img_1.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">The ESP screen only showed a timeout. That is what <strong>0x800705b4</strong> normally gives you: not much. The real question was what caused the IME to stop getting installed successfully.</p>
+<h2 class="wp-block-heading" id="h-examining-the-ime-logs-for-0x800705b4">Examining the IME LOGS for 0x800705b4<span class="clth-copy-icon" data-heading-id="h-examining-the-ime-logs-for-0x800705b4"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The first logical stop could be to look at the IME logging. That made sense, because during this part of Autopilot the device is waiting for the IME to install, initialize, and prepare itself before the rest of the device setup can continue. But… with the IME not even being installed… There were no IME logs… The interesting clue showed up somewhere else. <strong>The Code Integrity event log.</strong></p>
+<h2 class="wp-block-heading" id="h-code-integrity-event-id-3033">Code Integrity Event ID 3033<span class="clth-copy-icon" data-heading-id="h-code-integrity-event-id-3033"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">When reviewing the log files used by App Control for Business, we immediately noticed Event ID 3033.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-32.png"><picture class="wp-image-187154" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-32.png.webp 624w, https://patchmypc.com/app/uploads/2026/06/image-32-300x205.png.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-32.png 624w, https://patchmypc.com/app/uploads/2026/06/image-32-300x205.png 300w" decoding="async" src="assets/9a4fe9f1ba9112ce/img_2.png"/><noscript><img alt="" decoding="async" src="assets/9a4fe9f1ba9112ce/img_3.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">It mentioned that <strong>Code Integrity blocked a DLL because it did not meet the Enterprise signing-level requirements.</strong> That immediately changed the direction of the <b>investigati</b>on into the Autopilot error <strong>0x800705b4. </strong>This was no longer just an Autopilot timeout.<strong> </strong>WDAC/App Control for business, or as it’s called these days, was getting involved.</p>
+<p class="wp-block-paragraph">One of the blocked files was loaded by the Intune Management Extension process itself. Another one was loaded during the MSI custom action flow from a temporary Windows Installer path. The file that made this story interesting was this one: <strong>WixToolset.Dtf.WindowsInstaller.dll. </strong>And it was being loaded from a temporary MSI extraction path under: <strong>C:\Windows\Installer\MSI*.tmp-</strong></p>
+<p class="wp-block-paragraph">That installer path matters. The IME Installer also needs to <a href="https://patchmypc.com/blog/it1272653-company-portal-stuck-on-downloading/">execute the custom actions</a>. During the MSI installation, it extracts the support files to run those custom actions. One of those support files was blocked before the custom action could continue. Autopilot/ESP was waiting for IME. IME was waiting on its MSI/custom action flow. WDAC blocked one of the DLLs in that flow. After waiting enough, ESP ended with <strong>0x800705b4</strong><strong>.(time-out)</strong></p>
+<figure class="wp-block-image size-full"><a data-caption=" 0x800705b4" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-35.png"><picture class="wp-image-187156" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-35.png.webp 615w, https://patchmypc.com/app/uploads/2026/06/image-35-300x170.png.webp 300w" sizes="(max-width: 615px) 100vw, 615px" type="image/webp"/>
+<img alt=" 0x800705b4" data-lazy-sizes="(max-width: 615px) 100vw, 615px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-35.png 615w, https://patchmypc.com/app/uploads/2026/06/image-35-300x170.png 300w" decoding="async" src="assets/9a4fe9f1ba9112ce/img_4.png"/><noscript><img alt=" 0x800705b4" decoding="async" src="assets/9a4fe9f1ba9112ce/img_5.png"/></noscript>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-the-app-control-setting-that-caused-the-0x800705b4">The App Control setting that caused the: <strong>0x800705b4</strong><span class="clth-copy-icon" data-heading-id="h-the-app-control-setting-that-caused-the-0x800705b4"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The device had an App Control for Business policy configured from Intune. The policy used the built-in controls. </p>
+<p class="wp-block-paragraph">The important setting was configured like this:</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-29.png"><picture class="wp-image-187153" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-29.png.webp 624w, https://patchmypc.com/app/uploads/2026/06/image-29-300x150.png.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-29.png 624w, https://patchmypc.com/app/uploads/2026/06/image-29-300x150.png 300w" decoding="async" src="assets/9a4fe9f1ba9112ce/img_6.png"/><noscript><img alt="" decoding="async" src="assets/9a4fe9f1ba9112ce/img_7.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph"><strong>Enable App Control for Business policy to trust Windows components and Store apps = Enforce</strong><strong></strong></p>
+<p class="wp-block-paragraph">The policy also had the additional trust options enabled:</p>
+<p class="wp-block-paragraph">At first glance, that sounds like it should be fine. The IME is Microsoft. The MSI is Microsoft. The custom action DLL is Microsoft-signed. So why would <strong><a href="https://patchmypc.com/blog/how-use-app-control-business/">WDAC</a></strong> block anything in that flow?</p>
+<p class="wp-block-paragraph">Because <strong><a href="https://patchmypc.com/blog/how-use-app-control-business/">WDAC </a></strong>does not simply say: the parent process is Microsoft, so everything it loads is fine. It evaluates the actual file being loaded. In this case, the blocked file was WixToolset.Dtf.WindowsInstaller.dll.</p>
+<p class="wp-block-paragraph">That DLL was signed, but it only showed the embedded WiX Toolset / .NET Foundation signature. The older Microsoft.Deployment.WindowsInstaller.dll also had an embedded WiX signature, but it was additionally covered by a Microsoft catalog signature from the IME package.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-27.png"><picture class="wp-image-187149" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-27.png.webp 403w, https://patchmypc.com/app/uploads/2026/06/image-27-300x263.png.webp 300w" sizes="(max-width: 403px) 100vw, 403px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 403px) 100vw, 403px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-27.png 403w, https://patchmypc.com/app/uploads/2026/06/image-27-300x263.png 300w" decoding="async" src="assets/9a4fe9f1ba9112ce/img_8.png"/><noscript><img alt="" decoding="async" src="assets/9a4fe9f1ba9112ce/img_9.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">That catalog signature difference matters. The old dependency lined up with the Microsoft trust path expected by the policy. The new dependency did not, so Code Integrity blocked it and with it Autopilot was stuck on 0x800705b4 during enrollment.</p>
+<h2 class="wp-block-heading" id="h-looking-at-the-ime-msi">Looking at the IME MSI<span class="clth-copy-icon" data-heading-id="h-looking-at-the-ime-msi"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The next step was comparing IME MSI versions.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-28.png"><picture class="wp-image-187150" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-28.png.webp 332w, https://patchmypc.com/app/uploads/2026/06/image-28-274x300.png.webp 274w" sizes="(max-width: 332px) 100vw, 332px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 332px) 100vw, 332px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-28.png 332w, https://patchmypc.com/app/uploads/2026/06/image-28-274x300.png 274w" decoding="async" src="assets/9a4fe9f1ba9112ce/img_10.png"/><noscript><img alt="" decoding="async" src="assets/9a4fe9f1ba9112ce/img_11.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">In 1.99.101.0, the custom action payload still contained the older DTF assembly: <strong>Microsoft.Deployment.WindowsInstaller.dll.  </strong>In the newer IME versions I checked, starting with 1.101.103.0, that dependency changed to: <strong>WixToolset.Dtf.WindowsInstaller.dll</strong><strong></strong></p>
+<p class="wp-block-paragraph">The same WixToolset.Dtf.WindowsInstaller.dll was also present in <strong>1.101.105.0, 1.101.109.0, and 1.101.111.0.  </strong>So, based on the versions I had, 1.101.103.0 was the first version in which this new WiX DTF DLL appeared.</p>
+<h2 class="wp-block-heading" id="h-the-custom-action-dll-itself">The Custom action DLL itself<span class="clth-copy-icon" data-heading-id="h-the-custom-action-dll-itself"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The next question was obvious. Did Microsoft move to WixToolset.Dtf.WindowsInstaller.dll because a new IME custom action needed it?  Based on the binaries, that does not seem to be the case.</p>
+<p class="wp-block-paragraph">When comparing SideCarSetupCustomActions.dll between 1.99.101.0 and 1.101.103.0, the custom action entry points were essentially the same. The old version referenced Microsoft.Deployment.WindowsInstaller. The new version referenced <strong>WixToolset.Dtf.WindowsInstaller</strong>. Both still targeted .NET Framework 4.7.2.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-80.png"><picture class="wp-image-188104" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-80.png.webp 717w, https://patchmypc.com/app/uploads/2026/06/image-80-300x23.png.webp 300w" sizes="(max-width: 717px) 100vw, 717px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 717px) 100vw, 717px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-80.png 717w, https://patchmypc.com/app/uploads/2026/06/image-80-300x23.png 300w" decoding="async" src="assets/9a4fe9f1ba9112ce/img_12.png"/><noscript><img alt="" decoding="async" src="assets/9a4fe9f1ba9112ce/img_13.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">That points more toward a WiX Toolset / DTF build-chain migration than a new IME feature requirement.  </p>
+<h2 class="wp-block-heading" id="h-so-what-changed">So what changed?<span class="clth-copy-icon" data-heading-id="h-so-what-changed"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The most likely explanation is much simpler.  The IME setup/custom-action project moved from the older WiX v3-era DTF assembly to the newer WiX Toolset DTF assembly.</p>
+<p class="wp-block-paragraph">That changed the dependency from: <strong>Microsoft.Deployment.WindowsInstaller.dll</strong> to: <strong>WixToolset.Dtf.WindowsInstaller.dll</strong></p>
+<p class="wp-block-paragraph">From a build tooling point of view, that move makes sense. Newer WiX Toolset. Newer DTF package. Modern package-based dependency. Cleaner namespace.  But from a WDAC perspective, it introduced a different signing chain. And that is where the issue starts.</p>
+<h2 class="wp-block-heading" id="h-why-did-the-ime-not-break-before">Why did the IME not break before?<span class="clth-copy-icon" data-heading-id="h-why-did-the-ime-not-break-before"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">This is the part I had to double-check. The old <code>Microsoft.Deployment.WindowsInstaller.dll</code> was not simply “Microsoft signed” as an embedded signature. Its embedded signature was also from WiX Toolset / .NET Foundation. But Windows showed something extra for the old DLL: a Microsoft catalog signature.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-31.png"><picture class="wp-image-187152" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-31.png.webp 387w, https://patchmypc.com/app/uploads/2026/06/image-31-292x300.png.webp 292w" sizes="(max-width: 387px) 100vw, 387px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 387px) 100vw, 387px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-31.png 387w, https://patchmypc.com/app/uploads/2026/06/image-31-292x300.png 292w" decoding="async" src="assets/9a4fe9f1ba9112ce/img_14.png"/><noscript><img alt="" decoding="async" src="assets/9a4fe9f1ba9112ce/img_15.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">So the old DLL had an embedded WiX signature, but it was also covered by a <strong>Microsoft catalog signature from the IME package.</strong> That catalog signature made the old dependency line up with the Microsoft trust path that WDAC expected.</p>
+<p class="wp-block-paragraph">The newer WixToolset.Dtf.WindowsInstaller.dll only showed the embedded WiX Toolset / .NET Foundation signature. It did <strong>NOT</strong> show the same Microsoft catalog signature.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-30.png"><picture class="wp-image-187151" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-30.png.webp 403w, https://patchmypc.com/app/uploads/2026/06/image-30-300x263.png.webp 300w" sizes="(max-width: 403px) 100vw, 403px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 403px) 100vw, 403px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-30.png 403w, https://patchmypc.com/app/uploads/2026/06/image-30-300x263.png 300w" decoding="async" src="assets/9a4fe9f1ba9112ce/img_16.png"/><noscript><img alt="" decoding="async" src="assets/9a4fe9f1ba9112ce/img_17.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">That explains why the older dependency did not break in the same way, while the newer one did.  The breaking change was not only the move from <strong>Microsoft.Deployment.WindowsInstaller.dll to WixToolset.Dtf.WindowsInstaller.dll</strong>. It was the move to a new DTF DLL that was no longer covered by the Microsoft catalog signature the old dependency had.</p>
+<h2 class="wp-block-heading" id="h-why-wdac-caused-0x800705b4">Why WDAC caused 0x800705b4<span class="clth-copy-icon" data-heading-id="h-why-wdac-caused-0x800705b4"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">A normal signature check and a strict WDAC Enterprise signing level check are not the same thing.  In this case, Code Integrity was not saying <strong>“this file has no signature.” </strong>It was saying the file did not meet the <strong>Enterprise signing level requirements.</strong></p>
+<p class="wp-block-paragraph">That distinction matters. WixToolset.Dtf.WindowsInstaller.dll is signed, but with the WiX Toolset / .NET Foundation signing chain. With this App Control policy enforced, that was not enough. And because that DLL was needed during the IME MSI installation, blocking it broke the IME installation and preparation flow.</p>
+<p class="wp-block-paragraph">When that happens during Autopilot ESP, the device keeps waiting at Preparing your device for mobile management until it eventually fails with: <strong>0x800705b4</strong>,</p>
+<figure class="wp-block-image size-full"><a data-caption="0x800705b4" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-33.png"><picture class="wp-image-187155" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-33.png.webp 615w, https://patchmypc.com/app/uploads/2026/06/image-33-300x170.png.webp 300w" sizes="(max-width: 615px) 100vw, 615px" type="image/webp"/>
+<img alt="0x800705b4" data-lazy-sizes="(max-width: 615px) 100vw, 615px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-33.png 615w, https://patchmypc.com/app/uploads/2026/06/image-33-300x170.png 300w" decoding="async" src="assets/9a4fe9f1ba9112ce/img_18.png"/><noscript><img alt="0x800705b4" decoding="async" src="assets/9a4fe9f1ba9112ce/img_19.png"/></noscript>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-the-temporary-workaround-to-fix-0x800705b4">The temporary workaround to fix 0x800705b4<span class="clth-copy-icon" data-heading-id="h-the-temporary-workaround-to-fix-0x800705b4"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">For now, the workaround was a folder path rule for: <strong>%WINDIR%\Installer\*. </strong>That allowed the temporary MSI custom action payload to load, including WixToolset.Dtf.WindowsInstaller.dll. After that, the IME custom action flow could continue, and Autopilot was no longer stuck at <strong>preparing your device for mobile management (0x800705b4)</strong>. Is that a clean fix? No!</p>
+<p class="wp-block-paragraph">That path is used by Windows Installer, so allowing it broadly is not something I would want to keep as the final answer. A path rule trusts a location instead of trusting a signer, and that is not ideal when the whole point of WDAC is to control exactly what is allowed to run or load.</p>
+<p class="wp-block-paragraph">But in this case, the choice was simple. Keep WDAC strict and break IME during Autopilot, or allow the temporary installer path long enough to get devices through enrollment.</p>
+<p class="wp-block-paragraph">The real fix should not be a broad path rule. The cleaner fix needs to happen in the IME MSI installation flow. Either the dependency needs to be packaged and signed in a way that satisfies Microsoft Enterprise signing level WDAC policies, or the MSI needs to avoid introducing a dependency that is not covered by the required Microsoft trust path.</p>
+<h2 class="wp-block-heading" id="h-update-microsoft-fixed-the-catalog-trust-in-ime-1-103-101-0">Update: Microsoft fixed the catalog trust in IME 1.103.101.0<span class="clth-copy-icon" data-heading-id="h-update-microsoft-fixed-the-catalog-trust-in-ime-1-103-101-0"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Microsoft appears to have fixed the WDAC trust problem in Intune Management Extension 1.103.101.0.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-82.png"><img alt="" class="wp-image-188110" data-lazy-sizes="(max-width: 775px) 100vw, 775px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-82.png 775w, https://patchmypc.com/app/uploads/2026/06/image-82-300x8.png 300w, https://patchmypc.com/app/uploads/2026/06/image-82-768x20.png 768w" decoding="async" src="assets/9a4fe9f1ba9112ce/img_20.png"/><noscript><img alt="" class="wp-image-188110" decoding="async" src="assets/9a4fe9f1ba9112ce/img_21.png"/></noscript></a></figure>
+<p class="wp-block-paragraph"> The interesting part is how they fixed it. Microsoft did not replace or re-sign WixToolset.Dtf.WindowsInstaller.dll. The DLL in 1.103.101.0 is byte-for-byte identical to the one included with 1.101.111.0. It still has the embedded WiX Toolset and .NET Foundation signature. Instead, Microsoft updated IntuneWindowsAgent.cat. This Microsoft-signed catalog contains the Authenticode hashes of files that belong to the IME package.</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-66-1024x670.png"><picture class="wp-image-187859" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-66-1024x670.png.webp 1024w, https://patchmypc.com/app/uploads/2026/06/image-66-300x196.png.webp 300w, https://patchmypc.com/app/uploads/2026/06/image-66-768x503.png.webp 768w, https://patchmypc.com/app/uploads/2026/06/image-66.png.webp 1056w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-66-1024x670.png 1024w, https://patchmypc.com/app/uploads/2026/06/image-66-300x196.png 300w, https://patchmypc.com/app/uploads/2026/06/image-66-768x503.png 768w, https://patchmypc.com/app/uploads/2026/06/image-66.png 1056w" decoding="async" src="assets/9a4fe9f1ba9112ce/img_22.png"/><noscript><img alt="" decoding="async" src="assets/9a4fe9f1ba9112ce/img_23.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">In 1.101.111.0, the Authenticode hash of WixToolset.Dtf.WindowsInstaller.dll was missing from that catalog.</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-67-1024x184.png"><picture class="wp-image-187860" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-67-1024x184.png.webp 1024w, https://patchmypc.com/app/uploads/2026/06/image-67-300x54.png.webp 300w, https://patchmypc.com/app/uploads/2026/06/image-67-768x138.png.webp 768w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-67-1024x184.png 1024w, https://patchmypc.com/app/uploads/2026/06/image-67-300x54.png 300w, https://patchmypc.com/app/uploads/2026/06/image-67-768x138.png 768w, https://patchmypc.com/app/uploads/2026/06/image-67.png 1036w" decoding="async" src="assets/9a4fe9f1ba9112ce/img_24.png"/><noscript><img alt="" decoding="async" src="assets/9a4fe9f1ba9112ce/img_25.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph"><strong>In 1.103.101.0, the exact hash is now included.</strong> This gives Code Integrity a Microsoft trust path for the DLL. When WDAC evaluates the WiX runtime extracted under C:\Windows\Installer\MSI*.tmp, it can match the DLL against IntuneWindowsAgent.cat and validate the Microsoft catalog signature instead of relying only on the embedded WiX Toolset signature.</p>
+<p class="wp-block-paragraph">So the fix was not changing the WiX DLL itself. The fix was Microsoft adding the missing custom action dependencies to its signed IME catalog. That closes the catalog trust gap that caused Code Integrity Event ID 3033 and prevented the IME installation from completing under a strict App Control policy. The broad %WINDIR%\Installer* workaround should therefore no longer be needed with IME 1.103.101.0, although this should be validated on a device using the same enforced WDAC policy before removing the rule everywhere.</p>
+<h2 class="wp-block-heading" id="h-summary">Summary<span class="clth-copy-icon" data-heading-id="h-summary"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The IME MSI custom action dependency changed from Microsoft.Deployment.WindowsInstaller.dll to WixToolset.Dtf.WindowsInstaller.dll. The older dependency had an embedded WiX signature, but was also covered by a Microsoft catalog signature. The newer dependency only showed the WiX Toolset / .NET Foundation signature and did not have that same Microsoft catalog signature.</p>
+<p class="wp-block-paragraph">With App Control for Business enforced, Code Integrity blocked the new DLL during the IME MSI installation. And when IME cannot finish preparing itself, Autopilot will fail with the classic <strong>0x800705b4</strong> timeout error.</p>
+<p class="wp-block-paragraph"></p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
