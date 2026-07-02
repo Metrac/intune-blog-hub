@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Build Your First AI Agent in Microsoft Foundry Step by Step</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">July 1, 2026</span>
+  </div>
+  <h1>Build Your First AI Agent in Microsoft Foundry Step by Step</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/2026/07/01/microsoft-foundry-first-agent/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p class="wp-block-paragraph">AI agents are everywhere right now, and many IT pros ask me where they should start. In this blog post I show you how to build your first Microsoft Foundry agent. We go step by step: create a project in the portal, deploy a model, create the agent with instructions and tools, test it in the playground, and finally call it from Python code. You do not need to be a developer to follow along. At the end you have a working Microsoft Foundry agent that you can extend for your own use cases.</p>
+<span id="more-19527"></span>
+<h2 class="wp-block-heading" id="what-is-microsoft-foundry">What Is Microsoft Foundry?</h2>
+<p class="wp-block-paragraph">Microsoft Foundry is Microsoft’s platform for building AI applications and agents. You might know it under the old name Azure AI Foundry — Microsoft renamed it, and the portal and the documentation now say Microsoft Foundry. The platform gives you three main things:</p>
+<ul class="wp-block-list">
+<li>A <strong>model catalog</strong> with models from OpenAI, Microsoft, and other providers that you can deploy with a few clicks.</li>
+<li>The <strong>Foundry Agent Service</strong>, which hosts your agents. An agent is a model plus instructions plus tools. You define it once and the service keeps it consistent for every user interaction.</li>
+<li><strong>SDKs and APIs</strong> so you can call your models and agents from your own code and automation.</li>
+</ul>
+<p class="wp-block-paragraph">The agent part is the interesting one for us. Instead of sending a system prompt with every request, you create a Microsoft Foundry agent one time with a name, instructions, and optional tools like code interpreter or file search. Then every app or script just references the agent by name. If you want the bigger picture of where Microsoft is going with agents, have a look at my post about the <a href="https://jannikreinhard.com/2026/06/08/microsoft-build-2026-agentic-stack/">agentic stack from Microsoft Build 2026</a>.</p>
+<h2 class="wp-block-heading" id="what-do-i-need-before-i-start">What Do I Need Before I Start?</h2>
+<p class="wp-block-paragraph">To build a Microsoft Foundry agent you need surprisingly little:</p>
+<ol class="wp-block-list">
+<li>An <strong>Azure subscription</strong>. A free account is enough for testing.</li>
+<li>The right <strong>permissions</strong>. To create the Foundry resource and project you need the <strong>Foundry Account Owner</strong> role (or Contributor/Owner) on the subscription or resource group. To work inside the project you need the <strong>Foundry User</strong> role. These roles were recently renamed from “Azure AI User” and so on, so do not be confused if you still see the old names.</li>
+<li>For the code part: <strong>Python</strong> and the <strong>Azure CLI</strong> installed on your machine.</li>
+</ol>
+<p class="wp-block-paragraph">Note: You pay for the model usage per token, not for the agent itself. Also, not every model is available in every region, so check the region support and pricing pages before you pick a location for your project.</p>
+<h2 class="wp-block-heading" id="how-do-i-create-a-project">How Do I Create a Project?</h2>
+<p class="wp-block-paragraph">A Microsoft Foundry agent always lives inside a project. Here is the click path:</p>
+<ol class="wp-block-list">
+<li>Go to the <a href="https://ai.azure.com" rel="noopener" target="_blank">Microsoft Foundry portal</a> and sign in with your Azure account. Make sure the <strong>New Foundry</strong> toggle at the top is on.</li>
+<li>If this is your first visit, the portal asks you to create a project. Select <strong>Create a new project</strong>. Otherwise, click the project name in the upper-left corner and select <strong>Create new project</strong>.</li>
+<li>Enter a name, for example <code>my-first-agent-project</code>.</li>
+<li>Open <strong>Advanced options</strong> if you want to choose the resource group and the region yourself. I recommend a region close to you.</li>
+<li>Click <strong>Create project</strong> and wait a moment until the project overview page appears.</li>
+</ol>
+<p class="wp-block-paragraph">Next we need a model deployment. The agent needs a brain:</p>
+<ol class="wp-block-list">
+<li>Select <strong>Discover</strong> in the upper-right navigation, then <strong>Models</strong> in the left pane.</li>
+<li>Search for a model, for example <strong>gpt-5.1-mini</strong>. It is cheap and good enough for a first test.</li>
+<li>Click <strong>Deploy</strong> → <strong>Default settings</strong> to add it to your project.</li>
+<li>Note the deployment name. You need it later in the code.</li>
+</ol>
+<figure class="wp-block-image"><img alt="Microsoft Foundry agent portal flow: create project, deploy model, create agent, test in playground" data-recalc-dims="1" decoding="async" src="assets/9e0906029dd86ca3/img_0.jpg"/></figure>
+<p class="wp-block-paragraph">Hint: If you create your project in the <strong>West US 3</strong> region, you can try the new instant models (preview) and skip the deployment step completely. Nice for a quick demo.</p>
+<h2 class="wp-block-heading" id="how-do-i-create-the-microsoft-foundry-agent">How Do I Create the Microsoft Foundry Agent?</h2>
+<p class="wp-block-paragraph">Now the fun part. We create the Microsoft Foundry agent in the portal:</p>
+<ol class="wp-block-list">
+<li>Select <strong>Build</strong> in the upper-right navigation, then <strong>Agents</strong> in the left pane.</li>
+<li>Click <strong>Create agent</strong> and give it a name, for example <code>MyAgent</code>.</li>
+<li>Add <strong>instructions</strong>. This is the personality and the job description of your agent. For example: <em>“You are a helpful assistant for IT admins. Answer questions about device management short and precise.”</em></li>
+<li>Select your <strong>model deployment</strong> from the dropdown.</li>
+<li>Optionally, add <strong>tools</strong>. Two useful ones for the start: <strong>file search</strong> lets the agent answer questions from documents you upload, and <strong>code interpreter</strong> lets the agent write and run Python code, for example to create a chart from numbers.</li>
+</ol>
+<p class="wp-block-paragraph">That is already it. The agent is saved in your project and every colleague with the Foundry User role can use it.</p>
+<h2 class="wp-block-heading" id="how-do-i-test-the-agent-in-the-playground">How Do I Test the Agent in the Playground?</h2>
+<p class="wp-block-paragraph">You do not need any code to test your Microsoft Foundry agent. The playground opens right next to the agent settings:</p>
+<ol class="wp-block-list">
+<li>Type a question in the chat box, for example <em>“Write me a short checklist for onboarding a new Windows device.”</em></li>
+<li>Check if the answer matches your instructions. If not, adjust the instructions and try again.</li>
+<li>Ask a follow-up question. The agent keeps the conversation history, so it should understand the context.</li>
+</ol>
+<p class="wp-block-paragraph">This loop — change instructions, test, change again — is where you spend most of your time. Do it in the playground before you touch any code.</p>
+<h2 class="wp-block-heading" id="how-do-i-call-the-agent-from-code">How Do I Call the Agent From Code?</h2>
+<p class="wp-block-paragraph">For automation you want to call the Microsoft Foundry agent from a script. Install the packages <code>azure-ai-projects</code> (version 2.0.0 or higher) and <code>azure-identity</code> with pip, run <code>az login</code>, and copy your <strong>project endpoint</strong> from the welcome screen of your project. Then a minimal example looks like this:</p>
+<pre class="wp-block-code"><code class="language-python"># pip install "azure-ai-projects&gt;=2.0.0" azure-identity
+from azure.identity import DefaultAzureCredential
+from azure.ai.projects import AIProjectClient
+from azure.ai.projects.models import PromptAgentDefinition
+
+project = AIProjectClient(
+    endpoint="https://&lt;resource&gt;.ai.azure.com/api/projects/&lt;project&gt;",
+    credential=DefaultAzureCredential(),
+)
+
+# Create (or update) the agent with model and instructions
+agent = project.agents.create_version(
+    agent_name="MyAgent",
+    definition=PromptAgentDefinition(
+        model="gpt-5.1-mini",  # your model deployment name
+        instructions="You are a helpful assistant for IT admins.",
+    ),
+)
+
+# Chat with the agent
+openai = project.get_openai_client()
+response = openai.responses.create(
+    extra_body={"agent_reference": {"name": agent.name, "type": "agent_reference"}},
+    input="Write a short checklist for onboarding a new Windows device.",
+)
+print(response.output_text)
+</code></pre>
+<p class="wp-block-paragraph">The code does three things. It connects to your project with your Azure login, it creates a new version of the agent, and it sends one question through the responses API. The <code>agent_reference</code> part tells Foundry to use your agent with all its instructions and tools.</p>
+<figure class="wp-block-image"><img alt="Microsoft Foundry agent architecture: Python script calling the project agent with model, instructions and tools" data-recalc-dims="1" decoding="async" src="assets/9e0906029dd86ca3/img_1.jpg"/></figure>
+<p class="wp-block-paragraph">Note: The agent API changed in 2025/2026. The new SDK (azure-ai-projects 2.x) is not compatible with the old 1.x samples, and the classic agents will be retired on March 31, 2027. So if you find older tutorials with threads and runs, they use the deprecated API. The current steps are in the official <a href="https://learn.microsoft.com/en-us/azure/foundry/quickstarts/get-started-code" rel="noopener" target="_blank">Microsoft Foundry quickstart</a>.</p>
+<h2 class="wp-block-heading" id="whats-next">What’s Next?</h2>
+<p class="wp-block-paragraph">You now have a working Microsoft Foundry agent: a project, a model deployment, an agent with instructions and tools, and a Python script that talks to it. From here you can connect your own data with file search, add custom functions, or combine several agents. And if you want to play with models without any cloud at all, have a look at my post about <a href="https://jannikreinhard.com/2026/06/14/run-ai-models-offline-mac-foundry-local/">running AI models offline with Foundry Local</a>.</p>
+<p class="wp-block-paragraph">I hope this is a little help.</p>
+<p class="wp-block-paragraph">Stay healthy, Cheers Jannik</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
