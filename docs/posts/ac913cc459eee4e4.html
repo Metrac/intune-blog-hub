@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent Skills Explained: How to Build Your First Skill</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">July 3, 2026</span>
+  </div>
+  <h1>Agent Skills Explained: How to Build Your First Skill</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/agent-skills-explained/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p class="wp-block-paragraph">Every AI agent is only as good as the knowledge you give it. For a long time the common answer was to stuff everything into one giant system prompt. This does not scale. Agent Skills solve this problem in a much cleaner way. In this blog post I explain what Agent Skills are, why they beat the big system prompt, and how you can build your first skill step by step. At the end you will have a small working skill that runs in Claude Code and in many other AI tools.</p>
+<span id="more-19523"></span>
+<h2 class="wp-block-heading" id="what-are-agent-skills">What Are Agent Skills?</h2>
+<p class="wp-block-paragraph">An Agent Skill is, at its core, just a folder. The folder contains one required file called SKILL.md and, if you want, extra scripts and reference documents. The SKILL.md file has two parts. A short YAML frontmatter tells the agent what the skill does and when to use it. The Markdown body tells the agent how to do the task. The agent only reads the frontmatter at startup. The rest is loaded on demand when a task matches.</p>
+<p class="wp-block-paragraph">The pattern was introduced by Anthropic for Claude in October 2025. Shortly after, in December 2025, Anthropic published it as an open standard at <a href="https://agentskills.io/specification" rel="noopener" target="_blank">agentskills.io</a>. Since then the adoption has moved very fast. Tools like OpenAI Codex, GitHub Copilot, Cursor and Gemini CLI support the same format today. This is the nice part: you write a skill once and you can reuse it across different agents.</p>
+<figure class="wp-block-image"><img alt="Agent Skills anatomy: SKILL.md with frontmatter plus scripts, references and assets folders loaded on demand" data-recalc-dims="1" decoding="async" src="assets/ac913cc459eee4e4/img_0.jpg"/></figure>
+<h2 class="wp-block-heading" id="why-are-agent-skills-better-than-a-big-system-prompt">Why Are Agent Skills Better Than a Big System Prompt?</h2>
+<p class="wp-block-paragraph">The magic phrase is progressive disclosure. The idea is simple: give the agent only the information it needs right now, not everything at once. Agent Skills work in three levels:</p>
+<ol class="wp-block-list">
+<li><strong>Metadata (about 100 tokens).</strong> At startup the agent loads only the name and the description of every installed skill. This is like the table of contents of a book.</li>
+<li><strong>Instructions.</strong> When a task matches the description, the agent reads the full SKILL.md body. This is like opening one chapter.</li>
+<li><strong>Resources.</strong> Scripts and reference files are loaded only when the agent really needs them. This is like the appendix at the end of the book.</li>
+</ol>
+<p class="wp-block-paragraph">Now compare this with a system prompt that carries every instruction for every possible task. The context window is limited, and every token costs money and attention. Even worse, instructions that are not relevant for the current task distract the model and make the results worse. With skills, a large reference document costs nothing until the moment the agent opens it.</p>
+<figure class="wp-block-image"><img alt="Agent Skills progressive disclosure: metadata, SKILL.md body and resources loaded in three levels" data-recalc-dims="1" decoding="async" src="assets/ac913cc459eee4e4/img_1.jpg"/></figure>
+<h2 class="wp-block-heading" id="how-is-a-skill-structured">How Is a Skill Structured?</h2>
+<p class="wp-block-paragraph">The structure of Agent Skills is defined in the open specification and it is very small. A skill is a directory that contains at least a SKILL.md file:</p>
+<p class="wp-block-paragraph">The frontmatter of SKILL.md has only two required fields:</p>
+<ul class="wp-block-list">
+<li><strong>name</strong>: Maximum 64 characters. Only lowercase letters, numbers and hyphens. It must match the folder name.</li>
+<li><strong>description</strong>: Maximum 1024 characters. It should describe <em>what</em> the skill does and <em>when</em> the agent should use it.</li>
+</ul>
+<p class="wp-block-paragraph">There are also a few optional fields like <code>license</code>, <code>compatibility</code> and <code>metadata</code>. The body below the frontmatter is plain Markdown with no format restrictions. The specification recommends to keep SKILL.md under 500 lines and to move long details into separate reference files.</p>
+<p class="wp-block-paragraph">Note: The description is the most important line of the whole skill. The agent decides only based on this text if the skill is relevant for the current task. A description like “Helps with PDFs” is too vague. Write what the skill does and when to use it, and include the keywords a user would say.</p>
+<h2 class="wp-block-heading" id="how-can-i-build-my-first-skill">How Can I Build My First Skill?</h2>
+<p class="wp-block-paragraph">Let us build a small but useful example: a skill that turns raw meeting notes into clean meeting minutes. You do not need any framework for Agent Skills, only a text editor. I use Claude Code here, but the same folder works in every tool that supports the standard.</p>
+<ol class="wp-block-list">
+<li><strong>Create the skill folder.</strong> In Claude Code, personal skills live in <code>~/.claude/skills</code> and project skills live in <code>.claude/skills</code> inside the repository. Create a folder with the name of your skill:</li>
+</ol>
+<ol class="wp-block-list">
+<li><strong>Create the SKILL.md file.</strong> Add the frontmatter with <code>name</code> and <code>description</code>, and write the instructions in the body:</li>
+</ol>
+<ol class="wp-block-list">
+<li>
+<p><strong>Add a reference file (optional).</strong> Create <code>references/template.md</code> with your output template. The agent will only load this file when it really creates the minutes. This keeps the main skill lean.</p>
+</li>
+<li>
+<p><strong>Test the skill.</strong> Start a new agent session and give it a matching task, for example: “Can you turn these notes into meeting minutes?”. The agent sees the description, activates the skill and follows your instructions. If the skill does not trigger, sharpen the description with more concrete keywords.</p>
+</li>
+<li>
+<p><strong>Validate the skill (optional).</strong> The specification project provides a small reference tool that checks the frontmatter and the naming rules:</p>
+</li>
+</ol>
+<p class="wp-block-paragraph">That is all. Your first skill is done. From here you can grow it: add a script to <code>scripts/</code> for a step that should run as code, or split long instructions into more reference files.</p>
+<p class="wp-block-paragraph">Hint: Start small. One skill should solve one job. If your SKILL.md grows and grows, that is usually a sign that you should split it into two skills or move content into the references folder.</p>
+<p class="wp-block-paragraph">I wrote before about <a href="https://jannikreinhard.com/why-cli-tools-are-beating-mcp-for-ai-agents/">why CLI tools are beating MCP for AI agents</a>. The core argument was context efficiency: MCP tool definitions eat a lot of the context window before the agent has done anything. For me, skills are the third piece of the same picture. CLI tools give the agent capabilities. MCP connects the agent to live services. Agent Skills package the knowledge and the workflows: how your team does things, which conventions apply, which steps to follow. If you want the full map of these building blocks, I put them together in <a href="https://jannikreinhard.com/skills-mcp-cli-computer-use-mapping-the-ai-tooling-surface-in-2026/">my post about the AI tooling surface in 2026</a>.</p>
+<p class="wp-block-paragraph">In this blog post I explained what Agent Skills are, why progressive disclosure beats a giant system prompt, and how you build your first skill with a simple SKILL.md file. Because the format is an open standard now, the skill you wrote today will very likely still work in the tools you use tomorrow. A good next step is the official <a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview" rel="noopener" target="_blank">Agent Skills documentation from Anthropic</a> and the specification itself. I hope this is a little help.</p>
+<p class="wp-block-paragraph">Stay healthy, Cheers Jannik</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
