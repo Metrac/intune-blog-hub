@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EPM Part 3: Writing Intune Endpoint Privilege Management rules for the real world: File hash, certificate, and when each one is the wrong choice</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">MSEndpointMgr</span>
+    <span class="date">July 3, 2026</span>
+  </div>
+  <h1>EPM Part 3: Writing Intune Endpoint Privilege Management rules for the real world: File hash, certificate, and when each one is the wrong choice</h1>
+  <div class="orig">Saved for offline reading · <a href="https://msendpointmgr.com/2026/07/03/epm-part-3-writing-intune-endpoint-privilege-management-rules-for-the-real-world-file-hash-certificate-and-when-each-one-is-the-wrong-choice/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p data-block-type="core"><em>This is the third post in a series on Microsoft Intune Endpoint Privilege Management. In <a data-id="https://msendpointmgr.com/2026/06/15/epm-part-1-the-end-of-local-admin-how-intune-endpoint-privilege-management-solves-a-problem-it-has-lived-with-for-decades/" data-type="link" href="https://msendpointmgr.com/2026/06/15/epm-part-1-the-end-of-local-admin-how-intune-endpoint-privilege-management-solves-a-problem-it-has-lived-with-for-decades/" rel="noreferrer noopener" target="_blank">Post 1</a>, we covered the architecture and the strategic case for EPM. In <a data-id="https://msendpointmgr.com/2026/06/22/epm-part-2-before-you-remove-local-admin-how-to-use-intune-endpoint-privilege-management-audit-mode-to-understand-your-environment/" data-type="link" href="https://msendpointmgr.com/2026/06/22/epm-part-2-before-you-remove-local-admin-how-to-use-intune-endpoint-privilege-management-audit-mode-to-understand-your-environment/" rel="noreferrer noopener" target="_blank">Post 2</a>, we walked through audit mode, deploying the agent in two policies, collecting elevation data, and turning that data into a prioritized rule backlog and a set of user personas. This post picks up exactly there. You have your backlog. Now we build the rules.</em></p>
+<hr class="wp-block-separator has-alpha-channel-opacity" data-block-type="core"/>
+<nav aria-label="Table of Contents" class="wp-block-kadence-tableofcontents kb-table-of-content-nav kb-table-of-content-id26671_a6e87a-8b" role="navigation"></nav>
+<h2 class="wp-block-heading" id="0-where-we-are"><a aria-hidden="true" class="aal_anchor" href="#where-we-are" id="where-we-are"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Where we are</h2>
+<p data-block-type="core">By the end of the audit phase, you should have walked away with a table that looks something like this – your rule backlog, prioritized by frequency and breadth:</p>
+<div class="kb-table-container kb-table-container26671_a9842f-66 wp-block-kadence-table"><table class="kb-table kb-table26671_a9842f-66">
+<tr class="kb-table-row kb-table-row26671_ac06ac-e2">
+<th class="kb-table-data kb-table-data26671_69bc80-cb" scope="col">
+<p data-block-type="core">Priority</p>
+</th>
+<th class="kb-table-data kb-table-data26671_f6a730-c2" scope="col">
+<p data-block-type="core">Application</p>
+</th>
+<th class="kb-table-data kb-table-data26671_504614-ec" scope="col">
+<p data-block-type="core">Elevation type</p>
+</th>
+<th class="kb-table-data kb-table-data26671_5a26a0-9f" scope="col">
+<p data-block-type="core">Persona</p>
+</th>
+<th class="kb-table-data kb-table-data26671_10980b-ab" scope="col">
+<p data-block-type="core">Detection attributes available</p>
+</th>
+</tr>
+<tr class="kb-table-row kb-table-row26671_db4c21-6c">
+<td class="kb-table-data kb-table-data26671_32495d-ec">
+<p data-block-type="core">1</p>
+</td>
+<td class="kb-table-data kb-table-data26671_80ca62-46">
+<p data-block-type="core">[App name]</p>
+</td>
+<td class="kb-table-data kb-table-data26671_a3e5eb-8d">
+<p data-block-type="core">Automatic</p>
+</td>
+<td class="kb-table-data kb-table-data26671_e4f382-17">
+<p data-block-type="core">All users</p>
+</td>
+<td class="kb-table-data kb-table-data26671_4bb70d-23">
+<p data-block-type="core">Certificate + file hash</p>
+</td>
+</tr>
+<tr class="kb-table-row kb-table-row26671_0d8241-e0">
+<td class="kb-table-data kb-table-data26671_b58df0-cd">
+<p data-block-type="core">2</p>
+</td>
+<td class="kb-table-data kb-table-data26671_291b11-f8">
+<p data-block-type="core">[App name]</p>
+</td>
+<td class="kb-table-data kb-table-data26671_ee77a6-eb">
+<p data-block-type="core">User-initiated</p>
+</td>
+<td class="kb-table-data kb-table-data26671_8d1322-1c">
+<p data-block-type="core">Power users</p>
+</td>
+<td class="kb-table-data kb-table-data26671_2f3787-b8">
+<p data-block-type="core">Certificate + product version</p>
+</td>
+</tr>
+<tr class="kb-table-row kb-table-row26671_104523-47">
+<td class="kb-table-data kb-table-data26671_c5f585-66">
+<p data-block-type="core">3</p>
+</td>
+<td class="kb-table-data kb-table-data26671_98811d-d3">
+<p data-block-type="core">[App name]</p>
+</td>
+<td class="kb-table-data kb-table-data26671_e3daa8-23">
+<p data-block-type="core">Support-approved</p>
+</td>
+<td class="kb-table-data kb-table-data26671_088d99-8e">
+<p data-block-type="core">IT ops</p>
+</td>
+<td class="kb-table-data kb-table-data26671_555077-f1">
+<p data-block-type="core">File hash only</p>
+</td>
+</tr>
+</table></div>
+<p data-block-type="core">That backlog is the input to everything in this post. We are going to take those applications, one persona at a time, and turn them into elevation rules that hold up in production.</p>
+<p data-block-type="core">And that last phrase – <em>hold up in production</em> – is the whole point. It is easy to build a rule that works on your test machine this afternoon. It is harder to build one that still works after the vendor ships an update next month, that does not accidentally elevate something you never intended, and that a security reviewer would sign off on. That is what precision means in the context of Intune Endpoint Privilege Management, and it is what this post is about.</p>
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="EPM" class="wp-image-26682" decoding="async" src="assets/efb2a8ea534abcc1/img_0.png"/></figure>
+<hr class="wp-block-separator has-alpha-channel-opacity" data-block-type="core"/>
+<h2 class="wp-block-heading" id="1-the-anatomy-of-an-elevation-rule"><a aria-hidden="true" class="aal_anchor" href="#the-anatomy-of-an-elevation-rule" id="the-anatomy-of-an-elevation-rule"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>The anatomy of an elevation rule</h2>
+<p data-block-type="core">Every elevation rule in Intune Endpoint Privilege Management has two parts:</p>
+<ol class="wp-block-list" data-block-type="core">
+<li data-block-type="core"><strong>A detection</strong> – the set of attributes that identify which file the rule applies to</li>
+<li data-block-type="core"><strong>An elevation action</strong> – what happens when a file matching that detection is run</li>
+</ol>
+<p data-block-type="core">Getting the elevation action right is mostly about persona mapping, which you have already done. Automatic for trusted, well-understood applications. User-initiated, with business justification for less frequent tasks where you want a light audit trail. Support-approved for higher-risk applications where you want a human in the loop.</p>
+<p data-block-type="core">Detection is where precision lives and where most mistakes happen. So that is where we will spend most of our time.</p>
+<hr class="wp-block-separator has-alpha-channel-opacity" data-block-type="core"/>
+<h2 class="wp-block-heading" id="2-understanding-detection-attributes"><a aria-hidden="true" class="aal_anchor" href="#understanding-detection-attributes" id="understanding-detection-attributes"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Understanding detection attributes</h2>
+<p data-block-type="core">When you build a rule, Intune Endpoint Privilege Management lets you identify a file using a combination of attributes. The available attributes fall into two categories: strong and weak.</p>
+<p data-block-type="core"><strong>Strong attributes</strong> are protected by the file’s signature or are intrinsic to the file’s content. They are difficult to forge:</p>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core"><strong>File hash</strong> – a cryptographic hash of the exact binary</li>
+<li data-block-type="core"><strong>Certificate/publisher signature</strong> – the code-signing certificate the file was signed with</li>
+<li data-block-type="core"><strong>Signature-protected metadata</strong> – product name, internal name, and description, when these are part of the signed attributes of the file</li>
+</ul>
+<p data-block-type="core"><strong>Weak attributes</strong> are easily changed and should never be used on their own:</p>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core"><strong>File name</strong> – trivially renamed by any user</li>
+<li data-block-type="core"><strong>File path</strong> – a file can be placed in, or moved to, almost any location</li>
+</ul>
+<p data-block-type="core">EPM enforces a minimum standard here: every rule must include at least one strong method of identification – either a file hash, a certificate, or both. You cannot build a rule on file name and path alone, and that restriction exists for a good reason, which we will come to.</p>
+<hr class="wp-block-separator has-alpha-channel-opacity" data-block-type="core"/>
+<h2 class="wp-block-heading" id="3-file-hash-the-strongest-rule-you-can-build"><a aria-hidden="true" class="aal_anchor" href="#file-hash-the-strictest-rule-you-can-build" id="file-hash-the-strictest-rule-you-can-build"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>File hash: The strictest rule YOU can build</h2>
+<p data-block-type="core">A file hash rule matches a single, exact binary. If even one byte of the file changes, the hash changes, and the rule no longer matches.</p>
+<p data-block-type="core">This makes file hash the strongest and most precise detection attribute available. When you build a rule on a file hash, you have near-certainty that the file being elevated is the exact file you intended – not a renamed imposter, not a tampered version, not a different build that happens to share a name.</p>
+<p data-block-type="core">To get a file’s hash, you can either pull it directly from the EPM elevation reports – the hash is captured in the elevation usage report you were working with during the audit phase.</p>
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="" class="wp-image-26721" decoding="async" src="assets/efb2a8ea534abcc1/img_1.png"/></figure>
+<p data-block-type="core">Alternatively, you can generate the hash from the binary with PowerShell on the device having the application installed:</p>
+<div class="wp-block-codemirror-blocks-code-block code-block"><pre class="CodeMirror" data-setting='{"showPanel":false,"languageLabel":false,"fullScreenButton":true,"copyButton":true,"mode":"powershell","mime":"application/x-powershell","theme":"elegant","lineNumbers":true,"styleActiveLine":false,"lineWrapping":false,"readOnly":true,"fileName":"","language":"PowerShell","maxHeight":"400px","modeName":"powershell"}'>Get-FileHash "C:\Path\To\Application.exe" | Select-Object Hash</pre></div>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-26674" decoding="async" src="assets/efb2a8ea534abcc1/img_2.png"/></figure>
+<p data-block-type="core"><strong>When file hash is the right choice:</strong></p>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core">One-off elevations for a specific tool that does not update frequently</li>
+<li data-block-type="core">Internal line-of-business applications and scripts where you control the release cycle and can update the rule when the binary changes</li>
+<li data-block-type="core">Any situation where the absolute strongest assertion of file identity is required – high-risk applications, anything a security team has flagged</li>
+<li data-block-type="core">PowerShell scripts (<code>.ps1</code>) where the content is stable</li>
+</ul>
+<p data-block-type="core"><strong>Where file hash becomes the wrong choice:</strong></p>
+<p data-block-type="core">Here is the trade-off, and it is the single most important thing to understand about file hash rules. <strong>A file hash is unique to one specific version of a file. Every time the application updates, the hash changes – and your rule stops matching.</strong></p>
+<p data-block-type="core">For an application that updates monthly, or worse, auto-updates silently in the background, a file hash rule becomes a maintenance treadmill. The vendor ships a new version, the hash no longer matches, the user can no longer elevate, the helpdesk ticket arrives, and you are back to manually updating a rule you thought you had finished. For a tool like a browser, a development tool, or anything with a modern auto-update mechanism, a file hash alone is the wrong choice. It will generate more work than it saves.</p>
+<hr class="wp-block-separator has-alpha-channel-opacity" data-block-type="core"/>
+<h2 class="wp-block-heading" id="4-certificate-strong-flexible-and-easy-to-get-wrong"><a aria-hidden="true" class="aal_anchor" href="#certificate-strong-flexible-and-easy-to-get-wrong" id="certificate-strong-flexible-and-easy-to-get-wrong"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Certificate: Strong, flexible, and easy to get wrong</h2>
+<p data-block-type="core">A certificate rule matches files based on the code-signing certificate used to sign them. Because the certificate stays constant across version updates – the vendor signs every release with the same code-signing identity – a certificate rule survives application updates that would break a file hash rule.</p>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-26723" decoding="async" src="assets/efb2a8ea534abcc1/img_3.png"/></figure>
+<p data-block-type="core">This is the great advantage of certificate rules: <strong>they are durable across updates.</strong> Build a certificate rule for a vendor’s application today, and it will continue to elevate that vendor’s signed releases tomorrow, next month, and after the next ten updates – without you touching the rule.</p>
+<p data-block-type="core">To export a certificate from a signed binary for use in a rule:</p>
+<div class="wp-block-codemirror-blocks-code-block code-block"><pre class="CodeMirror" data-setting='{"showPanel":false,"languageLabel":false,"fullScreenButton":true,"copyButton":true,"mode":"powershell","mime":"application/x-powershell","theme":"elegant","lineNumbers":true,"styleActiveLine":false,"lineWrapping":false,"readOnly":true,"fileName":"","language":"PowerShell","maxHeight":"400px","modeName":"powershell"}'>Get-AuthenticodeSignature "C:\Path\To\Application.exe" |
+  Select-Object -ExpandProperty SignerCertificate |
+  Export-Certificate -Type CERT -FilePath "C:\Temp\AppCert.cer"</pre></div>
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="" class="wp-image-26675" decoding="async" src="assets/efb2a8ea534abcc1/img_4.png"/></figure>
+<p data-block-type="core">You can upload the <code>.cer</code> file directly to the rule, or – better – store it in a <strong>reusable settings group</strong>, which we will discuss shortly.</p>
+<p data-block-type="core"><strong>Here is the trap, and it is a significant one.</strong></p>
+<p data-block-type="core">A certificate rule, on its own, will elevate <em>any</em> file signed with that certificate. Not just the application you had in mind – every application that the vendor signs with the same code-signing identity.</p>
+<p data-block-type="core">Many large software vendors sign their entire product portfolio with a single code-signing certificate. If you build a certificate-only rule to elevate one of their tools, you may have just authorized silent, automatic elevation of every other tool that the vendor ships – including ones you have never evaluated, and potentially ones that could be used to do far more than you intended on the endpoint.</p>
+<p data-block-type="core">This is why <a data-id="https://learn.microsoft.com/en-us/intune/epm/create-elevation-rules#certificate-rules?wt.mc_id=MVP_314171" data-type="link" href="https://learn.microsoft.com/en-us/intune/epm/create-elevation-rules#certificate-rules?wt.mc_id=MVP_314171" rel="noreferrer noopener" target="_blank">Microsoft’s guidance</a> is explicit: <strong>certificate rules are strong, but they should be paired with other attributes.</strong> Pairing a certificate with signature-protected metadata – product name, internal name, description – drastically narrows the rule. The certificate proves the file was genuinely issued by the vendor; the metadata proves it is the specific product you intended to elevate. Together, they give you both durability across updates <em>and</em> precision about which file is covered.</p>
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="" class="wp-image-26724" decoding="async" src="assets/efb2a8ea534abcc1/img_5.png"/></figure>
+<p data-block-type="core">A certificate paired with a product name is, in our experience, the sweet spot for most production rules: it survives updates, and it does not over-elevate.</p>
+<hr class="wp-block-separator has-alpha-channel-opacity" data-block-type="core"/>
+<h2 class="wp-block-heading" id="5-why-file-name-and-path-are-never-enough"><a aria-hidden="true" class="aal_anchor" href="#why-file-name-and-path-are-never-enough" id="why-file-name-and-path-are-never-enough"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Why file name and path are never enough</h2>
+<p data-block-type="core">It is worth being explicit about why EPM refuses to let you build a rule on file name and path alone.</p>
+<p data-block-type="core">A <strong>file name</strong> is not part of the file’s signature. Any standard user who can write to the directory where a file resides can rename it. Picture a certificate-and-filename rule that elevates <code>helpdesktool.exe</code> signed by a trusted vendor. A user – or an attacker who has landed on the endpoint – renames a different, more dangerous binary from that same vendor to <code>helpdesktool.exe</code>, and if your rule was built loosely, it elevates.</p>
+<p data-block-type="core"><strong>File path</strong> has the same weakness. Unless the path is a write-protected location that standard users cannot modify, a file can be dropped into it. A rule that trusts a path is only as strict as the permissions on that path.</p>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-26726" decoding="async" src="assets/efb2a8ea534abcc1/img_6.png"/></figure>
+<p data-block-type="core">This is not theoretical hardening for its own sake. The whole point of Intune Endpoint Privilege Management is to elevate <em>specific, intended</em> files and nothing else. A weak detection undermines that purpose entirely. </p>
+<p data-block-type="core"><strong>If you find yourself wanting to build a rule on file name and path because the file is unsigned and you do not have a stable hash, that is a signal to stop and ask a different question: should this file be elevated at all, and if so, can it be properly signed first?</strong></p>
+<hr class="wp-block-separator has-alpha-channel-opacity" data-block-type="core"/>
+<h2 class="wp-block-heading" id="6-child-process-behaviour-the-setting-everyone-forgets"><a aria-hidden="true" class="aal_anchor" href="#child-process-behavior-the-setting-everyone-forgets" id="child-process-behavior-the-setting-everyone-forgets"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Child Process Behavior: The setting everyone forgets</h2>
+<p data-block-type="core">When a process is elevated and then launches another process – a child process – Windows by default passes the elevated context down to that child. The child automatically inherits the parent’s elevated privileges.</p>
+<p data-block-type="core">This default behavior is exactly what you do <em>not</em> want in many cases. Consider an installer you have elevated. During installation, it spawns a command prompt, a script host, or a browser to display release notes. With default Windows behavior, every one of those child processes is now running with administrator rights – and a command prompt running as administrator is a powerful tool in the wrong hands.</p>
+<p data-block-type="core">Intune Endpoint Privilege Management lets you control this. The child process behavior setting on each rule lets you decide what happens to processes spawned by an elevated application:</p>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-26712" decoding="async" src="assets/efb2a8ea534abcc1/img_7.png"/></figure>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core">Allow child processes to run elevated (the permissive default – Windows behavior)</li>
+<li data-block-type="core">Require child processes to match their own elevation rule</li>
+<li data-block-type="core">Deny elevation to child processes entirely (run them in the standard user context)</li>
+</ul>
+<p data-block-type="core">The principle of least privilege says: elevate the parent, and do not blindly hand that elevation to whatever the parent decides to launch. For most rules, you want children to either run as the standard user or to require their own rule.</p>
+<p data-block-type="core"><strong>One important caveat from the field:</strong> changing child process behavior away from the default can break applications that genuinely expect to launch elevated helpers. Some legitimate installers really do need to spawn an elevated child process to complete. This is why you test. Tighten the child process behavior, then verify the application still works end-to-end before you roll the rule out. If it breaks, you have learned something about how that application works – and you can build a specific child rule rather than opening the door for everything.</p>
+<hr class="wp-block-separator has-alpha-channel-opacity" data-block-type="core"/>
+<h2 class="wp-block-heading" id="7-when-rules-collide-conflict-resolution"><a aria-hidden="true" class="aal_anchor" href="#when-rules-collide-conflict-resolution" id="when-rules-collide-conflict-resolution"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>When Rules Collide: Conflict Resolution</h2>
+<p data-block-type="core">As your rule set grows, and especially once you are deploying rules to both users and devices, you will eventually have more than one rule that could apply to the same file. It is important to understand how Intune Endpoint Privilege Management resolves these conflicts, because the resolution logic should inform how you structure your rules.</p>
+<p data-block-type="core">When a device receives multiple rules that match the same file, EPM resolves the conflict in this order:</p>
+<ol class="wp-block-list" data-block-type="core">
+<li data-block-type="core"><strong>Rules assigned to users take precedence over rules assigned to devices.</strong> This is the most important structural decision in your deployment – decide deliberately whether your rules are user-targeted or device-targeted, because user rules win.</li>
+<li data-block-type="core"><strong>Rules with a file hash are treated as the most specific</strong> and take precedence over less specific rules.</li>
+<li data-block-type="core"><strong>If still unresolved, a defined precedence order applies</strong> to elevation behavior, with more restrictive behaviors generally taking precedence.</li>
+</ol>
+<p data-block-type="core">There is one absolute rule that overrides all of the above: <strong>a deny rule always wins.</strong> If a user is assigned both a rule that allows elevation of a file and a rule that denies it, the deny takes precedence, and the elevation fails. This is by design – it means you can use deny rules as a hard backstop for files you never want elevated, with confidence that no allow rule will override them.</p>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-26727" decoding="async" src="assets/efb2a8ea534abcc1/img_8.png"/></figure>
+<p data-block-type="core">The practical takeaway: pick a primary targeting model – <strong>user-based</strong> or<strong> device-based</strong> – and stick to it for the bulk of your rules. Mixing the two without a clear reason is how you end up with elevation behavior that is hard to predict and harder to troubleshoot.</p>
+<hr class="wp-block-separator has-alpha-channel-opacity" data-block-type="core"/>
+<h2 class="wp-block-heading" id="8-reusable-settings-groups-build-once-use-everywhere"><a aria-hidden="true" class="aal_anchor" href="#reusable-settings-groups-build-once-use-everywhere" id="reusable-settings-groups-build-once-use-everywhere"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Reusable Settings Groups: Build once, use everywhere</h2>
+<p data-block-type="core">As you build rules across multiple personas, you will find yourself using the same certificates again and again. The same vendor certificate might appear in the rules for your office workers, power users, and IT operations team.</p>
+<p data-block-type="core">Rather than uploading the same certificate into every rule individually, Intune Endpoint Privilege Management lets you create a <strong>reusable settings group</strong> – a centralized certificate (or set of attributes) that multiple rules reference.</p>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-26728" decoding="async" src="assets/efb2a8ea534abcc1/img_9.png"/></figure>
+<p data-block-type="core">The operational advantage is maintenance. When a vendor rotates their code-signing certificate – which they do, certificates expire – you update the certificate in one reusable settings group, and every rule that references it picks up the change automatically. Without reusable settings groups, a certificate rotation means hunting down and updating every individual rule that used the old certificate. With them, a single change propagates everywhere.</p>
+<p data-block-type="core">For any certificate you expect to use in more than one rule, use a reusable settings group from the start. Your future self, mid-certificate-rotation, will thank you.</p>
+<hr class="wp-block-separator has-alpha-channel-opacity" data-block-type="core"/>
+<h2 class="wp-block-heading" id="9-a-practical-rule-building-workflow"><a aria-hidden="true" class="aal_anchor" href="#a-practical-rule-building-workflow" id="a-practical-rule-building-workflow"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>A practical rule-building workflow</h2>
+<p data-block-type="core">Pulling this together, here is the workflow we recommend for taking an application from your backlog to a deployed rule:</p>
+<p data-block-type="core"><strong>1. Gather the file’s attributes.</strong> Pull the file hash and certificate from the EPM elevation report as shown above, or run the PowerShell commands above directly against the binary. </p>
+<p data-block-type="core">Microsoft also provides a <code>Get-FileAttributes</code> cmdlet in the <a data-id="https://learn.microsoft.com/en-us/intune/epm/deployment-planning#epmtools-powershell-module?wt.mc_id=MVP_314171" data-type="link" href="https://learn.microsoft.com/en-us/intune/epm/deployment-planning#epmtools-powershell-module?wt.mc_id=MVP_314171" rel="noreferrer noopener" target="_blank">EPMTools PowerShell Module</a> specifically to help build accurate detection rules – use it to see exactly what signature-protected metadata is available.</p>
+<p data-block-type="core"><strong>1. Import the module to access the tool for reading file attributes.</strong></p>
+<p data-block-type="core">Import the module from EpmCmdlets.dll found in C:\Program Files\Microsoft EPM Agent\EpmTools. (Oh, the chicken and egg – you need privileges to import the module)</p>
+<div class="wp-block-codemirror-blocks-code-block code-block"><pre class="CodeMirror" data-setting='{"showPanel":false,"languageLabel":false,"fullScreenButton":true,"copyButton":true,"mode":"powershell","mime":"application/x-powershell","theme":"elegant","lineNumbers":true,"styleActiveLine":false,"lineWrapping":false,"readOnly":true,"fileName":"","language":"PowerShell","maxHeight":"400px","modeName":"powershell"}'>Import-Module 'C:\Program Files\Microsoft EPM Agent\EpmTools\EpmCmdlets.dll'</pre></div>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-26677" decoding="async" src="assets/efb2a8ea534abcc1/img_10.png"/></figure>
+<p data-block-type="core">With the module imported, you are ready to get the file attributes.</p>
+<div class="wp-block-codemirror-blocks-code-block code-block"><pre class="CodeMirror" data-setting='{"showPanel":false,"languageLabel":false,"fullScreenButton":true,"copyButton":true,"mode":"powershell","mime":"application/x-powershell","theme":"elegant","lineNumbers":true,"styleActiveLine":false,"lineWrapping":false,"readOnly":true,"fileName":"","language":"PowerShell","maxHeight":"400px","modeName":"powershell"}'>Get-FileAttributes -FilePath "C:\Path\To\Application.exe"</pre></div>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-26678" decoding="async" src="assets/efb2a8ea534abcc1/img_11.png"/></figure>
+<p data-block-type="core">If the file has multiple certificates signed, you can easily extract them using the EPM module</p>
+<div class="wp-block-codemirror-blocks-code-block code-block"><pre class="CodeMirror" data-setting='{"showPanel":false,"languageLabel":false,"fullScreenButton":true,"copyButton":true,"mode":"powershell","mime":"application/x-powershell","theme":"elegant","lineNumbers":true,"styleActiveLine":false,"lineWrapping":false,"readOnly":true,"fileName":"","language":"PowerShell","maxHeight":"400px","modeName":"powershell"}'>Get-FileAttributes -FilePath "C:\Path\To\Application.exe" -CertOutputPath "C:\Path\To"</pre></div>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-26679" decoding="async" src="assets/efb2a8ea534abcc1/img_12.png"/></figure>
+<p data-block-type="core"><strong>2. Choose your detection strategy based on update frequency.</strong></p>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="EPM" class="wp-image-26680" decoding="async" src="assets/efb2a8ea534abcc1/img_13.png"/></figure>
+<p data-block-type="core"><strong>3. Set the elevation action from your persona mapping.</strong> Automatic, user-initiated, or support-approved – this was decided in the audit phase.</p>
+<p data-block-type="core"><strong>4. Configure child process behavior deliberately.</strong> Default to denying or requiring rules for child processes unless you have a reason not to.</p>
+<p data-block-type="core"><strong>5. Test on a real standard-user account.</strong> Not an admin account, a genuine standard user, because, as covered in Post 1 and Post 2, an admin test account hides the virtual account behavior and several other issues. Verify the application elevates, runs correctly after elevation, including after a restart.</p>
+<p data-block-type="core"><strong>6. Deploy to a single persona group first.</strong> Start with your lowest-risk persona. Watch the elevation reports. Confirm the rule is matching what you expect and nothing else.</p>
+<p data-block-type="core"><strong>7. Expand.</strong> Once validated, widen the assignment to the remaining personas that need it.</p>
+<hr class="wp-block-separator has-alpha-channel-opacity" data-block-type="core"/>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#worked-example-building-rules-for-the-power-user-persona" id="worked-example-building-rules-for-the-power-user-persona"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Worked example: Building rules for the Power User Persona</h2>
+<p data-block-type="core">Theory is easier to absorb when it is tied to something concrete, so let us walk through building a rule set for a single persona end-to-end. We will use the <strong>Power User</strong> persona, the cohort that elevates regularly for a consistent, predictable set of specialist applications. It is a good example because it naturally exercises several of the decisions covered above: different detection strategies for different applications, and different elevation actions depending on risk.</p>
+<p data-block-type="core">From the audit data in Post 2, suppose the Power User persona surfaced three applications that account for the bulk of their elevations:</p>
+<div class="kb-table-container kb-table-container26671_375608-51 wp-block-kadence-table"><table class="kb-table kb-table26671_375608-51">
+<tr class="kb-table-row kb-table-row26671_d2d66a-05">
+<th class="kb-table-data kb-table-data26671_378463-a5" scope="col">
+<p data-block-type="core">Application</p>
+</th>
+<th class="kb-table-data kb-table-data26671_79be82-d1" scope="col">
+<p data-block-type="core">Behavior observed in the audit</p>
+</th>
+<th class="kb-table-data kb-table-data26671_a38d19-9c" scope="col">
+<p data-block-type="core">Update frequency</p>
+</th>
+<th class="kb-table-data kb-table-data26671_2241b0-7f" scope="col">
+<p data-block-type="core">Signing</p>
+</th>
+</tr>
+<tr class="kb-table-row kb-table-row26671_7d5302-c3">
+<td class="kb-table-data kb-table-data26671_028aa6-03">
+<p data-block-type="core">A financial modeling tool</p>
+</td>
+<td class="kb-table-data kb-table-data26671_40915b-f7">
+<p data-block-type="core">Run weekly, installs add-ins that require elevation</p>
+</td>
+<td class="kb-table-data kb-table-data26671_52f981-78">
+<p data-block-type="core">Quarterly vendor releases</p>
+</td>
+<td class="kb-table-data kb-table-data26671_8e2624-0e">
+<p data-block-type="core">Signed by vendor, single product</p>
+</td>
+</tr>
+<tr class="kb-table-row kb-table-row26671_a4cefd-b5">
+<td class="kb-table-data kb-table-data26671_bfee8c-61">
+<p data-block-type="core">An internal reporting utility</p>
+</td>
+<td class="kb-table-data kb-table-data26671_8afcec-40">
+<p data-block-type="core">Run monthly, written in-house</p>
+</td>
+<td class="kb-table-data kb-table-data26671_6fcb99-33">
+<p data-block-type="core">Rare, controlled by us</p>
+</td>
+<td class="kb-table-data kb-table-data26671_9c0f2e-77">
+<p data-block-type="core">Unsigned internal binary</p>
+</td>
+</tr>
+<tr class="kb-table-row kb-table-row26671_ec97ad-e0">
+<td class="kb-table-data kb-table-data26671_5c09e5-08">
+<p data-block-type="core">A vendor diagnostic tool</p>
+</td>
+<td class="kb-table-data kb-table-data26671_c66e16-29">
+<p data-block-type="core">Run occasionally, broad capability on the device</p>
+</td>
+<td class="kb-table-data kb-table-data26671_b14584-46">
+<p data-block-type="core">Updates silently</p>
+</td>
+<td class="kb-table-data kb-table-data26671_b02962-aa">
+<p data-block-type="core">Signed by a large vendor who signs their whole portfolio with one certificate</p>
+</td>
+</tr>
+</table></div>
+<p data-block-type="core">Three applications, three different correct answers. Here is how each rule gets built.</p>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#rule-1-the-financial-modeling-tool" id="rule-1-the-financial-modeling-tool"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Rule 1 – The financial modeling tool</h3>
+<p data-block-type="core">This vendor application updates quarterly and is signed with a certificate specific to that product. A file hash would work, but would break on every quarterly release, creating a maintenance task four times a year.</p>
+<p data-block-type="core"><strong>Detection:</strong> Certificate paired with the product name from the signed metadata. This survives the quarterly updates because the certificate remains constant, and the product-name pairing ensures that only this specific product is elevated, not any other product the vendor might sign.</p>
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="" class="wp-image-26729" decoding="async" src="assets/efb2a8ea534abcc1/img_14.png"/></figure>
+<p data-block-type="core"><strong>Elevation action:</strong> Automatic. The audit data shows this is run weekly by a known cohort for legitimate, well-understood work. Forcing a justification prompt every week would add friction without adding meaningful security.</p>
+<p data-block-type="core"><strong>Child process behavior:</strong> Deny / require own rule. The modeling tool itself needs elevation to install its add-ins; there is no reason for any process it spawns to inherit administrator rights.</p>
+<figure class="wp-block-image size-medium" data-block-type="core"><img alt="" class="wp-image-26730" decoding="async" src="assets/efb2a8ea534abcc1/img_15.png"/></figure>
+<p data-block-type="core"><strong>Reusable settings group:</strong> The vendor certificate belongs in a reusable settings group because the same vendor certificate may appear in other rules, and a future certificate rotation should be a single change.</p>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-26731" decoding="async" src="assets/efb2a8ea534abcc1/img_16.png"/></figure>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#rule-2-the-internal-reporting-utility" id="rule-2-the-internal-reporting-utility"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Rule 2 – The Internal Reporting Utility</h3>
+<p data-block-type="core">This is an unsigned, in-house binary whose release cycle we control completely. There is no vendor certificate to lean on. An example of an unsigned in-house binary can be the <a data-id="https://msendpointmgr.com/2026/05/18/1phonemirror-free-screen-mirroring-tool-for-intune-admin/" data-type="link" href="https://msendpointmgr.com/2026/05/18/1phonemirror-free-screen-mirroring-tool-for-intune-admin/" rel="noreferrer noopener" target="_blank">MSEndpointMgr 1PhoneMirror</a> tool.</p>
+<p data-block-type="core"><strong>Detection:</strong> File hash. Because we control when this binary changes, the maintenance burden of updating the hash on release is acceptable and predictable. It is part of our own release process, not at the mercy of a vendor’s update schedule. A file hash provides the strongest possible assertion that the exact intended binary is the one being elevated.</p>
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow" data-block-type="core">
+<p data-block-type="core"><strong>A note worth flagging:</strong> an unsigned internal tool that needs elevation is also a prompt for a longer-term conversation. Code-signing internal applications is good practice and would let us move this rule to a more maintainable certificate-based model in future. For now, file hash is the right pragmatic choice, but the unsigned status is a flag, not something to ignore.</p>
+</blockquote>
+<p data-block-type="core"><strong>Elevation action:</strong> User-initiated with business justification. Run monthly, at lower volume, with a light audit trail as appropriate.</p>
+<p data-block-type="core"><strong>Child process behavior:</strong> Deny.</p>
+<hr class="wp-block-separator has-alpha-channel-opacity" data-block-type="core"/>
+<p data-block-type="core">The first step in creating this policy is to obtain the executable’s hash.</p>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-26696" decoding="async" src="assets/efb2a8ea534abcc1/img_17.png"/></figure>
+<p data-block-type="core">We can now create the profile for this specific file as a user-confirmed elevation type that requires a business justification and denies all child processes.</p>
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="" class="wp-image-26699" decoding="async" src="assets/efb2a8ea534abcc1/img_18.png"/></figure>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#rule-3-the-vendor-diagnostic-tool" id="rule-3-the-vendor-diagnostic-tool"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Rule 3 – The Vendor Diagnostic Tool</h3>
+<p data-block-type="core">This is the dangerous one, and the audit data flagged it: a tool with broad capabilities on the device, signed by a large vendor that uses a single code-signing certificate across its entire product catalog.</p>
+<p data-block-type="core">A certificate-only rule here would be a serious mistake – it would silently authorize elevation of every application that the vendor signs, most of which have never been evaluated.</p>
+<p data-block-type="core"><strong>Detection:</strong> Certificate paired with product name <em>and</em> a file hash. This is the most restrictive combination available – the certificate and product name narrow it to this specific product, and the file hash pins it to the exact version. Yes, the hash means this rule needs to be updated when the tool updates. For a high-capability tool, that maintenance cost is a feature, not a bug: it forces a deliberate review each time the binary changes.</p>
+<p data-block-type="core"><strong>Elevation action:</strong> Support-approved. Given the tool’s broad capability, a human in the loop is warranted. The user requests elevation with justification, and an administrator approves it through the Intune admin center before it proceeds.</p>
+<p data-block-type="core"><strong>Child process behavior:</strong> Deny.</p>
+<p data-block-type="core">As an example, we will look at SysInternals Autoruns signed by Microsoft. By investigating the EXE file, we can see the certificate used to sign the application.</p>
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="" class="wp-image-26733" decoding="async" src="assets/efb2a8ea534abcc1/img_19.png"/></figure>
+<p data-block-type="core">Using <em>Get-Fileattributes</em>, I get both the hash and the certificate I need to build the rule.</p>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-26732" decoding="async" src="assets/efb2a8ea534abcc1/img_20.png"/></figure>
+<p data-block-type="core">The certificate will now be added as an EPM reusable setting.</p>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-26734" decoding="async" src="assets/efb2a8ea534abcc1/img_21.png"/></figure>
+<p data-block-type="core">The EPM elevation rule policy can now be configured as a support-approved policy (1) denying all child processes (2) where the detection is using the file name (3), a certificate (4), and the file hash (5).</p>
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="" class="wp-image-26738" decoding="async" src="assets/efb2a8ea534abcc1/img_22.png"/></figure>
+<p data-block-type="core">This policy will now explicitly target only the intended application signed by Microsoft.</p>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#the-persona-rule-set-assembled" id="the-persona-rule-set-assembled"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>The Persona rule set, assembled</h3>
+<p data-block-type="core">Pulling the three together, the Power User Elevation Rules Policy looks like this:</p>
+<div class="kb-table-container kb-table-container26671_e4505f-6c wp-block-kadence-table"><table class="kb-table kb-table26671_e4505f-6c">
+<tr class="kb-table-row kb-table-row26671_db34ac-c2">
+<th class="kb-table-data kb-table-data26671_cfc699-18" scope="col">
+<p data-block-type="core">Rule</p>
+</th>
+<th class="kb-table-data kb-table-data26671_aac757-a8" scope="col">
+<p data-block-type="core">Detection</p>
+</th>
+<th class="kb-table-data kb-table-data26671_b1b44c-d1" scope="col">
+<p data-block-type="core">Elevation action</p>
+</th>
+<th class="kb-table-data kb-table-data26671_92c3dd-7e" scope="col">
+<p data-block-type="core">Child processes</p>
+</th>
+</tr>
+<tr class="kb-table-row kb-table-row26671_3ed5cd-e4">
+<td class="kb-table-data kb-table-data26671_07a9f2-7f">
+<p data-block-type="core">Financial modeling tool</p>
+</td>
+<td class="kb-table-data kb-table-data26671_1154ea-bc">
+<p data-block-type="core">Certificate + product name (reusable group)</p>
+</td>
+<td class="kb-table-data kb-table-data26671_e3c385-f7">
+<p data-block-type="core">Automatic</p>
+</td>
+<td class="kb-table-data kb-table-data26671_72e34b-49">
+<p data-block-type="core">Deny/require rule</p>
+</td>
+</tr>
+<tr class="kb-table-row kb-table-row26671_38aff7-eb">
+<td class="kb-table-data kb-table-data26671_903dc2-75">
+<p data-block-type="core">Internal reporting utility</p>
+</td>
+<td class="kb-table-data kb-table-data26671_d753f1-2c">
+<p data-block-type="core">File hash</p>
+</td>
+<td class="kb-table-data kb-table-data26671_c46f7c-28">
+<p data-block-type="core">User-initiated + justification</p>
+</td>
+<td class="kb-table-data kb-table-data26671_3ec0aa-0e">
+<p data-block-type="core">Deny</p>
+</td>
+</tr>
+<tr class="kb-table-row kb-table-row26671_313725-b6">
+<td class="kb-table-data kb-table-data26671_b884d3-89">
+<p data-block-type="core">Vendor diagnostic tool</p>
+</td>
+<td class="kb-table-data kb-table-data26671_27fe00-e0">
+<p data-block-type="core">Certificate + product name + file hash</p>
+</td>
+<td class="kb-table-data kb-table-data26671_9d1c19-ad">
+<p data-block-type="core">Support-approved</p>
+</td>
+<td class="kb-table-data kb-table-data26671_e703a8-99">
+<p data-block-type="core">Deny</p>
+</td>
+</tr>
+</table></div>
+<p data-block-type="core">This single policy is then assigned to the Power User persona group – and only that group. Three applications, three detection strategies, three elevation actions, each chosen deliberately from the application’s real-world behavior rather than a one-size-fits-all default. That is what a well-built persona rule set looks like.</p>
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow" data-block-type="core">
+<p data-block-type="core">It is important to maintain strict control over the membership of the EPM Persona groups. Users assigned to these groups are granted additional privileges through Endpoint Privilege Management, allowing them to run approved processes with elevated rights. As a result, group membership should be tightly governed and regularly reviewed to prevent unintended privilege escalation.</p>
+<p data-block-type="core">Consider creating these groups as <a data-id="https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/groups-create-eligible?wt.mc_id=MVP_314171&amp;tabs=admin-center" data-type="link" href="https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/groups-create-eligible?wt.mc_id=MVP_314171&amp;tabs=admin-center" rel="noreferrer noopener" target="_blank">role-assignable groups</a> in Microsoft Entra ID by enabling the “<strong>Microsoft Entra roles can be assigned to the group</strong>” option. Alternatively, protect them through <a data-id="https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/administrative-units?wt.mc_id=MVP_314171" data-type="link" href="https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/administrative-units?wt.mc_id=MVP_314171" rel="noreferrer noopener" target="_blank">Administrative Units</a> to delegate and restrict management to a controlled set of administrators.</p>
+</blockquote>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#assigning-the-policy-to-your-power-users" id="assigning-the-policy-to-your-power-users"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Assigning the policy to your Power Users</h3>
+<p data-block-type="core">Building the rules is only half the job; a policy that is not assigned does nothing. This is also where the conflict-resolution logic from earlier becomes a practical decision rather than a theoretical one.</p>
+<p data-block-type="core">First, you need a group that actually represents this persona. The persona was a data-driven grouping you identified from the audit reports – now it has to become a real, targetable group. In practice, this means creating an Entra ID group, for example, <code>EPM - Persona - Power Users</code>, and populating it with the users (or their devices) who matched that elevation profile during the audit phase. Dynamic group membership rules can help here if your power users share an attribute such as department or job title, but for most organizations, a curated, reviewed membership list is more reliable to start with; you do not want elevation rules silently applying to people who drifted into a dynamic group by accident.</p>
+<p data-block-type="core">Then comes the targeting decision: <strong>assign to users, or assign to devices?</strong></p>
+<p data-block-type="core">Recall the conflict-resolution logic: rules assigned to users take precedence over rules assigned to devices. For a persona like power users, user-based assignment is usually the right choice. The elevation needs to follow the person, not the hardware. A financial analyst should be able to elevate their modeling tool, whether on their primary workstation or a replacement laptop, without having to re-target the device. User assignment delivers that naturally.</p>
+<p data-block-type="core">Device-based assignment makes more sense in specific cases like shared devices, kiosks, or scenarios where the elevation need is tied to the machine’s role rather than to whoever is signed in. For a knowledge-worker persona like this one, those cases are the exception.</p>
+<p data-block-type="core">Whichever you choose, the earlier guidance holds: pick a primary targeting model and apply it consistently across your personas. Mixing user and device targeting without a clear rationale is what makes elevated behavior unpredictable.</p>
+<p data-block-type="core">In the Intune admin center, open the Power User Elevation Rules Policy, go to the <strong>Assignments</strong> tab, and add <code>EPM - Persona - Power Users</code> under <strong>Included groups</strong>. Save. Once the targeted users’ devices check in and receive the policy, the three rules become active for that cohort and nobody else.</p>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-26700" decoding="async" src="assets/efb2a8ea534abcc1/img_23.png"/></figure>
+<p data-block-type="core">One more deliberate step before you consider this persona done: <strong>start narrow.</strong> Even within the power user group, assign the policy to a small pilot subset first, a handful of cooperative users who will tell you if something does not work. Confirm that the rules behave as intended using the reports (which we turn to next), and only then expand the assignment to the full persona group.</p>
+<hr class="wp-block-separator has-alpha-channel-opacity" data-block-type="core"/>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#closing-the-loop-reading-the-managed-vs-unmanaged-reports" id="closing-the-loop-reading-the-managed-vs-unmanaged-reports"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Closing the loop: Reading the managed vs. unmanaged reports</h2>
+<p data-block-type="core">Building the rules is not the end of the workflow – verifying they behave as intended is. This is where you return to the same reports you used in the audit phase, but now you are reading them with a different question in mind: <em>are my rules actually catching what I built them to catch?</em></p>
+<p data-block-type="core">Intune Endpoint Privilege Management splits elevation reporting into two categories, and the relationship between them is the single most useful signal in the entire deployment:</p>
+<p data-block-type="core"><strong>Managed elevations</strong> are elevations that happened <em>through</em> an EPM rule. After deploying the Power User policy, the financial modeling tool, the reporting utility, and the diagnostic tool should all begin appearing here for that persona. A managed elevation is a success – it means a user performed a privileged action, and your policy governed it.</p>
+<p data-block-type="core"><strong>Unmanaged elevations</strong> are elevations that happened <em>outside</em> of EPM – through the standard Windows path, by a user who still holds local admin rights. During the audit phase, almost everything was unmanaged. That was expected.</p>
+<p data-block-type="core">Here is how to read the two together as you roll out:</p>
+<p data-block-type="core"><strong>Immediately after deploying a persona’s rules</strong>, watch for the persona’s key applications to move from the unmanaged column to the managed column. This is your confirmation that the rules match. If the financial modeling tool still appears as an unmanaged elevation for a Power User after the policy is applied, something is wrong with the rule. The detection attributes do not match the binary in the field, or the policy has not yet reached the device.</p>
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="" class="wp-image-26744" decoding="async" src="assets/efb2a8ea534abcc1/img_24.png"/></figure>
+<p data-block-type="core"><strong>As you progress toward removing local admin rights</strong>, the goal is for the managed elevation count to rise and the unmanaged count for that persona to fall toward zero. A persona that still shows significant unmanaged elevation volume is not ready to have local admin rights removed – those unmanaged elevations represent privileged actions that have no rule yet. Removing admin rights from that persona would turn every one of those into a blocked action and a helpdesk call.</p>
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="" class="wp-image-26743" decoding="async" src="assets/efb2a8ea534abcc1/img_25.png"/></figure>
+<p data-block-type="core"><strong>The unmanaged report is also your ongoing discovery tool.</strong> Even after a persona is well covered, new unmanaged elevations will occasionally appear – a new tool someone started using, an application that updated and changed its behavior. Treat the unmanaged report as a running backlog of rule candidates. Reviewing it periodically is part of the operational hygiene that keeps the deployment healthy over time.</p>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-26745" decoding="async" src="assets/efb2a8ea534abcc1/img_26.png"/></figure>
+<p data-block-type="core">The reports turn rule-building from a one-time configuration task into a feedback loop. You build a rule, watch it move an application from unmanaged to managed, and confirm that the count of unmanaged elevations for that persona is trending toward zero. When it reaches zero (it may never do, but you get the point), that persona is ready for the next phase, and that next phase, removing local admin rights, is where the real payoff of everything so far finally lands.</p>
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow" data-block-type="core">
+<p data-block-type="core">With EPM, you have <span class="stk-highlight">the license to kill</span> local admin!<br/><em>– Simon</em></p>
+</blockquote>
+<h2 class="wp-block-heading" id="10-two-known-issues-worth-knowing-before-you-build"><a aria-hidden="true" class="aal_anchor" href="#two-known-issues-worth-knowing-before-you-build" id="two-known-issues-worth-knowing-before-you-build"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Two known issues worth knowing before you build</h2>
+<p data-block-type="core">Two environmental factors can stop EPM rules from working, regardless of how well you build them. Both are easy to miss and worth checking before you spend a day troubleshooting a rule that was never going to work.</p>
+<p data-block-type="core"><strong>Windows Administrator Protection.</strong> At the time of writing, <a href="https://learn.microsoft.com/en-us/windows/security/application-security/application-control/administrator-protection/?wt.mc_id=MVP_314171&amp;tabs=intune" rel="noreferrer noopener" target="_blank">Administrator Protection</a> does not support elevations initiated from Intune Endpoint Privilege Management. If you enable Administrator Protection on devices where standard users rely on EPM for elevation, the elevation fails. Microsoft has stated this is being worked on, but for now, the two features are mutually exclusive on the same device. Check this before you deploy.</p>
+<p data-block-type="core"><strong>App Control for Business (formerly WDAC).</strong> If you run <a data-id="https://learn.microsoft.com/en-us/intune/device-configuration/endpoint-security/manage-app-control?wt.mc_id=MVP_314171" data-type="link" href="https://learn.microsoft.com/en-us/intune/device-configuration/endpoint-security/manage-app-control?wt.mc_id=MVP_314171" rel="noreferrer noopener" target="_blank">App Control for Business</a>, your policy must explicitly account for the EPM client components. EPM is not included in the default App Control policies, so a policy that blocks the EPM agent’s components can prevent EPM from functioning entirely. If you use application control, build the EPM components into your allow rules before you roll out EPM.</p>
+<p data-block-type="core">Both of these belong on your pre-deployment checklist. They are exactly the kind of thing that turns into a half-day of confused troubleshooting if you discover them after the fact – and we will go much deeper into troubleshooting in a later post in this series.</p>
+<hr class="wp-block-separator has-alpha-channel-opacity" data-block-type="core"/>
+<h2 class="wp-block-heading" id="11-closing-precision-is-a-discipline-not-a-setting"><a aria-hidden="true" class="aal_anchor" href="#closing-precision-is-a-discipline-not-a-setting" id="closing-precision-is-a-discipline-not-a-setting"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Closing: Precision is a discipline, not a setting</h2>
+<p data-block-type="core">There is no single correct way to build every rule. File hash and certificate each have a place, and the right choice depends on the application in front of you – how often it updates, how it is signed, how much risk it carries, and which persona needs it.</p>
+<p data-block-type="core">But the underlying discipline is consistent. Identify files as precisely as the situation allows. Never rely on a weak attribute alone. Control what an elevated process is allowed to spawn. Test on a real standard user before you trust a rule. And structure your assignments so that conflict resolution works for you rather than surprising you.</p>
+<p data-block-type="core">Do that, and your rule set becomes an asset – a precise, durable, auditable definition of exactly what your organization permits to be elevated, and nothing more. That is the goal. That is what taking back the endpoint actually looks like in practice.</p>
+<p data-block-type="core">With your rules built and validated, you are finally ready to do the thing this whole series has been building toward: start removing local admin rights. </p>
+<p data-block-type="core">In the next post, we turn to the user persona that makes it hardest, the developer, and the architectural decisions that come with it.</p>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#faq" id="faq"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>FAQ</h2>
+<div class="rank-math-block" id="rank-math-faq">
+<div class="rank-math-list">
+<div class="rank-math-list-item" id="faq-question-1781636700294">
+<h4 class="rank-math-question"><a aria-hidden="true" class="aal_anchor" href="#what-are-the-two-parts-of-an-endpoint-privilege-management-epm-rule" id="what-are-the-two-parts-of-an-endpoint-privilege-management-epm-rule"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>What are the two parts of an Endpoint Privilege Management (EPM) rule?</h4>
+<div class="rank-math-answer">
+<p>An EPM rule consists of:<br/>A <strong>detection</strong> (how the file is identified)<br/>An <strong>elevation action</strong> (what happens when the file runs)</p>
+</div>
+</div>
+<div class="rank-math-list-item" id="faq-question-1781636779828">
+<h4 class="rank-math-question"><a aria-hidden="true" class="aal_anchor" href="#what-makes-a-strong-detection-attribute-in-epm-rules" id="what-makes-a-strong-detection-attribute-in-epm-rules"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>What makes a strong detection attribute in EPM rules?</h4>
+<div class="rank-math-answer">
+<p>Strong attributes are <strong>difficult to forge and tied to the file itself</strong>, such as:<br/>– File hash<br/>– Certificate (publisher signature)<br/>– Signature-protected metadata like product name<br/>Weak attributes like file name and path should not be used alone.</p>
+</div>
+</div>
+<div class="rank-math-list-item" id="faq-question-1781636814659">
+<h4 class="rank-math-question"><a aria-hidden="true" class="aal_anchor" href="#why-cant-i-build-an-epm-rule-using-only-the-file-name-and-the-file-path" id="why-cant-i-build-an-epm-rule-using-only-the-file-name-and-the-file-path"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Why can’t I build an EPM rule using only the file name and the file path?</h4>
+<div class="rank-math-answer">
+<p>Because both the file name and the path are easily changed by users or attackers, they are unreliable for securely identifying a file.</p>
+</div>
+</div>
+<div class="rank-math-list-item" id="faq-question-1781636827197">
+<h4 class="rank-math-question"><a aria-hidden="true" class="aal_anchor" href="#what-is-the-main-advantage-of-using-a-file-hash-in-epm-rules" id="what-is-the-main-advantage-of-using-a-file-hash-in-epm-rules"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>What is the main advantage of using a file hash in EPM rules?</h4>
+<div class="rank-math-answer">
+<p>A file hash provides <strong>maximum precision</strong>, ensuring the rule only matches the exact binary intended—even a single change breaks the match.</p>
+</div>
+</div>
+<div class="rank-math-list-item" id="faq-question-1781636843006">
+<h4 class="rank-math-question"><a aria-hidden="true" class="aal_anchor" href="#when-does-a-file-hash-become-the-wrong-choice" id="when-does-a-file-hash-become-the-wrong-choice"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>When does a file hash become the wrong choice?</h4>
+<div class="rank-math-answer">
+<p>File hash is the wrong choice when:<br/>– The application updates frequently<br/>– The hash changes constantly<br/>– Maintaining the rule becomes a <strong>manual, ongoing task</strong></p>
+</div>
+</div>
+<div class="rank-math-list-item" id="faq-question-1781636865005">
+<h4 class="rank-math-question"><a aria-hidden="true" class="aal_anchor" href="#what-is-the-main-advantage-of-certificate-based-rules" id="what-is-the-main-advantage-of-certificate-based-rules"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>What is the main advantage of certificate-based rules?</h4>
+<div class="rank-math-answer">
+<p>Certificate rules are <strong>durable across updates</strong>, since the same certificate is used to sign new versions of the application.</p>
+</div>
+</div>
+<div class="rank-math-list-item" id="faq-question-1781636878099">
+<h4 class="rank-math-question"><a aria-hidden="true" class="aal_anchor" href="#what-is-the-biggest-risk-of-using-certificate-only-rules" id="what-is-the-biggest-risk-of-using-certificate-only-rules"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>What is the biggest risk of using certificate-only rules?</h4>
+<div class="rank-math-answer">
+<p>A certificate-only rule can <strong>elevate every application signed by that certificate</strong>, not just the one you intended.</p>
+</div>
+</div>
+<div class="rank-math-list-item" id="faq-question-1781636896353">
+<h4 class="rank-math-question"><a aria-hidden="true" class="aal_anchor" href="#how-do-you-safely-use-certificate-based-detection-in-epm" id="how-do-you-safely-use-certificate-based-detection-in-epm"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>How do you safely use certificate-based detection in EPM?</h4>
+<div class="rank-math-answer">
+<p>By combining the certificate with <strong>signature-protected metadata</strong> (such as the product name), the rule can be narrowed to a specific application.</p>
+</div>
+</div>
+<div class="rank-math-list-item" id="faq-question-1781636911681">
+<h4 class="rank-math-question"><a aria-hidden="true" class="aal_anchor" href="#what-is-the-purpose-of-the-child-process-behavior-setting-in-epm" id="what-is-the-purpose-of-the-child-process-behavior-setting-in-epm"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>What is the purpose of the child process behavior setting in EPM?</h4>
+<div class="rank-math-answer">
+<p>It controls whether processes launched by an elevated application:<br/>– Inherit elevation<br/>– Require their own rule<br/>– Or run as a standard user<br/>This helps prevent unintended privilege escalation.</p>
+</div>
+</div>
+<div class="rank-math-list-item" id="faq-question-1781636938871">
+<h4 class="rank-math-question"><a aria-hidden="true" class="aal_anchor" href="#how-should-you-choose-between-a-file-hash-and-a-certificate-in-epm-rules" id="how-should-you-choose-between-a-file-hash-and-a-certificate-in-epm-rules"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>How should you choose between a file hash and a certificate in EPM rules?</h4>
+<div class="rank-math-answer">
+<p>The choice depends on:<br/>– <strong>Update frequency of the application</strong><br/>– <strong>Risk level of the tool</strong><br/>– <strong>Who needs the elevation (persona)</strong><br/>In practice, different applications require different detection strategies rather than a one-size-fits-all approach.</p>
+</div>
+</div>
+<div class="rank-math-list-item" id="faq-question-1781636983064">
+<h4 class="rank-math-question"><a aria-hidden="true" class="aal_anchor" href="#what-happens-if-a-deny-rule-conflicts-with-an-allow-rule-in-epm" id="what-happens-if-a-deny-rule-conflicts-with-an-allow-rule-in-epm"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>What happens if a deny rule conflicts with an allow rule in EPM?</h4>
+<div class="rank-math-answer">
+<p>A deny rule <strong>always takes precedence</strong> over any allow rule.<br/>If both exist for the same file, the deny rule wins and the elevation is blocked—by design, so you can use deny rules as a <strong>hard safety backstop</strong> that cannot be overridden.</p>
+</div>
+</div>
+<div class="rank-math-list-item" id="faq-question-1783068992766">
+<h4 class="rank-math-question"><a aria-hidden="true" class="aal_anchor" href="#can-intune-endpoint-privilege-management-elevate-unsigned-applications" id="can-intune-endpoint-privilege-management-elevate-unsigned-applications"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Can Intune Endpoint Privilege Management elevate unsigned applications?</h4>
+<div class="rank-math-answer">
+<p>Yes. Unsigned applications can be elevated using file hash-based rules. However, because unsigned files cannot be identified using publisher certificates, hash-based detection is usually required and introduces additional maintenance whenever the application changes.</p>
+</div>
+</div>
+<div class="rank-math-list-item" id="faq-question-1783069031674">
+<h4 class="rank-math-question"><a aria-hidden="true" class="aal_anchor" href="#should-epm-elevation-rules-be-assigned-to-users-or-devices" id="should-epm-elevation-rules-be-assigned-to-users-or-devices"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Should EPM elevation rules be assigned to users or devices?</h4>
+<div class="rank-math-answer">
+<p>It depends on the scenario. User assignment is often preferred for persona-based deployments because elevation follows the user across devices. Device assignment is typically better suited for shared devices, kiosks, or scenarios where elevation requirements are tied to the device rather than the individual.</p>
+</div>
+</div>
+<div class="rank-math-list-item" id="faq-question-1783069186285">
+<h4 class="rank-math-question"><a aria-hidden="true" class="aal_anchor" href="#why-should-epm-persona-groups-be-governed-carefully" id="why-should-epm-persona-groups-be-governed-carefully"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Why should EPM Persona groups be governed carefully?</h4>
+<div class="rank-math-answer">
+<p>Membership in EPM Persona groups determines which users are allowed to execute approved applications with elevated privileges. These groups should therefore be treated as security-sensitive groups, with controlled ownership, periodic reviews, and appropriate administrative protections.</p>
+</div>
+</div>
+</div>
+</div>
+<p data-block-type="core"></p>
+<p class="post-views content-post post-26671 entry-meta load-static">
+<span class="post-views-icon dashicons dashicons-chart-bar"></span> <span class="post-views-label">Views:</span> <span class="post-views-count">257</span>
+</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
