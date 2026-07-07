@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A Deep Dive into Controlled Feature Rollout: Why Features are turned off by default</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Call4Cloud (Rudy Ooms)</span>
+    <span class="date">July 6, 2026</span>
+  </div>
+  <h1>A Deep Dive into Controlled Feature Rollout: Why Features are turned off by default</h1>
+  <div class="orig">Saved for offline reading · <a href="https://patchmypc.com/blog/how-controlled-feature-rollout-actually-works/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="post-content">
+<p class="wp-block-paragraph">This blog explains what <strong>Controlled Feature Rollout (CFR) </strong>is, why Microsoft ships features in an off-by-default state, and how a device determines when a new capability or Windows hotfix is allowed to be activated. We will walk through the technical flow inside Windows, including the <strong>OneSettings refresh process</strong>, the<strong> FeatureConfig payload,</strong> and how the <strong>FeatureManagement </strong>registry ultimately decides which devices are switched on first.</p>
+<h2 class="wp-block-heading" id="h-controlled-feature-rollout">Controlled Feature Rollout<span class="clth-copy-icon" data-heading-id="h-controlled-feature-rollout"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Sometimes a Windows update installs new functionality or a feature onto a device, but nothing appears to change or improve. The updated binaries are there, the new logic is present in the DLLs, and technically, the feature should be working. Yet it remains inactive until Microsoft decides to turn it on. That behavior is intentional. It is part of <strong>Controlled Feature Rollout.</strong></p>
+<p class="wp-block-paragraph">Instead of enabling new functionality immediately for every device, Microsoft ships the code first and activates it later in carefully measured waves/buckets. The feature is present but gated and only becomes active when the device receives an updated configuration that approves it for rollout.</p>
+<p class="wp-block-paragraph">Understanding that distinction matters because, from the outside, it can look like something is broken. Two devices on the same build may behave differently, even when running the same Windows version and build. That is exactly what surfaced during the certificate renewal investigation <strong>(KSP bug), where the fix already existed in the OS,</strong> but the rollout flag had not yet been enabled for those systems, forcing me to activate it manually with ViveTool.</p>
+<figure class="wp-block-image size-full"><a data-caption="controlled feature rollout using the vivetool" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/01/image-36.png"><picture class="wp-image-171552" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-36.png.webp 624w, https://patchmypc.com/app/uploads/2026/01/image-36-300x85.png.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="controlled feature rollout using the vivetool" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-36.png 624w, https://patchmypc.com/app/uploads/2026/01/image-36-300x85.png 300w" decoding="async" src="assets/b54ce3cb92f5c77f/img_0.png"/><noscript><img alt="controlled feature rollout using the vivetool" decoding="async" src="assets/b54ce3cb92f5c77f/img_1.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">That experience is what triggered this deeper dive into how <strong>Controlled Feature Rollout</strong> actually works behind the scenes.</p>
+<h2 class="wp-block-heading" id="h-why-microsoft-ships-features-in-an-off-by-default-state">Why Microsoft ships features in an off-by-default state<span class="clth-copy-icon" data-heading-id="h-why-microsoft-ships-features-in-an-off-by-default-state"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">When Microsoft delivers a new feature or a servicing fix, the code is often shipped broadly as part of a cumulative or feature update but remains disabled by default. The logic sits behind a feature gate, such as the check that guarded the KSP renewal behavior. (ProcessRenewalRequestWithRetry is gated by the Feature_Bypass3rdpartyKspInrenew check.)</p>
+<figure class="wp-block-image size-large"><a data-caption="controlled feature rollout WilFeature" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/01/image-8-1024x122.png"><picture class="wp-image-171477" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-8-1024x122.png.webp 1024w, https://patchmypc.com/app/uploads/2026/01/image-8-300x36.png.webp 300w, https://patchmypc.com/app/uploads/2026/01/image-8-768x91.png.webp 768w, https://patchmypc.com/app/uploads/2026/01/image-8-1536x183.png.webp 1536w, https://patchmypc.com/app/uploads/2026/01/image-8-2048x244.png.webp 2048w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="controlled feature rollout WilFeature" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-8-1024x122.png 1024w, https://patchmypc.com/app/uploads/2026/01/image-8-300x36.png 300w, https://patchmypc.com/app/uploads/2026/01/image-8-768x91.png 768w, https://patchmypc.com/app/uploads/2026/01/image-8-1536x183.png 1536w, https://patchmypc.com/app/uploads/2026/01/image-8-2048x244.png 2048w" decoding="async" src="assets/b54ce3cb92f5c77f/img_2.png"/><noscript><img alt="controlled feature rollout WilFeature" decoding="async" src="assets/b54ce3cb92f5c77f/img_3.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">Shipping the code first ensures the binary payload is already present everywhere. Activating it later with the <strong>Controlled Feature Rollout </strong>allows Microsoft to control the impact. A rollout wave can begin with a small, targeted device population. Telemetry is monitored. Stability and behavioral signals are evaluated. If problems occur, the feature activation can be paused without issuing another OS update. If everything looks good, the rollout expands.</p>
+<p class="wp-block-paragraph">The important part is that activation is driven by configuration rather than code delivery. The code may already be in place, but a device does not enable it until it receives the rollout decision. That brings us to the onesettings platform that coordinates those decisions.</p>
+<h2 class="wp-block-heading" id="h-the-role-of-featureconfig-json-in-a-controlled-feature-rollout">The role of FeatureConfig.json in a Controlled Feature Rollout<span class="clth-copy-icon" data-heading-id="h-the-role-of-featureconfig-json-in-a-controlled-feature-rollout"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Windows receives rollout configuration through the <strong>OneSettings platform. </strong>Controlled Feature Rollout is one of the systems that sits on top of it. When Microsoft advances a rollout wave, the device does not download a new Windows Update. Instead, it retrieves an updated FeatureConfig payload from the OneSettings service endpoint: <strong>settings-win.data.microsoft.com</strong></p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/01/image-12-1024x91.png"><picture class="wp-image-171485" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-12-1024x91.png.webp 1024w, https://patchmypc.com/app/uploads/2026/01/image-12-300x27.png.webp 300w, https://patchmypc.com/app/uploads/2026/01/image-12-768x68.png.webp 768w, https://patchmypc.com/app/uploads/2026/01/image-12.png.webp 1199w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-12-1024x91.png 1024w, https://patchmypc.com/app/uploads/2026/01/image-12-300x27.png 300w, https://patchmypc.com/app/uploads/2026/01/image-12-768x68.png 768w, https://patchmypc.com/app/uploads/2026/01/image-12.png 1199w" decoding="async" src="assets/b54ce3cb92f5c77f/img_4.png"/><noscript><img alt="" decoding="async" src="assets/b54ce3cb92f5c77f/img_5.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">The logic that drives this lives in the <strong>wosc.dll </strong>and related components.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/01/image-11.png"><picture class="wp-image-171484" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-11.png.webp 645w, https://patchmypc.com/app/uploads/2026/01/image-11-300x180.png.webp 300w" sizes="(max-width: 645px) 100vw, 645px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 645px) 100vw, 645px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-11.png 645w, https://patchmypc.com/app/uploads/2026/01/image-11-300x180.png 300w" decoding="async" src="assets/b54ce3cb92f5c77f/img_6.png"/><noscript><img alt="" decoding="async" src="assets/b54ce3cb92f5c77f/img_7.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">If you watch it with Procmon or ETW tracing, you will see that when the configuration is retrieved, Windows writes two files into: <strong>config.json and featureconfig.json.</strong></p>
+<figure class="wp-block-image size-full"><a data-caption="controlled feature rollout featureconfig" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/01/image-13.png"><picture class="wp-image-171486" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-13.png.webp 875w, https://patchmypc.com/app/uploads/2026/01/image-13-300x69.png.webp 300w, https://patchmypc.com/app/uploads/2026/01/image-13-768x176.png.webp 768w" sizes="(max-width: 875px) 100vw, 875px" type="image/webp"/>
+<img alt="controlled feature rollout featureconfig" data-lazy-sizes="(max-width: 875px) 100vw, 875px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-13.png 875w, https://patchmypc.com/app/uploads/2026/01/image-13-300x69.png 300w, https://patchmypc.com/app/uploads/2026/01/image-13-768x176.png 768w" decoding="async" src="assets/b54ce3cb92f5c77f/img_8.png"/><noscript><img alt="controlled feature rollout featureconfig" decoding="async" src="assets/b54ce3cb92f5c77f/img_9.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">FeatureConfig.json is one of the important ones here. It contains the feature identifiers, rollout state, device targeting attributes, flight identifiers, staged rollout metadata, and whether a feature should be enabled, disabled, or delayed on that specific system. Inside that payload is a JSON document containing feature identifiers, rollout state, targeting metadata, wave information, device attributes, and other evaluation rules.</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/01/image-15-1024x73.png"><picture class="wp-image-171489" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-15-1024x73.png.webp 1024w, https://patchmypc.com/app/uploads/2026/01/image-15-300x21.png.webp 300w, https://patchmypc.com/app/uploads/2026/01/image-15-768x55.png.webp 768w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-15-1024x73.png 1024w, https://patchmypc.com/app/uploads/2026/01/image-15-300x21.png 300w, https://patchmypc.com/app/uploads/2026/01/image-15-768x55.png 768w, https://patchmypc.com/app/uploads/2026/01/image-15.png 1401w" decoding="async" src="assets/b54ce3cb92f5c77f/img_10.png"/><noscript><img alt="" decoding="async" src="assets/b54ce3cb92f5c77f/img_11.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">Some <strong>Feature IDs </strong>(like <strong> 45172197</strong>) inside this file may look familiar. For example, the <strong><a href="https://patchmypc.com/blog/administrator-protection-windows-11-25h2/">ShadowAdmin</a></strong> feature appears as one of the FIDs inside the payload. And that same data is mirrored into the registry under: <strong> HKLM\SYSTEM\CurrentControlSet\Control\FeatureManagement</strong></p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/01/image-16-1024x206.png"><picture class="wp-image-171493" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-16-1024x206.png.webp 1024w, https://patchmypc.com/app/uploads/2026/01/image-16-300x60.png.webp 300w, https://patchmypc.com/app/uploads/2026/01/image-16-768x154.png.webp 768w, https://patchmypc.com/app/uploads/2026/01/image-16.png.webp 1383w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-16-1024x206.png 1024w, https://patchmypc.com/app/uploads/2026/01/image-16-300x60.png 300w, https://patchmypc.com/app/uploads/2026/01/image-16-768x154.png 768w, https://patchmypc.com/app/uploads/2026/01/image-16.png 1383w" decoding="async" src="assets/b54ce3cb92f5c77f/img_12.png"/><noscript><img alt="" decoding="async" src="assets/b54ce3cb92f5c77f/img_13.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">Windows does not randomly flip these switches. Every decision is evaluated against device properties, rollout targeting, build compatibility, servicing conditions, and safety indicators. Some features are enabled automatically on newer builds where they are considered baseline. </p>
+<figure class="wp-block-image size-full"><a data-caption="controlled feature rollout vivetool" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/01/image-17.png"><picture class="wp-image-171494" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-17.png.webp 716w, https://patchmypc.com/app/uploads/2026/01/image-17-300x35.png.webp 300w" sizes="(max-width: 716px) 100vw, 716px" type="image/webp"/>
+<img alt="controlled feature rollout vivetool" data-lazy-sizes="(max-width: 716px) 100vw, 716px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-17.png 716w, https://patchmypc.com/app/uploads/2026/01/image-17-300x35.png 300w" decoding="async" src="assets/b54ce3cb92f5c77f/img_14.png"/><noscript><img alt="controlled feature rollout vivetool" decoding="async" src="assets/b54ce3cb92f5c77f/img_15.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">Others remain staged until the <strong>Controlled Feature Rollout</strong> configuration explicitly allows activation. The configuration does not remain static. The device periodically refreshes it, and that refresh can be triggered in more than one way.</p>
+<h2 class="wp-block-heading" id="h-how-the-device-refreshes-the-feature-configuration">How the device refreshes the feature configuration<span class="clth-copy-icon" data-heading-id="h-how-the-device-refreshes-the-feature-configuration"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">A device can update its Feature Configuration through scheduled refresh or through event-driven triggers. Both end up feeding the same evaluation logic, but they are initiated for different reasons. Scheduled refresh happens through the OneSettings <strong>RefreshCache</strong> task. </p>
+<figure class="wp-block-image size-full"><a data-caption="controlled feature rollout scheduled task" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/01/image-19.png"><picture class="wp-image-171496" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-19.png.webp 979w, https://patchmypc.com/app/uploads/2026/01/image-19-300x137.png.webp 300w, https://patchmypc.com/app/uploads/2026/01/image-19-768x351.png.webp 768w" sizes="(max-width: 979px) 100vw, 979px" type="image/webp"/>
+<img alt="controlled feature rollout scheduled task" data-lazy-sizes="(max-width: 979px) 100vw, 979px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-19.png 979w, https://patchmypc.com/app/uploads/2026/01/image-19-300x137.png 300w, https://patchmypc.com/app/uploads/2026/01/image-19-768x351.png 768w" decoding="async" src="assets/b54ce3cb92f5c77f/img_16.png"/><noscript><img alt="controlled feature rollout scheduled task" decoding="async" src="assets/b54ce3cb92f5c77f/img_17.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">This Refresh Cache task periodically retrieves configuration from the service and writes a new FeatureConfig.json when changes are available. </p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/01/image-25.png"><img alt="" class="wp-image-171541" data-lazy-sizes="(max-width: 743px) 100vw, 743px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-25.png 743w, https://patchmypc.com/app/uploads/2026/01/image-25-300x13.png 300w" decoding="async" src="assets/b54ce3cb92f5c77f/img_18.png"/><noscript><img alt="" class="wp-image-171541" decoding="async" src="assets/b54ce3cb92f5c77f/img_19.png"/></noscript></a></figure>
+<p class="wp-block-paragraph">Even if nothing else happens on the device, this mechanism ensures that rollout state eventually converges with what Microsoft intends. The second path is more dynamic and comes from the <strong>FeatureConfig ReconcileFeatures task.</strong></p>
+<figure class="wp-block-image size-full"><a data-caption="controlled feature rollout scheduled tasks" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/01/image-23.png"><picture class="wp-image-171539" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-23.png.webp 808w, https://patchmypc.com/app/uploads/2026/01/image-23-300x98.png.webp 300w, https://patchmypc.com/app/uploads/2026/01/image-23-768x251.png.webp 768w" sizes="(max-width: 808px) 100vw, 808px" type="image/webp"/>
+<img alt="controlled feature rollout scheduled tasks" data-lazy-sizes="(max-width: 808px) 100vw, 808px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-23.png 808w, https://patchmypc.com/app/uploads/2026/01/image-23-300x98.png 300w, https://patchmypc.com/app/uploads/2026/01/image-23-768x251.png 768w" decoding="async" src="assets/b54ce3cb92f5c77f/img_20.png"/><noscript><img alt="controlled feature rollout scheduled tasks" decoding="async" src="assets/b54ce3cb92f5c77f/img_21.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">Instead of being driven by a simple timer, this task reacts to Windows Notification Facility (WNF) state changes. The task definition contains multiple WNF triggers, including several that execute immediately and others that run after a short delay. </p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/01/image-26.png"><img alt="" class="wp-image-171542" data-lazy-sizes="(max-width: 420px) 100vw, 420px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-26.png 420w, https://patchmypc.com/app/uploads/2026/01/image-26-300x252.png 300w" decoding="async" src="assets/b54ce3cb92f5c77f/img_22.png"/><noscript><img alt="" class="wp-image-171542" decoding="async" src="assets/b54ce3cb92f5c77f/img_23.png"/></noscript></a></figure>
+<p class="wp-block-paragraph">When one of these WNF states changes, Windows treats that event as a signal that the configuration context may have shifted and that the feature state needs to be re-evaluated. During testing, this behavior became very visible. We enabled the <strong>“get the latest updates as soon as there are available”</strong></p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/01/image-29.png"><picture class="wp-image-171545" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-29.png.webp 871w, https://patchmypc.com/app/uploads/2026/01/image-29-300x38.png.webp 300w, https://patchmypc.com/app/uploads/2026/01/image-29-768x97.png.webp 768w" sizes="(max-width: 871px) 100vw, 871px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 871px) 100vw, 871px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-29.png 871w, https://patchmypc.com/app/uploads/2026/01/image-29-300x38.png 300w, https://patchmypc.com/app/uploads/2026/01/image-29-768x97.png 768w" decoding="async" src="assets/b54ce3cb92f5c77f/img_24.png"/><noscript><img alt="" decoding="async" src="assets/b54ce3cb92f5c77f/img_25.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">After enabling the “<strong>Get the latest updates as soon as they are available”</strong> policy, the ReconcileFeatures task executed almost instantly and downloaded a newer FeatureConfig version, even though RefreshCache had not yet run.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/01/image-30.png"><picture class="wp-image-171546" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-30.png.webp 647w, https://patchmypc.com/app/uploads/2026/01/image-30-300x28.png.webp 300w" sizes="(max-width: 647px) 100vw, 647px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 647px) 100vw, 647px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-30.png 647w, https://patchmypc.com/app/uploads/2026/01/image-30-300x28.png 300w" decoding="async" src="assets/b54ce3cb92f5c77f/img_26.png"/><noscript><img alt="" decoding="async" src="assets/b54ce3cb92f5c77f/img_27.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">New rollout and the corresponding feature IDs appeared immediately in the registry and JSON payload. </p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/01/image-31.png"><picture class="wp-image-171547" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-31.png.webp 463w, https://patchmypc.com/app/uploads/2026/01/image-31-300x255.png.webp 300w" sizes="(max-width: 463px) 100vw, 463px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 463px) 100vw, 463px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-31.png 463w, https://patchmypc.com/app/uploads/2026/01/image-31-300x255.png 300w" decoding="async" src="assets/b54ce3cb92f5c77f/img_28.png"/><noscript><img alt="" decoding="async" src="assets/b54ce3cb92f5c77f/img_29.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">In this case, it was ReconcileFeatures rather than RefreshCache that triggered the download. That makes sense when you look at what the reconciliation process is actually responsible for.</p>
+<h2 class="wp-block-heading" id="h-the-role-of-wnf-triggers-in-reconcilefeatures">The role of WNF triggers in ReconcileFeatures<span class="clth-copy-icon" data-heading-id="h-the-role-of-wnf-triggers-in-reconcilefeatures"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">As mentioned before, the ReconcileFeatures task is not just a periodic scheduled task. It is also bound to multiple WNF state triggers.</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/01/image-37-1024x457.png"><picture class="wp-image-171553" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-37-1024x457.png.webp 1024w, https://patchmypc.com/app/uploads/2026/01/image-37-300x134.png.webp 300w, https://patchmypc.com/app/uploads/2026/01/image-37-768x343.png.webp 768w, https://patchmypc.com/app/uploads/2026/01/image-37.png.webp 1213w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-37-1024x457.png 1024w, https://patchmypc.com/app/uploads/2026/01/image-37-300x134.png 300w, https://patchmypc.com/app/uploads/2026/01/image-37-768x343.png 768w, https://patchmypc.com/app/uploads/2026/01/image-37.png 1213w" decoding="async" src="assets/b54ce3cb92f5c77f/img_30.png"/><noscript><img alt="" decoding="async" src="assets/b54ce3cb92f5c77f/img_31.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">The task XML includes WNF state change triggers such as:</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/01/image-28.png"><picture class="wp-image-171544" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-28.png.webp 919w, https://patchmypc.com/app/uploads/2026/01/image-28-300x8.png.webp 300w, https://patchmypc.com/app/uploads/2026/01/image-28-768x20.png.webp 768w" sizes="(max-width: 919px) 100vw, 919px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 919px) 100vw, 919px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-28.png 919w, https://patchmypc.com/app/uploads/2026/01/image-28-300x8.png 300w, https://patchmypc.com/app/uploads/2026/01/image-28-768x20.png 768w" decoding="async" src="assets/b54ce3cb92f5c77f/img_32.png"/><noscript><img alt="" decoding="async" src="assets/b54ce3cb92f5c77f/img_33.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph"><code>WNF_SHEL_CDM_FEATURE_CONFIG_FIRST_USAGE</code></p>
+<p class="wp-block-paragraph">and several others related to configuration updates and feature usage signals. These WNF notifications do not contain the CFR data themselves. They act as signals that something changed and the system should reevaluate. When one of these states is raised, ReconcileFeatures runs and processes the FeatureConfig rules again.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/01/image-33.png"><img alt="" class="wp-image-171549" data-lazy-sizes="(max-width: 817px) 100vw, 817px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-33.png 817w, https://patchmypc.com/app/uploads/2026/01/image-33-300x41.png 300w, https://patchmypc.com/app/uploads/2026/01/image-33-768x104.png 768w" decoding="async" src="assets/b54ce3cb92f5c77f/img_34.png"/><noscript><img alt="" class="wp-image-171549" decoding="async" src="assets/b54ce3cb92f5c77f/img_35.png"/></noscript></a></figure>
+<p class="wp-block-paragraph">This explains scenarios where feature behavior changes without an update being installed. The configuration changed and Windows re processed the rollout logic.  It also explains why activating the “Get the latest updates as soon as they are available” policy can immediately trigger evaluation. That policy enables optional and preview content, sets rollout participation flags, and in practice caused ReconcileFeatures to run on my system and download a newer FeatureConfig payload.</p>
+<h2 class="wp-block-heading" id="h-what-happens-during-feature-reconciliation">What happens during Feature reconciliation<span class="clth-copy-icon" data-heading-id="h-what-happens-during-feature-reconciliation"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Once the configuration is refreshed, ReconcileFeatures does not simply flip feature toggles. It walks across several FeatureManagement registry paths, and it also looks at the staged and overrides structures. </p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/01/image-32.png"><picture class="wp-image-171548" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-32.png.webp 971w, https://patchmypc.com/app/uploads/2026/01/image-32-300x128.png.webp 300w, https://patchmypc.com/app/uploads/2026/01/image-32-768x327.png.webp 768w" sizes="(max-width: 971px) 100vw, 971px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 971px) 100vw, 971px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-32.png 971w, https://patchmypc.com/app/uploads/2026/01/image-32-300x128.png 300w, https://patchmypc.com/app/uploads/2026/01/image-32-768x327.png 768w" decoding="async" src="assets/b54ce3cb92f5c77f/img_36.png"/><noscript><img alt="" decoding="async" src="assets/b54ce3cb92f5c77f/img_37.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">Two important registry locations in this process are: FeatureManagement\Overrides and FeatureManagement\UsageSubscriptions</p>
+<figure class="wp-block-image size-full"><a data-caption="controlled feature rollout featuremanagement" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/01/image-34.png"><img alt="controlled feature rollout featuremanagement" class="wp-image-171550" data-lazy-sizes="(max-width: 973px) 100vw, 973px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/01/image-34.png 973w, https://patchmypc.com/app/uploads/2026/01/image-34-300x106.png 300w, https://patchmypc.com/app/uploads/2026/01/image-34-768x271.png 768w" decoding="async" src="assets/b54ce3cb92f5c77f/img_38.png"/><noscript><img alt="controlled feature rollout featuremanagement" class="wp-image-171550" decoding="async" src="assets/b54ce3cb92f5c77f/img_39.png"/></noscript></a></figure>
+<p class="wp-block-paragraph">Overrides contain the feature state that has been explicitly forced or adjusted. This is also the place where tools like Mach2 or ViveTool write their values. The ReconcileFeatures task is designed to restore overrides and return feature state to what the rollout configuration intends. That is why Microsoft documentation calls this out in the context of Temporary Enterprise Feature Control. Even if an override is applied manually, the system may revert it when reconciliation runs, unless the override is treated as a higher-priority policy entry.</p>
+<p class="wp-block-paragraph">During this same pass the code also reads flight and usage metadata. Procmon traces clearly show lookups of flight IDs, reporting targets, rollout timestamps, and feature impression state. This information is used both for gating and for telemetry reporting. Only after this reconciliation pass does the device decide whether a given feature flag should be enabled or remain off.</p>
+<h2 class="wp-block-heading" id="h-where-getctacpropertyalloc-fits-in">Where GetCtacPropertyAlloc fits in<span class="clth-copy-icon" data-heading-id="h-where-getctacpropertyalloc-fits-in"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Inside <strong>fcon.dll </strong>there is a function named<strong> GetCtacPropertyAlloc</strong>. ReconcileFeatures and related components call it to fetch CTAC and rollout properties at runtime.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/01/image-35.png"><noscript></noscript></a></figure>
+<p class="wp-block-paragraph">Depending on the requested property name, it returns:</p>
+<ul class="wp-block-list">
+<li>“FeatureConfigs”<br/>The full FeatureConfig payload as a string. This corresponds to the JSON that is written to disk.</li>
+<li>“MxVersion”<br/>The current configuration version.</li>
+<li>“MxState”<br/>The current rollout state for this device.</li>
+<li>“IsMicrosoftAAD”<br/>A simple yes or no value that tells FCON whether the device is in a Microsoft AAD context. This changes which rollout rules apply.</li>
+<li>“TriggeredFlightIds”<br/>The flights that have actually taken effect on the device.</li>
+</ul>
+<p class="wp-block-paragraph">This is the glue between the downloaded configuration, the registry structures, the evaluation logic, and the final feature enablement decision.</p>
+<h2 class="wp-block-heading" id="h-windows-flighting-overview">Windows Flighting Overview<span class="clth-copy-icon" data-heading-id="h-windows-flighting-overview"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">With Microsoft having almost no documentation about this Controlled Feature Rollout flow.. I decided to combine it all in a high overview.</p>
+<figure class="wp-block-image size-large"><a data-caption="controlled feature rollout CFR overview" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-6-1024x774.png"><picture class="wp-image-188427" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-6-1024x774.png.webp 1024w, https://patchmypc.com/app/uploads/2026/07/image-6-300x227.png.webp 300w, https://patchmypc.com/app/uploads/2026/07/image-6-768x580.png.webp 768w, https://patchmypc.com/app/uploads/2026/07/image-6.png.webp 1421w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<noscript></noscript>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-why-can-devices-behave-differently-even-on-the-same-build">Why can devices behave differently, even on the same build<span class="clth-copy-icon" data-heading-id="h-why-can-devices-behave-differently-even-on-the-same-build"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">From the outside, Controlled Feature Rollout can look inconsistent. Two devices install the same cumulative update and receive the same binaries, yet only one of them activates a new feature or hotfix. It feels random, but both systems are behaving exactly as designed.</p>
+<p class="wp-block-paragraph">The difference is not in the code but in the activation timing. Devices move through different rollout waves, belong to different targeting buckets, or process the reconciliation triggers at different moments. One machine may already have evaluated the latest FeatureConfig payload, while another is still waiting for its next evaluation window. The binaries exist on both, only the enablement decision differs.</p>
+<p class="wp-block-paragraph">That is exactly what happened in the KSP renewal investigation. The fix was already present on the device, but the rollout wave had not yet enabled it for that tenant. Manually toggling the feature flag with ViVeTool worked, but it effectively bypassed the intended CFR activation path. That moment made it clear that nothing was missing or broken. The feature was simply staged and waiting for its turn to be enabled. Which is what led to this deeper dive into how CFR actually flows through <strong>OneSettings, FeatureConfig, ReconcileFeatures, and the FeatureManagement registry.</strong></p>
+<h2 class="wp-block-heading" id="h-the-store-has-flights-too">The Store Has Flights Too<span class="clth-copy-icon" data-heading-id="h-the-store-has-flights-too"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">While investigating CFR, I noticed something interesting. Windows is not the only Microsoft component that can be remotely flighted… The Microsoft Store installation engine appears to have its own configuration and rollout mechanism.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/05/image-43.png"><picture class="wp-image-185895" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-43.png.webp 524w, https://patchmypc.com/app/uploads/2026/05/image-43-300x121.png.webp 300w" sizes="(max-width: 524px) 100vw, 524px" type="image/webp"/>
+<noscript></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">At the center of that process is the <strong>Store Install Service</strong>. This service is responsible for much more than simply downloading Store apps. This service essentially acts as a controlled pipeline for Store apps, making sure that apps are downloaded, staged, validated, installed, and provisioned in a reliable, managed, and remotely configurable way.</p>
+<p class="wp-block-paragraph">Instead of relying on traditional Windows Feature IDs, the Store retrieves a configuration payload from: <strong>/settings/v3.0/SCC/InstallService</strong></p>
+<p class="wp-block-paragraph">The payload contains hundreds of remotely configurable settings that control how the Store installation pipeline behaves. Unlike CFR, where a feature is enabled or disabled through a Feature ID, these settings directly influence the behavior of the service itself.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/05/image-44.png"><picture class="wp-image-185896" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/05/image-44.png.webp 682w, https://patchmypc.com/app/uploads/2026/05/image-44-300x132.png.webp 300w" sizes="(max-width: 682px) 100vw, 682px" type="image/webp"/>
+<noscript></noscript>
+</picture>
+</a></figure>
+<h3 class="wp-block-heading" id="h-id-61372494-sote-flight-example">ID 61372494 Sote Flight Example<span class="clth-copy-icon" data-heading-id="h-id-61372494-sote-flight-example"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">A good example of this was the <strong><a href="https://patchmypc.com/blog/company-portal-not-installing-during-autopilot-enrollment-0x87d1041c/">Company Portal 0x87D1041C issue during Autopilot pre-provisioning</a></strong>. After the May Windows update, the updated <strong>InstallService.dll </strong>contained a new code path called FixInstallUnderSystemContext, linked to feature ID 61372494. But the code being present was not enough to explain the behavior. The important part was that the Store InstallService OneSettings payload also contained FIXINSTALLUNDERSYSTEMCONTEXT set to 1.</p>
+<p class="wp-block-paragraph">That changed the installation flow for Store apps started under LocalSystem. Instead of completing the expected system-context registration path during pre-provisioning, InstallService tried to move into a logged-on-user flow. During Autopilot pre-provisioning, that is exactly the wrong timing, because the actual user session does not exist yet. The package could already be staged under WindowsApps, but Company Portal was not registered in the state Intune expected, causing ESP to fail with 0x87D1041C.</p>
+<p class="wp-block-paragraph">When the InstallService configuration was later reverted, and <strong>FIXINSTALLUNDERSYSTEMCONTEXT</strong> changed back to 0, Company Portal started installing successfully again with the same Intune assignment and the same Autopilot configuration. That made it a perfect example of Store-side flighting: the code was already present in Windows, but the behavior was controlled by a remote OneSettings value.</p>
+<h2 class="wp-block-heading" id="h-why-controlled-feature-rollout-matters-when-troubleshooting">Why Controlled Feature Rollout matters when troubleshooting<span class="clth-copy-icon" data-heading-id="h-why-controlled-feature-rollout-matters-when-troubleshooting"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">If a feature exists but does not appear to work yet, it is worth checking:</p>
+<ul class="wp-block-list">
+<li>Whether FeatureConfig.json has been updated</li>
+<li>Whether ReconcileFeatures has recently been evaluated</li>
+<li>Whether overrides are being reset</li>
+<li>Whether rollout participation policies are applied</li>
+<li>Whether the device is inside an enterprise-controlled rollout window</li>
+</ul>
+<p class="wp-block-paragraph">And if you want to be kept up to date about what Microsoft is activating in the background, check out the <strong><a href="https://github.com/call4cloud-code/onesettings-flight-monitor/tree/main">OneSettings Monitor on GitHub</a></strong>. It monitors the flights Microsoft is enabling remotely… which could be useful when something breaks out of a sudden…</p>
+<p class="wp-block-paragraph"></p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
