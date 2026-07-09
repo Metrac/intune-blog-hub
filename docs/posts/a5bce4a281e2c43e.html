@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin By Request Unboxed: My Full EPM Walkthrough</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">July 9, 2026</span>
+  </div>
+  <h1>Admin By Request Unboxed: My Full EPM Walkthrough</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/admin-by-request-epm/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p class="wp-block-paragraph">Advertisement: This post is the first episode of my unboxing series in partnership with Admin By Request. As always, the walkthrough, the opinions and the experiences are 100% my own.</p>
+<p class="wp-block-paragraph">Welcome to the first episode of my unboxing series! In this series I look at the products of Admin By Request in detail — and I start with the product the company is best known for: <strong>Endpoint Privilege Management (EPM)</strong>. In this blog post I explain what Admin By Request is, how the solution removes standing local admin rights without blocking people from doing their work, and what I would configure first. If you prefer watching over reading, the full video episode is here:</p>
+<figure class="wp-block-embed is-type-video is-provider-youtube wp-block-embed-youtube wp-embed-aspect-16-9 wp-has-aspect-ratio"></figure>
+<span id="more-19574"></span>
+<h2 class="wp-block-heading" id="why-should-i-care-about-privilege-management">Why should I care about privilege management?</h2>
+<p class="wp-block-paragraph">When I look at the future, I see three technologies that are essential: data, AI — which everyone talks about — and security. And security is the foundation of everything. Without strong security there is no successful AI strategy. Security is your insurance that everything in the company keeps running.</p>
+<p class="wp-block-paragraph">From my own experience, privilege management is one of the biggest security gaps in organizations. I worked in an environment with 120,000 devices, and there were many valid use cases why users needed admin rights: legacy software, applications bound to one specific device that no longer get updates, or users who simply need to change a setting on their machine. At the same time, local admin rights are the door opener for bad actors — for ransomware and supply chain attacks. That is the conflict every security team faces: users need rights to do their work, and you want to remove those rights to keep the environment secure.</p>
+<h2 class="wp-block-heading" id="what-is-admin-by-request">What is Admin By Request?</h2>
+<p class="wp-block-paragraph">Admin By Request is a zero trust endpoint platform, and EPM is its core product: it removes permanent local admin rights from your devices and replaces them with <strong>controlled, temporary elevation</strong>. Users keep a way to do everything they legitimately need — but nobody carries standing admin rights around anymore, and every elevation is documented.</p>
+<p class="wp-block-paragraph">The solution consists of a small client for the endpoint and a cloud portal for the admin side. Clients exist for <strong>Windows, macOS and Linux, plus Windows Server and mobile</strong> — which makes it, in my opinion, the most complete EPM product currently on the market. The installers are generated and signed for your tenant, and you distribute them manually or through your existing software distribution, for example <strong>Microsoft Intune</strong>.</p>
+<p class="wp-block-paragraph">One point that matters a lot for European companies: Admin By Request operates a <strong>dedicated data center in Frankfurt</strong>. Audit logs, elevation requests, configuration data — everything stays in Germany. If you have ever introduced a new endpoint tool and had the works council discussion about employee monitoring and data leaving the EU, you know how much easier this makes the conversation. Together with the configurable privacy settings, this is a strong GDPR story.</p>
+<h2 class="wp-block-heading" id="how-does-the-elevation-actually-work">How does the elevation actually work?</h2>
+<p class="wp-block-paragraph">There are two core patterns, and they cover almost every real-world case:</p>
+<p class="wp-block-paragraph"><strong>1. Per-process elevation (Run as Admin).</strong> A user needs to install or run one specific application with admin rights. Instead of elevating the whole user, only that single process gets elevated — the user drags the installer onto Admin By Request, provides a reason, and the process runs with admin permissions. When the process ends, the rights end with it. For me this is the real game changer, because it covers the most common request (“I just need to install this one tool”) without ever creating an admin user.</p>
+<p class="wp-block-paragraph"><strong>2. Timed admin sessions.</strong> For everything that is not a single process — think of a setting that genuinely requires administrator access — the user requests an admin session with a short justification. An admin reviews the request in the portal, approves it, and the user gets admin rights for a defined window with a visible timer. When the session ends (or the user clicks finish), the rights are revoked and the device is back to a normal user account.</p>
+<p class="wp-block-paragraph">A practical example from my own daily work: on a Mac, enabling the screen recording permission for Microsoft Teams requires local admin rights — a one-minute task that would classically justify a permanent admin account. With Admin By Request it is a short, approved, fully audited session instead.</p>
+<p class="wp-block-paragraph">Two details I really like on top: you can require <strong>multi-factor authentication</strong> for elevation — a Microsoft sign-in window against Entra ID instead of a local password — and every file is checked by a built-in <strong>malware scan</strong> before it is allowed to run elevated. If something malicious asks for admin rights, you get a real-time notification instead of an incident report three weeks later.</p>
+<h2 class="wp-block-heading" id="what-does-the-admin-side-look-like">What does the admin side look like?</h2>
+<p class="wp-block-paragraph">The portal is refreshingly straightforward. The summary page shows your subscription, the incoming requests, your security posture score, and product news — and there is a built-in chat if you have a question, so you are not waiting on a support ticket for a quick answer.</p>
+<figure class="wp-block-image"><img alt="Admin By Request portal summary page with Endpoint Privilege Management, free plan with 25 licenses and security posture score" data-recalc-dims="1" decoding="async" src="assets/a5bce4a281e2c43e/img_0.jpg"/></figure>
+<p class="wp-block-paragraph">Two things I recommend configuring right at the start:</p>
+<p class="wp-block-paragraph"><strong>Single sign-on.</strong> The initial login is username and password, and in an enterprise environment that should not stay this way. Connect the portal to Microsoft Entra ID, and from then on admins sign in through your identity provider, including MFA and conditional access.</p>
+<p class="wp-block-paragraph"><strong>Tenant settings.</strong> This is where the solution adapts to your organization:</p>
+<ul class="wp-block-list">
+<li><strong>Identity:</strong> An app registration connects Entra ID (or Google and other providers), which brings your groups into the tool — the basis for scoped configurations.</li>
+<li><strong>Data &amp; privacy:</strong> You decide what is visible. Requests can be anonymized so the approval decision is made on the description, not the person, and you control the data retention period. This is the section your works council will want to see.</li>
+<li><strong>API keys:</strong> For automation and integrations there is a documented API — pull audit data into your SIEM or build your own workflows.</li>
+<li><strong>Auto-update:</strong> The endpoint client keeps itself current, so you do not add another agent to your patching backlog.</li>
+</ul>
+<h2 class="wp-block-heading" id="which-guardrails-do-i-get">Which guardrails do I get?</h2>
+<p class="wp-block-paragraph">Removing admin rights only helps if the temporary elevation cannot be abused. This is where Admin By Request stands out for me:</p>
+<ul class="wp-block-list">
+<li><strong>Lockdown:</strong> The classic trick with temporary admin rights is to quickly create a new local user and add it to the administrators group — permanent admin through the back door. Lockdown blocks exactly that: during an elevated session, user groups, network settings and other critical areas can be hidden and protected against manipulation.</li>
+<li><strong>Intune compliance gate:</strong> You can require that a device is <strong>compliant in Intune</strong> before it may request elevation at all. Non-compliant device, no admin rights.</li>
+<li><strong>App control with machine learning:</strong> Frequently used applications can be pre-approved so users are not blocked and admins are not flooded. And if you approve the same application five times, it becomes auto-approved — pre-validated by your own decisions.</li>
+<li><strong>Sub-settings:</strong> You define a global default and override it for specific groups, OUs or device types — for example, lab devices may elevate without approval while everyone else needs one. Scoping comes from your Entra groups.</li>
+<li><strong>Branding:</strong> Your company name, your logo, your instructions and an optional code of conduct in the prompts — so the experience feels like an internal service, not a third-party tool.</li>
+</ul>
+<h2 class="wp-block-heading" id="what-about-reporting-and-auditing">What about reporting and auditing?</h2>
+<p class="wp-block-paragraph">Every elevation produces usable data. Dashboards show where requests come from, which users raise them and which applications run elevated. The <strong>inventory</strong> lists every client with device details and a per-machine <strong>audit log</strong> of elevations and admin sessions. Environment-wide, you can trace afterwards who changed what on which device and when — and what is collected is configurable, which closes the loop back to the privacy settings. The <a href="https://docs.adminbyrequest.com/" rel="noopener" target="_blank">documentation</a> is genuinely good if you want to go deeper, with step-by-step guides for things like the Entra ID connect.</p>
+<h2 class="wp-block-heading" id="how-do-i-get-started">How do I get started?</h2>
+<p class="wp-block-paragraph">The entry barrier is low: on <a href="https://www.adminbyrequest.com/" rel="noopener" target="_blank">adminbyrequest.com</a> there is a <strong>Free Plan</strong> — name, company, email, and within a few seconds you have a full login with <strong>25 licenses</strong>. That is enough to install the client on a handful of test devices and build a proper proof of concept in your own environment before you talk budgets.</p>
+<h2 class="wp-block-heading" id="my-verdict">My verdict</h2>
+<p class="wp-block-paragraph">You know I care about endpoint security — I recently wrote about <a href="https://jannikreinhard.com/defender-ai-agent-runtime-protection/">protecting AI agents with Defender for Endpoint</a>, and removing standing local admin rights is the same story one layer deeper: shrink what an attacker can do on the device in the first place. Admin By Request delivers that with a user experience people actually accept, guardrails like lockdown and malware scanning, all major platforms, and the Frankfurt data center as the European trust argument. In my opinion it is the most complete EPM product on the market right now.</p>
+<p class="wp-block-paragraph">My recommendation: create the free trial, roll the client onto a few test devices, and see how it behaves in your environment. In the next episode of this series I will unbox the next Admin By Request product in the same hands-on way.</p>
+<p class="wp-block-paragraph">I hope this is a little help.</p>
+<p class="wp-block-paragraph">Stay healthy, Cheers Jannik</p>
+<figure class="wp-block-image size-large is-resized"><img alt="ALL-ABR — sample screenshot for Microsoft 365 Agents post" class="wp-image-18296" data-recalc-dims="1" decoding="async" src="assets/a5bce4a281e2c43e/img_1.png"/></figure>
+<p class="wp-block-paragraph"></p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
