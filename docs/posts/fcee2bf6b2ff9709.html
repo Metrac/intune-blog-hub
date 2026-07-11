@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intune Newsletter – 10th July 2026</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Andrew Taylor</span>
+    <span class="date">July 10, 2026</span>
+  </div>
+  <h1>Intune Newsletter – 10th July 2026</h1>
+  <div class="orig">Saved for offline reading · <a href="https://andrewstaylor.com/2026/07/10/intune-newsletter-10th-july-2026/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text">
+<p>Welcome back and for those in the UK, it’s nearly school holidays time (for those in Scandinavia, enjoy the long break).  There will probably be no newsletter next week as I’m having a very much needed week off with my family, but I’ll make sure everything is included in the following week</p>
+<hr/>
+<h1>Community Content</h1>
+<p>For those of you managing Apple devices, this one is worth reading!  Enrollment time grouping is now GA to help speed everything up when deploying a new device.  Learn more here from <a href="https://www.linkedin.com/in/scottbreen/">Scott Breen</a></p>
+<p><a href="https://www.linkedin.com/pulse/your-apple-fleet-shouldnt-wait-hours-its-apps-when-enrolling-breen-6ikac/">https://www.linkedin.com/pulse/your-apple-fleet-shouldnt-wait-hours-its-apps-when-enrolling-breen-6ikac/</a></p>
+<hr/>
+<p>If you have E5 licensing and want to know more about the Enterprise App Management you now get for free, check out this in-depth post from <a href="https://www.linkedin.com/in/thomasmarcussen/">Thomas Marcussen</a></p>
+<blockquote class="wp-embedded-content" data-secret="3cMOctB2aa"><p><a href="https://blog.thomasmarcussen.com/intune-eam-auto-update-enterprise-app-catalog/">Auto-Updating Enterprise App Catalog Apps in Intune: What GA Actually Changes</a></p></blockquote>
+<p></p>
+<hr/>
+<p>Another post covering customizing the start menu on your shared devices from <a href="https://www.linkedin.com/in/peterwoude/">Peter van der Woude</a>, this one looks at the power options and how to hide them</p>
+<blockquote class="wp-embedded-content" data-secret="OpaZgJRV4l"><p><a href="https://petervanderwoude.nl/post/customizing-the-power-options-in-start-layout/">Customizing the power options in Start layout</a></p></blockquote>
+<p></p>
+<hr/>
+<p>There is a new private preview for AVD to allow you to redirect certain items from the local machine depending on the device/user meeting criteria in CA.  You can find out more in this post from <a href="https://www.linkedin.com/in/niels-kok-79823360/">Niels Kok</a></p>
+<blockquote class="wp-embedded-content" data-secret="zBw2kUIHT4"><p><a href="https://www.nielskok.tech/active-directory/avd-context-based-redirections/">AVD Context based redirections</a></p></blockquote>
+<p></p>
+<hr/>
+<p>Those E5 licenses now also give you access to Security Copilot and this post from <a href="https://www.linkedin.com/in/michaelsendpoint/">Michael Frank</a> covers how to get started with it</p>
+<p><a href="https://michaelsendpoint.com/security/SecurityCopilot/SecurityCopilot.html">https://michaelsendpoint.com/security/SecurityCopilot/SecurityCopilot.html</a></p>
+<hr/>
+<p>If you are managing developer devices and missing the Dev Boxes of old, there is now a Developer configuration for Windows 365 available in the gallery as covered here by <a href="https://www.linkedin.com/in/niallcbrady/">Niall Brady</a></p>
+<blockquote class="wp-embedded-content" data-secret="lSKKsCCkno"><p><a href="https://www.niallbrady.com/2026/07/03/first-looks-at-windows-365s-gallery-image-with-developer-configuration-preview/">First looks at Windows 365’s gallery Image with Developer Configuration (preview)</a></p></blockquote>
+<p></p>
+<hr/>
+<p>Next, <a href="https://www.linkedin.com/in/jeroenburgerhout/">Jeroen Burgerhout</a> looks at the different options available for managing your Windows 365 machines</p>
+<p><a href="https://www.burgerhout.org/windows-365-wednesdays-understanding-cloud-pc-settings/">https://www.burgerhout.org/windows-365-wednesdays-understanding-cloud-pc-settings/</a></p>
+<hr/>
+<p><a href="https://www.linkedin.com/in/alexdurrant/">Alex Durrant</a> has created a community fork of the AVD Monitoring Baseline with many exciting improvements, one to configure if you manage AVD</p>
+<blockquote class="wp-embedded-content" data-secret="uLVEgEdrbt"><p><a href="https://modernworkspacehub.com/avd-monitoring-baseline-community-edition/">AVD Monitoring Baseline: Community Edition</a></p></blockquote>
+<p></p>
+<hr/>
+<p>Users will be users and sometimes they need items in the system tray with the correct icons.  This remediation from <a href="https://www.linkedin.com/in/remy-kuster-%F0%9F%92%BB%F0%9F%8D%80-29a72236/?locale=en">Remy Kuster</a> helps bridge the gap</p>
+<blockquote class="wp-embedded-content" data-secret="IT4dtMtlwr"><p><a href="https://www.iamsysadmin.eu/mobile-device-managment/intune/pin-icons-in-system-tray-with-intune-remediation-script/">Pin icons in system tray with Intune remediation script</a></p></blockquote>
+<p></p>
+<hr/>
+<p>This post from <a href="https://www.linkedin.com/in/nicklas-o-40337b205/">Nicklas Olsen</a> shows how to use Properties Catalog to grab more information about your applications</p>
+<p><a href="https://www.learnintune.net/properties-catalog-collect-app-information/">https://www.learnintune.net/properties-catalog-collect-app-information/</a></p>
+<hr/>
+<h1><a id="video"></a>Video Content</h1>
+<p>Now for this weeks video content, starting with a look at the goodies you now get in your E3 and E5 licenses from <a href="https://www.linkedin.com/in/chandermanipandey/">Chander Mani Pandey</a></p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/tDKgVjymoJY?feature=oembed" title="7 Intune Add-On Features Included in M365 E3/E5 license">VIDEO</iframe></p>
+<hr/>
+<p>Now Device Query is available on E3 and E5 licenses, <a href="https://www.linkedin.com/in/stevew25/">Steve Weiner</a> covers how to use it here</p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/3VE8Ii3bng4?feature=oembed" title="How to Use Device Query in Intune">VIDEO</iframe></p>
+<hr/>
+<h1><a id="microsoft"></a>Microsoft Content</h1>
+<p>On to this weeks Microsoft content starting with the news that Windows backup will now be on by default as covered here by <a href="https://www.linkedin.com/in/miranda-leschke/">Miranda Leschke</a></p>
+<p><a href="https://techcommunity.microsoft.com/t5/windows-it-pro-blog/windows-settings-backup-becoming-a-new-resilience-baseline/ba-p/4530757">https://techcommunity.microsoft.com/t5/windows-it-pro-blog/windows-settings-backup-becoming-a-new-resilience-baseline/ba-p/4530757</a></p>
+<hr/>
+<p>If you haven’t yet tried Windows 365 boot, this guide from <a href="https://www.linkedin.com/in/michael-hildebrand/">Michael Hildebrand</a> will set you on your way</p>
+<p><a href="https://techcommunity.microsoft.com/t5/core-infrastructure-and-security/windows-365-boot/ba-p/4533696">https://techcommunity.microsoft.com/t5/core-infrastructure-and-security/windows-365-boot/ba-p/4533696</a></p>
+<hr/>
+<p>This post from the Intune Support Team runs through patching strategy to rapidly deal with the ever-growing vulnerabilities</p>
+<p><a href="https://techcommunity.microsoft.com/blog/IntuneCustomerSuccess/build-a-patch-strategy-for-today%E2%80%99s-threat-pace-with-microsoft/4535115">https://techcommunity.microsoft.com/blog/IntuneCustomerSuccess/build-a-patch-strategy-for-today%E2%80%99s-threat-pace-with-microsoft/4535115</a></p>
+<hr/>
+<p>RDP Multipath is now GA for AVD and W365 using TCP as covered here by <a href="https://www.linkedin.com/in/rinku-dalwani/">Rinku Dalwani</a></p>
+<p><a href="https://techcommunity.microsoft.com/blog/windows-itpro-blog/rdp-multipath-with-redundant-tcp-is-now-generally-available-for-windows-365-and-/4534610">https://techcommunity.microsoft.com/blog/windows-itpro-blog/rdp-multipath-with-redundant-tcp-is-now-generally-available-for-windows-365-and-/4534610</a></p>
+<hr/>
+<p>Discover how to use Win365 for agents to safely control how your agents operate here from <a href="https://www.linkedin.com/in/aarthisukumar/">Aarthi Sukumar</a></p>
+<p><a href="https://techcommunity.microsoft.com/blog/windows-itpro-blog/windows-365-for-agents-a-secured-execution-environment-for-ai-agents/4529336">https://techcommunity.microsoft.com/blog/windows-itpro-blog/windows-365-for-agents-a-secured-execution-environment-for-ai-agents/4529336</a></p>
+<hr/>
+<p>That’s all for this week, have an amazing weekend!</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
