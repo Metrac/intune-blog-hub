@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Microsoft Foundry vs Copilot Studio: Which Agent Platform?</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">July 15, 2026</span>
+  </div>
+  <h1>Microsoft Foundry vs Copilot Studio: Which Agent Platform?</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/foundry-vs-copilot-studio/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p class="wp-block-paragraph">Many companies want to build AI agents right now, and the first question I get is always the same: Foundry vs Copilot Studio — which one should we use? Both platforms overlap in some areas, and the docs do not make the decision easy. In this blog post I go deep: I explain how both platforms actually work under the hood, compare models, hosting, pricing, and governance, and I am honest about quality — because that is where many Copilot Studio projects struggle. I also explain why, in the age of AI-assisted coding, the “full code” platform Foundry is often the <em>faster</em> way to a working agent. At the end you should know which platform fits your scenario — or if you should use both together.</p>
+<p class="wp-block-paragraph">Note: Azure AI Foundry was renamed to Microsoft Foundry at Ignite 2025. You will still find both names in older docs. In this post I use Microsoft Foundry, including the Foundry Agent Service.</p>
+<span id="more-19531"></span>
+<h2 class="wp-block-heading" id="foundry-vs-copilot-studio-what-is-the-difference">Foundry vs Copilot Studio: What Is the Difference?</h2>
+<p class="wp-block-paragraph">The short version: it is mostly about who builds the agent and where it runs.</p>
+<p class="wp-block-paragraph">Microsoft Copilot Studio is a low-code SaaS platform. Makers and IT admins build agents in a graphical designer, publish them to Microsoft Teams, Microsoft 365 Copilot, or a website, and Microsoft runs everything for you. You do not need an Azure subscription or any infrastructure.</p>
+<p class="wp-block-paragraph">Microsoft Foundry is the pro-code platform. Developers build agents with SDKs (Python, C#, TypeScript) against the <a href="https://learn.microsoft.com/en-us/azure/foundry/agents/overview" rel="noopener" target="_blank">Foundry Agent Service</a>. It runs in your Azure subscription, you pick the model, you control the orchestration, and you wire it into your own apps and pipelines.</p>
+<p class="wp-block-paragraph">Here is my Foundry vs Copilot Studio comparison at a glance:</p>
+<figure class="wp-block-table"><table>
+<thead>
+<tr>
+<th></th>
+<th>Copilot Studio</th>
+<th>Microsoft Foundry</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Audience</strong></td>
+<td>Makers, IT admins, fusion teams (low-code)</td>
+<td>Developers, data scientists (pro-code)</td>
+</tr>
+<tr>
+<td><strong>Models</strong></td>
+<td>Managed models, curated by Microsoft (BYO Foundry model possible)</td>
+<td>Full catalog: OpenAI, Anthropic, Meta, Mistral, open source, fine-tuning</td>
+</tr>
+<tr>
+<td><strong>Hosting</strong></td>
+<td>Managed SaaS, no Azure subscription needed</td>
+<td>Your Azure subscription, your region, your network rules</td>
+</tr>
+<tr>
+<td><strong>Pricing</strong></td>
+<td>Copilot Credits: prepaid packs or pay-as-you-go</td>
+<td>Consumption: model tokens plus tool charges</td>
+</tr>
+<tr>
+<td><strong>Governance</strong></td>
+<td>Entra Agent ID, Agent 365 registry, Power Platform admin controls</td>
+<td>Entra Agent ID, Agent 365 registry, Azure RBAC and policies</td>
+</tr>
+<tr>
+<td><strong>Quality tooling</strong></td>
+<td>Manual test panel, activity map</td>
+<td>Evaluations, tracing, versioning, agent optimizer</td>
+</tr>
+<tr>
+<td><strong>Best for</strong></td>
+<td>Teams/M365 agents, helpdesk, HR, fast time to value</td>
+<td>Custom apps, own data and models, quality-critical agents</td>
+</tr>
+</tbody>
+</table></figure>
+<figure class="wp-block-image"><img alt="Foundry vs Copilot Studio comparison with shared Entra Agent ID and Agent 365 governance" data-recalc-dims="1" decoding="async" src="assets/c675a01bfd92b45c/img_0.jpg"/></figure>
+<h2 class="wp-block-heading" id="how-does-copilot-studio-work">How Does Copilot Studio Work?</h2>
+<p class="wp-block-paragraph">Let us look under the hood of Copilot Studio first, because the platform decides a lot for you — and you should know what exactly it decides.</p>
+<p class="wp-block-paragraph">An agent in Copilot Studio is a combination of building blocks: <strong>instructions</strong> (a natural-language description of what the agent should do), <strong>knowledge sources</strong> (SharePoint, websites, Dataverse, documents), <strong>topics</strong> (pre-authored conversation flows), <strong>tools</strong> (connectors and agent flows that take actions), and <strong>triggers</strong> (events that start the agent without a user asking). You configure all of this in the browser — no code, no deployment pipeline.</p>
+<figure class="wp-block-image"><img alt="Copilot Studio home page where makers describe the agent they want to build" data-recalc-dims="1" decoding="async" src="assets/c675a01bfd92b45c/img_1.jpg"/></figure>
+<p class="wp-block-paragraph"><em>Image: Microsoft Learn — you start by describing your agent in plain language, and Copilot Studio scaffolds it for you.</em></p>
+<p class="wp-block-paragraph">The most important concept is <strong>orchestration</strong> — how the agent decides what to do with a user message. Copilot Studio has two modes:</p>
+<ol class="wp-block-list">
+<li><strong>Classic orchestration:</strong> the agent matches the user’s message against trigger phrases and starts the one topic that matches best. Everything else — questions, answers, branching — you author as nodes in that topic. This is the old chatbot model: predictable, but rigid.</li>
+<li><strong>Generative orchestration</strong> (the default for new agents): a language model reads the <em>descriptions</em> of your topics, tools, and knowledge sources and picks one or more of them to answer the query. It can chain topics together, fill tool inputs from the conversation context, ask for missing information automatically, and generate the final answer itself.</li>
+</ol>
+<p class="wp-block-paragraph">This is the key thing to understand about Copilot Studio: with generative orchestration, <strong>your descriptions are your programming model</strong>. The agent selects a tool because its name and description sound right for the user’s intent. If two tools have similar descriptions, the agent may pick the wrong one — Microsoft’s own <a href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/advanced-generative-actions" rel="noopener" target="_blank">orchestration guidance</a> is essentially a style guide for writing better descriptions.</p>
+<p class="wp-block-paragraph">For actions, Copilot Studio gives you the Power Platform connector ecosystem (1,500+ connectors) plus <strong>agent flows</strong> — Power Automate-style workflows that an agent can call as a tool. Publishing is a few clicks: Teams, Microsoft 365 Copilot, a website widget, or other channels via Azure Bot Service.</p>
+<p class="wp-block-paragraph">For testing, you get a test panel with an <strong>activity map</strong> that shows which topic or tool the agent selected and which inputs it filled:</p>
+<figure class="wp-block-image"><img alt="Copilot Studio activity map showing how the agent selects a tool during testing" data-recalc-dims="1" decoding="async" src="assets/c675a01bfd92b45c/img_2.jpg"/></figure>
+<p class="wp-block-paragraph"><em>Image: Microsoft Learn — the activity map is your main debugging tool in Copilot Studio.</em></p>
+<p class="wp-block-paragraph">Hint: The activity map is genuinely useful, but it is a <em>manual</em> tool. You chat, you watch, you tweak descriptions. There is no built-in way to run 200 test questions against your agent and get a quality score. Keep that in mind for the quality section below.</p>
+<h2 class="wp-block-heading" id="how-does-microsoft-foundry-work">How Does Microsoft Foundry Work?</h2>
+<p class="wp-block-paragraph">Microsoft Foundry approaches the same problem from the developer side. The heart of it is the <strong>Foundry Agent Service</strong>, and every agent there is built from the same three components: a <strong>model</strong> from the Foundry catalog, <strong>instructions</strong>, and <strong>tools</strong>.</p>
+<figure class="wp-block-image"><img alt="Components of an AI agent in Microsoft Foundry: model, instructions and tools" data-recalc-dims="1" decoding="async" src="assets/c675a01bfd92b45c/img_3.png"/></figure>
+<p class="wp-block-paragraph"><em>Image: Microsoft Learn — every Foundry agent is a model plus instructions plus tools, with inputs from users or system events.</em></p>
+<p class="wp-block-paragraph">Foundry gives you two agent types, depending on how much you want to own:</p>
+<ol class="wp-block-list">
+<li><strong>Prompt agents:</strong> you define the agent as configuration — instructions, model, tools — either in the Foundry portal or via SDK/REST. Foundry runs it for you. No containers, no compute to manage. This is closer to Copilot Studio than most people think: you can build a useful prompt agent without writing orchestration code.</li>
+<li><strong>Hosted agents:</strong> you write real agent code with a framework of your choice — Microsoft Agent Framework, LangGraph, the OpenAI Agents SDK, or your own code — package it, and Foundry hosts it with a managed endpoint, auto-scaling, a dedicated Entra identity, and observability.</li>
+</ol>
+<p class="wp-block-paragraph">Behind both sits the <strong>Responses API</strong> — one endpoint that gives any agent access to the models and the platform tools: file search, code interpreter, web search, memory, and MCP servers. You can even call the Responses API from agent code that runs completely outside of Foundry.</p>
+<p class="wp-block-paragraph">Creating a prompt agent from code looks like this:</p>
+<pre class="wp-block-code"><code class="language-python"># Create a prompt agent with the Foundry SDK (Python)
+from azure.ai.projects import AIProjectClient
+from azure.identity import DefaultAzureCredential
+
+project = AIProjectClient(
+    endpoint="https://YOUR-RESOURCE.services.ai.azure.com/api/projects/YOUR-PROJECT",
+    credential=DefaultAzureCredential(),
+)
+
+agent = project.agents.create_agent(
+    model="gpt-4.1",
+    name="helpdesk-agent",
+    instructions="You answer IT questions for employees. Keep answers short.",
+)
+</code></pre>
+<p class="wp-block-paragraph">The part I like most is the <strong>development lifecycle</strong> around the agent. You test in the playground, you trace every model call and tool invocation, you run evaluations against datasets, and you publish a versioned agent to a stable endpoint. Quality checks are built into the portal — you can switch on metrics like task adherence, intent resolution, or groundedness directly in the playground:</p>
+<figure class="wp-block-image"><img alt="Microsoft Foundry agent playground with quick evaluation metrics like task adherence and intent resolution" data-recalc-dims="1" decoding="async" src="assets/c675a01bfd92b45c/img_4.jpg"/></figure>
+<p class="wp-block-paragraph"><em>Image: Microsoft Learn — evaluations are a first-class feature in Foundry, not an afterthought.</em></p>
+<p class="wp-block-paragraph">If you want to see this hands-on, I wrote two step-by-step posts: <a href="https://jannikreinhard.com/microsoft-foundry-first-agent/">build your first agent in Microsoft Foundry</a> and <a href="https://jannikreinhard.com/microsoft-foundry-agent-evaluations/">evaluate AI agents in Microsoft Foundry</a>.</p>
+<h2 class="wp-block-heading" id="what-about-models-and-hosting">What About Models and Hosting?</h2>
+<p class="wp-block-paragraph">The model story is where Foundry vs Copilot Studio differs the most.</p>
+<p class="wp-block-paragraph">In Copilot Studio, Microsoft manages the models for you. You get a curated set that Microsoft operates and updates. That is great for a helpdesk or HR agent — you never patch a model deployment. The trade-off: less choice and less tuning.</p>
+<p class="wp-block-paragraph">In Microsoft Foundry you get the full model catalog. OpenAI, Anthropic, Meta, Mistral, and many open-source models, plus fine-tuning on your own data. The agents run in your Azure subscription. You decide the region, you control the network rules, and the data stays where your architects want it. You can even swap the model under an agent without changing the agent code — useful when a better or cheaper model ships, which happens every few months now.</p>
+<p class="wp-block-paragraph">Hosting follows the same logic. Copilot Studio is a managed SaaS with deep Microsoft 365 integration — publishing an agent to Teams is a few clicks. Foundry gives you an Azure resource that you treat like any other workload: RBAC, private networking, monitoring, CI/CD.</p>
+<h2 class="wp-block-heading" id="what-do-they-cost">What Do They Cost?</h2>
+<p class="wp-block-paragraph">Pricing is the second big difference in Foundry vs Copilot Studio, and it alone decides many projects.</p>
+<p class="wp-block-paragraph">Copilot Studio bills in Copilot Credits. You either buy prepaid packs (25,000 credits for $200 per month at the time of writing) or you use pay-as-you-go with no upfront commitment. Different actions consume different amounts of credits. The good part: costs are predictable. The hard part: high volume can get expensive.</p>
+<p class="wp-block-paragraph">Hint: Since September 2025 the billing unit is called Copilot Credits instead of messages. The quantities and rates did not change — only the name. Do not be confused when older posts still say “message packs”.</p>
+<p class="wp-block-paragraph">Microsoft Foundry bills by consumption in your Azure subscription. There is no extra charge for the Foundry Agent Service itself — you pay for the model tokens you consume, plus separate charges for tools like Grounding with Bing Search or Logic Apps connectors (hosted agents add container compute). At low volume this is very cheap, but token spend is harder to predict, so you need proper cost monitoring.</p>
+<h2 class="wp-block-heading" id="how-does-governance-work-for-both">How Does Governance Work for Both?</h2>
+<p class="wp-block-paragraph">Good news here: governance is converging, and this makes the Foundry vs Copilot Studio decision easier than it was a year ago.</p>
+<p class="wp-block-paragraph">Both platforms plug into Microsoft Entra Agent ID. Copilot Studio can automatically create an Entra agent identity when a maker publishes an agent, and Foundry provisions one when you publish an agent from a project. Every agent gets its own identity that you can see in the Entra admin center and target with Conditional Access.</p>
+<p class="wp-block-paragraph">On top of that sits Microsoft Agent 365 with the agent registry in the Microsoft 365 admin center. It gives you one inventory of agents across both platforms, with risk signals from Entra, Defender, and Purview. I wrote about this in more detail in my post on <a href="https://jannikreinhard.com/2026/05/05/microsoft-agent-365-vs-microsoft-365-agents-a-field-guide-for-it-and-architects/">Microsoft Agent 365 vs Microsoft 365 Agents</a>, so I keep it short here.</p>
+<p class="wp-block-paragraph">For you as an IT pro this means: the governance story should not drive the platform choice anymore. Pick the platform by builder skills and workload, and govern both in one place.</p>
+<h2 class="wp-block-heading" id="what-about-quality-my-honest-experience">What About Quality? My Honest Experience</h2>
+<p class="wp-block-paragraph">Now the part that most comparisons skip, and the reason I rewrote this post: <strong>quality</strong>.</p>
+<p class="wp-block-paragraph">My honest experience is that Copilot Studio agents often do not meet the quality standards that the business expects. The demo looks great — you connect a SharePoint site, ask three questions, everyone is impressed. Then real users arrive with real questions, and the agent picks the wrong tool, misses the right document, or gives a confident answer that is only half correct. I have seen more than one Copilot Studio pilot quietly die this way.</p>
+<p class="wp-block-paragraph">This is not because the makers did a bad job. It is built into how the platform works:</p>
+<ol class="wp-block-list">
+<li><strong>Routing depends on prose.</strong> With generative orchestration, the agent picks topics and tools based on their natural-language descriptions. That is fragile. Two similar descriptions and the agent calls the wrong one — and your only fix is rewording text and testing again by hand.</li>
+<li><strong>You cannot see or tune the retrieval.</strong> How knowledge sources are chunked, indexed, and searched is managed for you. When answers are wrong, there is no ranking to adjust and no retrieval pipeline to debug.</li>
+<li><strong>Testing is manual.</strong> The test panel and activity map are fine for spot checks, but there is no built-in way to run a large question set against the agent and measure quality systematically. You find regressions when users find them.</li>
+<li><strong>Known limitations bite in production.</strong> No disambiguation between similar topics under generative orchestration, limited conversation history, no custom entities as tool inputs — each one is small, together they cap what the platform can reliably do.</li>
+</ol>
+<p class="wp-block-paragraph">Foundry is built for exactly this problem. Evaluations are a first-class feature: you run your agent against datasets and measure task adherence, groundedness, intent resolution, and more — automatically, on every change. Tracing shows every model call and tool decision. Versioning lets you roll back. You control the retrieval stack, the orchestration logic, and the model itself, and you can fine-tune or swap models when quality demands it.</p>
+<p class="wp-block-paragraph">So my rule of thumb is simple: <strong>when quality and flexibility are the requirement, Foundry is the better platform.</strong> Copilot Studio quality can be good enough — for FAQ-style agents with a narrow scope, curated knowledge, and well-written descriptions. But if the agent touches a critical process, faces customers, or needs to be <em>measurably</em> good, I would not build it in a tool that cannot measure it.</p>
+<h2 class="wp-block-heading" id="can-you-code-then-foundry-is-often-faster">Can You Code? Then Foundry Is Often Faster</h2>
+<p class="wp-block-paragraph">There is a second point most comparisons get wrong. The classic assumption is: low-code is fast, pro-code is slow. In 2026, with AI-assisted development, that assumption has flipped for many teams.</p>
+<p class="wp-block-paragraph">If you can code — or you are comfortable with vibe coding, letting GitHub Copilot or Claude write most of the code while you review and steer — a Foundry agent is often <em>faster</em> to build than the same agent in Copilot Studio:</p>
+<ol class="wp-block-list">
+<li><strong>The scaffold is minutes, not days.</strong> An AI coding assistant generates a working Foundry agent — SDK calls, tools, error handling — from one prompt. Clicking the same logic together in a designer takes longer, and every iteration means more clicking.</li>
+<li><strong>Code is text, and text is what AI is great at.</strong> You can ask your assistant to refactor the orchestration, add a tool, or write tests. There is no AI that clicks through the Copilot Studio designer for you.</li>
+<li><strong>Code is versionable and reviewable.</strong> Git diff, pull request, CI/CD, automated evaluations on every change. Reproducing this loop with designer-built agents and solution exports is possible, but it is much more work.</li>
+<li><strong>You never hit the ceiling.</strong> In Copilot Studio, the moment you need custom retrieval or special orchestration logic you leave the happy path. In code, the special case is just another function.</li>
+</ol>
+<p class="wp-block-paragraph">Note: This does not make Copilot Studio pointless. If the people who own the agent are makers and admins who do not code — not even with AI assistance — then the low-code designer is exactly right, because they can maintain the agent after go-live. The point is: do not choose Copilot Studio <em>because you think code is slower</em>. With today’s tooling, it usually is not.</p>
+<h2 class="wp-block-heading" id="when-should-i-use-copilot-studio">When Should I Use Copilot Studio?</h2>
+<p class="wp-block-paragraph">I would go with Copilot Studio when:</p>
+<ol class="wp-block-list">
+<li>The agent lives in Microsoft Teams or Microsoft 365 Copilot.</li>
+<li>Makers or IT admins build and maintain it — not a dev team.</li>
+<li>You want the 1,500+ Power Platform connectors out of the box.</li>
+<li>Time to value matters more than deep customization.</li>
+<li>Predictable, per-use pricing without an Azure subscription is a plus.</li>
+<li>The scope is narrow and “good enough” answers really are good enough.</li>
+</ol>
+<p class="wp-block-paragraph">Typical wins: IT helpdesk agents, HR onboarding, internal knowledge assistants. Honest limit: when you need custom orchestration logic, a specific model, or measurable answer quality, you will hit the ceiling of the low-code designer.</p>
+<h2 class="wp-block-heading" id="when-should-i-use-microsoft-foundry">When Should I Use Microsoft Foundry?</h2>
+<p class="wp-block-paragraph">I would go with Microsoft Foundry when:</p>
+<ol class="wp-block-list">
+<li>Developers build the agent and it lives in your own app or website — not in Microsoft 365.</li>
+<li>You need a specific model, fine-tuning, or a non-OpenAI model.</li>
+<li>You need full control: region, networking, RBAC, CI/CD.</li>
+<li>Quality is a requirement, not a hope — you want evaluations, tracing, and versioning built in.</li>
+<li>You build multi-agent workflows with complex orchestration.</li>
+<li>Token-based Azure billing fits your FinOps model better than credits.</li>
+</ol>
+<p class="wp-block-paragraph">Honest limit: Foundry needs developers, also after go-live. If nobody can debug Python when the agent misbehaves in production, do not start here — AI assistants help you write code, but someone still has to own it.</p>
+<h2 class="wp-block-heading" id="can-i-combine-them">Can I Combine Them?</h2>
+<p class="wp-block-paragraph">Yes, and this is my favorite part of the Foundry vs Copilot Studio story — it is not either-or.</p>
+<p class="wp-block-paragraph">Two integrations matter in practice. First, Copilot Studio can bring your own Foundry model: in a prompt, you simply select a model deployed in Microsoft Foundry. Second, a Copilot Studio agent can <a href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/add-agent-foundry-agent" rel="noopener" target="_blank">connect to a Microsoft Foundry agent</a> (currently in preview) and hand over tasks to it. Foundry agents can also publish directly to Microsoft 365 Copilot and Teams.</p>
+<p class="wp-block-paragraph">So a common pattern is: Copilot Studio as the user-facing front end in Teams, built by makers — and Foundry agents doing the heavy, custom work behind it, built by developers. This also solves the quality problem elegantly: the fragile part (routing, retrieval, complex logic) moves into Foundry where you can evaluate and trace it, and Copilot Studio stays what it is good at — the friendly front door in Teams. Microsoft is clearly building towards this fusion-team model; you can see the direction in my summary of the <a href="https://jannikreinhard.com/2026/06/08/microsoft-build-2026-agentic-stack/">Microsoft Build 2026 agentic stack</a>.</p>
+<figure class="wp-block-image"><img alt="Copilot Studio front-end agent handing off to a Microsoft Foundry agent in Azure" data-recalc-dims="1" decoding="async" src="assets/c675a01bfd92b45c/img_5.jpg"/></figure>
+<h2 class="wp-block-heading" id="what-would-i-choose">What Would I Choose?</h2>
+<p class="wp-block-paragraph">My simple rule for Foundry vs Copilot Studio: start where your builders are — but be honest about your quality bar.</p>
+<p class="wp-block-paragraph">If the people who own the agent are makers and admins, the agent lives in Microsoft 365, and the scope is a well-defined internal assistant, I choose Copilot Studio. If a dev team owns it, if it needs a specific model, or if quality and flexibility are hard requirements, I choose Microsoft Foundry — and if the team can code, even a little with AI assistance, Foundry is usually also the faster path, despite being the “full code” option. For bigger organizations I would plan for both from day one: Copilot Studio as the front door, Foundry for the custom brains, and Agent 365 with Entra Agent ID as the common governance layer.</p>
+<p class="wp-block-paragraph">The Foundry vs Copilot Studio question is less about “which is better” and more about “who builds it, where does it run, and how good does it have to be”. Once you answer that, the platform picks itself. I hope this is a little help.</p>
+<p class="wp-block-paragraph">Stay healthy, Cheers Jannik</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inside the Improved on-demand sync for Windows devices</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Call4Cloud (Rudy Ooms)</span>
+    <span class="date">July 14, 2026</span>
+  </div>
+  <h1>Inside the Improved on-demand sync for Windows devices</h1>
+  <div class="orig">Saved for offline reading · <a href="https://patchmypc.com/blog/inside-the-improved-on-demand-sync-for-windows-devices/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="post-content">
+<p class="wp-block-paragraph">This blog will be about what happened in the past when we pressed the remote sync button in Intune, and how the improved on-demand sync button is now also waking up the Intune Management Extension </p>
+<h2 class="wp-block-heading" id="h-the-sync-button-misunderstanding">The Sync Button Misunderstanding<span class="clth-copy-icon" data-heading-id="h-the-sync-button-misunderstanding"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">When an admin presses the Sync button in Intune, the expectation is simple. Wake the device by sending a push notification and check everything that changed: policies, new applications,  PowerShell scripts, and report the updated state back to Intune.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-57.png"><picture class="wp-image-189122" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-57.png.webp 678w, https://patchmypc.com/app/uploads/2026/07/image-57-300x94.png.webp 300w" sizes="(max-width: 678px) 100vw, 678px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 678px) 100vw, 678px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-57.png 678w, https://patchmypc.com/app/uploads/2026/07/image-57-300x94.png 300w" decoding="async" src="assets/8a3698fd24aefce6/img_0.png"/><noscript><img alt="" decoding="async" src="assets/8a3698fd24aefce6/img_1.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">The classic<strong><a href="https://patchmypc.com/blog/what-really-happens-when-you-press-remote-sync-in-intune/"> Intune Remote Sync</a></strong> action did NOT work like that. It initiated an MDM (policy) check-in, but it did not force the Intune Management Extension to check in.</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-62-1024x592.png"><picture class="wp-image-189130" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-62-1024x592.png.webp 1024w, https://patchmypc.com/app/uploads/2026/07/image-62-300x173.png.webp 300w, https://patchmypc.com/app/uploads/2026/07/image-62-768x444.png.webp 768w, https://patchmypc.com/app/uploads/2026/07/image-62.png.webp 1446w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-62-1024x592.png 1024w, https://patchmypc.com/app/uploads/2026/07/image-62-300x173.png 300w, https://patchmypc.com/app/uploads/2026/07/image-62-768x444.png 768w, https://patchmypc.com/app/uploads/2026/07/image-62.png 1446w" decoding="async" src="assets/8a3698fd24aefce6/img_2.png"/><noscript><img alt="" decoding="async" src="assets/8a3698fd24aefce6/img_3.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">That clear separation explains why a new settings catalog policy could react quickly after a remote Sync, while a newly assigned Win32 application still appeared to wait. Both workloads belong to Intune, but they do not belong to the same Windows management client. Microsoft is widening what remote Intune Sync means.</p>
+<p class="wp-block-paragraph">Microsoft describes the improved on-demand sync action as a full synchronization across key workloads instead of waiting for their normal scheduled check-ins. It specifically calls out troubleshooting, incident response, and high-priority rollouts as scenarios where faster confirmation matters.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-53.png"><picture class="wp-image-189118" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-53.png.webp 677w, https://patchmypc.com/app/uploads/2026/07/image-53-300x80.png.webp 300w" sizes="(max-width: 677px) 100vw, 677px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 677px) 100vw, 677px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-53.png 677w, https://patchmypc.com/app/uploads/2026/07/image-53-300x80.png 300w" decoding="async" src="assets/8a3698fd24aefce6/img_4.png"/><noscript><img alt="" decoding="async" src="assets/8a3698fd24aefce6/img_5.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">That announcement changes the architecture question. The action can no longer stop after waking only the Windows MDM client. Apps, scripts, and Remediations are owned by the Intune Management Extension, so the improved on-demand Sync needs a second client side path.  The official note does not explain that plumbing. This blog does…</p>
+<h2 class="wp-block-heading" id="h-the-improved-on-demand-sync-triggering-the-ime">The Improved on-demand Sync Triggering the IME<span class="clth-copy-icon" data-heading-id="h-the-improved-on-demand-sync-triggering-the-ime"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">After the improved on-demand Sync action was triggered, the Microsoft Windows Push Notifications Platform operational log showed two separate WNS notifications arriving on the device.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-50.png"><picture class="wp-image-189111" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-50.png.webp 678w, https://patchmypc.com/app/uploads/2026/07/image-50-300x28.png.webp 300w" sizes="(max-width: 678px) 100vw, 678px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 678px) 100vw, 678px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-50.png 678w, https://patchmypc.com/app/uploads/2026/07/image-50-300x28.png 300w" decoding="async" src="assets/8a3698fd24aefce6/img_6.png"/><noscript><img alt="" decoding="async" src="assets/8a3698fd24aefce6/img_7.png"/></noscript>
+</picture>
+</a></figure>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-54.png"><picture class="wp-image-189116" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-54.png.webp 677w, https://patchmypc.com/app/uploads/2026/07/image-54-300x31.png.webp 300w" sizes="(max-width: 677px) 100vw, 677px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 677px) 100vw, 677px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-54.png 677w, https://patchmypc.com/app/uploads/2026/07/image-54-300x31.png 300w" decoding="async" src="assets/8a3698fd24aefce6/img_8.png"/><noscript><img alt="" decoding="async" src="assets/8a3698fd24aefce6/img_9.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">They were delivered approximately 458 milliseconds apart.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-35.jpg"><picture class="wp-image-189125" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-35.jpg.webp 677w, https://patchmypc.com/app/uploads/2026/07/image-35-300x150.jpg.webp 300w" sizes="(max-width: 677px) 100vw, 677px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 677px) 100vw, 677px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-35.jpg 677w, https://patchmypc.com/app/uploads/2026/07/image-35-300x150.jpg 300w" decoding="async" src="assets/8a3698fd24aefce6/img_10.jpg"/><noscript><img alt="" decoding="async" src="assets/8a3698fd24aefce6/img_11.jpg"/></noscript>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-the-first-wns-message-wakes-the-regular-windows-mdm-path">The first WNS message wakes the regular Windows MDM path<span class="clth-copy-icon" data-heading-id="h-the-first-wns-message-wakes-the-regular-windows-mdm-path"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The first message targeted <strong>WindowsMDMPush</strong>. Its decoded inner payload contained a notification identifier, a version, and a timestamp. It did not contain configuration policy data. <a href="https://patchmypc.com/blog/what-really-happens-when-you-press-remote-sync-in-intune/">Its purpose was to wake the Windows MDM side so the device could begin its regular management session</a>.</p>
+<h2 class="wp-block-heading" id="h-the-second-wns-message-goes-directly-to-ime">The second WNS message goes directly to IME<span class="clth-copy-icon" data-heading-id="h-the-second-wns-message-goes-directly-to-ime"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The second message targeted <strong>MicrosoftCorporationII.IMENotificationApp_8wekyb3d8bbwe</strong>. After decoding the hexadecimal event payload, the actual JSON showed a primary notification intent, a <strong>DirectSync </strong>value, and two additional workloads.</p>
+<figure class="wp-block-image size-full is-resized"><a data-caption="The decoded raw WNS payload sent to the IME notification application." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-29.jpg"><picture class="wp-image-189110" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-29.jpg.webp 946w, https://patchmypc.com/app/uploads/2026/07/image-29-300x74.jpg.webp 300w, https://patchmypc.com/app/uploads/2026/07/image-29-768x189.jpg.webp 768w" sizes="(max-width: 946px) 100vw, 946px" type="image/webp"/>
+<img alt="The decoded raw WNS payload sent to the IME notification application." data-lazy-sizes="(max-width: 946px) 100vw, 946px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-29.jpg 946w, https://patchmypc.com/app/uploads/2026/07/image-29-300x74.jpg 300w, https://patchmypc.com/app/uploads/2026/07/image-29-768x189.jpg 768w" decoding="async" src="assets/8a3698fd24aefce6/img_12.jpg"/><noscript><img alt="The decoded raw WNS payload sent to the IME notification application." decoding="async" src="assets/8a3698fd24aefce6/img_13.jpg"/></noscript>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-what-2-9-and-8-actually-mean">What 2, 9, and 8 actually mean<span class="clth-copy-icon" data-heading-id="h-what-2-9-and-8-actually-mean"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The numbers are defined by the <strong>SidecarNotificationActionType</strong> enum inside Microsoft.Management.Clients.IntuneManagementExtension.SidecarNotification.dll. The enum mapping turns the raw payload into a readable workload request.</p>
+<p class="wp-block-paragraph"><a href="https://github.com/call4cloud-code/IME-Change-Tracker/blob/main/release-notes/ime-1.101.111.0-to-1.103.101.0.md#4-notification-workload-dispatch">With the IME tracker I build…</a> I was already aware of this change…</p>
+<figure class="wp-block-image size-large"><a data-caption="Decompiled enum values from SidecarNotification.dll. The highlighted values map the observed notification to Win32 apps, PowerShell scripts, and Proactive Remediations." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-31-1024x319.jpg"><picture class="wp-image-189109" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-31-1024x319.jpg.webp 1024w, https://patchmypc.com/app/uploads/2026/07/image-31-300x93.jpg.webp 300w, https://patchmypc.com/app/uploads/2026/07/image-31-768x239.jpg.webp 768w, https://patchmypc.com/app/uploads/2026/07/image-31.jpg.webp 1160w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="Decompiled enum values from SidecarNotification.dll. The highlighted values map the observed notification to Win32 apps, PowerShell scripts, and Proactive Remediations." data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-31-1024x319.jpg 1024w, https://patchmypc.com/app/uploads/2026/07/image-31-300x93.jpg 300w, https://patchmypc.com/app/uploads/2026/07/image-31-768x239.jpg 768w, https://patchmypc.com/app/uploads/2026/07/image-31.jpg 1160w" decoding="async" src="assets/8a3698fd24aefce6/img_14.jpg"/><noscript><img alt="Decompiled enum values from SidecarNotification.dll. The highlighted values map the observed notification to Win32 apps, PowerShell scripts, and Proactive Remediations." decoding="async" src="assets/8a3698fd24aefce6/img_15.jpg"/></noscript>
+</picture>
+</a></figure>
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr><td><strong>Payload value</strong></td><td><strong>Enum value</strong></td><td><strong>Meaning in this sync</strong></td></tr><tr><td>2</td><td>Win32AppWorkload</td><td>Primary Win32 app check in</td></tr><tr><td>8</td><td>PowerShellScriptWorkload</td><td>Additional PowerShell script check in</td></tr><tr><td>9</td><td>ProactiveRemediation</td><td>Additional Remediation full sync</td></tr></tbody></table></figure>
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr><td><strong>Important distinction</strong> DirectSync does not select the workloads. NotificationIntent selects the primary workload, while AdditionalWorkloads adds extra workloads. DirectSync is copied into the ClientContext passed to each selected workload.</td></tr></tbody></table></figure>
+<h2 class="wp-block-heading" id="h-where-the-wns-message-enters-the-ime-service">Where the WNS message enters the IME service<span class="clth-copy-icon" data-heading-id="h-where-the-wns-message-enters-the-ime-service"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The first confirmed IME entry point is <strong>NotificationCallback</strong> in Microsoft.Management.Services.IntuneWindowsAgent.exe. Windows supplies the raw notification content through e.RawNotification.Content, and IME passes that string to <strong>DeviceActionCallbackAsync.</strong></p>
+<figure class="wp-block-image size-full"><a data-caption="Decompiled EXE code showing the raw WNS message entering DeviceActionCallbackAsync." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-34.jpg"><picture class="wp-image-189126" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-34.jpg.webp 962w, https://patchmypc.com/app/uploads/2026/07/image-34-300x98.jpg.webp 300w, https://patchmypc.com/app/uploads/2026/07/image-34-768x251.jpg.webp 768w" sizes="(max-width: 962px) 100vw, 962px" type="image/webp"/>
+<img alt="Decompiled EXE code showing the raw WNS message entering DeviceActionCallbackAsync." data-lazy-sizes="(max-width: 962px) 100vw, 962px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-34.jpg 962w, https://patchmypc.com/app/uploads/2026/07/image-34-300x98.jpg 300w, https://patchmypc.com/app/uploads/2026/07/image-34-768x251.jpg 768w" decoding="async" src="assets/8a3698fd24aefce6/img_16.jpg"/><noscript><img alt="Decompiled EXE code showing the raw WNS message entering DeviceActionCallbackAsync." decoding="async" src="assets/8a3698fd24aefce6/img_17.jpg"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">DeviceActionCallbackAsync parses the JSON into a <strong>SidecarNotificationPayload,</strong> checks configuration and throttling, refreshes the MDM certificate and service location when needed, and then creates a ClientContext from the notification.</p>
+<p class="wp-block-paragraph">The context stores the notification identifier, the primary intent, the notification check in reason, and the SyncType value. For the captured message, SyncType becomes <strong>DirectSync</strong> (improved on-demand sync).</p>
+<h2 class="wp-block-heading" id="h-how-ime-dispatches-the-workloads">How IME dispatches the workloads<span class="clth-copy-icon" data-heading-id="h-how-ime-dispatches-the-workloads"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">IME first checks the <strong>EnableNotificationWorkloadDispatch </strong>ECS flight.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-49.png"><picture class="wp-image-189115" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-49.png.webp 567w, https://patchmypc.com/app/uploads/2026/07/image-49-300x24.png.webp 300w" sizes="(max-width: 567px) 100vw, 567px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 567px) 100vw, 567px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-49.png 567w, https://patchmypc.com/app/uploads/2026/07/image-49-300x24.png 300w" decoding="async" src="assets/8a3698fd24aefce6/img_18.png"/><noscript><img alt="" decoding="async" src="assets/8a3698fd24aefce6/img_19.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">When that flight is enabled, TriggerAdditionalWorkloads processes the semicolon separated <strong>AdditionalWorkloads</strong> value. It validates the numbers, removes duplicates, skips the primary intent if it appears again, and calls the matching workload callbacks.</p>
+<figure class="wp-block-image size-full"><a data-caption="The EXE dispatches additional workloads and then independently starts the primary Win32 app workload" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-32.jpg"><picture class="wp-image-189112" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-32.jpg.webp 954w, https://patchmypc.com/app/uploads/2026/07/image-32-300x137.jpg.webp 300w, https://patchmypc.com/app/uploads/2026/07/image-32-768x351.jpg.webp 768w" sizes="(max-width: 954px) 100vw, 954px" type="image/webp"/>
+<img alt="The EXE dispatches additional workloads and then independently starts the primary Win32 app workload" data-lazy-sizes="(max-width: 954px) 100vw, 954px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-32.jpg 954w, https://patchmypc.com/app/uploads/2026/07/image-32-300x137.jpg 300w, https://patchmypc.com/app/uploads/2026/07/image-32-768x351.jpg 768w" decoding="async" src="assets/8a3698fd24aefce6/img_20.jpg"/><noscript><img alt="The EXE dispatches additional workloads and then independently starts the primary Win32 app workload" decoding="async" src="assets/8a3698fd24aefce6/img_21.jpg"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">The distinction in this method matters. Additional <strong>workloads 9 and 8 </strong>do not cause the Win32 app check in. The Win32 app path is started by the separate primary intent check because <strong>NotificationIntent</strong> equals Win32AppWorkload.</p>
+<p class="wp-block-paragraph"><strong>Workload 8 calls TriggerPowerShellScriptAsync</strong>, which passes the ClientContext to PowerShellScriptPlugIn.ScriptPluginOnTimer. <strong>Workload 9 calls TriggerProactiveRemediationAsync</strong>, which passes the same context to PolicyPoller.ScheduleForNotification.</p>
+<h2 class="wp-block-heading" id="h-where-the-win32-app-check-in-really-starts">Where the Win32 app check in really starts<span class="clth-copy-icon" data-heading-id="h-where-the-win32-app-check-in-really-starts"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The primary intent check calls <strong>TriggerWin32AppAsync.</strong> That wrapper calls <strong>Win32AppCheckInAsync,</strong> which passes the same DirectSync ClientContext into Win32AppCoreAsync.</p>
+<figure class="wp-block-image size-full"><a data-caption="The actual Win32 app check in path ends at ApplicationPoller.Instance.DoWork." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-30.jpg"><picture class="wp-image-189119" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-30.jpg.webp 893w, https://patchmypc.com/app/uploads/2026/07/image-30-300x171.jpg.webp 300w, https://patchmypc.com/app/uploads/2026/07/image-30-768x439.jpg.webp 768w" sizes="(max-width: 893px) 100vw, 893px" type="image/webp"/>
+<img alt="The actual Win32 app check in path ends at ApplicationPoller.Instance.DoWork." data-lazy-sizes="(max-width: 893px) 100vw, 893px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-30.jpg 893w, https://patchmypc.com/app/uploads/2026/07/image-30-300x171.jpg 300w, https://patchmypc.com/app/uploads/2026/07/image-30-768x439.jpg 768w" decoding="async" src="assets/8a3698fd24aefce6/img_22.jpg"/><noscript><img alt="The actual Win32 app check in path ends at ApplicationPoller.Instance.DoWork." decoding="async" src="assets/8a3698fd24aefce6/img_23.jpg"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph"><strong>Win32AppCoreAsync </strong>writes the Starting app check in message and checks whether ApplicationPoller is already busy. When the poller is available, ApplicationPoller.Instance.DoWork is the handoff into the Win32 application engine.The complete client side DirectSync flow</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-33.jpg"><picture class="wp-image-189121" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-33.jpg.webp 796w, https://patchmypc.com/app/uploads/2026/07/image-33-300x208.jpg.webp 300w, https://patchmypc.com/app/uploads/2026/07/image-33-768x533.jpg.webp 768w" sizes="(max-width: 796px) 100vw, 796px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 796px) 100vw, 796px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-33.jpg 796w, https://patchmypc.com/app/uploads/2026/07/image-33-300x208.jpg 300w, https://patchmypc.com/app/uploads/2026/07/image-33-768x533.jpg 768w" decoding="async" src="assets/8a3698fd24aefce6/img_24.jpg"/><noscript><img alt="" decoding="async" src="assets/8a3698fd24aefce6/img_25.jpg"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph"><em>Figure 8. The observed IME notification creates one primary Win32 workload and two additional workload dispatches.</em></p>
+<p class="wp-block-paragraph">The complete flow is now much clearer. Windows receives the raw <strong>WNS payload</strong>. NotificationCallback forwards it to DeviceActionCallbackAsync. IME parses the payload and creates a DirectSync context.</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-55-1024x49.png"><picture class="wp-image-189117" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-55-1024x49.png.webp 1024w, https://patchmypc.com/app/uploads/2026/07/image-55-300x14.png.webp 300w, https://patchmypc.com/app/uploads/2026/07/image-55-768x37.png.webp 768w, https://patchmypc.com/app/uploads/2026/07/image-55-1536x74.png.webp 1536w, https://patchmypc.com/app/uploads/2026/07/image-55.png.webp 1763w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-55-1024x49.png 1024w, https://patchmypc.com/app/uploads/2026/07/image-55-300x14.png 300w, https://patchmypc.com/app/uploads/2026/07/image-55-768x37.png 768w, https://patchmypc.com/app/uploads/2026/07/image-55-1536x74.png 1536w, https://patchmypc.com/app/uploads/2026/07/image-55.png 1763w" decoding="async" src="assets/8a3698fd24aefce6/img_26.png"/><noscript><img alt="" decoding="async" src="assets/8a3698fd24aefce6/img_27.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph"><strong>NotificationIntent 2</strong> starts the <strong>Win32 app path. AdditionalWorkloads </strong>8 and 9 start the PowerShell script and Proactive Remediation paths when notification workload dispatch is enabled.</p>
+<p class="wp-block-paragraph">At the same time, the separate WindowsMDMPush notification wakes the regular Windows MDM side. The broader result comes from coordinated client side paths, not from forcing every workload through one engine.</p>
+<h2 class="wp-block-heading" id="h-the-improved-on-demand-sync-in-action">The Improved on-demand Sync in Action<span class="clth-copy-icon" data-heading-id="h-the-improved-on-demand-sync-in-action"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">This blog proves that the tested improved on-demand Sync action sent two WNS messages. One targeted WindowsMDMPush. The other targeted the IME notification application and contained a primary Win32 workload, additional PowerShell script and Proactive Remediation workloads, and a <strong>DirectSync SyncType.</strong></p>
+<p class="wp-block-paragraph">The investigated IME code proves that these values are parsed and routed to <strong>TriggerWin32AppAsync, TriggerPowerShellScriptAsync, and TriggerProactiveRemediationAsync</strong>. Which kicks off the Win32AppCheck in</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-51.png"><img alt="" class="wp-image-189113" data-lazy-sizes="(max-width: 693px) 100vw, 693px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-51.png 693w, https://patchmypc.com/app/uploads/2026/07/image-51-300x11.png 300w" decoding="async" src="assets/8a3698fd24aefce6/img_28.png"/><noscript><img alt="" class="wp-image-189113" decoding="async" src="assets/8a3698fd24aefce6/img_29.png"/></noscript></a></figure>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-52.png"><picture class="wp-image-189120" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-52.png.webp 678w, https://patchmypc.com/app/uploads/2026/07/image-52-300x21.png.webp 300w" sizes="(max-width: 678px) 100vw, 678px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 678px) 100vw, 678px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-52.png 678w, https://patchmypc.com/app/uploads/2026/07/image-52-300x21.png 300w" decoding="async" src="assets/8a3698fd24aefce6/img_30.png"/><noscript><img alt="" decoding="async" src="assets/8a3698fd24aefce6/img_31.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">Once the Win32AppCheck is executed, the DirectSync will move to the Proactive Remediations (HealthScripts) and PowerShell Workloads</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-56.png"><img alt="" class="wp-image-189123" data-lazy-sizes="(max-width: 592px) 100vw, 592px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-56.png 592w, https://patchmypc.com/app/uploads/2026/07/image-56-300x48.png 300w" decoding="async" src="assets/8a3698fd24aefce6/img_32.png"/><noscript><img alt="" class="wp-image-189123" decoding="async" src="assets/8a3698fd24aefce6/img_33.png"/></noscript></a></figure>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-58.png"><img alt="" class="wp-image-189124" data-lazy-sizes="(max-width: 614px) 100vw, 614px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-58.png 614w, https://patchmypc.com/app/uploads/2026/07/image-58-300x32.png 300w" decoding="async" src="assets/8a3698fd24aefce6/img_34.png"/><noscript><img alt="" class="wp-image-189124" decoding="async" src="assets/8a3698fd24aefce6/img_35.png"/></noscript></a></figure>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-52.png"><picture class="wp-image-189114" decoding="async">
+<source sizes="(max-width: 678px) 100vw, 678px" srcset="https://patchmypc.com/app/uploads/2026/07/image-52.png.webp 678w, https://patchmypc.com/app/uploads/2026/07/image-52-300x21.png.webp 300w" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 678px) 100vw, 678px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-52.png 678w, https://patchmypc.com/app/uploads/2026/07/image-52-300x21.png 300w" decoding="async" src="assets/8a3698fd24aefce6/img_36.png"/><noscript><img alt="" decoding="async" src="assets/8a3698fd24aefce6/img_37.png"/></noscript>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-the-improved-on-demand-sync-button">The Improved on-demand Sync Button<span class="clth-copy-icon" data-heading-id="h-the-improved-on-demand-sync-button"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The old remote Windows Sync action mainly woke the MDM side of Intune. That was useful for configuration and compliance, but it did not directly force IME to check in from the Intune admin center.</p>
+<p class="wp-block-paragraph">The improved on-demand sync action changes that boundary. In the captured flow, one click caused Intune to send a normal Windows MDM push and a separate IME DirectSync push. The IME payload selected Win32 apps as its primary workload and added PowerShell scripts and Proactive Remediations to the same synchronization request.</p>
+<p class="wp-block-paragraph">That is the real improvement. The Intune Remote On-Demand Sync is no longer a single remote action that wakes only one Windows management client. It is becoming a coordinated synchronization across the MDM and IME sides of Intune.</p>
+<p class="wp-block-paragraph">For administrators, the Sync button should finally behave much closer to the way everyone assumed it already worked.</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-63-1024x647.png"><picture class="wp-image-189148" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-63-1024x647.png.webp 1024w, https://patchmypc.com/app/uploads/2026/07/image-63-300x190.png.webp 300w, https://patchmypc.com/app/uploads/2026/07/image-63-768x485.png.webp 768w, https://patchmypc.com/app/uploads/2026/07/image-63-1536x970.png.webp 1536w, https://patchmypc.com/app/uploads/2026/07/image-63.png.webp 1640w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-63-1024x647.png 1024w, https://patchmypc.com/app/uploads/2026/07/image-63-300x190.png 300w, https://patchmypc.com/app/uploads/2026/07/image-63-768x485.png 768w, https://patchmypc.com/app/uploads/2026/07/image-63-1536x970.png 1536w, https://patchmypc.com/app/uploads/2026/07/image-63.png 1640w" decoding="async" src="assets/8a3698fd24aefce6/img_38.png"/><noscript><img alt="" decoding="async" src="assets/8a3698fd24aefce6/img_39.png"/></noscript>
+</picture>
+</a></figure>
+</div>
+</div></div>
+</article>
+</body>
+</html>
