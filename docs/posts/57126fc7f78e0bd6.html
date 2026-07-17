@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AutoAcceptSsoPermission: The Continue to Sign In Prompt Fix</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Call4Cloud (Rudy Ooms)</span>
+    <span class="date">July 16, 2026</span>
+  </div>
+  <h1>AutoAcceptSsoPermission: The Continue to Sign In Prompt Fix</h1>
+  <div class="orig">Saved for offline reading · <a href="https://call4cloud.nl/continue-to-sign-in-prompt-autoacceptssopermission/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p><em>How AutoAcceptSsoPermission closes the gap between Windows user choice and managed device onboarding</em>
+</p><p data-inserter-version="2" data-placement-location="under_page_title" id="ezoic-pub-ad-placeholder-102"></p>
+<p><strong>The Continue to sign in prompt</strong> always looked like a small Windows dialog, but on managed devices, it interrupted something much bigger: the seamless single sign-on experience that applications such as Microsoft Edge and the Company Portal were expected to use. In Parts 1 and 2, we followed that prompt from the visible user experience into the regional Windows policy and the feature controls behind it. Microsoft has now introduced the supported enterprise setting that was missing from the beginning.</p>
+<figure class="wp-block-image"><img alt="Microsoft used the familiar Continue to sign in prompt to announce the new administrator control. " class="wp-image-25686" decoding="async" src="assets/57126fc7f78e0bd6/img_0.png"/></figure>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="The_story_started_with_a_prompt_that_broke_silent_sign-in"></span>The story started with a prompt that broke silent sign-in<span class="ez-toc-section-end"></span></h2>
+<p>The original problem occurred when a user opened an application and expected Windows to automatically use the connected work or school account. Instead, the application stopped, and Windows asked whether that account could also be used in other Microsoft apps and services. </p><p data-inserter-version="2" data-placement-location="under_first_paragraph" id="ezoic-pub-ad-placeholder-110"></p>
+<p>On a personal device, this can be a one-time decision. On shared devices, temporary profiles, and freshly provisioned Autopilot devices, the Continue to sign in  prompt is included in the onboarding flow. The Company Portal may open exactly as intended, but its silent sign-in cannot continue until the user accepts the permission. </p>
+<figure class="wp-block-image"><img alt="The Continue to sign in prompt shown before Windows allows the account to be used across other Microsoft applications. Source: Call4Cloud Part 1" class="wp-image-25687" decoding="async" src="assets/57126fc7f78e0bd6/img_1.png"/></figure>
+<p>The Company Portal made the effect especially visible. It could launch automatically after enrollment, start loading, and then immediately present the same permission request. The application itself was not blocked from opening. The automatic sign-in path was interrupted, which meant the experience was no longer automatic from the user’s perspective. </p>
+<figure class="wp-block-image"><img alt="Company Portal starts, requests the connected Windows account and then encounters the same SSO permission prompt. Source: Call4Cloud Part 1" class="wp-image-25688" decoding="async" src="assets/57126fc7f78e0bd6/img_2.png"/></figure>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="Following_the_decision_on_Windows"></span>Following the decision on Windows<span class="ez-toc-section-end"></span></h2>
+<p>Part 1 showed that this behavior was not controlled by the application or by an Intune setting. When the Company Portal requested a token, the AAD Token Broker returned error <strong>0xCAA2000C</strong> with AADSTS9002341, stating that the user was required to permit SSO. Just before the prompt appeared, RuntimeBroker read the device region and opened the protected IntegratedServicesRegionPolicySet.json file in System32. </p><p data-inserter-version="2" data-placement-location="under_second_paragraph" id="ezoic-pub-ad-placeholder-111"></p>
+<figure class="wp-block-image"><img alt="AAD Token Broker records that interaction is required because the user has not yet permitted SSO. Source: Call4Cloud Part 1" class="wp-image-25689" decoding="async" src="assets/57126fc7f78e0bd6/img_3.png"/></figure>
+<p>
+  Inside that JSON file, Windows keeps regional rules for integrated experiences. One of those rules is Automatic app sign in. When the current region is included in the disabled list, Windows does not allow the application to continue silently until the user has made the SSO decision.
+</p>
+<figure class="wp-block-image"><img alt="The regional policy entry for Automatic app sign in inside IntegratedServicesRegionPolicySet.json. Source: Call4Cloud Part 1" class="wp-image-25690" decoding="async" src="assets/57126fc7f78e0bd6/img_4.png"/></figure>
+<p>That discovery explained why two identically managed devices could behave differently. The Intune policies, application assignments, and Microsoft Entra configuration could all be the same, while the device region still changed the sign-in experience. </p>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="Part_2_found_the_mechanism_but_not_a_supported_control"></span>Part 2 found the mechanism, but not a supported control<span class="ez-toc-section-end"></span></h2>
+<p>The first workaround changed the regional JSON file so that Windows no longer treated the device region as blocked. It worked, but modifying a protected operating system file also introduced a servicing risk. Part 2, therefore, followed the authentication path deeper into aadtb.dll and found the Windows feature checks that enabled the regional SSO enforcement. </p>
+<p>The important features included DMASSOCompliance, IntegratedServicesPolicyEnforcement, and AccountAndRegionalPolicyEnforcement. Disabling the relevant features with ViVeTool restored silent sign-in without changing the JSON file, but it still depended on internal Windows feature controls that Microsoft could change between builds. </p><p data-inserter-version="2" data-placement-location="mid_content" id="ezoic-pub-ad-placeholder-112"></p>
+<figure class="wp-block-image"><img alt="The Part 2 investigation reached the DMASSOCompliance feature check before the authentication request was sent. Source: Call4Cloud Part 2" class="wp-image-25691" decoding="async" src="assets/57126fc7f78e0bd6/img_5.png"/></figure>
+<p>
+  At that point the technical path was clear, but the enterprise management story was not. Administrators could either change a protected file or override internal features. Neither option represented the policy that managed Windows devices actually needed.
+</p>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="Microsoft_finally_adds_AutoAcceptSsoPermission"></span>Microsoft finally adds AutoAcceptSsoPermission<span class="ez-toc-section-end"></span></h2>
+<p>
+  On July 15, 2026, Microsoft announced a supported registry policy that allows administrators to accept SSO permissions automatically on eligible managed Windows devices. The capability is available after the July 2026 monthly security update for Windows 11 version 24H2 and 25H2.
+</p>
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr><td><p><strong>Supported policy</strong><span>  Registry path: HKLM\SOFTWARE\Policies\Microsoft\Windows\AAD</span> <br/>  Value name: AutoAcceptSsoPermission<br/>  Type: DWORD<br/>  Value data: 1<span></span></p></td></tr></tbody></table></figure>
+<p>This setting does not remove the regional policy, change the device location, or disable the Windows features discovered in Part 2. Windows can keep the user choice model, while the organization can make that choice for the Microsoft Entra accounts used on devices it manages. </p>
+<figure class="wp-block-image"><img alt="Microsoft’s example of the AutoAcceptSsoPermission DWORD configured under the Windows AAD policy path. Source: Microsoft Windows IT Pro Blog" class="wp-image-25692" decoding="async" src="assets/57126fc7f78e0bd6/img_6.png"/></figure>
+<p>Microsoft limits the policy to managed enterprise devices with Microsoft Entra ID accounts. Personal Microsoft accounts retain the prompt, and unmanaged devices are unaffected. This is therefore not a global switch that removes the Windows permission experience. It is an enterprise control for a managed trust relationship. </p><p data-inserter-version="2" data-placement-location="long_content" id="ezoic-pub-ad-placeholder-113"></p>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="What_the_binaries_show"></span><strong>What the binaries show</strong><span class="ez-toc-section-end"></span></h2>
+<p>Static analysis of the collected Windows binaries indicates that <strong>AutoAcceptSsoPermission </strong>is located within the existing regional SSO path we investigated in the previous blogs. In aadtb.dll, the policy name appears beside <strong>BrowserSSO::GetCookieInfoForUri, RegionalPolicies::GetSsoPolicyData, Windows.Internal.System.Profile.RegionPolicyEvaluator and the Software\Policies\Microsoft\Windows\AAD registry path. AAD.Core.dll</strong> contains the same policy name and registry path. This shows that the token broker reads the administrator setting while it builds the SSO policy data, rather than changing the regional JSON file itself.</p>
+<figure class="wp-block-image size-large"><img alt="The actual string table from the collected binaries places AutoAcceptSsoPermission beside the regional SSO code and the Windows AAD policy path." class="wp-image-25698" decoding="async" src="assets/57126fc7f78e0bd6/img_7.png"/></figure>
+<p>The request path provides the second half of the story. Inside OAuthTokenRequestBase::SendRequest, aadtb.dll adds x-ms-SsoFlags and x-ms-SsoFlagsSubstatus to the authentication request. The same binary also contains a dedicated SsoRestrAutoAccept state. Together with Microsoft’s documented behavior, this supports the conclusion that a value of 1 changes the broker state before user interaction is required. The policy does not hide the Continue to sign in message after it appears. It prevents the request from reaching the unresolved SSO permission state that would require the message.</p>
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr><td>Application requests the connected Windows account<br/>↓<br/>Microsoft.AAD.BrokerPlugin builds the regional SSO policy data<br/>↓<br/>AutoAcceptSsoPermission is read from the Windows AAD policy path<br/>↓<br/>On an eligible managed Entra device, DWORD 1 supplies the administrator accepted state<br/>↓<br/>aadtb.dll adds x-ms-SsoFlags and x-ms-SsoFlagsSubstatus to the request<br/>↓<br/>The silent request continues without asking the user to permit SSO</td></tr></tbody></table></figure>
+<p><strong><em>The request function adds both SSO values, while the same binary defines the SsoRestrAutoAccept state.</em></strong></p>
+<figure class="wp-block-image size-large"><img alt="" class="wp-image-25700" decoding="async" src="assets/57126fc7f78e0bd6/img_8.png"/></figure>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="Deploying_AutoAcceptSsoPermission_with_Intune"></span>Deploying AutoAcceptSsoPermission with Intune<span class="ez-toc-section-end"></span></h2>
+<p>Microsoft states that the registry policy can be deployed through Group Policy, Microsoft Intune, Configuration Manager, or another management tool that can write policy values. Until the setting is exposed through a native Intune policy interface, a device context PowerShell script provides a straightforward deployment method. </p><p data-inserter-version="2" data-placement-location="longer_content" id="ezoic-pub-ad-placeholder-114"></p>
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr><td><p><strong>PowerShell</strong><br/>  $Path = “HKLM:\SOFTWARE\Policies\Microsoft\Windows\AAD”<br/>    if (-not (Test-Path $Path)) {<br/>        New-Item -Path $Path -Force | Out-Null<br/>    }<br/>    New-ItemProperty `<br/>        -Path $Path `<br/>        -Name “AutoAcceptSsoPermission” `<br/>       -PropertyType DWord `<br/>      -Value 1 `<br/>        -Force | Out-Null<span></span></p></td></tr></tbody></table></figure>
+<p>
+  The script must run in the system context because the value is stored under HKEY_LOCAL_MACHINE. The device also needs the July 2026 security update or a later supported build. Creating the registry value on an older build does not add the operating system support behind the policy.
+</p>
+<p>Testing should be performed on a device where the old JSON change and ViVeTool overrides have been removed. Otherwise, the silent sign-in may already be restored by the earlier workaround, and the new policy cannot be validated cleanly. </p>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="Why_does_this_policy_appear_now"></span>Why does this policy appear now?<span class="ez-toc-section-end"></span></h2>
+<p>The AutoAcceptSsoPermission policy timing becomes more interesting when we return to Microsoft Ignite 2024. Microsoft showed an onboarding experience in which the Company Portal would launch automatically after Autopilot. Instead of leaving the user in the Account setup phase, the device could switch to the desktop and use the Company Portal to display the remaining applications and compliance status. </p>
+<figure class="wp-block-image"><img alt="The Ignite demonstration showed Company Portal opening automatically as soon as Autopilot completed. Source: Patch My PC Company Portal onboarding article" class="wp-image-25693" decoding="async" src="assets/57126fc7f78e0bd6/img_9.png"/></figure>
+<p>That built-in automatic launch experience was announced, but it was not available during the period covered by the original Company Portal article. A custom launch method could reproduce the idea, yet it would also immediately expose the regional SSO problem. Automatically starting the Company Portal feels seamless only when it can also use the Windows account without prompting for another decision. </p><p data-inserter-version="2" data-placement-location="longest_content" id="ezoic-pub-ad-placeholder-115"></p>
+<figure class="wp-block-image"><img alt="The automatic Company Portal idea was intended to move the user past the Account setup phase and continue onboarding at the desktop. Source: Patch My PC Company Portal onboarding article" class="wp-image-25694" decoding="async" src="assets/57126fc7f78e0bd6/img_10.png"/></figure>
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr><td><p><strong>Without the new policy</strong><span>Autopilot completes  →  the user reaches the desktop  →  Company Portal launches  →  Windows requests SSO permission  →  the onboarding flow pauses at the Continue to sign in prompt.</span></p></td></tr></tbody></table></figure>
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr><td><p><strong>With AutoAcceptSsoPermission</strong><br/>Autopilot completes  →  the user reaches the desktop  →  Company Portal launches  →  Windows accepts the managed SSO permission  →  Company Portal continues with the connected account.<span></span></p></td></tr></tbody></table></figure>
+<p>
+  Microsoft has not said that the delayed Company Portal feature caused the new SSO policy to be created, so that connection should not be presented as confirmed. The technical dependency is clear, however. Any application that starts automatically and expects silent access to the connected Windows account can be interrupted by the permission requirement. The new policy removes that interruption for eligible managed devices.
+</p>
+<p>In that sense, AutoAcceptSsoPermission is more than a fix for an annoying prompt. It is one of the controls Windows needs before an administrator can build a genuinely automatic onboarding experience around applications that depend on the signed-in work account. </p>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="Where_this_leaves_Parts_1_and_2"></span>Where this leaves Parts 1 and 2<span class="ez-toc-section-end"></span></h2>
+<p>
+  The first two articles remain the technical explanation of how Windows reached the decision to show the prompt. Part 1 documents the device region and the hidden policy file. Part 2 documents the internal feature enforcement and why the cleaner workaround still depended on unsupported controls.
+</p>
+<p>For Windows 11 version 24H2 and 25H2 devices that have the July 2026 update or later, AutoAcceptSsoPermission should now replace both workarounds. There is no longer a need to modify IntegratedServicesRegionPolicySet.json or disable regional SSO features with ViVeTool on supported devices. </p><p data-inserter-version="2" data-placement-location="incontent_5" id="ezoic-pub-ad-placeholder-116"></p>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="Conclusion"></span>Conclusion<span class="ez-toc-section-end"></span></h2>
+<p>The Continue to sign in prompt began as a small break in the Windows user experience, but the investigation revealed a much larger gap between regional user preferences and enterprise device management. Windows knew how to ask the user for permission, yet administrators had no supported way to make that decision on devices they already managed. </p>
+<p>AutoAcceptSsoPermission closes that gap. It keeps the default prompt for personal accounts and unmanaged devices while allowing eligible managed devices to continue using their connected Microsoft Entra account without interrupting the application flow. </p>
+<p>The old research still explains what happens beneath the surface. The difference is that administrators no longer need to work under Windows to control it. </p>
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr><td><p><strong>The final setting</strong><br/>  HKLM\SOFTWARE\Policies\Microsoft\Windows\AAD\AutoAcceptSsoPermission  =  DWORD 1<br/></p></td></tr></tbody></table></figure>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="Sources"></span>Sources<span class="ez-toc-section-end"></span></h2>
+<p><a href="https://call4cloud.nl/continue-to-sign-in-prompt-sso-dma/">The “Continue to Sign in Prompt” That breaks the SSO</a>
+</p><p data-inserter-version="2" data-placement-location="incontent_6" id="ezoic-pub-ad-placeholder-117"></p>
+<p><a href="https://call4cloud.nl/fix-continue-to-sign-in-prompt-dma-sso-compliance/">Continue to Sign in Prompt Part 2: Disable the DMA SSO Compliance</a>
+</p>
+<p><a href="https://techcommunity.microsoft.com/blog/windows-itpro-blog/now-available-admin-control-for-sso-prompts-in-windows/4534613" rel="noopener" target="_blank">Now available: Admin control for SSO prompts in Windows</a>
+</p>
+<p><a href="https://patchmypc.com/blog/launching-the-company-portal-automatically-after-autopilot/" rel="noopener" target="_blank">Improving Onboarding Experience: Automatically Launch the Company Portal</a>
+</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
