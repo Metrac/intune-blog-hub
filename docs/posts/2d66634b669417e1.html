@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Autopilot Required Apps No Longer Need to Wait 60 Minutes</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Call4Cloud (Rudy Ooms)</span>
+    <span class="date">July 17, 2026</span>
+  </div>
+  <h1>Autopilot Required Apps No Longer Need to Wait 60 Minutes</h1>
+  <div class="orig">Saved for offline reading · <a href="https://patchmypc.com/blog/autopilot-required-apps-no-longer-need-to-wait-60-minutes/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="post-content">
+<p class="wp-block-paragraph">After your Autopilot enrollment (ESP) was completed, the desktop appeared, but the remaining required apps sometimes waited exactly <strong>60 minutes before installing</strong>. IME <strong>1.103.101.0</strong> appears to fix this by watching for ESP to finish and immediately triggering a new Win32 app check-in.</p>
+<p class="wp-block-paragraph"><strong>Please Note:</strong> When writing this blog, IME version 1.103.101.0 is not shipped to prod (send over to clients), but I could already manually download it.</p>
+<h2 class="wp-block-heading" id="h-introduction">Introduction<span class="clth-copy-icon" data-heading-id="h-introduction"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Back in September 2025, I wrote about a strange delay that could occur after <strong><a href="https://learn.microsoft.com/en-us/autopilot/overview">Windows Autopilot enrollment.</a></strong> The Enrollment Status Page (ESP) completed successfully, the user reached the desktop, but the remaining required Win32 apps did absolutely nothing. Then, almost exactly 60 minutes later, they suddenly started installing.</p>
+<p class="wp-block-paragraph">After digging into the Intune Management Extension, we found the reason. The first Win32 app check-in happened too early. IME still believed the device was inside ESP, or it could not yet resolve the correct logged-on user. That first attempt failed, and the Win32 app poller fell back to its hard-coded 3600000-millisecond retry timer.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-69.png"><img alt="" class="wp-image-187866" data-lazy-sizes="(max-width: 470px) 100vw, 470px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-69.png 470w, https://patchmypc.com/app/uploads/2026/06/image-69-300x16.png 300w" decoding="async" src="assets/2d66634b669417e1/img_0.png"/><noscript><img alt="" class="wp-image-187866" decoding="async" src="assets/2d66634b669417e1/img_1.png"/></noscript></a></figure>
+<p class="wp-block-paragraph">A reboot, service restart, logoff, or manual trigger could bypass the delay, but IME itself had no reliable way to notice the exact moment ESP ended. That appears to have changed in IME 1.103.101.0.</p>
+<h2 class="wp-block-heading" id="h-the-original-60-minute-required-apps-delay">The Original 60-Minute Required Apps Delay<span class="clth-copy-icon" data-heading-id="h-the-original-60-minute-required-apps-delay"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The original behavior is explained in detail in my blog about <a href="https://patchmypc.com/blog/why-do-required-apps-wait-60-minutes-after-autopilot-enrollment/">why required apps wait 60 minutes after Autopilot enrollment</a>. During Autopilot, ESP tracks the blocking apps that must be installed before the user is allowed to continue. </p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-77.png"><picture class="wp-image-187876" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-77.png.webp 750w, https://patchmypc.com/app/uploads/2026/06/image-77-300x86.png.webp 300w" sizes="(max-width: 750px) 100vw, 750px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 750px) 100vw, 750px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-77.png 750w, https://patchmypc.com/app/uploads/2026/06/image-77-300x86.png 300w" decoding="async" src="assets/2d66634b669417e1/img_2.png"/><noscript><img alt="" decoding="async" src="assets/2d66634b669417e1/img_3.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">Once those tracked/blocking applications finish, Windows switches to the desktop. The remaining required applications are not part of that ESP lock-in list and must be picked up by the normal Win32 app workload.</p>
+<p class="wp-block-paragraph">That handover did not always happen cleanly. When IME performed its first app check-in, EspHelper.CheckEspPhase() could still return AccountSetup. In other cases, the available-app pass could still see defaultuser0 instead of the actual Entra ID user.</p>
+<p class="wp-block-paragraph">Because the available-app check-in runs before the required-app check-in, that early exit also prevented the required-app workload from running. IME then scheduled the next attempt for one hour later.</p>
+<p class="wp-block-paragraph"><strong>Request required apps for user logon<br/>AvailableAppRequest exits early<br/>Required app check-in scheduled for 3600000 milliseconds</strong></p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-18.jpg"><picture class="wp-image-187869" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-18.jpg.webp 869w, https://patchmypc.com/app/uploads/2026/06/image-18-300x73.jpg.webp 300w, https://patchmypc.com/app/uploads/2026/06/image-18-768x187.jpg.webp 768w" sizes="(max-width: 869px) 100vw, 869px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 869px) 100vw, 869px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-18.jpg 869w, https://patchmypc.com/app/uploads/2026/06/image-18-300x73.jpg 300w, https://patchmypc.com/app/uploads/2026/06/image-18-768x187.jpg 768w" decoding="async" src="assets/2d66634b669417e1/img_4.jpg"/><noscript><img alt="" decoding="async" src="assets/2d66634b669417e1/img_5.jpg"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">The one-hour timer was not the actual problem. The problem was that IME missed the transition between ESP and the normal desktop session. Once it missed that exact moment, the Win32App timer became the only mechanism left to try again.</p>
+<h2 class="wp-block-heading" id="h-why-a-reboot-appeared-to-fix-the-required-app-delay">Why a Reboot Appeared to Fix the Required App Delay<span class="clth-copy-icon" data-heading-id="h-why-a-reboot-appeared-to-fix-the-required-app-delay"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">This also explained why the issue was difficult to reproduce consistently. If Windows restarted during ESP because of a reboot-required policy, IME started fresh after the user signed in. By then, FirstSync had completed, ESP was no longer in the Account Setup phase, and the real user session was available.</p>
+<p class="wp-block-paragraph">The first app check-in could then be completed normally, allowing the required-app check-in to follow immediately. Without that reboot, IME could remain alive across the transition. Its first attempt happened while the device was still changing state, after which it quietly waited for the next scheduled poll.</p>
+<p class="wp-block-paragraph">Restarting the IME service had the same effect. It simply forced the app poller to run again after the device and user had reached a stable state.</p>
+<h2 class="wp-block-heading" id="h-what-changed-in-ime-1-103-101-0">What Changed in IME 1.103.101.0<span class="clth-copy-icon" data-heading-id="h-what-changed-in-ime-1-103-101-0"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">When comparing IME 1.101.111.0 with 1.103.101.0, the most interesting ESP changes appeared inside: <strong>Microsoft.Management.Clients.IntuneManagementExtension.Win32AppPlugIn.dll</strong></p>
+<p class="wp-block-paragraph">Microsoft added several new methods to EspHelper… and one of them is the Setup ESP Registry Watcher</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-74.png"><picture class="wp-image-187872" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-74.png.webp 624w, https://patchmypc.com/app/uploads/2026/06/image-74-300x134.png.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-74.png 624w, https://patchmypc.com/app/uploads/2026/06/image-74-300x134.png 300w" decoding="async" src="assets/2d66634b669417e1/img_6.png"/><noscript><img alt="" decoding="async" src="assets/2d66634b669417e1/img_7.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">Those method names already reveal the new approach. Instead of checking the ESP phase once and relying on the normal polling timer afterward, the IME can now monitor the registry location where Windows records the progress of the enrollment <strong><a href="https://patchmypc.com/blog/intune-management-extension-esp-phases/">FirstSync</a> </strong>process.</p>
+<p class="wp-block-paragraph">The new code searches under: HKLM\SOFTWARE\Microsoft\Enrollments.  It locates the applicable enrollment and its FirstSync subtree, then creates a registry watcher for changes below that location.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-76.png"><picture class="wp-image-187874" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-76.png.webp 975w, https://patchmypc.com/app/uploads/2026/06/image-76-300x75.png.webp 300w, https://patchmypc.com/app/uploads/2026/06/image-76-768x193.png.webp 768w" sizes="(max-width: 975px) 100vw, 975px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 975px) 100vw, 975px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-76.png 975w, https://patchmypc.com/app/uploads/2026/06/image-76-300x75.png 300w, https://patchmypc.com/app/uploads/2026/06/image-76-768x193.png 768w" decoding="async" src="assets/2d66634b669417e1/img_8.png"/><noscript><img alt="" decoding="async" src="assets/2d66634b669417e1/img_9.png"/></noscript>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-watching-firstsync-instead-of-guessing">Watching FirstSync Instead of Guessing<span class="clth-copy-icon" data-heading-id="h-watching-firstsync-instead-of-guessing"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The new strings inside the Win32 App plugin make the intended flow even clearer: [Win32App][EspHelper][SetupEspRegistryWatcher] RegistryWatcher started successfully.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-70.png"><picture class="wp-image-187867" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-70.png.webp 624w, https://patchmypc.com/app/uploads/2026/06/image-70-300x17.png.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-70.png 624w, https://patchmypc.com/app/uploads/2026/06/image-70-300x17.png 300w" decoding="async" src="assets/2d66634b669417e1/img_10.png"/><noscript><img alt="" decoding="async" src="assets/2d66634b669417e1/img_11.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">Once the watcher is active, the IME no longer needs to guess when ESP might be finished. Windows will update those values below the FirstSync subtree as the enrollment phases progress, and the IME receives an event when that state changes.</p>
+<p class="wp-block-paragraph">The callback is handled by: <strong>EspHelper.OnEspRegistryValueChanged</strong>.  The corresponding logging shows what happens next:  [Win32App][EspHelper][OnEspRegistryValueChanged] Registry value change detected under FirstSync subtree.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-72.png"><picture class="wp-image-187868" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-72.png.webp 624w, https://patchmypc.com/app/uploads/2026/06/image-72-300x14.png.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-72.png 624w, https://patchmypc.com/app/uploads/2026/06/image-72-300x14.png 300w" decoding="async" src="assets/2d66634b669417e1/img_12.png"/><noscript><img alt="" decoding="async" src="assets/2d66634b669417e1/img_13.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">A registry change alone does not automatically mean ESP has completed. The callback, therefore, checks the ESP phase again. If the device is still inside ESP, IME continues waiting.</p>
+<p class="wp-block-paragraph">Once the phase changes to completed, the important new behavior kicks in: [Win32App][EspHelper][OnEspRegistryValueChanged] ESP completed. Triggering immediate app workload check-in.</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-71-1024x64.png"><picture class="wp-image-187870" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-71-1024x64.png.webp 1024w, https://patchmypc.com/app/uploads/2026/06/image-71-300x19.png.webp 300w, https://patchmypc.com/app/uploads/2026/06/image-71-768x48.png.webp 768w, https://patchmypc.com/app/uploads/2026/06/image-71.png.webp 1284w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-71-1024x64.png 1024w, https://patchmypc.com/app/uploads/2026/06/image-71-300x19.png 300w, https://patchmypc.com/app/uploads/2026/06/image-71-768x48.png 768w, https://patchmypc.com/app/uploads/2026/06/image-71.png 1284w" decoding="async" src="assets/2d66634b669417e1/img_14.png"/><noscript><img alt="" decoding="async" src="assets/2d66634b669417e1/img_15.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">That is the missing handover from the original flow.</p>
+<p class="wp-block-paragraph">ApplicationPoller.DoWorkInternal now references a new feature named: <strong>RunNontrackedAppsCheckinImmediatelyAfterEsp</strong></p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-79.png"><img alt="" class="wp-image-187900" data-lazy-sizes="(max-width: 554px) 100vw, 554px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-79.png 554w, https://patchmypc.com/app/uploads/2026/06/image-79-300x15.png 300w" decoding="async" src="assets/2d66634b669417e1/img_16.png"/><noscript><img alt="" class="wp-image-187900" decoding="async" src="assets/2d66634b669417e1/img_17.png"/></noscript></a></figure>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-73.png"><picture class="wp-image-187871" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-73.png.webp 624w, https://patchmypc.com/app/uploads/2026/06/image-73-300x81.png.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-73.png 624w, https://patchmypc.com/app/uploads/2026/06/image-73-300x81.png 300w" decoding="async" src="assets/2d66634b669417e1/img_18.png"/><noscript><img alt="" decoding="async" src="assets/2d66634b669417e1/img_19.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">The name is important. ESP already handles the applications that are tracked and locked in by the ESP profile. The delay affected the remaining apps that were not tracked by ESP but were still required for the user or device.</p>
+<p class="wp-block-paragraph">The new behavior tells IME to run another app workload check-in as soon as ESP finishes. At that point, the actual user session should be available, EspHelper.CheckEspPhase() should return NotInEsp, and the normal app evaluation can continue.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-75.png"><picture class="wp-image-187873" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-75.png.webp 624w, https://patchmypc.com/app/uploads/2026/06/image-75-300x162.png.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-75.png 624w, https://patchmypc.com/app/uploads/2026/06/image-75-300x162.png 300w" decoding="async" src="assets/2d66634b669417e1/img_20.png"/><noscript><img alt="" decoding="async" src="assets/2d66634b669417e1/img_21.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">The available-app pass can now be completed instead of exiting early. Once that pass succeeds, the required-app check-in no longer needs to wait for the next one-hour polling cycle AKA the 60 minute delay.</p>
+<p class="wp-block-paragraph">Microsoft did not remove the <strong>3600000 millisecond pulling timer.</strong> The Required Apps timer still exists as the normal fallback schedule. What changed is that the IME now has an event-driven reason to run before that timer expires.</p>
+<h2 class="wp-block-heading" id="h-from-polling-to-an-event-driven-handover">From Polling to an Event-Driven Handover<span class="clth-copy-icon" data-heading-id="h-from-polling-to-an-event-driven-handover"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">This is a small architectural change with a significant effect. Previously, the IME essentially asked whether the ESP was finished at a specific moment. If the answer was no, it went back to sleep. The device could complete ESP a few seconds later, but nothing informed the app poller that the state had changed.</p>
+<p class="wp-block-paragraph">IME 1.103.101.0 can keep watching that state transition. The moment Windows updates the FirstSync registry state, IME checks again. When ESP has genuinely completed, it immediately starts the Required Win32 app workload.</p>
+<p class="wp-block-paragraph">That removes the race between the first user session, ESP completion, and the initial available-app check-in.</p>
+<p class="wp-block-paragraph">It also explains the presence of <strong>DisposeEspRegistryWatcher</strong>. Once the transition has been detected and the immediate check-in has been triggered, the ESP Registry watcher is no longer required. Cleaning it up prevents duplicate callbacks and avoids repeatedly triggering the app workload for later, unrelated registry changes.</p>
+<h2 class="wp-block-heading" id="h-does-this-finally-remove-the-60-minute-required-app-delay">Does This Finally Remove the 60-Minute Required App Delay?<span class="clth-copy-icon" data-heading-id="h-does-this-finally-remove-the-60-minute-required-app-delay"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">For the specific post-ESP race described in the earlier blog, this new behavior appears designed to do exactly that. The delay was caused by IME running too early, missing the correct user or ESP state, and then relying on its one-hour fallback timer. The new registry watcher gives IME another opportunity as soon as FirstSync changes and ESP completes.</p>
+<p class="wp-block-paragraph">That means a reboot should no longer be required for the IME to notice the real user session. Restarting the IME service should no longer be necessary for the normal ESP-to-desktop transition either. The custom StatusService remediation should also become less important for devices receiving this new behavior.</p>
+<p class="wp-block-paragraph">There is one important detail, though. The name <strong>RunNontrackedAppsCheckinImmediatelyAfterEsp </strong>looks like a flight-controlled feature. The code is present in IME 1.103.101.0, but Microsoft can still control its enablement through service-delivered configuration. Seeing the new DLL does not automatically prove that every tenant receives the behavior at the same moment.</p>
+<h2 class="wp-block-heading" id="h-why-this-matters">Why This Matters<span class="clth-copy-icon" data-heading-id="h-why-this-matters"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The desktop appearing does not always mean every enrollment component has already observed the same state. That small timing gap was enough for IME to miss the first useful app check-in and leave required applications waiting for an hour.</p>
+<p class="wp-block-paragraph">The workaround was always straightforward: reboot, restart IME, log off and back on, or trigger another check-in. But none of those options addressed why IME missed the transition in the first place.</p>
+<p class="wp-block-paragraph">IME 1.103.101.0 changes that. By watching the FirstSync registry state and triggering the app workload when ESP completes, Microsoft has connected the end of enrollment directly to the next Win32 app evaluation.</p>
+<p class="wp-block-paragraph">The one-hour timer is still there, but it should no longer be the first thing standing between a completed Autopilot enrollment and the remaining required applications.</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
