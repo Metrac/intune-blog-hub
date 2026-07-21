@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Microsoft Foundry Model Router and Catalog: A Deep Dive</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">July 21, 2026</span>
+  </div>
+  <h1>Microsoft Foundry Model Router and Catalog: A Deep Dive</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/microsoft-foundry-model-router/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p class="wp-block-paragraph">Picking a model used to be a one-time decision: you chose GPT-4o, put it in the config and moved on. In 2026 the model catalog in Microsoft Foundry lists more than 1,900 models across OpenAI, Anthropic, xAI, DeepSeek, Meta and Mistral — and the honest answer to “which model?” is usually “it depends on the prompt”. That is exactly the problem the model router solves. In this blog post I explain what the catalog looks like today, how the Foundry model router works, which knobs you have to control it, what it costs, and how I decide between router and fixed model. I already wrote a general take in <a href="https://jannikreinhard.com/ai-models-2026-comparison-europe/">AI models in 2026: what I would actually pick</a> — this post is the Foundry-specific deep dive.</p>
+<span id="more-19775"></span>
+<h2 class="wp-block-heading" id="what-is-actually-in-the-model-catalog">What Is Actually in the Model Catalog?</h2>
+<p class="wp-block-paragraph">The catalog lives in the Foundry portal at <a href="https://ai.azure.com" rel="nofollow">https://ai.azure.com</a>. Click on <strong>Discover</strong> in the upper navigation, then <strong>Models</strong> in the left pane. You get a search box and filters for <strong>Collection</strong> (the provider), <strong>Industry</strong>, <strong>Capabilities</strong> (reasoning, tool calling) and <strong>Inference task</strong>. Each model card has tabs for Quick facts, Details, <strong>Benchmarks</strong>, Deployments and License.</p>
+<figure class="wp-block-image"><img alt="Foundry portal - Discover - Models — the model catalog with the Collection, Capabilities and" data-recalc-dims="1" decoding="async" src="assets/483584bf1a79121c/img_0.jpg"/></figure>
+<p class="wp-block-paragraph">One thing about the numbers, because they confuse people: Microsoft documents “more than 1,900 models” for the whole catalog. When you open the catalog in a concrete project you see far fewer — my region view currently shows about 195 deployable models, and the Foundry extension in VS Code lists 271 because it also counts the local models from Foundry Local. All three numbers are “correct”; they just count different things.</p>
+<p class="wp-block-paragraph">The catalog has two top-level categories, and the difference is contractual, not technical:</p>
+<ul class="wp-block-list">
+<li><strong>Models sold directly by Azure</strong>: hosted and operated by Microsoft, billed through your Azure subscription, covered by Microsoft support and SLAs. This includes all Azure OpenAI models — newest are the GPT-5.6 models (<code>gpt-5.6-sol</code>, <code>gpt-5.6-terra</code>, <code>gpt-5.6-luna</code>, released July 2026 with a 1,050,000-token context window) — plus selected models from xAI (Grok), DeepSeek, Meta, Mistral AI, Cohere, Black Forest Labs and Microsoft’s own Phi and MAI families.</li>
+<li><strong>Models from partners and community</strong>: the majority of the catalog, offered under the provider’s terms and billed through the Azure Marketplace. Anthropic lives here. Claude reached general availability in Foundry in July 2026 — Claude Opus 4.8, Claude Sonnet 5 and Claude Haiku 4.5, in two hosting variants (“hosted on Azure” and “hosted on Anthropic infrastructure”) and billed in Claude Consumption Units (CCU) through a single Marketplace meter at $0.01 per CCU.</li>
+</ul>
+<p class="wp-block-paragraph">Hint: Claude in Foundry is not called through the OpenAI-compatible API but through the native Anthropic Messages API on your Foundry endpoint (<code>/anthropic/v1/messages</code>). Plan that into your client code — the payload format is different.</p>
+<p class="wp-block-paragraph">Models also disappear. <code>gpt-4.1-mini</code>, for example, is already marked as deprecated: existing deployments keep working, but the portal blocks new ones. Check the retirement date before you standardize a team on a model — the GA lifecycle gives you 18 months from launch, not from your go-live.</p>
+<p class="wp-block-paragraph">For comparing models before you commit, the portal has <a href="https://learn.microsoft.com/en-us/azure/foundry/concepts/model-benchmarks" rel="noopener" target="_blank">model leaderboards</a> (still preview): a quality index, safety benchmarks, measured latency and throughput, and — refreshingly honest — the actual dollar cost it took to run the quality benchmark suite against each model. I use them to build a shortlist, then evaluate the shortlist on my own data. Leaderboards rank averages; your workload is not average.</p>
+<figure class="wp-block-image"><img alt="Foundry portal - model leaderboard view (preview) with the quality/cost trade-off chart, or a" data-recalc-dims="1" decoding="async" src="assets/483584bf1a79121c/img_1.jpg"/></figure>
+<h2 class="wp-block-heading" id="what-is-the-model-router">What Is the Model Router?</h2>
+<p class="wp-block-paragraph">The <a href="https://learn.microsoft.com/en-us/azure/foundry/openai/concepts/model-router" rel="noopener" target="_blank">model router</a> is a deployable model in Foundry (publisher Microsoft) that does not answer prompts itself. It is a small, trained routing model: it analyzes each incoming request in real time — complexity, reasoning needs, task type — and forwards the request to the most suitable underlying LLM. It does not store your prompts, and it only routes to models that match your access and your data-zone boundary.</p>
+<p class="wp-block-paragraph">Your application only sees one deployment:</p>
+<pre class="wp-block-code"><code class="language-python"># pip install openai&gt;=1.75.0 — you call one deployment, the router picks the model per request
+from openai import AzureOpenAI
+
+client = AzureOpenAI(
+    azure_endpoint="https://&lt;your-resource&gt;.openai.azure.com/",
+    api_key="&lt;your-api-key&gt;",
+    api_version="2024-10-21")
+
+response = client.chat.completions.create(
+    model="model-router",   # your router deployment name
+    messages=[{"role": "user", "content": "Summarize this incident report."}])
+
+print(response.choices[0].message.content)
+print(response.model)  # which model actually answered, e.g. gpt-5-mini-2025-08-07
+</code></pre>
+<p class="wp-block-paragraph">The <code>model</code> field in the response always discloses which model answered. Log it — it is your most important observability signal when you work with the router.</p>
+<figure class="wp-block-image"><img alt="Microsoft Foundry model router sends each prompt to a nano, standard or reasoning model" data-recalc-dims="1" decoding="async" src="assets/483584bf1a79121c/img_2.jpg"/></figure>
+<p class="wp-block-paragraph">As of mid-2026 the routing pool contains roughly 27 models. The core is the OpenAI lineup: the GPT-4o and GPT-4.1 families, o4-mini, and the GPT-5 line up to <code>gpt-5.5</code> including the chat variants. On top of that, non-OpenAI models can join the pool: DeepSeek V3.1/V3.2, <code>gpt-oss-120b</code>, Llama-4-Maverick, Grok 4 and several Claude models (Haiku 4.5, Sonnet 4.5, Opus 4.1 through 4.7). Two status details that are easy to get wrong: <strong>router support for every non-OpenAI model is still in preview</strong>, and the brand-new GPT-5.6 models are not in the pool yet.</p>
+<p class="wp-block-paragraph">Note: Claude models are the only ones you must deploy separately from the catalog first; the router then invokes your Claude deployments when it selects them. Everything else in the pool works without a dedicated deployment. And watch the SKU: your Claude deployment type has to match the router deployment, otherwise the deployment fails with an <code>InvalidResourceProperties</code> error.</p>
+<h2 class="wp-block-heading" id="which-version-am-i-actually-running">Which Version Am I Actually Running?</h2>
+<p class="wp-block-paragraph">The router uses date-stamped versions, and the lifecycle is unusual: the current version <code>2025-11-18</code> is <strong>updated in place</strong>. New underlying models and features are added over time without a new version number, while the older versions (<code>2025-08-07</code>, <code>2025-05-19</code>) are frozen. So “which models can my router use” is a moving target even on a pinned version — the supported-models table in the docs is the change log to watch.</p>
+<p class="wp-block-paragraph">There is also an <strong>auto-update</strong> option at deployment time. Convenient, but when a new router version rolls out, the set of underlying models changes with it — and with it, potentially, your quality profile and your costs. For production I pin the version and control the model set through a subset (next section).</p>
+<h2 class="wp-block-heading" id="how-do-i-control-the-routing">How Do I Control the Routing?</h2>
+<p class="wp-block-paragraph">You find the router by searching for <code>model-router</code> under <strong>Discover → Models</strong>. Click on <strong>Deploy</strong> and choose <strong>Custom settings</strong> — this is where the three knobs live. (<strong>Default settings</strong> deploys Balanced mode routing across the full model set.)</p>
+<figure class="wp-block-image"><img alt="model-router deploy dialog with Custom settings open — the Routing mode dropdown" data-recalc-dims="1" decoding="async" src="assets/483584bf1a79121c/img_3.jpg"/></figure>
+<h3 class="wp-block-heading" id="1-routing-mode-the-cost-quality-trade-off">1. Routing mode — the cost-quality trade-off</h3>
+<ul class="wp-block-list">
+<li><strong>Balanced</strong> (default): considers all models within a small quality band (roughly 1 to 2 percent of the best model for that prompt) and picks the most cost-effective one.</li>
+<li><strong>Cost</strong>: widens the quality band to about 5 to 6 percent and optimizes harder for price. For high-volume, budget-sensitive workloads.</li>
+<li><strong>Quality</strong>: always the highest-quality model, cost ignored. For legal review, medical summaries, complex reasoning.</li>
+</ul>
+<h3 class="wp-block-heading" id="2-model-subset-the-compliance-gate">2. Model subset — the compliance gate</h3>
+<p class="wp-block-paragraph">Select <strong>Route to a subset of models</strong> and tick the models the router may use. This solves three real problems. First, governance: newly added base models are <strong>not</strong> included until you explicitly add them, so the router cannot silently start using a model your data protection officer never saw. Second, context: the effective context window of a router deployment is the smallest window in the pool — with a subset you raise that floor. Third, if your organization governs model deployments with Azure Policy, the same built-in policy applies to the router’s subset.</p>
+<p class="wp-block-paragraph">Note: Changes to the routing mode or the subset can take up to five minutes to take effect. Do not panic when the first test after a change still routes like before.</p>
+<h3 class="wp-block-heading" id="3-automatic-failover">3. Automatic failover</h3>
+<p class="wp-block-paragraph">The router includes built-in failover: when the selected model has a transient problem, the request is transparently redirected to the next most appropriate model. On a default deployment this is enabled out of the box, no configuration.</p>
+<p class="wp-block-paragraph">Hint: Subset and failover are coupled. Your model subset <strong>is</strong> your fallback set — failover never leaves it, which is exactly what you want for compliance. But that also means: a subset with only one model has no failover at all. Always put at least two models in a subset.</p>
+<h2 class="wp-block-heading" id="what-does-the-router-cost">What Does the Router Cost?</h2>
+<p class="wp-block-paragraph">Billing is the sum of the underlying models’ token prices — you pay gpt-5-nano prices when the router picked gpt-5-nano — plus the router’s own charge on <strong>input tokens</strong> (the exact rate is on the <a href="https://azure.microsoft.com/en-us/pricing/details/ai-foundry-models/model-router/" rel="noopener" target="_blank">model router pricing page</a>). Whether the router saves money depends entirely on your traffic mix: if most prompts are simple and you were paying frontier prices for them, savings are dramatic. If your traffic is uniformly hard, a fixed model without the markup is cheaper. Measure it — Microsoft ships an <a href="https://github.com/microsoft-foundry/Model-Router-Auto-Evaluation" rel="noopener" target="_blank">auto evaluation toolkit</a> for exactly this comparison; the docs recommend at least 100 prompts from your real workload.</p>
+<p class="wp-block-paragraph">Two more cost details. Prompt caching passes through, but a cache hit needs consecutive requests on the <strong>same</strong> underlying model — with dynamic routing that is not guaranteed, so do not budget with cached prices. And the router has its own quota, scaling with your subscription’s quota tier: from 1 million tokens per minute on Tier 1 up to 15 million on Tier 6 for Global Standard (Data Zone limits are lower). You see and assign this under <strong>Operate → Quota</strong> like for any other deployment.</p>
+<figure class="wp-block-image"><img alt="Foundry portal - Operate - Quota page with the model-router row, the Scope column and the TPM" data-recalc-dims="1" decoding="async" src="assets/483584bf1a79121c/img_4.jpg"/></figure>
+<h2 class="wp-block-heading" id="which-deployment-type-do-i-choose">Which Deployment Type Do I Choose?</h2>
+<p class="wp-block-paragraph">Every model deployment needs a type, and this choice decides cost, latency and data path:</p>
+<figure class="wp-block-image"><img alt="Microsoft Foundry model deployment types compared: Global Standard, Data Zone, Provisioned PTU" data-recalc-dims="1" decoding="async" src="assets/483584bf1a79121c/img_5.jpg"/></figure>
+<figure class="wp-block-table"><table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Processing location</th>
+<th>Billing</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Global Standard</td>
+<td>Any Azure region</td>
+<td>Pay per token, highest quota</td>
+</tr>
+<tr>
+<td>Data Zone Standard</td>
+<td>Within the US, EU or APAC zone</td>
+<td>Pay per token, small premium</td>
+</tr>
+<tr>
+<td>Regional Standard</td>
+<td>Deployment region only</td>
+<td>Pay per token, lowest quota</td>
+</tr>
+<tr>
+<td>Provisioned (PTU)</td>
+<td>Global, Data Zone or Regional</td>
+<td>Reserved capacity, paid even when idle</td>
+</tr>
+<tr>
+<td>Batch</td>
+<td>Global or Data Zone</td>
+<td>50 percent discount, 24h target, not interactive</td>
+</tr>
+</tbody>
+</table></figure>
+<p class="wp-block-paragraph">For EU customers the Data Zone option is often the deciding factor: processing stays within the EU Data Boundary regions (France, Germany, Italy, Netherlands, Norway, Poland, Spain, Sweden, Switzerland). Data at rest always stays in your resource’s geography — the type only governs where inference runs. Also worth knowing: <strong>priority processing</strong> (preview), a premium pay-as-you-go option on Global and Data Zone Standard with a defined latency target — a middle ground between best-effort Standard and PTU.</p>
+<p class="wp-block-paragraph">Note: This table is about normal model deployments. The <strong>model router itself only supports Global Standard and Data Zone Standard</strong>, and the resource must be in East US 2 or Sweden Central today. If you need PTU capacity or batch pricing, you deploy that model directly. The good part: a Data Zone router honors the data zone boundary in its routing decisions, so it only routes to models inside the boundary.</p>
+<p class="wp-block-paragraph">The feature that glues Standard and Provisioned together is <a href="https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/spillover-traffic-management" rel="noopener" target="_blank">spillover</a>: when your PTU deployment returns a 429 because capacity is full, requests route to a paired standard deployment in the same Foundry resource — for all traffic, or per request via the <code>x-ms-spillover-deployment</code> header. PTU covers the base load at fixed cost, spillover catches the peaks at token prices.</p>
+<h2 class="wp-block-heading" id="how-do-i-pick-models-for-agents">How Do I Pick Models for Agents?</h2>
+<p class="wp-block-paragraph">An agent in Foundry Agent Service is configuration: instructions plus model plus tools. Two patterns work well for me:</p>
+<ol class="wp-block-list">
+<li><strong>Router as the agent’s base model.</strong> In a multi-step agent, the steps differ wildly in difficulty — intent classification is trivial, root-cause analysis is not. Select your router deployment in the agent’s model dropdown, and each step gets a fitting model automatically. Caveat from the docs: if the agent uses Agent Service tools in its flows, only OpenAI models are used for routing.</li>
+<li><strong>The hybrid pattern.</strong> Router for the general traffic, plus a pinned dedicated deployment where compliance or reproducibility demands a fixed model version. Routers for breadth, pins for the crown jewels.</li>
+</ol>
+<h2 class="wp-block-heading" id="how-do-i-see-what-the-router-is-doing">How Do I See What the Router Is Doing?</h2>
+<p class="wp-block-paragraph">Three things I set up on day one:</p>
+<ol class="wp-block-list">
+<li><strong>Log the <code>model</code> field</strong> of every response. After two weeks you have the routing distribution — the single most useful chart for the pin-or-route decision.</li>
+<li><strong>Azure Monitor and Cost analysis</strong> in the Azure portal. Under Monitoring → Metrics you can split the router’s metrics by underlying model; under Cost analysis you filter by the Deployment tag and see where the money actually goes.</li>
+<li><strong>A/B the router against your old fixed model</strong> with your own evaluation set before switching production traffic. The auto evaluation toolkit automates most of this.</li>
+</ol>
+<h2 class="wp-block-heading" id="the-approach-i-actually-use">The Approach I Actually Use</h2>
+<ol class="wp-block-list">
+<li>New workload? Start with <strong>model router, balanced mode</strong>, and log the <code>model</code> field from day one.</li>
+<li>After two weeks, look at the routing distribution. If 90 percent lands on one model anyway, <strong>pin that model</strong> and save the markup.</li>
+<li>Compliance workload? <strong>Model subset</strong> with only the approved models (minimum two, so failover keeps working) — or a pinned deployment in a <strong>Data Zone</strong>.</li>
+<li>Volume grows predictable? <strong>PTU for the base load, spillover for peaks</strong> — with directly deployed models, since the router does not support PTU.</li>
+<li>Re-evaluate quarterly. The catalog moves monthly.</li>
+</ol>
+<h2 class="wp-block-heading" id="pitfalls-i-now-avoid">Pitfalls I Now Avoid</h2>
+<ul class="wp-block-list">
+<li><strong>Large-context calls against the router.</strong> A bigger call does not always fail — it fails exactly when the router picks a small model, so you get intermittent errors that look random. Raise the floor with a subset, or summarize and truncate before sending.</li>
+<li><strong>Trusting the router blindly with sampling parameters.</strong> When an o-series reasoning model is selected, parameters like <code>temperature</code>, <code>top_p</code>, <code>stop</code> and the penalty settings are dropped silently. If your app depends on them, pin a non-reasoning model. <code>reasoning_effort</code> on the other hand is passed through since version 2025-11-18.</li>
+<li><strong>Single-model subsets.</strong> No second model means no failover. Two minimum.</li>
+<li><strong>Auto-update on production routers.</strong> New version, new model pool, new cost profile — without a deliberate decision. Pin and update consciously.</li>
+<li><strong>Assuming multimodal parity.</strong> Image input works (the routing decision is made on the text only), audio input does not — the router is a text-first feature.</li>
+<li><strong>Comparing router cost to list prices only.</strong> The charge on input tokens is real, and prompt caching discounts are unreliable under dynamic routing. Whether the router wins depends on your traffic mix, not on the marketing slide.</li>
+</ul>
+<h2 class="wp-block-heading" id="where-this-is-heading">Where This Is Heading</h2>
+<p class="wp-block-paragraph">Model selection is turning from an architecture decision into a runtime decision. The catalog will keep growing, and routing will get smarter as the preview models graduate to GA. I expect the pinned-single-model setup to become the exception, reserved for regulated workloads. The pragmatic path today: let the router handle breadth, keep a small set of pinned deployments where control matters, and check the <a href="https://learn.microsoft.com/en-us/azure/foundry/openai/concepts/model-router" rel="noopener" target="_blank">model router docs</a> quarterly because this feature moves fast. And if you want to run small models completely offline instead, that is a different story — I wrote it up in <a href="https://jannikreinhard.com/run-ai-models-offline-mac-foundry-local/">Foundry Local on the Mac</a>.</p>
+<p class="wp-block-paragraph">I hope this makes the model jungle a bit easier to navigate.</p>
+<p class="wp-block-paragraph">Stay healthy,</p>
+<p class="wp-block-paragraph">Cheers Jannik</p>
+<aside aria-labelledby="jr-next-microsoft-foundry-model-router" class="jr-next-journey"><span class="jr-next-eyebrow">Build the next layer</span><h2 id="jr-next-microsoft-foundry-model-router">Continue your agent architecture</h2></aside> </div>
+</div></div>
+</article>
+</body>
+</html>

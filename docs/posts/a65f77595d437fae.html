@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Company Portal: Error Loading Apps</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Call4Cloud (Rudy Ooms)</span>
+    <span class="date">July 20, 2026</span>
+  </div>
+  <h1>Company Portal: Error Loading Apps</h1>
+  <div class="orig">Saved for offline reading · <a href="https://patchmypc.com/blog/company-portal-error-loading-apps/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="post-content">
+<p class="wp-block-paragraph">This blog starts with a simple <strong>Company Portal error: Error Loading Apps. </strong>But when the same issue appeared in the web portal, and <strong>IWService started returning HTTP 500 and 503 responses, </strong>it became clear that this was not just another client-side problem.  So I started investigating what happens when the Company Portal loads the Applications list. To do so, I needed to look at the Intune Azure Scale Unit serving the tenant and build a resolver to show where that Tenant and ASU are hosted.</p>
+<h2 class="wp-block-heading" id="h-error-loading-apps-introduction">Error Loading Apps Introduction<span class="clth-copy-icon" data-heading-id="h-error-loading-apps-introduction"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">It started as one of those issues where the UI does not really tell you what went wrong. The Company Portal got an<strong> error loading apps.</strong></p>
+<figure class="wp-block-image size-full"><a href="https://patchmypc.com/app/uploads/2026/07/image-21.jpg"><picture class="wp-image-188853" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-21.jpg.webp 624w, https://patchmypc.com/app/uploads/2026/07/image-21-300x128.jpg.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-21.jpg 624w, https://patchmypc.com/app/uploads/2026/07/image-21-300x128.jpg 300w" decoding="async" src="assets/a65f77595d437fae/img_0.jpg"/><noscript><img alt="" decoding="async" src="assets/a65f77595d437fae/img_1.jpg"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">There was no really useful error… only the Company Portal message that there was an <strong>error loading apps</strong>. Somehow, the company portal refused to show what the user expected to see. At first, that sounds like the usual troubleshooting list. Check the device. Check the network. Check the proxy. Check if SSL inspection decided to interfere again.</p>
+<p class="wp-block-paragraph">But the behavior of  <strong>error loading app</strong>s did not really fit a simple client issue. The same kind of problem showed up in the <strong>web Company Portal.</strong> The Company web portal blade also did not return the expected application data. From the outside, it looked like one of those vague Intune cloud moments where everything is half working and half not.</p>
+<p class="wp-block-paragraph">That is usually the point where I stop looking at the error message and start looking at the path behind it. Because the Company Portal does not magically know which apps belong to a user or device. It needs to ask the Intune service. Somewhere behind that app list, there is a service path, backend routing, and an Intune scale unit doing the actual work.</p>
+<p class="wp-block-paragraph">If that path starts returning 500 or 503 responses, the user only sees a simple symptom: <strong>Error Loading Apps: </strong>That is where IWService became interesting.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-26.png"><picture class="wp-image-188854" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-26.png.webp 382w, https://patchmypc.com/app/uploads/2026/07/image-26-300x83.png.webp 300w" sizes="(max-width: 382px) 100vw, 382px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 382px) 100vw, 382px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-26.png 382w, https://patchmypc.com/app/uploads/2026/07/image-26-300x83.png 300w" decoding="async" src="assets/a65f77595d437fae/img_2.png"/><noscript><img alt="" decoding="async" src="assets/a65f77595d437fae/img_3.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph"><em>The better question was not only: is Intune down? The better question was: what broke, where did it break, and which ASU is this tenant actually using?</em></p>
+<h3 class="wp-block-heading" id="h-a-quick-note-on-iwservice">A quick note on IWService<span class="clth-copy-icon" data-heading-id="h-a-quick-note-on-iwservice"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph" id="h-before-we-go-further-it-helps-to-explain-what-i-mean-by-iwservice-the-iwservice-is-not-a-public-intune-api-that-microsoft-documents-for-admins-to-use-directly-in-this-blog-i-use-iwservice-to-describe-the-tenant-specific-intune-service-path-behind-parts-of-the-company-portal-experience">Before we go further, it helps to explain what I mean by IWService. The<strong> IWService</strong> (Information Worker Service) is not a public Intune API that Microsoft documents for admins to use directly. In this blog, I use the IWService to describe the tenant-specific Intune service path behind parts of the Company Portal experience.</p>
+<p class="wp-block-paragraph" id="h-when-the-company-portal-opens-it-does-not-only-read-local-device-data-it-signs-in-the-user-discovers-the-correct-tenant-service-location-and-talks-back-to-intune-through-a-tenant-specific-route-like-https-fef-lt-scaleunit-gt-manage-microsoft-com-trafficgateway-trafficroutingservice-iwservice-statelessiwservice">When the Company Portal opens, it not only reads local device data. It signs in the user (Token), discovers the correct tenant service location, and talks back to Intune through a tenant-specific route like: https://fef.&lt;scaleunit&gt;.manage.microsoft.com/TrafficGateway/TrafficRoutingService/IWService/<strong>StatelessIWService</strong>. The Company Portal uses IWService to retrieve the user’s devices, available applications, application details, categories, company terms, and application state.  </p>
+<figure class="wp-block-image size-full"><a href="https://patchmypc.com/app/uploads/2026/07/image-29.png"><picture class="wp-image-188862" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-29.png.webp 921w, https://patchmypc.com/app/uploads/2026/07/image-29-300x168.png.webp 300w, https://patchmypc.com/app/uploads/2026/07/image-29-768x431.png.webp 768w" sizes="(max-width: 921px) 100vw, 921px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 921px) 100vw, 921px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-29.png 921w, https://patchmypc.com/app/uploads/2026/07/image-29-300x168.png 300w, https://patchmypc.com/app/uploads/2026/07/image-29-768x431.png 768w" decoding="async" src="assets/a65f77595d437fae/img_4.png"/><noscript><img alt="" decoding="async" src="assets/a65f77595d437fae/img_5.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph" id="h-that-distinction-matters-the-company-portal-can-also-talk-to-the-local-intune-management-extension-bridge-to-retrieve-win32-app-status-from-the-device-but-the-app-list-and-user-scoped-intune-data-still-depend-on-the-tenant-specific-iwservice-path">That distinction matters. The Company Portal can also talk to the<a href="https://patchmypc.com/blog/company-portal-stuck-on-downloading-idx12729-0x80131040/"> <strong>local Intune Management Extension bridge</strong> </a>to retrieve Win32 app status from the device, but the app list and user scoped Intune data still depend on the tenant specific IWService path.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-30.png"><picture class="wp-image-188864" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-30.png.webp 1010w, https://patchmypc.com/app/uploads/2026/07/image-30-300x107.png.webp 300w, https://patchmypc.com/app/uploads/2026/07/image-30-768x273.png.webp 768w" sizes="(max-width: 1010px) 100vw, 1010px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1010px) 100vw, 1010px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-30.png 1010w, https://patchmypc.com/app/uploads/2026/07/image-30-300x107.png 300w, https://patchmypc.com/app/uploads/2026/07/image-30-768x273.png 768w" decoding="async" src="assets/a65f77595d437fae/img_6.png"/><noscript><img alt="" decoding="async" src="assets/a65f77595d437fae/img_7.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph" id="h-so-when-iwservice-service-side-starts-returning-500-or-503-responses-the-device-can-look-perfectly-fine-from-the-outside-enrollment-can-still-be-present-the-mdm-certificate-can-still-be-valid-wam-can-still-return-a-token-the-ime-can-still-be-running-but-the-company-portal-may-still-fail-to-load-apps-because-the-backend-on-the-asu-itself-can-be-unhealthy">So when the<strong> IWService service side starts returning 500 or 503 responses,</strong> and the Company portal shows that there was an <strong>error loading apps,</strong> the device can look perfectly fine from the outside. The MDM certificate can still be valid. WAM can still return a token for the IWService and SideCar service, and the IME can still be running. But the Company Portal may still fail to load apps because the backend on the ASU itself can be unhealthy.</p>
+<p class="wp-block-paragraph" id="h-that-is-what-makes-this-type-of-issue-easy-to-misread-as-a-client-problem-the-visible-symptom-is-the-company-portal-cannot-load-apps-but-the-failing-component-could-be-the-iwservice-micro-service-on-only-your-azure-scale-unit">That is what makes this type of issue easy to misread as a client problem. The visible symptom is <strong>“The Company Portal error loading app</strong>s”, but the failing component could be the IWService Micro Service on only your Azure Scale Unit..</p>
+<h2 class="wp-block-heading" id="h-the-iwservice-question">The IWService question<span class="clth-copy-icon" data-heading-id="h-the-iwservice-question"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph"><a href="https://www.reddit.com/r/Intune/comments/1u9w0yj/company_portal_issues/">The Reddit thread about Company Portal issues</a> was a good example of the kind of signal you sometimes see before a clean service health message appears. Multiple admins reported that the Company Portal showed that there was an error loading apps. One of the interesting details was a reference to HTTP 500 and 503 responses against `<strong>fef.amsub0102.manage.microsoft.com</strong>`.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-28.png"><picture class="wp-image-188857" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-28.png.webp 597w, https://patchmypc.com/app/uploads/2026/07/image-28-300x52.png.webp 300w" sizes="(max-width: 597px) 100vw, 597px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 597px) 100vw, 597px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-28.png 597w, https://patchmypc.com/app/uploads/2026/07/image-28-300x52.png 300w" decoding="async" src="assets/a65f77595d437fae/img_8.png"/><noscript><img alt="" decoding="async" src="assets/a65f77595d437fae/img_9.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">That does not prove the root cause. But it did show the same pattern I  explained in the previous chapter. The device can have working internet. The Intune portal can partly load. The Microsoft status page can still look quiet. And yet the IWservice that is required for the Company Portal for app enumeration can still be broken.</p>
+<p class="wp-block-paragraph">So we also built a small <strong><a href="https://github.com/call4cloud-code/IWService-Tester/tree/main">IWService tester</a></strong>. Nothing fancy. Sign in with WAM (web account manager), discover the tenant service path, call the Applications or Devices endpoint in a read only way, and record what comes back. Status code. Latency. Item count when it is returned. Raw error body when Intune gives us one.</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-23-1024x236.jpg"><picture class="wp-image-188859" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-23-1024x236.jpg.webp 1024w, https://patchmypc.com/app/uploads/2026/07/image-23-300x69.jpg.webp 300w, https://patchmypc.com/app/uploads/2026/07/image-23-768x177.jpg.webp 768w, https://patchmypc.com/app/uploads/2026/07/image-23.jpg.webp 1070w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-23-1024x236.jpg 1024w, https://patchmypc.com/app/uploads/2026/07/image-23-300x69.jpg 300w, https://patchmypc.com/app/uploads/2026/07/image-23-768x177.jpg 768w, https://patchmypc.com/app/uploads/2026/07/image-23.jpg 1070w" decoding="async" src="assets/a65f77595d437fae/img_10.jpg"/><noscript><img alt="" decoding="async" src="assets/a65f77595d437fae/img_11.jpg"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">That helped immediately, but it also showed the limit of the test. With WAM you test the tenant path for the account you are signed in with. That is exactly what you want for one tenant, but it does not tell you whether the another tenant/azure scale unit also has errors loading apps.</p>
+<h2 class="wp-block-heading" id="h-is-this-local-tenant-specific-or-global">Is this local, tenant-specific, or global?<span class="clth-copy-icon" data-heading-id="h-is-this-local-tenant-specific-or-global"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The supported places still matter. Intune Tenant Status shows tenant details, connector status, service health, messages that require action, and Message center posts. Microsoft 365 Service health shows incidents and advisories that affect your tenant.</p>
+<p class="wp-block-paragraph">Those should still be the first places to look. I am not trying to replace them… (well just a bit maybe) The problem is timing and scope. When the issue is new, small, or limited to one backend path, the official pages do not always give you the answer while you are still trying to understand what is happening.</p>
+<p class="wp-block-paragraph">That is when you need another piece of evidence. For me, that missing piece was the ASU. If two tenants are both in Europe but they live on a different azure scale unit, one tenant can be broken while the other one works. Without the ASU context that looks random. With the ASU context, it starts to make sense.</p>
+<h2 class="wp-block-heading" id="h-so-what-is-an-asu">So what is an ASU?<span class="clth-copy-icon" data-heading-id="h-so-what-is-an-asu"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">ASU stands for Azure Scale Unit. <a href="https://github.com/MicrosoftDocs/memdocs/blob/ca88102aa4ad5067cf12bd40028b055036b5ac2b/memdocs/intune/fundamentals/intune-endpoints.md">Older Intune documentation</a> made that concept much clearer. In Tenant administration, under Tenant status and Tenant details, the tenant location could show values such as `North America 0501`, `Europe 0202`, or `Asia Pacific 0301`.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-27.png"><img alt="" class="wp-image-188856" data-lazy-sizes="(max-width: 639px) 100vw, 639px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-27.png 639w, https://patchmypc.com/app/uploads/2026/07/image-27-300x57.png 300w" decoding="async" src="assets/a65f77595d437fae/img_12.png"/><noscript><img alt="" class="wp-image-188856" decoding="async" src="assets/a65f77595d437fae/img_13.png"/></noscript></a></figure>
+<p class="wp-block-paragraph">The old documentation explained that you could match that number to an ASU table for app and script deployment endpoints.</p>
+<p class="wp-block-paragraph">That table is older, and it is no longer the way Microsoft documents the current endpoint story. I would not use it as current firewall guidance. But it gives us a clue. `AMSUB0701` was not just a label. It represented an Intune scale unit. Microsoft still uses the scale unit concept in current Intune communications, for example, when describing staged rollout behavior.</p>
+<p class="wp-block-paragraph">The older Intune operations deck made the architecture easier to picture. It showed Intune services running in Service Fabric clusters. In that deck, the ASU was represented as that Service Fabric cluster. That does not mean we can fully describe the current Intune backend from the outside, but it gives us a much better mental model than saying: somewhere in Europe.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-24.jpg"><picture class="wp-image-188855" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-24.jpg.webp 889w, https://patchmypc.com/app/uploads/2026/07/image-24-300x169.jpg.webp 300w, https://patchmypc.com/app/uploads/2026/07/image-24-768x432.jpg.webp 768w" sizes="(max-width: 889px) 100vw, 889px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 889px) 100vw, 889px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-24.jpg 889w, https://patchmypc.com/app/uploads/2026/07/image-24-300x169.jpg 300w, https://patchmypc.com/app/uploads/2026/07/image-24-768x432.jpg 768w" decoding="async" src="assets/a65f77595d437fae/img_14.jpg"/><noscript><img alt="" decoding="async" src="assets/a65f77595d437fae/img_15.jpg"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph"><em>Redrawn from the Microsoft Intune operations deck: Intune services represented as a Service Fabric cluster, with FE stateless and MT stateful node types inside the ASU model.</em></p>
+<p class="wp-block-paragraph">The same deck is useful because it does not portray Intune as a single magical server. It shows a scale unit, node types, and services. The front side is stateless. The middle-tier side owns the state. There are service partitions and replicas. That is already enough to explain why one part of the Intune experience can fail while another part still works.</p>
+<h2 class="wp-block-heading" id="h-the-azure-scale-unit-discovery-map">The Azure Scale Unit Discovery Map<span class="clth-copy-icon" data-heading-id="h-the-azure-scale-unit-discovery-map"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Once I had the ASU names, the next question was obvious. Where are they? Not the exact building. Microsoft does not publish that, and I am not going to pretend a DNS lookup gives me the front door badge number. The useful level is the Azure region: <strong>North Europe, West Europe, East US, Southeast Asia, Central India, Australia East, and so on.</strong></p>
+<p class="wp-block-paragraph">For the <strong><a href="https://github.com/call4cloud-code/Intune-ASU-Finder">Azure Scale Unit resolver, </a></strong>I focused only on the two host families that mattered for this question: `agents.&lt;stamp&gt;.manage.microsoft.com` and `fef.&lt;stamp&gt;.manage.microsoft.com`.</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-31-1024x533.png"><picture class="wp-image-188867" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-31-1024x533.png.webp 1024w, https://patchmypc.com/app/uploads/2026/07/image-31-300x156.png.webp 300w, https://patchmypc.com/app/uploads/2026/07/image-31-768x400.png.webp 768w, https://patchmypc.com/app/uploads/2026/07/image-31-1536x800.png.webp 1536w, https://patchmypc.com/app/uploads/2026/07/image-31.png.webp 1600w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-31-1024x533.png 1024w, https://patchmypc.com/app/uploads/2026/07/image-31-300x156.png 300w, https://patchmypc.com/app/uploads/2026/07/image-31-768x400.png 768w, https://patchmypc.com/app/uploads/2026/07/image-31-1536x800.png 1536w, https://patchmypc.com/app/uploads/2026/07/image-31.png 1600w" decoding="async" src="assets/a65f77595d437fae/img_16.png"/><noscript><img alt="" decoding="async" src="assets/a65f77595d437fae/img_17.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">The `agents` hostname gave the better backend signal. Resolve it. Match the IP against Azure Service Tags. Take the region code from the service tag and compare it with the public Azure regions list. That still does not tell us the exact datacenter. It does tell us whether the evidence points to North Europe in Ireland, West Europe in the Netherlands, East US in Virginia, Central India in Pune, or another public Azure region.</p>
+<p class="wp-block-paragraph">That is why I wanted a map. Saying <strong>`Europe 0701` </strong>is interesting, but it does not help much when you are trying to explain a pattern. Saying the evidence points to North Europe is better. Showing it on a map is even better, especially when you are trying to compare tenants quickly.</p>
+<figure class="wp-block-image size-large"><a href="https://patchmypc.com/app/uploads/2026/07/image-25.jpg"><picture class="wp-image-188858" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-25-1024x576.jpg.webp 1024w, https://patchmypc.com/app/uploads/2026/07/image-25-300x169.jpg.webp 300w, https://patchmypc.com/app/uploads/2026/07/image-25-768x432.jpg.webp 768w, https://patchmypc.com/app/uploads/2026/07/image-25.jpg.webp 1434w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-25-1024x576.jpg 1024w, https://patchmypc.com/app/uploads/2026/07/image-25-300x169.jpg 300w, https://patchmypc.com/app/uploads/2026/07/image-25-768x432.jpg 768w, https://patchmypc.com/app/uploads/2026/07/image-25.jpg 1434w" decoding="async" src="assets/a65f77595d437fae/img_18.jpg"/><noscript><img alt="" decoding="async" src="assets/a65f77595d437fae/img_19.jpg"/></noscript>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-what-the-resolver-showed">What the resolver showed<span class="clth-copy-icon" data-heading-id="h-what-the-resolver-showed"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The resolver grouped the active `agents` endpoints by Azure region and added IP geolocation as extra context. I treated the IP geolocation as supporting evidence only. The stronger signal was the Azure Service Tag match, because that came back with the Azure region code.</p>
+<p class="wp-block-paragraph">In this test set, North America spread across West US, West US 2, Central US, South Central US, East US, and East US 2. Europe mainly landed on North Europe and West Europe, with one Switzerland North stamp. Asia Pacific landed on Southeast Asia, Japan East, Central India, and Australia East.</p>
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr><td><strong>Service area</strong></td><td><strong>Azure region evidence</strong></td><td><strong>Public region location</strong></td><td><strong>ASU aliases seen</strong></td></tr><tr><td>North America</td><td>West US, West US 2, Central US, South Central US, East US, East US 2</td><td>California, Washington, Iowa, Texas, Virginia</td><td>AMSUA0101, AMSUA0102, AMSUA0201, AMSUA0202, AMSUA0401, AMSUA0402, AMSUA0501, AMSUA0502, AMSUA0601, AMSUA0602, AMSUA0701, AMSUA0702, AMSUA0801, AMSUA0901</td></tr><tr><td>Europe</td><td>North Europe, West Europe, Switzerland North</td><td>Ireland, Netherlands, Zurich</td><td>AMSUB0101, AMSUB0102, AMSUB0201, AMSUB0202, AMSUB0301, AMSUB0302, AMSUB0501, AMSUB0502, AMSUB0601, AMSUB0701, AMSUB0901</td></tr><tr><td>Asia Pacific</td><td>Southeast Asia, Japan East, Central India, Australia East</td><td>Singapore, Tokyo/Saitama, Pune, New South Wales</td><td>AMSUC0101, AMSUC0201, AMSUC0301, AMSUC0501, MSUC06, AMSUIN01, MSUD01</td></tr></tbody></table></figure>
+<h2 class="wp-block-heading" id="h-what-is-inside-an-asu">What is inside an ASU?<span class="clth-copy-icon" data-heading-id="h-what-is-inside-an-asu"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">An ASU should not be explained as one simple server. The older Microsoft Intune operations deck gives us a useful public model: the ASU is represented as a Service Fabric cluster. Inside that cluster, you have node types and services. The front side is stateless. The middle-tier side is stateful. That distinction matters.</p>
+<p class="wp-block-paragraph">Microsoft’s Azure Architecture Center explains the deployment stamp pattern in a way that fits this pretty well. A service can run multiple independent copies of its application components and data stores. Each copy can be called a stamp, service unit, scale unit, or cell. Each stamp serves a subset of tenants and can fail without the other tenants on the other stamps failing at the same time.</p>
+<p class="wp-block-paragraph">That is why these failures are annoying to troubleshoot. A front-facing endpoint can answer, while a backend service returns 503, and the company portal shows there was an error loading apps. The App content download can work while IWService fails. One European tenant can be broken while another European tenant works, simply because they are not on the same ASU or not using the same broken service path.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-26.jpg"><picture class="wp-image-188861" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-26.jpg.webp 893w, https://patchmypc.com/app/uploads/2026/07/image-26-300x169.jpg.webp 300w, https://patchmypc.com/app/uploads/2026/07/image-26-768x432.jpg.webp 768w" sizes="(max-width: 893px) 100vw, 893px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 893px) 100vw, 893px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-26.jpg 893w, https://patchmypc.com/app/uploads/2026/07/image-26-300x169.jpg 300w, https://patchmypc.com/app/uploads/2026/07/image-26-768x432.jpg 768w" decoding="async" src="assets/a65f77595d437fae/img_20.jpg"/><noscript><img alt="" decoding="async" src="assets/a65f77595d437fae/img_21.jpg"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph"><em>Updated redrawing based on the Microsoft Intune operations deck: tenants routed to regional ASUs, each with a Service Fabric cluster, partition replicas, and per-ASU DR storage.</em></p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-22.jpg"><picture class="wp-image-188860" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-22.jpg.webp 624w, https://patchmypc.com/app/uploads/2026/07/image-22-300x169.jpg.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-22.jpg 624w, https://patchmypc.com/app/uploads/2026/07/image-22-300x169.jpg 300w" decoding="async" src="assets/a65f77595d437fae/img_22.jpg"/><noscript><img alt="" decoding="async" src="assets/a65f77595d437fae/img_23.jpg"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph"><em>Updated redrawing based on the Microsoft Intune operations deck: one ASU inside an Azure region with UX instances, logic, storage, Graph API, microservices, and Azure VM compute.</em></p>
+<h2 class="wp-block-heading" id="h-back-to-the-error-loading-apps-error">Back to the Error Loading Apps Error<span class="clth-copy-icon" data-heading-id="h-back-to-the-error-loading-apps-error"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">So, back to the original issue. Company Portal Error Loading Apps. </p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-21.jpg"><picture class="wp-image-188853" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-21.jpg.webp 624w, https://patchmypc.com/app/uploads/2026/07/image-21-300x128.jpg.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-21.jpg 624w, https://patchmypc.com/app/uploads/2026/07/image-21-300x128.jpg 300w" decoding="async" src="assets/a65f77595d437fae/img_24.jpg"/><noscript><img alt="" decoding="async" src="assets/a65f77595d437fae/img_25.jpg"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">The user sees a simple error message, but behind that simple failure lie multiple possible layers. Local network. Proxy. Device state. IWService. Tenant backend stamp. Wider Intune service health.</p>
+<p class="wp-block-paragraph">The IWService checker helps with the first real question: can this tenant path actually return the app data right now? The ASU resolver helps with the next question: where does the backend stamp appear to live? The map makes that easier to explain.</p>
+<p class="wp-block-paragraph">None of this replaces Microsoft Service Health or a support case. It just gives you better evidence before you open one. When Company Portal refuses to load apps and everything still looks green, I want to know three things: what broke, where it broke, and in which ASU is this tenant located?</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

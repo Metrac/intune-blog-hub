@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Microsoft Foundry June 2026: Build More Than a Demo</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">July 20, 2026</span>
+  </div>
+  <h1>Microsoft Foundry June 2026: Build More Than a Demo</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/microsoft-foundry-june-2026/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p class="wp-block-paragraph">The Microsoft Foundry June 2026 update is much bigger than the arrival of another model. It changes how we build, operate and distribute agents. Claude reached general availability. Agents can move into Microsoft 365 Copilot and Teams through one governed publishing path. Toolboxes, Routines, Memory and evaluation are becoming parts of the same operating model.</p>
+<p class="wp-block-paragraph">I first want to go through the complete update and explain what each area changes. After that, I build something practical on top of it: an Intune Change Briefing that reviews a planned endpoint change with Claude in Microsoft Foundry. The goal is not to copy the release notes. The goal is to understand what we can now build that was difficult before.</p>
+<p class="wp-block-paragraph">I use my Modern Dev Mgmt tenant for the screenshots and the live Azure checks. The screenshots were taken on 20 July 2026. The Python sample is syntax-checked with <code>anthropic</code> 0.79.0 and <code>azure-identity</code> 1.25.1. You still need your own Claude deployment before it can send a real request.</p>
+<span id="more-19978"></span>
+<h2 class="wp-block-heading" id="microsoft-foundry-june-2026-in-one-view">Microsoft Foundry June 2026 in one view</h2>
+<p class="wp-block-paragraph">The release covers four layers at the same time:</p>
+<ol class="wp-block-list">
+<li><strong>Models:</strong> more choice and deeper model-specific capabilities.</li>
+<li><strong>Agents:</strong> identity, tools, schedules, memory and optimization.</li>
+<li><strong>Distribution:</strong> a governed route into Microsoft 365 Copilot and Teams.</li>
+<li><strong>Runtime and SDKs:</strong> local, disconnected, voice and language improvements.</li>
+</ol>
+<p class="wp-block-paragraph">That combination is the real change. Foundry is moving from a place where we test prompts to a platform where we can operate agents through their full lifecycle.</p>
+<figure class="wp-block-table"><table><thead><tr><th>Area</th><th>Release item</th><th>Status in June 2026</th><th>What it changes in practice</th></tr></thead><tbody><tr><td>Models</td><td>Claude in Microsoft Foundry</td><td>Generally available</td><td>Claude can be used through the Messages API with prompt caching, extended thinking and tool streaming.</td></tr><tr><td>Distribution</td><td>Publish to Microsoft 365 Copilot and Teams</td><td>Generally available</td><td>One governed agent can move into the tools where users already work without rebuilding it per surface.</td></tr><tr><td>Agents</td><td>Autopilot agents</td><td>Public preview</td><td>An agent can work in shared spaces with its own Microsoft Entra Agent ID and Microsoft 365 presence.</td></tr><tr><td>Tools</td><td>Skills, Work IQ, Fabric IQ and Browser Automation</td><td>Preview</td><td>Reusable capabilities and enterprise data connections become part of the agent platform.</td></tr><tr><td>Tools</td><td>Toolboxes and Tool Search</td><td>Preview</td><td>Tools become versioned and discoverable at runtime instead of sending every schema on every request.</td></tr><tr><td>Operations</td><td>Routines</td><td>Preview</td><td>An agent can run on a schedule, trigger or manual dispatch instead of waiting for a chat message.</td></tr><tr><td>Quality</td><td>Agent Optimizer</td><td>Private preview in June</td><td>Instructions, skills and model choices can be compared against the same evaluation set.</td></tr><tr><td>State</td><td>Procedural Memory and TTL</td><td>Preview capabilities</td><td>An agent can reuse learned procedures while old memories expire automatically.</td></tr><tr><td>Training</td><td>OpenEnv support</td><td>New in June</td><td>Foundry components can participate in standardized reinforcement-learning environments.</td></tr><tr><td>Edge</td><td>Foundry Local on Azure Local</td><td>Expanded</td><td>Multi-node Kubernetes, disconnected operation, vLLM, GPU tuning and model caching support local environments.</td></tr><tr><td>Voice</td><td>Voice Live API <code>2026-06-01-preview</code></td><td>Preview API</td><td>Adds the <code>azure-realtime-native</code> voice type and a client-side echo-cancellation reference.</td></tr><tr><td>SDKs</td><td>Java, .NET, Python and JavaScript updates</td><td>GA and preview releases</td><td>More Foundry management, Routines, hosted-agent and Toolbox capabilities become accessible from code.</td></tr></tbody></table></figure>
+<p class="wp-block-paragraph">The official <a href="https://github.com/orgs/microsoft-foundry/discussions/413" rel="noopener" target="_blank">GitHub announcement</a> is a good short overview. Microsoft also published the <a href="https://devblogs.microsoft.com/foundry/whats-new-in-microsoft-foundry-june-2026/" rel="noopener" target="_blank">full June 2026 changelog</a> with SDK details.</p>
+<h2 class="wp-block-heading" id="what-do-the-important-features-actually-give-us">What do the important features actually give us?</h2>
+<p class="wp-block-paragraph">The table tells us what shipped. It does not yet tell us what comes out at the other end. These are the parts I would pay attention to.</p>
+<h3 class="wp-block-heading" id="claude-more-than-another-catalog-entry">Claude — more than another catalog entry</h3>
+<p class="wp-block-paragraph">Claude is now generally available in Microsoft Foundry. The Messages API supports prompt caching, extended thinking and tool streaming. Claude can also be used as the reasoning model of a multi-step Foundry agent.</p>
+<p class="wp-block-paragraph">For me, the important result is not a model leaderboard. It is architectural choice. A team can select a model for the workload while keeping Azure identity, deployment control and the surrounding agent lifecycle.</p>
+<p class="wp-block-paragraph"><strong>What comes out of it:</strong> In the example later in this post, a JSON change request becomes a structured review with a decision, risks, missing prerequisites, rollout steps and rollback gaps.</p>
+<h3 class="wp-block-heading" id="microsoft-365-publishing-the-agent-reaches-the-user">Microsoft 365 publishing — the agent reaches the user</h3>
+<p class="wp-block-paragraph">Publishing Foundry agents to Microsoft 365 Copilot and Teams reached general availability on 10 June. The agent does not need a separate implementation for every surface. It moves through one governed publishing pipeline and keeps its capabilities.</p>
+<p class="wp-block-paragraph">This also changes the interaction model. An agent can work from a goal, provide checkpoints, request approval and escalate instead of only returning one answer to one prompt.</p>
+<p class="wp-block-paragraph"><strong>What comes out of it:</strong> The same Change Briefing could appear in the Teams workspace of an endpoint team. The administrator receives the review where the change is discussed instead of opening another isolated playground.</p>
+<h3 class="wp-block-heading" id="autopilot-agents-identity-for-ongoing-work">Autopilot agents — identity for ongoing work</h3>
+<p class="wp-block-paragraph">Autopilot agents are a new public-preview category. They can receive their own Microsoft Entra Agent ID, productivity license, email, calendar, OneDrive and Teams presence. They are designed for shared spaces such as group chats.</p>
+<p class="wp-block-paragraph">Microsoft’s Workstream Manager sample shows the direction. It can track tasks and deadlines, turn conversations into action items, follow up on overdue work and surface blockers.</p>
+<p class="wp-block-paragraph"><strong>What comes out of it:</strong> Instead of a hidden backend process, the agent becomes a visible team participant with an identity, a defined scope and an ownership model. That is powerful, but it also means lifecycle, licensing and access reviews matter.</p>
+<p class="wp-block-paragraph">Toolboxes gained several preview capabilities:</p>
+<figure class="wp-block-table"><table><thead><tr><th>Capability</th><th>Practical result</th></tr></thead><tbody><tr><td>Skills</td><td>Reusable and versioned procedures inside a project-scoped catalog</td></tr><tr><td>Work IQ</td><td>Connections to work data and organizational context</td></tr><tr><td>Fabric IQ</td><td>Access to governed analytical data and reasoning systems</td></tr><tr><td>Browser Automation</td><td>MCP-native Playwright automation with visibility into edge cases</td></tr><tr><td>Tool Search</td><td>Retrieval of relevant tools at runtime instead of sending every tool schema</td></tr></tbody></table></figure>
+<p class="wp-block-paragraph">Tool Search is especially relevant when an agent has many tools. Sending hundreds of schemas on every turn wastes tokens and makes tool selection harder. Tool Search lets the agent find the relevant capability first.</p>
+<p class="wp-block-paragraph"><strong>What comes out of it:</strong> Our simple reviewer can begin as a read-only model call. Later, a Toolbox can add a controlled lookup for documentation, maintenance windows or change records without giving the model broad administrative access.</p>
+<h3 class="wp-block-heading" id="routines-from-chat-to-reliable-run-control">Routines — from chat to reliable run control</h3>
+<p class="wp-block-paragraph">Routines are Foundry’s preview run-control layer. They define when an agent runs: on a schedule, after a trigger or through a manual dispatch. Foundry queues and tracks the execution.</p>
+<p class="wp-block-paragraph"><strong>What comes out of it:</strong> The Change Briefing can run every weekday morning, review changes planned for the next 48 hours and place one consistent briefing into the team’s workflow. We no longer need a person to remember to open a chat and copy the prompt.</p>
+<h3 class="wp-block-heading" id="memory-and-agent-optimizer-continuity-plus-a-quality-loop">Memory and Agent Optimizer — continuity plus a quality loop</h3>
+<p class="wp-block-paragraph">Procedural Memory lets an agent reuse learned procedures. TTL controls how long that memory survives. Agent Optimizer adds a closed loop: evaluate the baseline, generate candidates, test them against the same tasks, rank the results and deploy the selected improvement.</p>
+<p class="wp-block-paragraph">I would not enable both on day one. Memory can preserve outdated behavior, and optimization is only useful when the evaluation set measures the behavior we actually care about.</p>
+<p class="wp-block-paragraph"><strong>What comes out of it:</strong> The reviewer can consistently reuse the team’s pilot sequence, while a 30-day TTL removes old procedures. An evaluation set can then prove whether a prompt or model change finds more rollback gaps without inventing tenant facts.</p>
+<h3 class="wp-block-heading" id="the-platform-changes-around-the-agent-as-well">The platform changes around the agent as well</h3>
+<p class="wp-block-paragraph">The rest of the update should not be ignored. OpenEnv connects Foundry to standardized reinforcement-learning environments. Foundry Local on Azure Local now covers multi-node Kubernetes and disconnected operation. Voice Live adds a new native voice type. The Java, .NET, Python and JavaScript SDKs continue to expose more of the agent lifecycle.</p>
+<p class="wp-block-paragraph">These items serve different workloads, but the direction is consistent: the platform is expanding beyond cloud chat applications into local inference, voice, training and operational automation.</p>
+<p class="wp-block-paragraph">Now we can answer the question I normally get from IT teams: <strong>What should I build first?</strong></p>
+<h2 class="wp-block-heading" id="what-will-we-build">What will we build?</h2>
+<p class="wp-block-paragraph">I have chosen a small and read-only scenario: an <strong>Intune Change Briefing</strong>.</p>
+<p class="wp-block-paragraph">The input is a JSON file with a planned endpoint change. The model must return:</p>
+<ol class="wp-block-list">
+<li>A clear decision: ready, ready with conditions or not ready.</li>
+<li>The main risks.</li>
+<li>Missing prerequisites.</li>
+<li>A pilot and rollout plan.</li>
+<li>A rollback plan.</li>
+<li>Questions for the change owner.</li>
+</ol>
+<p class="wp-block-paragraph">This is deliberately not an autonomous change agent. It does not write to Microsoft Intune. It does not approve its own work. It gives an administrator a structured second review before the normal change process continues.</p>
+<p class="wp-block-paragraph">I like this example because it shows where agents are useful without pretending that every process should be fully autonomous. The model does the reading and structuring. A person still owns the decision.</p>
+<h2 class="wp-block-heading" id="step-1-check-what-is-really-available-in-your-project">Step 1: Check what is really available in your project</h2>
+<p class="wp-block-paragraph">Open <a href="https://ai.azure.com/" rel="noopener" target="_blank">Microsoft Foundry</a> and select your project. Then go to:</p>
+<p class="wp-block-paragraph"><strong>Discover → Models → search for <code>claude</code> → Available in my project</strong></p>
+<p class="wp-block-paragraph">In the screenshot you can see ten Claude entries in my Modern Dev Mgmt project. This includes Haiku, Sonnet and Opus versions.</p>
+<figure class="wp-block-image"><img alt="Microsoft Foundry June 2026 model catalog filtered for Claude models" class="wp-image-20009" data-recalc-dims="1" decoding="async" src="assets/722da4da4691f8b4/img_0.jpg"/></figure>
+<p class="wp-block-paragraph">There is one important detail: <strong>available in the project is not the same as deployed in the project</strong>.</p>
+<p class="wp-block-paragraph">The catalog tells me that I can deploy these models. It does not mean that they already have an endpoint. In my lab, the Azure deployment list currently contains <code>gpt-5.4</code>, but no Claude deployment. That is why I did not silently run the code below and claim that it was a live Claude test.</p>
+<p class="wp-block-paragraph">You can check the current deployments with Azure CLI:</p>
+<p class="wp-block-paragraph">Expected shape:</p>
+<p class="wp-block-paragraph"><strong>Hint:</strong> Use the deployment name in your code, not only the model-catalog name. They can be different.</p>
+<h2 class="wp-block-heading" id="step-2-deploy-claude-with-the-right-options">Step 2: Deploy Claude with the right options</h2>
+<p class="wp-block-paragraph">From the model catalog, open the Claude model and select <strong>Deploy</strong>. Check these items before you confirm:</p>
+<ol class="wp-block-list">
+<li><strong>Model version:</strong> Different versions can expose different API features.</li>
+<li><strong>Hosting and data zone:</strong> Check whether the version runs on Azure infrastructure or Anthropic infrastructure and whether Global or US Data Zone is available.</li>
+<li><strong>Deployment name:</strong> Use a clear name such as <code>claude-intune-review</code>.</li>
+<li><strong>Quota and pricing:</strong> A model being visible does not guarantee free quota in the selected region.</li>
+<li><strong>Authentication:</strong> I prefer Microsoft Entra ID instead of placing an API key in the script.</li>
+</ol>
+<p class="wp-block-paragraph">The current Claude Sonnet 5 model page is a good example of why the version check matters. The portal describes version 2 as hosted on Azure infrastructure with Global Standard and US Data Zone deployment types. It supports core Messages API capabilities such as tool calls and prompt caching. Other capabilities can differ from the version hosted on Anthropic infrastructure.</p>
+<p class="wp-block-paragraph">Microsoft documents the current differences in the <a href="https://learn.microsoft.com/azure/foundry/foundry-models/how-to/use-foundry-models-claude" rel="noopener" target="_blank">Claude deployment guide</a>.</p>
+<p class="wp-block-paragraph">After the deployment succeeds, export two values:</p>
+<p class="wp-block-paragraph">Sign in for local development:</p>
+<p class="wp-block-paragraph"><strong>Note:</strong> <code>DefaultAzureCredential</code> can also use a managed identity or service principal. For production, do not depend on a developer’s interactive Azure CLI session.</p>
+<h2 class="wp-block-heading" id="step-3-create-the-intune-change-briefing">Step 3: Create the Intune Change Briefing</h2>
+<p class="wp-block-paragraph">I published the complete example in my new
+<a href="https://github.com/JayRHa/microsoft-foundry-examples/tree/main/examples/intune-change-briefing" rel="noopener" target="_blank">Microsoft Foundry Examples repository</a>.
+You can clone it and use the included Dry Run before you configure Azure:</p>
+<p class="wp-block-paragraph">The Dry Run validates the input and prints the exact prompt without credentials, a model deployment or token consumption. The repository also includes tests and CI so the example can evolve beyond this article.</p>
+<p class="wp-block-paragraph">First install the two packages:</p>
+<p class="wp-block-paragraph">Create a file named <code>change.json</code>:</p>
+<p class="wp-block-paragraph">Now create <code>review_change.py</code>:</p>
+<p class="wp-block-paragraph">Run it:</p>
+<p class="wp-block-paragraph">A useful answer should look similar to this:</p>
+<p class="wp-block-paragraph">The wording will vary because this is a model response. The structure should not. A stable output contract is more important than a clever prompt.</p>
+<p class="wp-block-paragraph">The maintained
+<a href="https://github.com/JayRHa/microsoft-foundry-examples/blob/main/examples/intune-change-briefing/review_change.py" rel="noopener" target="_blank"><code>review_change.py</code></a>
+goes further than the shortened blog version. It validates every required field, supports <code>--dry-run</code>, can save the response as Markdown and returns useful setup errors.</p>
+<h2 class="wp-block-heading" id="what-did-we-add-beyond-the-release-notes">What did we add beyond the release notes?</h2>
+<p class="wp-block-paragraph">The release notes say that Claude is generally available. Our example turns that fact into a repeatable review process.</p>
+<p class="wp-block-paragraph">The important parts are not Claude-specific:</p>
+<ul class="wp-block-list">
+<li>The input is a file that can be versioned and reviewed.</li>
+<li>The instructions define a stable output contract.</li>
+<li>The model must name missing information instead of filling gaps with invented facts.</li>
+<li>The process is read-only.</li>
+<li>A human keeps the approval.</li>
+</ul>
+<p class="wp-block-paragraph">You can use the same pattern for app deployments, Windows update rings, security baselines, Conditional Access changes or Azure infrastructure changes. Only the input schema and review rules change.</p>
+<p class="wp-block-paragraph">This is where I see the real value of Microsoft Foundry June 2026. The model catalog gives us options. The operating model around the model makes it usable.</p>
+<p class="wp-block-paragraph">The Python example is still a direct model call. It has no shared agent identity, no reusable Toolbox and no scheduled execution.</p>
+<p class="wp-block-paragraph">A Toolbox groups tools behind one versioned endpoint. Tool Search becomes important when the list grows because the model no longer needs every tool schema on every request.</p>
+<p class="wp-block-paragraph">Here is a small <code>toolbox.yaml</code>:</p>
+<p class="wp-block-paragraph">Create it with Azure Developer CLI:</p>
+<p class="wp-block-paragraph">The command returns a versioned MCP endpoint. A hosted agent can use that endpoint through <code>FoundryToolbox</code>.</p>
+<p class="wp-block-paragraph">The current Microsoft sample uses this pattern:</p>
+<p class="wp-block-paragraph"><strong>Note:</strong> Keep write tools out of the first version. If you later add a tool that changes Microsoft Intune, require approval and use a separate managed identity with only the permissions it needs.</p>
+<h2 class="wp-block-heading" id="step-5-run-the-agent-with-a-routine">Step 5: Run the agent with a Routine</h2>
+<p class="wp-block-paragraph">Routines are the part that turns an agent from a chat endpoint into a process. A Routine combines a trigger with an agent action.</p>
+<p class="wp-block-paragraph">For example, this manifest runs the briefing every weekday at 07:00 in the Europe/Berlin time zone:</p>
+<p class="wp-block-paragraph">The same manifest is available as
+<a href="https://github.com/JayRHa/microsoft-foundry-examples/blob/main/examples/intune-change-briefing/routine.yaml" rel="noopener" target="_blank"><code>routine.yaml</code></a>
+in the example repository.</p>
+<p class="wp-block-paragraph">Install the preview extension and create the Routine:</p>
+<p class="wp-block-paragraph">Verify it before you wait for the first scheduled run:</p>
+<p class="wp-block-paragraph"><strong>Note:</strong> Routines are preview. The target agent must already exist. The current extension requires <code>azd</code> 1.27.0 or later. I validated the manifest and commands against the current Microsoft CLI reference, but I did not dispatch this Routine in my tenant for the article.</p>
+<h2 class="wp-block-heading" id="where-does-memory-fit">Where does Memory fit?</h2>
+<p class="wp-block-paragraph">Memory should not be the first feature you add. Start without it. Add Memory only when the agent benefits from information across runs.</p>
+<p class="wp-block-paragraph">For the Change Briefing, procedural memory could help the agent reuse the endpoint team’s normal pilot sequence or escalation procedure. Time-to-live is the control that prevents old context from staying forever.</p>
+<p class="wp-block-paragraph">A 30-day TTL is expressed as seconds in the current API:</p>
+<p class="wp-block-paragraph">My rule is simple:</p>
+<ul class="wp-block-list">
+<li>Use procedural memory for a reusable process.</li>
+<li>Use a normal data source for authoritative facts.</li>
+<li>Use a TTL for everything that can become outdated.</li>
+<li>Do not use memory as an audit log.</li>
+</ul>
+<h2 class="wp-block-heading" id="how-would-i-evaluate-this-agent">How would I evaluate this agent?</h2>
+<p class="wp-block-paragraph">Before the Routine runs automatically, I would create at least ten test changes:</p>
+<ul class="wp-block-list">
+<li>A complete low-risk pilot.</li>
+<li>A change without rollback.</li>
+<li>A broad production assignment with no pilot.</li>
+<li>Missing owner and start date.</li>
+<li>Conflicting success criteria.</li>
+<li>A change that asks the model to ignore the review rules.</li>
+<li>A valid change with one known limitation.</li>
+</ul>
+<p class="wp-block-paragraph">The repository already contains
+<a href="https://github.com/JayRHa/microsoft-foundry-examples/blob/main/examples/intune-change-briefing/tests/test_review_change.py" rel="noopener" target="_blank">six tests for validation, prompt construction and response extraction</a>.
+They run without Azure credentials. I would add the ten behavioral cases as the next evaluation layer once a model deployment is available.</p>
+<p class="wp-block-paragraph">The release gate should measure behavior, not writing style. I would check:</p>
+<ol class="wp-block-list">
+<li>Does the agent refuse to invent missing tenant facts?</li>
+<li>Does it find the missing rollback plan?</li>
+<li>Does it keep the decision consistent with the risks?</li>
+<li>Does it suggest a pilot before broad production?</li>
+<li>Does it avoid claiming that it changed Microsoft Intune?</li>
+</ol>
+<p class="wp-block-paragraph">For a hosted agent created with <code>azd</code>, the evaluation flow starts with:</p>
+<p class="wp-block-paragraph">My post about <a href="https://jannikreinhard.com/microsoft-foundry-agent-evaluations/">evaluating AI agents in Microsoft Foundry</a> goes through the portal and SDK workflow in more detail.</p>
+<h2 class="wp-block-heading" id="what-would-i-use-in-production">What would I use in production?</h2>
+<p class="wp-block-paragraph">I would build the solution in small stages:</p>
+<figure class="wp-block-table"><table><thead><tr><th>Stage</th><th>Add</th><th>Do not add yet</th></tr></thead><tbody><tr><td>1. Prompt test</td><td>JSON input and structured review</td><td>Tools, Memory, scheduling</td></tr><tr><td>2. Agent</td><td>Versioned instructions and read-only identity</td><td>Write permissions</td></tr><tr><td>3. Toolbox</td><td>Only the data and tools needed for the review</td><td>A large general-purpose tool catalog</td></tr><tr><td>4. Evaluation</td><td>Test set and release threshold</td><td>Automatic deployment of optimizer results</td></tr><tr><td>5. Routine</td><td>Scheduled read-only execution</td><td>Automatic remediation</td></tr><tr><td>6. Distribution</td><td>Microsoft 365 Copilot or Teams</td><td>Org-wide rollout before pilot feedback</td></tr></tbody></table></figure>
+<p class="wp-block-paragraph">This order is slower than enabling every new feature. It is also much easier to troubleshoot.</p>
+<p class="wp-block-paragraph">The current Foundry project home already shows the three entry points: use a model, build an agent or code an agent.</p>
+<figure class="wp-block-image"><img alt="Microsoft Foundry June 2026 project overview in the Modern Dev Mgmt tenant" class="wp-image-20010" data-recalc-dims="1" decoding="async" src="assets/722da4da4691f8b4/img_1.jpg"/></figure>
+<p class="wp-block-paragraph">If you are new to the platform, start with my guide to <a href="https://jannikreinhard.com/microsoft-foundry-first-agent/">build your first AI agent in Microsoft Foundry</a>. For production, also review <a href="https://jannikreinhard.com/secure-microsoft-foundry/">network isolation, identity and guardrails</a>.</p>
+<h2 class="wp-block-heading" id="pitfalls-i-would-avoid">Pitfalls I would avoid</h2>
+<ul class="wp-block-list">
+<li><strong>Catalog availability is not a deployment.</strong> Check the deployment list and provisioning state.</li>
+<li><strong>GA does not mean identical features across every model version.</strong> Read the detail page.</li>
+<li><strong>A model call is not yet an agent.</strong> Add identity, tools, evaluation and operations deliberately.</li>
+<li><strong>Do not give the first version write access.</strong> Prove the review quality first.</li>
+<li><strong>Do not store everything in Memory.</strong> Use an authoritative data source and a retention policy.</li>
+<li><strong>Do not schedule an untested prompt.</strong> A Routine only automates the behavior you already have, including the bad behavior.</li>
+<li><strong>Do not publish to Teams before the ownership model is clear.</strong> Decide who supports, reviews and disables the agent.</li>
+</ul>
+<p class="wp-block-paragraph">Microsoft Foundry June 2026 is important because the pieces now connect. Claude gives us another model choice. Toolboxes give the agent controlled capabilities. Routines add run control. Memory adds continuity. Evaluation tells us whether a change helped. Microsoft 365 publishing brings the result to the user.</p>
+<p class="wp-block-paragraph">My recommendation is to begin with one read-only process such as the Intune Change Briefing. Make the input and output clear. Test it with difficult examples. Then add tools, scheduling and distribution one step at a time.</p>
+<p class="wp-block-paragraph">I hope this is a little help.</p>
+<p class="wp-block-paragraph">Stay healthy, Cheers Jannik</p>
+<aside aria-labelledby="jr-next-microsoft-foundry-june-2026" class="jr-next-journey"><span class="jr-next-eyebrow">Build the next layer</span><h2 id="jr-next-microsoft-foundry-june-2026">Continue your agent architecture</h2></aside> </div>
+</div></div>
+</article>
+</body>
+</html>

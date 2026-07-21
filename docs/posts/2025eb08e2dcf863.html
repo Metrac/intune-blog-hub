@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Using Connect-MgGraph Cmdlet to Automate Microsoft 365 via Microsoft Graph PowerShell</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">HTMD / Anoop C Nair</span>
+    <span class="date">July 20, 2026</span>
+  </div>
+  <h1>Using Connect-MgGraph Cmdlet to Automate Microsoft 365 via Microsoft Graph PowerShell</h1>
+  <div class="orig">Saved for offline reading · <a href="https://www.anoopcnair.com/connect-mggraph-cmdlet-to-graph-powershell/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text"><p class="code-block code-block-6">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><h2 class="wp-block-heading" id="key-takeaways"><strong>Key Takeaways</strong></h2><ul class="wp-block-list"><li class="has-medium-font-size"><strong>Microsoft Graph</strong> is an <strong>API</strong> that provides a single endpoint for accessing data, intelligence, and insights from <strong>Microsoft 365</strong>.</li><li class="has-medium-font-size"><strong>Microsoft Graph</strong> can be leveraged to create personalised experiences catering to individual users’ unique contexts, thereby increasing their productivity.</li><li class="has-medium-font-size">It provides a single <strong>endpoint</strong>, <a href="https://graph.microsoft.com," rel="noreferrer noopener nofollow" target="_blank"><code><strong>https://graph.microsoft.com</strong></code>,</a> which enables access to various data </li></ul><p class="wp-block-paragraph">Using Connect-MgGraph Cmdlet to Automate Microsoft 365 via<a href="https://www.anoopcnair.com/restart-intune-devices-remotely-ms-graph/" rel="noreferrer noopener" target="_blank"> Microsoft Graph</a> PowerShell! <strong>Hey there!</strong> If you’re working with <strong>Microsoft 365 solutions,</strong> I’ve got something that might make your life a whole lot easier. We all know the pressure to automate everything is real – but don’t worry, this article is here to help. Dive in, explore, and thank me later!</p><details class="wp-block-details has-contrast-3-background-color has-background is-layout-flow wp-block-details-is-layout-flow"><summary><strong>Table of Contents</strong></summary>
+</details><h2 class="wp-block-heading" id="k"><strong>Getting Started with Microsoft Graph PowerShell SDK</strong></h2><p class="wp-block-paragraph"><strong>Microsoft Graph </strong>acts as the gateway to Microsoft’s cloud ecosystem, offering a unified endpoint, <strong>https://graph.microsoft.com</strong>– to connect with data, insights, and intelligence across<strong> Microsoft 365, Windows, and Enterprise Mobility + Security.</strong> Instead of juggling multiple APIs, developers can rely on this single entry point to streamline integration and build solutions that tap into the full breadth of Microsoft services.</p><p class="wp-block-paragraph">For those who have experimented with <strong>Graph Explorer</strong>, you’ll know how convenient it is for testing queries directly in the browser. It’s lightweight, requires no installation, and is perfect for exploring what the API can do. But while Graph Explorer is great for quick checks, it isn’t designed for automation or large-scale scripting—this is where PowerShell comes into play.</p><p class="wp-block-paragraph">To automate tasks, Microsoft provides the <strong>Graph PowerShell SDK</strong> through the PowerShell Gallery. This SDK includes two modules: <strong>Microsoft.Graph</strong> (aligned with the v1.0 REST API) and <strong>Microsoft.Graph.Beta</strong> (aligned with the beta REST API). Together, they empower administrators and developers to script, automate, and manage Microsoft 365 environments efficiently, making it easier to deliver scalable solutions and reduce manual effort.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><h2 class="wp-block-heading" id="install-microsoft-graph-power-shell-modules"><strong>Install Microsoft Graph PowerShell Modules</strong></h2><p class="wp-block-paragraph">Installing the <strong>Microsoft Graph PowerShell </strong>module is essential for automation. I’ve already documented the recommended approach for setting up both the <strong>Microsoft.Graph</strong> and <strong>Microsoft.Graph.Beta</strong> modules. If you’re new to this topic, I encourage you to refer to that guide for a step‑by‑step walkthrough and best practices.</p><pre class="wp-block-code has-contrast-3-background-color has-background"><code><strong>Read more </strong>:<strong> <a data-id="https://www.anoopcnair.com/install-microsoft-graph-powershell-modules/" data-type="link" href="https://www.anoopcnair.com/install-microsoft-graph-powershell-modules/" rel="noreferrer noopener" target="_blank">Best Guide to Install Microsoft Graph PowerShell Modules</a></strong></code></pre><p class="wp-block-paragraph">To install the <strong>Microsoft Graph PowerShell SDK,</strong> your PowerShell version should be at least 5.1 or later. However, Microsoft recommends having PowerShell 7 or later. As per Microsoft, no additional prerequisites are required to use the SDK with <strong>PowerShell 7 or later</strong>.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><h2 class="wp-block-heading" id="connect-mg-graph"><strong>Deep Dive into Connect-MgGraph</strong></h2><p class="wp-block-paragraph">You must have already installed the <strong>Microsoft Graph modules</strong>. It’s time to learn about the <strong>Connect-MgGraph</strong>. The <strong>Connect-MgGraph</strong> is part of <strong>Microsoft.Graph.Authentication </strong>module. You must invoke <strong>Connect-MgGraph </strong>before any commands that access Microsoft Graph. This cmdlet gets the access token using the Microsoft Authentication Library</p><div class="wp-block-image"><figure class="aligncenter size-large"><img alt="Using the Connect-MgGraph Cmdlet to Automate Microsoft 365 via Microsoft Graph PowerShell- Fig-01" class="wp-image-372287" data-lazyloaded="1" data-sizes="(max-width: 1024px) 100vw, 1024px" decoding="async" src="assets/2025eb08e2dcf863/img_0.webp" title="Using Connect-MgGraph Cmdlet to Automate Microsoft 365 via Microsoft Graph PowerShell 2"/><figcaption class="wp-element-caption">Using the Connect-MgGraph Cmdlet to Automate Microsoft 365 via Microsoft Graph PowerShell- Fig-01</figcaption></figure></div><p class="wp-block-paragraph"><strong>Microsoft Graph PowerShell </strong>supports two types of <strong>authentication</strong>: <strong>delegated </strong>and <strong>app-only </strong>access. Several cmdlets are available to manage the various parameters required during authentication, such as the <strong>environment, application ID, and certificate.</strong></p><figure class="wp-block-table aligncenter"><table class="has-contrast-3-background-color has-background has-fixed-layout"><thead><tr><th>Authentication Type</th><th>Description</th><th>Typical Use Cases</th></tr></thead><tbody><tr><th><strong>Delegated Access</strong></th><td>Runs under the context of a signed‑in user. Permissions are granted based on that user’s role and consent. Requires interactive sign‑in.</td><td>Ideal for scenarios where automation needs to act on behalf of a user, such as reading their emails, accessing calendar events, or managing files in OneDrive.</td></tr><tr><th><strong>App‑Only Access</strong></th><td>Runs without a signed‑in user. Permissions are granted directly to the application via Azure AD. Uses certificates or client secrets for authentication.</td><td>Best suited for background services, daemons, or scheduled scripts that need to manage resources across the tenant, such as provisioning users, managing groups, or applying policies.</td></tr></tbody></table><figcaption class="wp-element-caption">Using the Connect-MgGraph Cmdlet to Automate Microsoft 365 via Microsoft Graph PowerShell- Table-01</figcaption></figure><h2 class="wp-block-heading" id="learning-connect-mg-graph-through-get-help"><strong>Learning Connect-MgGraph Through Get-Help</strong></h2><p class="wp-block-paragraph">Let’s begin exploring <strong>Connect-MgGraph</strong> from the ground up. If you’re new to Microsoft Graph, a great starting point is to use the PowerShell <strong>Get-Help</strong> command with <strong><code>Connect-MgGraph</code>. </strong></p><p class="wp-block-paragraph">This will provide detailed guidance on how the cmdlet works and the parameters it supports. The <strong>Get-Help</strong> cmdlet is a powerful way to learn about any PowerShell command, giving you the documentation you need directly within your console.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><div class="wp-block-image"><figure class="aligncenter size-large"><img alt="Using Connect-MgGraph Cmdlet to Automate Microsoft 365 via Microsoft Graph PowerShell 2" class="wp-image-372375" data-lazyloaded="1" data-sizes="(max-width: 1024px) 100vw, 1024px" decoding="async" src="assets/2025eb08e2dcf863/img_1.webp" title="Using Connect-MgGraph Cmdlet to Automate Microsoft 365 via Microsoft Graph PowerShell 3"/><figcaption class="wp-element-caption">Using the Connect-MgGraph Cmdlet to Automate Microsoft 365 via Microsoft Graph PowerShell- Fig-02</figcaption></figure></div><pre class="wp-block-code has-contrast-3-background-color has-background"><code><em><strong>PS C:\WINDOWS\system32&gt; get-help Connect-MgGraph
+
+NAME
+    Connect-MgGraph
+
+SYNOPSIS
+    Microsoft Graph PowerShell supports two types of authentication: delegated and app-only access. There are a number of cmdlets that can be used to manage the different parameters required during
+    authentication, for example, environment, application ID, and certificate.
+
+
+SYNTAX
+    Connect-MgGraph [-AccessToken] &lt;SecureString&gt; [-ClientTimeout &lt;Double&gt;] [-Environment &lt;String&gt;] [-NoWelcome] [-ProgressAction &lt;ActionPreference&gt;] [&lt;CommonParameters&gt;]
+
+    Connect-MgGraph [-ClientId] &lt;String&gt; [[-CertificateSubjectName] &lt;String&gt;] [[-CertificateThumbprint] &lt;String&gt;] [-Certificate &lt;X509Certificate2&gt;] [-ClientTimeout &lt;Double&gt;] [-ContextScope {Process |
+    CurrentUser}] [-Environment &lt;String&gt;] [-NoWelcome] [-ProgressAction &lt;ActionPreference&gt;] [-SendCertificateChain &lt;Boolean&gt;] [-TenantId &lt;String&gt;] [&lt;CommonParameters&gt;]
+
+    Connect-MgGraph [[-ClientId] &lt;String&gt;] [[-Scopes] &lt;String[]&gt;] [-ClientTimeout &lt;Double&gt;] [-ContextScope {Process | CurrentUser}] [-Environment &lt;String&gt;] [-NoWelcome] [-ProgressAction &lt;ActionPreference&gt;]
+    [-TenantId &lt;String&gt;] [-UseDeviceCode] [&lt;CommonParameters&gt;]
+
+    Connect-MgGraph [[-ClientId] &lt;String&gt;] [[-Identity]] [-ClientTimeout &lt;Double&gt;] [-ContextScope {Process | CurrentUser}] [-Environment &lt;String&gt;] [-NoWelcome] [-ProgressAction &lt;ActionPreference&gt;]
+    [&lt;CommonParameters&gt;]
+
+    Connect-MgGraph [-ClientSecretCredential &lt;PSCredential&gt;] [-ClientTimeout &lt;Double&gt;] [-ContextScope {Process | CurrentUser}] [-Environment &lt;String&gt;] [-NoWelcome] [-ProgressAction &lt;ActionPreference&gt;]
+    [-TenantId &lt;String&gt;] [&lt;CommonParameters&gt;]
+
+    Connect-MgGraph [-ClientTimeout &lt;Double&gt;] [-ContextScope {Process | CurrentUser}] [-Environment &lt;String&gt;] [-EnvironmentVariable] [-NoWelcome] [-ProgressAction &lt;ActionPreference&gt;] [&lt;CommonParameters&gt;]
+
+
+DESCRIPTION
+    You must invoke Connect-MgGraph before any commands that access Microsoft Graph. This cmdlet gets the access token using the Microsoft Authentication Library
+
+
+RELATED LINKS
+    https://learn.microsoft.com/en-us/powershell/module/microsoft.graph.authentication/connect-mggraph https://learn.microsoft.com/en-us/powershell/module/microsoft.graph.authentication/connect-mggraph
+
+REMARKS
+    To see the examples, type: "get-help Connect-MgGraph -examples".
+    For more information, type: "get-help Connect-MgGraph -detailed".
+    For technical information, type: "get-help Connect-MgGraph -full".
+    For online help, type: "get-help Connect-MgGraph -online"</strong></em></code></pre><h2 class="wp-block-heading" id="parameters"><strong>Understanding Connect-MgGraph Parameters</strong></h2><p class="wp-block-paragraph">When getting started with <strong>Microsoft Graph PowerShell</strong>, running <strong><em>get-help Connect-MgGraph -Detailed </em></strong>is the quickest way to understand your <strong>authentication </strong>options. Executing this command in your console provides a comprehensive breakdown of the cmdlet, including its syntax, description, and related commands.</p><pre class="wp-block-code has-contrast-3-background-color has-background has-medium-font-size"><code><strong><em> Get-Help Connect-MgGraph -Detailed</em></strong></code></pre><p class="wp-block-paragraph">Most importantly, it highlights the distinct <strong>parameter sets</strong> required for both delegated (user‑interactive) and app‑only (unattended service principal) authentication. The following table provides a detailed overview of each parameter available in <strong>Connect-MgGraph</strong>.</p><figure class="wp-block-table aligncenter"><table class="has-contrast-3-background-color has-background has-fixed-layout"><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><th><strong>AccessToken</strong></th><td>SecureString</td><td>Provides a bearer token for Microsoft Graph. Tokens expire, so you must handle refresh.</td></tr><tr><th><strong>Certificate</strong></th><td>X509Certificate2</td><td>Supplies an X.509 certificate during invocation.</td></tr><tr><th><strong>CertificateSubjectName</strong></th><td>String</td><td>Uses the subject distinguished name to retrieve a certificate from the current user’s certificate store.</td></tr><tr><th><strong>CertificateThumbprint</strong></th><td>String</td><td>Uses the thumbprint to retrieve a certificate from the current user’s certificate store.</td></tr><tr><th><strong>ClientId</strong></th><td>String</td><td>Specifies the application’s client ID.</td></tr><tr><th><strong>ClientSecretCredential</strong></th><td>PSCredential</td><td>Provides the application ID and client secret for service principal authentication.</td></tr><tr><th><strong>ClientTimeout</strong></th><td>Double</td><td>Sets the HTTP client timeout (in seconds).</td></tr><tr><th><strong>ContextScope</strong></th><td>ContextScope</td><td>Defines the scope of the authentication context: <code>Process</code> (current process) or <code>CurrentUser</code> (all sessions for the user).</td></tr><tr><th><strong>Environment</strong></th><td>String</td><td>Specifies the national cloud environment (default: Global cloud).</td></tr><tr><th><strong>EnvironmentVariable</strong></th><td>SwitchParameter</td><td>Enables authentication using environment variables configured on the host machine.</td></tr><tr><th><strong>Identity</strong></th><td>SwitchParameter</td><td>Authenticates using a Managed Identity.</td></tr><tr><th><strong>NoWelcome</strong></th><td>SwitchParameter</td><td>Suppresses the welcome message.</td></tr><tr><th><strong>ProgressAction</strong></th><td>ActionPreference</td><td>Controls how progress is displayed during execution.</td></tr><tr><th><strong>Scopes</strong></th><td>String [ ]</td><td>Defines an array of delegated permissions to consent to.</td></tr><tr><th><strong>SendCertificateChain</strong></th><td>Boolean</td><td>Includes the x5c header in client claims for subject name/issuer‑based authentication.</td></tr><tr><th><strong>TenantId</strong></th><td>String</td><td>Specifies the tenant ID or sign‑in audience (e.g., <code>common</code>, <code>organizations</code>, <code>consumers</code>).</td></tr><tr><th><strong>UseDeviceCode</strong></th><td>SwitchParameter</td><td>Uses device code authentication instead of browser control.</td></tr><tr><th><strong>CommonParameters</strong></th><td>Various</td><td>Supports standard PowerShell parameters like <code>Verbose</code>, <code>Debug</code>, <code>ErrorAction</code>, etc.</td></tr></tbody></table><figcaption class="wp-element-caption">Using the Connect-MgGraph Cmdlet to Automate Microsoft 365 via Microsoft Graph PowerShell- Table-02</figcaption></figure><h2 class="wp-block-heading" id="we"><strong>Examples</strong></h2><p class="wp-block-paragraph">By appending the<strong> <code>-Examples</code> </strong>switch, you can also instantly access pre-built code snippets that demonstrate how to pass scopes, target specific tenants, or connect securely using certificates.. I will explain a few important <strong>authentication </strong>methods with examples in this article. However, you can find more when you run the command below if you wish to explore further.</p><pre class="wp-block-code has-contrast-3-background-color has-background has-medium-font-size"><code><em><strong>Get-Help Connect-MgGraph -Examples</strong></em></code></pre><h2 class="wp-block-heading" id="interactive-authentication"><strong>Delegated Access – Interactive Authentication</strong></h2><p class="wp-block-paragraph">The <code><strong>Connect-MgGraph</strong></code> cmdlet includes the <strong>-Scopes</strong> parameter, which you can use during interactive authentication. By specifying the required permissions, you obtain delegated access for your session. In this example, I am authenticating with the <code>Group.ReadWrite.All</code> scope.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><div class="wp-block-image"><figure class="aligncenter size-large"><img alt="Using the Connect-MgGraph Cmdlet to Automate Microsoft 365 via Microsoft Graph PowerShell- Fig-03" class="wp-image-373231" data-lazyloaded="1" data-sizes="auto, (max-width: 1024px) 100vw, 1024px" decoding="async" src="assets/2025eb08e2dcf863/img_2.webp" title="Using Connect-MgGraph Cmdlet to Automate Microsoft 365 via Microsoft Graph PowerShell 4"/><figcaption class="wp-element-caption">Using the Connect-MgGraph Cmdlet to Automate Microsoft 365 via Microsoft Graph PowerShell- Fig-03</figcaption></figure></div><h2 class="wp-block-heading" id="app-only-access-using-client-credential-with-a-certificate"><strong>App-only Access: Using Client Credentials with Client Secret</strong></h2><p class="wp-block-paragraph">In the PowerShell snippet above, we are connecting to Microsoft Graph using <strong>app-only authentication</strong> with a client secret. Instead of prompting a user to sign in interactively, the script leverages the application’s own identity by supplying the <strong>Tenant ID</strong>, <strong>Client ID</strong>, and <strong>Client Secret</strong>.</p><pre class="wp-block-code has-contrast-3-background-color has-background has-medium-font-size"><code><strong><em>$TenantID = "Enter Tenant ID"
+$ClientID = "Enter Client ID"
+$SecretID = "Enter Secret ID"
+
+
+$SecretClient = ConvertTo-SecureString $SecretID -AsPlainText -Force
+$cred = New-Object -TypeName System.Management.Automation.PSCredential ($ClientID, $SecretClient)
+
+Connect-MgGraph -TenantId $TenantID -ClientSecretCredential $cred</em></strong></code></pre><p class="wp-block-paragraph">The secret is converted into a secure string, wrapped in a <strong>PSCredential object</strong>, and then passed to <strong>Connect-MgGraph</strong> via the<strong> -ClientSecretCredential </strong>parameter. This method grants the application permissions that have been consented to in <strong>Azure AD</strong>, allowing it to act independently of any user session. In practice, this means the app itself is authorised to perform operations in <strong>Microsoft Graph</strong> without requiring delegated access from a signed-in user.</p><div class="wp-block-image"><figure class="aligncenter size-large"><img alt="Using the Connect-MgGraph Cmdlet to Automate Microsoft 365 via Microsoft Graph PowerShell- Fig-04" class="wp-image-373266" data-lazyloaded="1" data-sizes="auto, (max-width: 1024px) 100vw, 1024px" decoding="async" src="assets/2025eb08e2dcf863/img_3.webp" title="Using Connect-MgGraph Cmdlet to Automate Microsoft 365 via Microsoft Graph PowerShell 5"/><figcaption class="wp-element-caption">Using the Connect-MgGraph Cmdlet to Automate Microsoft 365 via Microsoft Graph PowerShell- Fig-04</figcaption></figure></div><h2 class="wp-block-heading" id="app-only-access-using-client-credentials-and-client-secret"><strong>App-only Access: Using Client Credentials with Client Certificate</strong></h2><p class="wp-block-paragraph">In this example, we are connecting to Microsoft Graph using a <strong>certificate credential</strong> instead of a client secret. The code retrieves the certificate from the local machine’s certificate store (<code>Cert:\LocalMachine\My</code>) by referencing its thumbprint, and stores it in the <code>$Cert</code> variable. That certificate is then passed to <code>Connect-MgGraph</code> along with the <strong>Client ID</strong> and <strong>Tenant ID</strong>. This method is still <strong>app-only authentication</strong> (application permissions), but it uses a certificate for validation rather than a secret string. When using the certificate method, there are a few important points to note:</p><ul class="wp-block-list"><li class="has-medium-font-size">The app will act independently of any user session, so only <strong>application permissions</strong> apply.</li><li class="has-medium-font-size">The certificate must be installed in the<strong> local machine</strong> or the <strong>current user certificate store.</strong></li><li class="has-medium-font-size">The <strong>thumbprint </strong>must match exactly, otherwise the connection will fail.</li><li class="has-medium-font-size">The certificate must be registered in <strong>Azure AD</strong> for the application (uploaded under the app registration’s <strong>“Certificates &amp; secrets”</strong> section).</li><li class="has-medium-font-size">Certificates are generally considered more <strong>secure </strong>than client secrets, since they can be rotated and managed with <strong>stronger policies.</strong></li></ul><pre class="wp-block-code has-contrast-3-background-color has-background has-medium-font-size"><code><strong><em># Define variables</em></strong>
+<strong><em>
+$TenantId   = "YOUR_TENANT_ID"
+$ClientId   = "YOUR_APP_ID"
+$Thumbprint = "YOUR_CERT_THUMBPRINT"
+
+# Retrieve the certificate from the LocalMachine store</em></strong>
+<strong><em>
+$Cert = Get-ChildItem -Path Cert:\LocalMachine\My\$Thumbprint
+
+# Connect to Microsoft Graph using certificate-based authentication</em></strong>
+<strong><em>
+Connect-MgGraph -ClientId $ClientId -TenantId $TenantId -Certificate $Cert
+</em></strong></code></pre><h2 class="wp-block-heading" id="need-further-assistance-or-have-technical-questions"><strong>Need Further Assistance or Have Technical Questions?</strong></h2><pre class="wp-block-code has-contrast-3-background-color has-background"><code>Join the <a href="https://www.linkedin.com/company/how-to-manage-devices/" rel="noreferrer noopener nofollow" target="_blank"><strong>LinkedI</strong></a><strong><a href="https://www.linkedin.com/company/how-to-manage-devices/" rel="noreferrer noopener nofollow" target="_blank">n</a></strong><a href="https://www.linkedin.com/company/how-to-manage-devices/" rel="noreferrer noopener nofollow" target="_blank"><strong> Page</strong></a> and <a href="https://t.me/+Q9lE6G1_BO_bGq97" rel="noreferrer noopener nofollow" target="_blank"><strong>Telegram group</strong></a> to get the latest step-by-step guides and news updates. Join our <a href="https://www.meetup.com/htmd-community-meetup-group/" rel="noreferrer noopener nofollow" target="_blank"><strong>Meetup Page</strong></a> to participate in User group meetings. Also, Join the <a href="https://chat.whatsapp.com/CeMXHSD61HtDBJwe78IZwV" rel="noreferrer noopener nofollow" target="_blank"><strong>WhatsApp Community</strong></a> to get the latest news on Microsoft Technologies. We are there on <a href="https://www.reddit.com/r/ImpMSNews/" rel="noreferrer noopener nofollow" target="_blank"><strong>Reddit</strong> </a>as well.</code></pre><h2 class="wp-block-heading" id="author"><strong>Author</strong></h2><p class="wp-block-paragraph"><strong>About the Author:</strong> <a href="http://linkedin.com/in/sujin-nelladath-8911968a" rel="noreferrer noopener nofollow" target="_blank"><strong>Sujin Nelladath, </strong></a>a <strong>Microsoft Graph MVP</strong> with over 13 years of experience in Intune device management and Automation solutions, writes and shares his experiences with Microsoft device management technologies, Azure, DevOps, Graph API and PowerShell automation.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><p class="code-block code-block-8">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="1286776600" data-full-width-responsive="true"></ins> </p><p class="code-block code-block-9">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="8125570634" data-full-width-responsive="true"></ins> </p></div></div></div>
+</article>
+</body>
+</html>
