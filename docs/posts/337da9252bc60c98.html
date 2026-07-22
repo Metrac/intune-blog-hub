@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to Evaluate Third-Party Patching Solutions Beyond Price</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Call4Cloud (Rudy Ooms)</span>
+    <span class="date">July 21, 2026</span>
+  </div>
+  <h1>How to Evaluate Third-Party Patching Solutions Beyond Price</h1>
+  <div class="orig">Saved for offline reading · <a href="https://patchmypc.com/blog/evaluate-third-party-patching-solutions-beyond-price/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="post-content">
+<p class="wp-block-paragraph">Every few months, I see discussions online comparing third-party patching solutions based entirely on raw licensing costs. On the surface, that seems reasonable. If one product costs less than another, shouldn’t the cheaper option win? </p>
+<p class="wp-block-paragraph">From what I’ve seen, not always. </p>
+<p class="wp-block-paragraph">After spending years helping organizations manage application updates through Microsoft Intune and Microsoft Configuration Manager, I’ve learned that subscription cost is often the easiest part of the equation to measure, but it rarely tells the full story. </p>
+<p class="wp-block-paragraph">Evaluating a third-party patching solution based solely on its price tag is a bit like choosing a health insurance policy based entirely on the monthly premium. The premium matters, but it doesn’t tell you what happens when something goes wrong. Coverage, support, provider networks, deductibles, and claims processes all influence the real value of the policy. Patching solutions work much the same way. </p>
+<p class="wp-block-paragraph">Two products may appear similar on a pricing page while delivering dramatically different outcomes for the team responsible for managing them. </p>
+<p class="wp-block-paragraph">The challenge is that many costs associated with application management never appear on a quote. They show up in engineering hours, delayed projects, missed updates, and the ongoing effort required to keep hundreds of applications current across thousands of devices. </p>
+<h2 class="wp-block-heading" id="h-what-are-you-actually-buying">What Are You Actually Buying? <span class="clth-copy-icon" data-heading-id="h-what-are-you-actually-buying"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">One of the biggest mistakes I see organizations make is treating third-party patching as a software purchase. </p>
+<p class="wp-block-paragraph">In reality, you’re buying a combination of software, content, testing, maintenance, and expertise. The technology itself is only part of the value. The bigger question is how much work the solution removes from your team and how confidently it helps you maintain application updates over time. </p>
+<p class="wp-block-paragraph">When evaluating a vendor, I’d start with a few basic questions. </p>
+<h2 class="wp-block-heading" id="h-how-are-updates-sourced-and-validated">How Are Updates Sourced and Validated? <span class="clth-copy-icon" data-heading-id="h-how-are-updates-sourced-and-validated"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">When a software vendor releases an update, what happens next? </p>
+<p class="wp-block-paragraph">Does the patching vendor obtain installers directly from the software publisher? Does it build and maintain its own catalog, or does the solution depend on external or community-maintained repositories such as WinGet? </p>
+<p class="wp-block-paragraph">External repositories can provide value, but they also introduce another dependency. If a solution relies on one, ask who submits, validates, and maintains each package. What happens when the software publisher releases an update but the external repository has not been updated? Can the patching vendor publish the update independently, or must customers wait for the repository maintainer? </p>
+<p class="wp-block-paragraph">You should also ask how quickly incorrect or compromised content can be removed and what happens if the repository becomes unavailable. </p>
+<p class="wp-block-paragraph">File integrity matters too. How are installers verified? What processes ensure customers receive authentic, untampered content? </p>
+<p class="wp-block-paragraph">These questions may not seem exciting, but they matter. A third-party patching solution becomes part of your software supply chain, and the quality of the solution depends heavily on the quality and security of the content behind it. </p>
+<p class="wp-block-paragraph">At Patch My PC, we build and maintain our own curated catalog through a controlled internal process. Catalog entries are created, validated, signed, and approved before they are made available through Patch My PC Publisher or Patch My PC Cloud. </p>
+<p class="wp-block-paragraph">When a new update is added, we obtain the binary from the software vendor’s official source. The download URL and file hash are recorded in the catalog metadata, and the binary is scanned for malware. </p>
+<p class="wp-block-paragraph">After validation, the catalog metadata is compiled into a signed CAB file and hosted securely. Publisher and Cloud access the catalog over HTTPS. Publisher validates the catalog signature and compares the downloaded binary’s hash against the hash stored in the catalog metadata. Publishing only happens when the hashes match. </p>
+<p class="wp-block-paragraph">For Binary Free Apps in Patch My PC Cloud, the customer uploads the installer, and the portal calculates its hash during upload. The upload succeeds only when the calculated hash matches the version stored in the App Catalog. </p>
+<h2 class="wp-block-heading" id="h-how-are-updates-tested">How Are Updates Tested? <span class="clth-copy-icon" data-heading-id="h-how-are-updates-tested"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Every patching vendor can tell you when an update was released. The more important question is what happens before that update reaches your environment. </p>
+<p class="wp-block-paragraph">What quality checks are performed? How are packaging issues identified and resolved? What happens if an installer changes unexpectedly? </p>
+<p class="wp-block-paragraph">A reliable patching solution should reduce uncertainty, not introduce more of it. </p>
+<p class="wp-block-paragraph">Beyond validating the source and file integrity, we check the details that commonly cause deployment issues, including silent install parameters, upgrade paths, known conflicts, detection logic, reboot behavior, SYSTEM-level installation support, and whether custom actions or scripts are needed. </p>
+<p class="wp-block-paragraph">These checks matter because software vendors can change installers without much warning. A new version may change command-line behavior, install side by side, require a different upgrade path, need additional scripting, or break detection in Intune or ConfigMgr. </p>
+<p class="wp-block-paragraph">Our goal is to release updates the same day the software vendor releases them. Catalog releases generally happen between 1:00 and 5:00 PM Eastern. If a high-risk security update is released later in the day, we may publish a second catalog release. </p>
+<h2 class="wp-block-heading" id="h-how-secure-is-the-solution">How Secure Is the Solution? <span class="clth-copy-icon" data-heading-id="h-how-secure-is-the-solution"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Securing application content is only part of the equation. You should also understand how the vendor protects its platform, customer data, credentials, and access to your environment. </p>
+<p class="wp-block-paragraph">Ask how access is controlled, whether the vendor follows secure development practices, how it monitors for threats, and what happens if a security incident occurs. </p>
+<p class="wp-block-paragraph">If the solution connects to Intune, ConfigMgr, or other parts of your environment, understand what permissions it requires and whether those permissions follow the principle of least privilege. </p>
+<p class="wp-block-paragraph">Independent audits and certifications also matter. Does the vendor maintain ISO 27001 certification and a current SOC 2 Type 2 report? Can it demonstrate compliance with applicable GDPR requirements? Can the vendor provide the documentation your security team needs to complete its review? </p>
+<p class="wp-block-paragraph">A patching solution should reduce your exposure to vulnerable applications without introducing unnecessary risk into your environment. </p>
+<h2 class="wp-block-heading" id="h-how-much-of-your-environment-is-covered">How Much of Your Environment Is Covered? <span class="clth-copy-icon" data-heading-id="h-how-much-of-your-environment-is-covered"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Catalog size is often one of the first comparison points buyers look at, but raw numbers don’t tell the whole story. </p>
+<p class="wp-block-paragraph">A useful catalog should include the applications your organization actually uses. That typically means browsers, collaboration tools, security products, developer tools, productivity applications, and the long tail of software that often gets ignored because nobody has time to package it manually. </p>
+<p class="wp-block-paragraph">It’s also worth understanding how the vendor handles custom applications, internally developed software, or applications that fall outside the standard catalog. </p>
+<p class="wp-block-paragraph">Patch My PC maintains a catalog of more than 3,500 products from over 1,100 vendors for ConfigMgr, Intune, WSUS, and macOS, with continuous monitoring for new releases and regular updates covering CVEs, classifications, VirusTotal results, and catalog changes. </p>
+<p class="wp-block-paragraph">Beyond the catalog, customers can manage proprietary, internal, and niche applications using Custom Apps, Binary Free Apps, and Custom Scripts. These capabilities support customer-provided installers, PowerShell scripts packaged as Win32 apps, and detailed deployment configuration options. </p>
+<p class="wp-block-paragraph">Organizations using PSADT or Master Packager can also import those packages into Patch My PC Cloud, bringing custom application packaging and deployment into a centralized management workflow. </p>
+<h2 class="wp-block-heading" id="h-calculate-the-cost-of-manual-work">Calculate the Cost of Manual Work <span class="clth-copy-icon" data-heading-id="h-calculate-the-cost-of-manual-work"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Let’s look at a simple example. </p>
+<p class="wp-block-paragraph">Imagine an organization managing 200 endpoints and approximately 75 to 100 third-party applications. At first glance, the annual subscription cost of a patching solution may feel like the biggest expense in the decision. </p>
+<p class="wp-block-paragraph">But compare that cost against the work required to manage those applications manually. If your solution still requires a highly skilled engineer to spend hours packaging applications every week, you haven’t really automated the problem. You’ve just changed where the work happens. </p>
+<p class="wp-block-paragraph">Someone has to locate installers, verify software versions, create deployment packages, maintain detection logic, test deployments, troubleshoot failures, manage supersedence relationships, and repeat the process every time a vendor releases an update. </p>
+<p class="wp-block-paragraph">None of these tasks are particularly difficult on their own, but together they consume a surprising amount of engineering time over the course of a year. </p>
+<p class="wp-block-paragraph">That is why I encourage organizations to think beyond subscription costs. The real question is not whether one option looks cheaper on paper. It is how many hours of repetitive work it removes from your team and what that time is worth to your organization. </p>
+<h2 class="wp-block-heading" id="h-what-happens-when-something-breaks">What Happens When Something Breaks? <span class="clth-copy-icon" data-heading-id="h-what-happens-when-something-breaks"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Every patching discussion eventually comes down to a simple reality: software updates occasionally cause problems. </p>
+<p class="wp-block-paragraph">No vendor can honestly promise otherwise. </p>
+<p class="wp-block-paragraph">The more useful question is what happens when those problems occur. </p>
+<p class="wp-block-paragraph">How quickly can you get help? Who investigates deployment failures? What visibility do you have into update status? How quickly can issues be identified and corrected? </p>
+<p class="wp-block-paragraph">In many cases, the difference between patching solutions has less to do with software features and more to do with the quality of the people standing behind the product. Strong support can save far more time than any individual feature ever will. </p>
+<p class="wp-block-paragraph">At Patch My PC, support is included at no additional cost. </p>
+<p class="wp-block-paragraph">Our support team includes former IT administrators, security professionals, and Microsoft MVPs with expertise in Intune, Configuration Manager, WSUS, Azure, Entra ID, and endpoint management. </p>
+<p class="wp-block-paragraph">Support options include cases, live chat, documentation, community resources, phone callbacks, setup assistance, environment reviews, and screen-sharing sessions. Our public targets include a four-hour initial response time, a 24-hour escalation review, and resolution of 90% of cases within five business days. This is backed by a follow-the-sun support model across North America, Europe, India, and Australia. </p>
+<h2 class="wp-block-heading" id="h-what-should-smaller-organizations-consider">What Should Smaller Organizations Consider? <span class="clth-copy-icon" data-heading-id="h-what-should-smaller-organizations-consider"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Our minimum pricing is another common consideration. Our direct licensing typically starts at around $3,500 per year, which can be a meaningful investment for smaller organizations. </p>
+<p class="wp-block-paragraph">Patch My PC serves just over 10,000 customers, and a little over half are SMBs. We remain committed to serving organizations of all sizes. </p>
+<p class="wp-block-paragraph">The reality is that we take a high-touch approach with every customer, regardless of size. Our subscriptions include unlimited support, access to our in-house engineers, setup assistance, environment reviews, and ongoing help without separate premium support tiers or additional support packages. </p>
+<p class="wp-block-paragraph">We include those services because they help us provide the customer experience we want to deliver. We also price our products in a way that allows us to provide that experience consistently. </p>
+<p class="wp-block-paragraph">That model may not be the right fit for every smaller organization, and that’s okay. Depending on the budget, internal resources, and how the organization prioritizes patching and security, a free or lower-cost self-service option may make more sense. I’d rather be honest about that than pretend we are always the best fit for everyone. </p>
+<p class="wp-block-paragraph">For some smaller organizations, purchasing through an MSP can provide a more cost-effective path. Because the MSP handles the setup and ongoing maintenance, we can price that model differently and make it a better fit for very small environments. </p>
+<p class="wp-block-paragraph">The important thing is to understand what is included in the minimum price, whether other purchasing options are available, and which model makes the most sense for your organization. </p>
+<h2 class="wp-block-heading" id="h-questions-i-d-ask-any-vendor">Questions I’d Ask Any Vendor <span class="clth-copy-icon" data-heading-id="h-questions-i-d-ask-any-vendor"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">If I were evaluating third-party patching solutions today, these are the questions I’d focus on: </p>
+<ul class="wp-block-list">
+<li>How quickly are updates made available?  </li>
+<li>How are updates sourced, validated, and tested?  </li>
+<li>Does the vendor maintain its own catalog, or does the solution depend on external repositories such as WinGet?  </li>
+<li>If the solution relies on an external repository, who validates and maintains the content, and can the vendor publish updates independently when the repository has not been updated? </li>
+<li>Which applications are supported?  </li>
+<li>How much manual work remains for my team? </li>
+<li>What reporting and compliance visibility does the solution provide? </li>
+<li>What access and permissions does the solution require?  </li>
+<li>What happens when an update causes a problem?  </li>
+<li>How responsive is support?  </li>
+<li>Does the vendor maintain ISO 27001 certification and a current SOC 2 Type 2 report?  </li>
+<li>Can the vendor demonstrate compliance with applicable GDPR requirements?  </li>
+<li>What is the total operational cost, not just the subscription cost?  </li>
+</ul>
+<p class="wp-block-paragraph">The answers to those questions will tell you far more than a pricing page ever will. </p>
+<h2 class="wp-block-heading" id="h-final-thoughts">Final Thoughts <span class="clth-copy-icon" data-heading-id="h-final-thoughts"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Price matters, and every IT team operates within budget constraints. Software costs should absolutely be part of the evaluation process. </p>
+<p class="wp-block-paragraph">But just as nobody would choose a health insurance policy based solely on the premium, organizations shouldn’t evaluate third-party patching solutions based solely on licensing costs. </p>
+<p class="wp-block-paragraph">The cheapest solution is only a bargain if it meaningfully reduces work, lowers risk, and helps your team stay ahead of application updates. </p>
+<p class="wp-block-paragraph">Otherwise, you’re simply exchanging software costs for labor costs, and labor is usually the more expensive line item. </p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
