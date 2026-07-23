@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Enterprise App Management Auto-Update: Now Generally Available</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">July 23, 2026</span>
+  </div>
+  <h1>Enterprise App Management Auto-Update: Now Generally Available</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/intune-enterprise-app-management-auto-update/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p class="wp-block-paragraph">Keeping third-party apps up to date is one of the most time-consuming tasks in app management. Until now we had to create a new app for every new version and connect it with a supersedence relationship. With the June 2026 service release (2606) this changes: Enterprise App Management auto-update is now generally available. In this blog post I explain what the feature does, how you can enable it, and where the classic Win32 supersedence is still the better choice.</p>
+<span id="more-19503"></span>
+<h2 class="wp-block-heading" id="what-is-enterprise-app-management">What is Enterprise App Management?</h2>
+<p class="wp-block-paragraph">Enterprise App Management (EAM) is one of the advanced Intune capabilities. The core of it is the Enterprise App Catalog. This is a collection of Win32 apps (exe and msi) that Microsoft prepares and hosts for you. When you add an app from the catalog, Intune prefills the install and uninstall commands, detection rules, requirements and return codes. You save the whole packaging work.</p>
+<p class="wp-block-paragraph">Two details are good to know before you start. First, EAM only supports managed Windows devices running 64-bit versions of Windows. Second, the apps are installed by the Intune Management Extension (IME) — EAM does not use winget under the hood. You can find all details in the official <a href="https://learn.microsoft.com/en-us/intune/app-management/deployment/enterprise-app-management" rel="noopener" target="_blank">Enterprise App Management documentation</a> on Microsoft Learn.</p>
+<h2 class="wp-block-heading" id="what-is-new-in-the-june-2026-release">What is new in the June 2026 release?</h2>
+<p class="wp-block-paragraph">With the service release 2606 (rolled out in the week of June 29, 2026) two things reached general availability:</p>
+<ul class="wp-block-list">
+<li><strong>Enterprise App Management auto-update</strong>: Intune can now update Enterprise App Catalog apps on your devices automatically when a newer version appears in the catalog.</li>
+<li><strong>EAM in GCC High and DoD</strong>: Enterprise App Management is now also available in the U.S. Government Community Cloud (GCC) High and Department of Defense (DoD) environments.</li>
+</ul>
+<p class="wp-block-paragraph">The auto-update part is the big one for daily work. Before this feature, the catalog only told you that an update exists. You still had to create a new app for the new version and set up a supersedence relationship. This is the guided update flow, and it works, but it does not scale well when you manage 50 or more catalog apps.</p>
+<h2 class="wp-block-heading" id="what-about-licensing">What about licensing?</h2>
+<p class="wp-block-paragraph">EAM is not included in Intune Plan 1 or Plan 2. It requires an additional license, either as a standalone add-on or as part of the Intune Suite. But here is the second piece of good news from June 2026: Microsoft announced that Enterprise App Management is being added to Microsoft 365 E5, together with Endpoint Privilege Management and Microsoft Cloud PKI. Microsoft 365 E3 gets Remote Help, Intune Advanced Analytics and Intune Plan 2 at the same time. The change rolls out gradually and eligible tenants are provisioned automatically — no action needed on your side.</p>
+<p class="wp-block-paragraph">Note: If you have Microsoft 365 E5, watch the Message center in your tenant. Once the provisioning reaches you, you can use EAM without buying the add-on.</p>
+<h2 class="wp-block-heading" id="how-does-the-auto-update-work">How does the auto-update work?</h2>
+<p class="wp-block-paragraph">The idea behind Enterprise App Management auto-update is simple. When auto-update is enabled for an Enterprise App Catalog app with a required assignment, Intune detects when a newer version is available in the catalog and automatically updates the app on the targeted devices. You do not create a new app. You do not configure supersedence. The app just stays current.</p>
+<figure class="wp-block-image"><img alt="Enterprise App Management auto-update flow: Intune detects the new catalog version and updates" data-recalc-dims="1" decoding="async" src="assets/8cb6dc44dc0f1a60/img_0.jpg"/></figure>
+<p class="wp-block-paragraph">A few facts about the scope:</p>
+<ul class="wp-block-list">
+<li>Auto-update only works for Enterprise App Catalog apps, not for your own Win32 apps.</li>
+<li>It only applies to apps with a <strong>Required</strong> assignment. Apps assigned as <strong>Available for enrolled devices</strong> keep the existing update workflow.</li>
+<li>It is supported on Windows 10 and Windows 11 devices.</li>
+<li>Auto-update is something different than the self-updating apps in the catalog. Self-updating apps (for example some browsers) update themselves through the vendor mechanism, and Intune only checks that a minimum version is installed. Auto-update means Intune itself installs the new version from the catalog.</li>
+</ul>
+<p class="wp-block-paragraph">Note: Microsoft has defined Service Level Objectives for the catalog itself. The target is that 80–90% of app updates are available in the catalog within 24 hours after Microsoft receives them. Updates that need manual validation can take up to seven days, and high-usage apps that fail the automated checks are expedited with a goal of 48 hours. So “auto” does not mean “instant”.</p>
+<p class="wp-block-paragraph">Hint: Intune has no running application detection. It can not see whether the app is open on the device when the update installs. Keep that in mind for apps where a forced close would hurt, like an editor with unsaved work.</p>
+<h2 class="wp-block-heading" id="how-can-i-enable-enterprise-app-management-auto-update">How can I enable Enterprise App Management auto-update?</h2>
+<p class="wp-block-paragraph">The setting lives in the assignment of the app. You enable it when you add a new catalog app or when you edit the assignments of an existing one. This is how you add a new app with auto-update:</p>
+<ol class="wp-block-list">
+<li>Sign in to the Microsoft Intune admin center (intune.microsoft.com).</li>
+<li>Go to <strong>Apps</strong> &gt; <strong>All Apps</strong> &gt; <strong>Create</strong>.</li>
+<li>In the <strong>Select app type</strong> pane, select the <strong>Windows</strong> platform and then <strong>Enterprise App Catalog app</strong>. Click <strong>Select</strong>.</li>
+</ol>
+<figure class="wp-block-image"><img alt='Intune admin center — Apps &gt; All apps &gt; Create, "Select app type" pane with Windows platform' data-recalc-dims="1" decoding="async" src="assets/8cb6dc44dc0f1a60/img_1.jpg"/></figure>
+<ol class="wp-block-list" start="4">
+<li>In the <strong>App information</strong> step, click <strong>Search the Enterprise App Catalog</strong>, pick your app and the package (language, architecture, version), and go through the steps. Microsoft prefills the program, requirements and detection settings for you.</li>
+<li>In the <strong>Assignments</strong> step, add your groups under the <strong>Required</strong> assignment type and enable the auto-update option for this assignment. Then finish with <strong>Review + create</strong>.</li>
+</ol>
+<p class="wp-block-paragraph">For an existing Enterprise App Catalog app you edit the app, open its assignments and enable the auto-update option there in the same way.</p>
+<p class="wp-block-paragraph">Hint: If you want to check which of your catalog apps are outdated first, go to <strong>Apps</strong> &gt; <strong>Enterprise App Catalog apps with updates</strong>. This view shows all apps where a newer version exists in the catalog. In the <strong>All Apps</strong> list you can also add the <strong>Version</strong> column (<strong>Apps</strong> &gt; <strong>All Apps</strong> &gt; <strong>Columns</strong> &gt; <strong>Version</strong>) to see the deployed versions at a glance — catalog apps show up with the type “Windows catalog app (Win32)”.</p>
+<p class="wp-block-paragraph">Note: If Multi Admin Approval is enabled in your tenant, you can not upload a PowerShell script installer during app creation. You have to create the app first and add the script afterwards.</p>
+<h2 class="wp-block-heading" id="how-does-it-compare-to-win32-supersedence-and-winget">How does it compare to Win32 supersedence and winget?</h2>
+<p class="wp-block-paragraph">Enterprise App Management auto-update is not the only way to keep apps current. Here is a small comparison of the three common options:</p>
+<figure class="wp-block-table"><table>
+<thead>
+<tr>
+<th></th>
+<th>EAM auto-update</th>
+<th>Win32 supersedence</th>
+<th>winget (Microsoft Store apps)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Packaging effort</td>
+<td>None, Microsoft prepares the app</td>
+<td>You package every version</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Update control</td>
+<td>Automatic, no approval step</td>
+<td>Full control, you decide when</td>
+<td>Vendor/store driven</td>
+</tr>
+<tr>
+<td>Rollout rings</td>
+<td>No</td>
+<td>Yes, via different groups per version</td>
+<td>No</td>
+</tr>
+<tr>
+<td>App coverage</td>
+<td>Several hundred catalog apps (full list on Microsoft Learn)</td>
+<td>Any Win32 app</td>
+<td>Store catalog</td>
+</tr>
+<tr>
+<td>Extra license</td>
+<td>Yes (EAM add-on / Intune Suite / now included in Microsoft 365 E5)</td>
+<td>No</td>
+<td>No</td>
+</tr>
+</tbody>
+</table></figure>
+<figure class="wp-block-image"><img alt="Decision diagram: Enterprise App Management auto-update vs guided supersedence vs Win32 and" data-recalc-dims="1" decoding="async" src="assets/8cb6dc44dc0f1a60/img_2.jpg"/></figure>
+<h2 class="wp-block-heading" id="what-are-the-limitations">What are the limitations?</h2>
+<p class="wp-block-paragraph">Before you enable Enterprise App Management auto-update everywhere, you should know these limitations:</p>
+<ul class="wp-block-list">
+<li><strong>No rollout rings</strong>: When a new version is available, it goes to all targeted devices at the same time. There is no phased deployment.</li>
+<li><strong>No approval step</strong>: If you want to review updates before they are applied, keep using the guided update supersedence flow instead.</li>
+<li><strong>No rollback</strong>: There is no automatic rollback or uninstall remediation. If a version must go, you have to act manually, for example with an uninstall intent or a remediation script.</li>
+<li><strong>Catalog cache lag</strong>: Catalog data is cached for up to one hour. If Microsoft revokes a malicious version, devices can stay exposed during this window. Microsoft posts a notification in the admin center, but you are still responsible for finding and remediating affected devices.</li>
+<li><strong>Reporting shows only the latest state</strong>: Intune keeps no history of previous versions per device. And if the version changes while devices are still processing, the report can show devices at different points of the update flow.</li>
+<li><strong>No ESP blocking app</strong>: An auto-update catalog app can not be used as a blocking app in the Enrollment Status Page or Autopilot device preparation. Important nuance: catalog apps without auto-update are supported as blocking apps — so for your Autopilot baseline apps, keep auto-update off.</li>
+<li><strong>Conflicts with other app types</strong>: Do not manage the same app with auto-update and another deployment type (for example a LOB app). This can create a race condition where the versions flip back and forth.</li>
+</ul>
+<p class="wp-block-paragraph">Note: If app installations fail after an update, the normal Win32 troubleshooting applies. I wrote about the tools and log files in my <a href="https://jannikreinhard.com/the-ultimate-intune-troubleshooting-guide-how-it-works-and-how-i-fix-it/">Intune troubleshooting guide</a>.</p>
+<h2 class="wp-block-heading" id="what-would-i-choose">What would I choose?</h2>
+<p class="wp-block-paragraph">My take is pragmatic. For standard tools like 7-Zip, Notepad++ or VLC-style utilities, Enterprise App Management auto-update is a clear win. These apps have frequent security updates, and nobody wants to build supersedence chains for them. For business-critical apps where an update can break a workflow, I stay with guided update supersedence, because I want rings and an approval step there. And for the apps in my Autopilot ESP profile, auto-update stays off anyway because of the blocking app limitation.</p>
+<p class="wp-block-paragraph">If you have the EAM license already — or your tenant just got it through Microsoft 365 E5 — enable Enterprise App Management auto-update for a small group of low-risk apps first, watch the reporting for two or three cycles, and then roll it out wider.</p>
+<p class="wp-block-paragraph">I hope this is a little help.</p>
+<p class="wp-block-paragraph">Stay healthy, Cheers Jannik</p>
+<aside aria-labelledby="jr-next-intune-enterprise-app-management-auto-update" class="jr-next-journey"><span class="jr-next-eyebrow">Continue with application management</span><h2 id="jr-next-intune-enterprise-app-management-auto-update">Move from one app to a lifecycle</h2></aside> </div>
+</div></div>
+</article>
+</body>
+</html>
