@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intune Newsletter – 24th July 2026</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Andrew Taylor</span>
+    <span class="date">July 24, 2026</span>
+  </div>
+  <h1>Intune Newsletter – 24th July 2026</h1>
+  <div class="orig">Saved for offline reading · <a href="https://andrewstaylor.com/2026/07/24/intune-newsletter-24th-july-2026/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text">
+<p>Hopefully you didn’t miss this too much last week, I was away enjoying a relaxing break in Madeira with my family, but we have content from the last 2 weeks here so you haven’t missed anything</p>
+<hr/>
+<h1>Community Content</h1>
+<p>We start this week with the next 2 parts of the excellent Intune Agents series from <a href="https://www.linkedin.com/in/gerry-hampson-2a961464/">Gerry Hampson</a> with part 4 looking at the Vulnerability Remediation agent</p>
+<p><a href="https://gerryhampsoncm.blogspot.com/2026/07/my-first-look-at-intune-agents-part4.html">http://gerryhampsoncm.blogspot.com/2026/07/my-first-look-at-intune-agents-part4.html</a></p>
+<p>And part 5 looking at obtaining agents from the marketplace in the Microsoft Security Store</p>
+<p><a href="https://gerryhampsoncm.blogspot.com/2026/07/my-first-look-at-agents-part5-security.html">http://gerryhampsoncm.blogspot.com/2026/07/my-first-look-at-agents-part5-security.html</a></p>
+<hr/>
+<p>This remediation from <a href="https://www.linkedin.com/in/jorgeasaurus/">Jorge Suarez</a> will help keep your VS Code extensions managed</p>
+<p><a href="https://jorgeasaur.us/manage-vs-code-extensions-with-intune-remediations">https://jorgeasaur.us/manage-vs-code-extensions-with-intune-remediations</a></p>
+<hr/>
+<p>We also have two posts from <a href="https://www.linkedin.com/in/michael-meier-ba3b72210/">Michael Meier</a> starting with a quick notice about a Microsoft rename (that’s unusual), but worth checking in case it hits your filters</p>
+<blockquote class="wp-embedded-content" data-secret="3nPW2oKGf2"><p><a href="https://mikemdm.de/2026/07/10/windows-365-frontline-was-renamed-to-windows-365-flex/">Windows 365 Frontline was renamed to Windows 365 Flex</a></p></blockquote>
+<p></p>
+<p>Michael also looks at how AVD Hybrid unlocks VDI on all hypervisors</p>
+<blockquote class="wp-embedded-content" data-secret="WfwHULpACP"><p><a href="https://mikemdm.de/2026/07/19/avd-hybrid-allows-for-vdi-on-any-hypervisor/">AVD Hybrid allows for VDI on any Hypervisor</a></p></blockquote>
+<p></p>
+<hr/>
+<p>For those of you with SCUs to use, <a href="https://www.linkedin.com/in/michaelsendpoint/">Michael Frank</a> looks at the CA Agent now included in Security Copilot</p>
+<p><a href="https://michaelsendpoint.com/entra/SecurityCopilot/CAAgent.html">https://michaelsendpoint.com/entra/SecurityCopilot/CAAgent.html</a></p>
+<hr/>
+<p><a href="https://www.linkedin.com/in/niallcbrady/">Niall Brady</a> looks at the new Windows 365 Reserve option available now (a very useful one for everyone)</p>
+<blockquote class="wp-embedded-content" data-secret="q9sevFxFes"><p><a href="https://www.niallbrady.com/2026/07/13/first-looks-at-windows-365-reserve/">First looks at Windows 365 Reserve</a></p></blockquote>
+<p></p>
+<hr/>
+<p>Learn how to use Cloud PKI and Cert Based Authentication here with<a href="https://www.linkedin.com/in/nickydewestelinck/"> Nicky De Westelinck </a></p>
+<blockquote class="wp-embedded-content" data-secret="fcPTga6L23"><p><a href="https://www.nickydewestelinck.be/2026/07/15/goodbye-passwords-certificate-based-authentication-on-windows-with-cloud-pki-in-microsoft-intune/">Goodbye Passwords: Certificate-Based Authentication on Windows with Cloud PKI in Microsoft Intune</a></p></blockquote>
+<p></p>
+<p>Nicky also looks at certificate based authentication for your Android devices</p>
+<blockquote class="wp-embedded-content" data-secret="kq79hVLkyv"><p><a href="https://www.nickydewestelinck.be/2026/07/23/beyond-passwords-certificate-based-authentication-for-android-enterprise/">Beyond Passwords: Certificate-Based Authentication for Android Enterprise</a></p></blockquote>
+<p></p>
+<hr/>
+<p>Some very important news for anyone in the EU, you can now configure the settings to automatically accept SSO permissions which will make things so much better for your users.  Many people covering this one, starting with <a href="https://www.linkedin.com/in/johannes-geir-kristjansson/">Jóhannes Geir Kristjánsson</a>, setting it via Remediation</p>
+<blockquote class="wp-embedded-content" data-secret="gOnUL0ss1F"><p><a href="https://johannesblog.com/2026/07/15/automatically-accept-sso-permissions/">Automatically Accept SSO Permissions</a></p></blockquote>
+<p></p>
+<hr/>
+<p><a href="https://www.linkedin.com/in/joeyverlinden/">Joey Verlinden</a> also has a script here to set the required registry key</p>
+<blockquote class="wp-embedded-content" data-secret="slBbQCeTgb"><p><a href="https://www.joeyverlinden.com/the-long-awaited-dma-sso-admin-controls/">The long awaited DMA-SSO Admin Controls!</a></p></blockquote>
+<p></p>
+<hr/>
+<p><a href="https://www.linkedin.com/in/jan-bakker/">Jan Bakker</a> covers the requirements and some further background here</p>
+<blockquote class="wp-embedded-content" data-secret="tiwMqFrKbj"><p><a href="https://janbakker.tech/admin-control-for-sso-prompts-in-windows-finally-an-off-switch/">Admin control for SSO prompts in Windows; finally, an off switch!</a></p></blockquote>
+<p></p>
+<hr/>
+<p>If you want to know exactly what’s happening, we have a great deep dive here from <a href="https://www.linkedin.com/in/rudyooms/">Rudy Ooms</a></p>
+<blockquote class="wp-embedded-content" data-secret="UCJ2MLDpiB"><p><a href="https://call4cloud.nl/continue-to-sign-in-prompt-autoacceptssopermission/">AutoAcceptSsoPermission: The Continue to Sign In Prompt Fix</a></p></blockquote>
+<p></p>
+<hr/>
+<p><a href="https://www.linkedin.com/in/joery/">Joery Van den Bosch</a> also looks at how this helps different user personas and also includes a remediation to deploy it</p>
+<blockquote class="wp-embedded-content" data-secret="vyQPodBC0N"><p><a href="https://intunestuff.com/2026/07/17/admin-control-for-sso-prompts/">Admin control for SSO prompts in Windows – How to configure this in Intune</a></p></blockquote>
+<p></p>
+<hr/>
+<p>The final SSO post comes from <a href="https://www.linkedin.com/in/mads-johansen/">Mads Johansen</a> with the easier solution, Settings Catalog</p>
+<p><a href="https://evil365.com/intune/Microsoft-EU-SSOHassle/">https://evil365.com/intune/Microsoft-EU-SSOHassle/</a></p>
+<hr/>
+<p>There is nothing worse than sitting down at a new device and finding the @ is on the wrong key, or the £ is missing altogether.  Fortunately, this remediation from <a href="https://www.linkedin.com/in/alexdurrant/">Alex Durrant</a> will help you configure regional settings on your devices</p>
+<blockquote class="wp-embedded-content" data-secret="EIExDmcmzf"><p><a href="https://modernworkspacehub.com/intune-regional-settings-proactive-remediation/">Intune: setting regional settings using proactive remediations</a></p></blockquote>
+<p></p>
+<hr/>
+<p>We have a new web based tool from <a href="https://www.linkedin.com/in/simoneriksendk/">Simon Hartmann Eriksen</a> to quickly inspect MSI packages within the browser</p>
+<blockquote class="wp-embedded-content" data-secret="uvlPgrH1cr"><p><a href="https://www.simsenblog.dk/2026/07/20/web-tool-msiinfo-com/">Web tool: MSIinfo.com</a></p></blockquote>
+<p></p>
+<hr/>
+<p>We have a new tool from <a href="https://www.linkedin.com/in/markorr321/">Mark Orr</a> as well, this one to quickly assign Access Packages to your users</p>
+<p><a href="https://medium.com/@markhunterorr/access-packages-on-demand-assignment-from-powershell-3fdcfacd803e">https://medium.com/@markhunterorr/access-packages-on-demand-assignment-from-powershell-3fdcfacd803e</a></p>
+<hr/>
+<p>If you are managing macOS devices, the lack of naming templates may be causing you issues.  Fortunately <a href="https://www.linkedin.com/in/tobias-eriksson-713612183/">Tobias Eriksson</a> has a solution for you here</p>
+<blockquote class="wp-embedded-content" data-secret="Hgn79UTp8W"><p><a href="https://tob-it.se/how-to-setup-a-device-naming-template-for-macos-in-intune/">How To Setup a Device Naming Template for macOS in Intune</a></p></blockquote>
+<p></p>
+<hr/>
+<p>On the subject of macOS, <a href="https://www.linkedin.com/in/anthon/">Anthon N</a> has created a very useful onboarding toolkit available here</p>
+<p><a href="https://github.com/SuperDOS/macos-otk">https://github.com/SuperDOS/macos-otk</a></p>
+<hr/>
+<p>If you’re managing Windows Kiosk devices, this remediation from <a href="https://www.linkedin.com/in/dustin-gullett-83607b1ba/">Dustin Gullett</a> will be an absolute lifesaver</p>
+<p><a href="https://getrubix.com/blog/find-blocked-kiosk-apps-at-scale-with-intune-remediations">https://getrubix.com/blog/find-blocked-kiosk-apps-at-scale-with-intune-remediations</a></p>
+<hr/>
+<p>If you have E5 licensing and are considering testing EAM, have a look at this post from <a href="https://www.linkedin.com/in/jannik-r/">Jannik Reinhard</a></p>
+<blockquote class="wp-embedded-content" data-secret="cZN6dLRd2N"><p><a href="https://jannikreinhard.com/intune-enterprise-app-management-auto-update/">Enterprise App Management Auto-Update: Now Generally Available</a></p></blockquote>
+<p></p>
+<hr/>
+<p>If you are using Windows 365 Link devices and need to do a bare metal recovery, try this guide from <a href="https://www.linkedin.com/in/dieterkempeneers/">Dieter Kempeneers</a></p>
+<blockquote class="wp-embedded-content" data-secret="6hn5cvaGkc"><p><a href="https://kempeneers.eu/2026/07/23/windows-365-link-bare-metal-recovery/">How to Perform a Windows 365 Link Bare-Metal Recovery</a></p></blockquote>
+<p></p>
+<hr/>
+<h1><a id="video"></a>Video Content</h1>
+<p>Now for the video content starting with two from <a href="https://www.linkedin.com/in/chandermanipandey/">Chander Mani Pandey</a>, the first assists with troubleshooting, showing where to find the last device check-in time</p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/XVIDnNXAgj4?feature=oembed" title="Intune Last Check in : Where Is It Stored ? | Troubleshooting Guide">VIDEO</iframe></p>
+<p>The second video runs through the Enterprise App Management functionality now available with your E5 licenses</p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/5lVghGOSnnc?feature=oembed" title="Microsoft Intune Enterprise App Catalog — FREE with E5 &amp; Intune Suite (Full Guide + Demo)">VIDEO</iframe></p>
+<hr/>
+<p>If you are receiving a lot of sign-in requests for your account which are not from you, this video from <a href="https://www.linkedin.com/in/deanellerby/">Dean Ellerby</a> is well worth watching</p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/TIVMeB8JXPw?feature=oembed" title="Why You Keep Getting Microsoft Sign-In Requests (and the Fix)">VIDEO</iframe></p>
+<hr/>
+<p>Learn all about the new Device View in Intune here with <a href="https://www.linkedin.com/in/stevew25/">Steve Weiner</a></p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/xKSJ70iRWOI?feature=oembed" title="How to Enable the New Device View in Microsoft Intune">VIDEO</iframe></p>
+<p>Also learn how to enable EAM Auto updates in this video from Steve</p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/tb-pqlYUkZk?feature=oembed" title="How to Enable Enterprise App Management Auto-Updates in Intune">VIDEO</iframe></p>
+<hr/>
+<p>If you’ve ever attempted Platform SSO on macOS, it’s not as easy as it looks (if you were at Experts Live UK, you know that better than others), fortunately <a href="https://www.linkedin.com/in/saurabh-sarkar-3ab7758a/">Saurabh Sarkar</a> has created a full in-depth video walkthrough here</p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/gCENmNmX1P8?feature=oembed" title="IntuneNugget 43: Master Platform SSO in macOS with Intune | Complete Guide + Logs, Scripts &amp; Demos">VIDEO</iframe></p>
+<hr/>
+<h1><a id="microsoft"></a>Microsoft Content</h1>
+<p>Onto the Microsoft content we go, starting with the official announcement for the SSO management from <a href="https://www.linkedin.com/in/ploegert/">Justin Ploegert</a></p>
+<p><a href="https://techcommunity.microsoft.com/t5/windows-it-pro-blog/now-available-admin-control-for-sso-prompts-in-windows/ba-p/4534613">https://techcommunity.microsoft.com/t5/windows-it-pro-blog/now-available-admin-control-for-sso-prompts-in-windows/ba-p/4534613</a></p>
+<hr/>
+<p>Find AI tools on your macOS devices using MDE by following this guide from <a href="https://www.linkedin.com/in/vytas-boyev-4331592/">Vytas Boyev</a></p>
+<p><a href="https://techcommunity.microsoft.com/t5/core-infrastructure-and-security/hunting-local-ai-tools-on-macos-with-microsoft-defender-for/ba-p/4536965">https://techcommunity.microsoft.com/t5/core-infrastructure-and-security/hunting-local-ai-tools-on-macos-with-microsoft-defender-for/ba-p/4536965</a></p>
+<hr/>
+<p><a href="https://www.linkedin.com/in/chrismorrissey2009/">Chris Morrissey</a> explains all of the Windows updates servicing options here</p>
+<p><a href="https://techcommunity.microsoft.com/t5/windows-it-pro-blog/understanding-windows-monthly-updates-servicing-explained/ba-p/4532290">https://techcommunity.microsoft.com/t5/windows-it-pro-blog/understanding-windows-monthly-updates-servicing-explained/ba-p/4532290</a></p>
+<hr/>
+<p>That’s all for this week, have a great weekend!</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
