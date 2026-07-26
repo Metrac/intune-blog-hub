@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Microsoft Foundry Realtime Voice Agent: Talk to Your Screen</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">July 26, 2026</span>
+  </div>
+  <h1>Microsoft Foundry Realtime Voice Agent: Talk to Your Screen</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/microsoft-foundry-realtime-voice-agent/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p class="wp-block-paragraph">In this blog post I explain how I use a <strong>Microsoft Foundry Realtime voice agent</strong> to talk about information that is currently visible on my screen. I share an Azure page, ask a question with my voice, and receive a spoken answer without copying text into a chat.</p>
+<p class="wp-block-paragraph">The useful part is the combination of both inputs. The agent can hear my question and see the screen I selected. I can then ask a follow-up question in the same conversation. The complete example is available in my <a href="https://github.com/JayRHa/microsoft-foundry-examples/tree/main/examples/realtime-voice-screen-share" rel="noopener" target="_blank">Microsoft Foundry examples repository</a>.</p>
+<figure class="wp-block-image"><img alt="Microsoft Foundry Realtime voice agent ready for a screen conversation" data-recalc-dims="1" decoding="async" src="assets/e0eab95b17912b72/img_0.jpg"/></figure>
+<span id="more-20017"></span>
+<h2 class="wp-block-heading" id="what-can-the-agent-do-with-live-screen-information">What can the agent do with live screen information?</h2>
+<p class="wp-block-paragraph">A normal voice agent only knows what I say. A screen-aware voice agent also gets the information I choose to show at that moment.</p>
+<p class="wp-block-paragraph">For example, I can open the Microsoft Foundry model catalog and ask:</p>
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">Which of the visible models could I use for a voice scenario?</p>
+</blockquote>
+<p class="wp-block-paragraph">The agent can answer from the current page. I do not need to read model names aloud or paste a screenshot into another tool. If the first answer is too broad, I can continue with:</p>
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">Which one would you choose for a browser application?</p>
+</blockquote>
+<p class="wp-block-paragraph">The second question keeps the context from the current conversation. This makes the experience feel closer to asking a colleague who is looking at the same screen.</p>
+<p class="wp-block-paragraph">This pattern is useful for more than a model catalog. I can use it with an Azure configuration page, a dashboard, a setup wizard, an error message, or documentation that is difficult to understand.</p>
+<h2 class="wp-block-heading" id="how-do-i-deploy-and-configure-the-example">How do I deploy and configure the example?</h2>
+<p class="wp-block-paragraph">Before I can start the voice conversation, I need a Microsoft Foundry resource and a Realtime model deployment. I can create the model deployment directly from the Foundry portal.</p>
+<ol class="wp-block-list">
+<li>Open the Microsoft Foundry project.</li>
+<li>Select <strong>Build</strong> and open <strong>Models</strong>.</li>
+<li>Select <strong>Deploy a base model</strong>.</li>
+<li>Search for a supported GPT Realtime model that is available in the project region.</li>
+<li>Enter a clear deployment name and select the available deployment type and capacity.</li>
+<li>Start the deployment and wait until its status is <strong>Succeeded</strong>.</li>
+</ol>
+<p class="wp-block-paragraph">The local example requires Python 3.11 or later and the Azure CLI. The identity used with <code>az login</code> needs the <strong>Cognitive Services User</strong> role on the Foundry resource.</p>
+<p class="wp-block-paragraph">Hint: Subscription <strong>Owner</strong> or <strong>Contributor</strong> does not automatically include model data access. If the voice session cannot be created, I check the <code>Cognitive Services User</code> assignment first. New role assignments can need a few minutes before they work.</p>
+<p class="wp-block-paragraph">Next, I clone the example and create its local configuration:</p>
+<p class="wp-block-paragraph">I enter the Foundry resource name and the model deployment name in <code>.env</code>:</p>
+<p class="wp-block-paragraph"><code>AZURE_OPENAI_RESOURCE</code> is only the resource name, not a URL. The server creates the GA endpoint from this value. The Azure credential also stays on the server. The browser never receives the Azure CLI token or a long-lived API key.</p>
+<p class="wp-block-paragraph">I then install the small FastAPI application and start it locally:</p>
+<p class="wp-block-paragraph">The page is now available at <code>http://127.0.0.1:8000</code>. When I host it outside localhost, I must use HTTPS because browsers require a secure context for microphone and screen access.</p>
+<p class="wp-block-paragraph">Microsoft lists the current prerequisites and supported deployment flow in the official <a href="https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/realtime-audio-webrtc" rel="noopener" target="_blank">Realtime WebRTC guide</a>.</p>
+<h2 class="wp-block-heading" id="how-do-i-use-the-voice-agent">How do I use the voice agent?</h2>
+<p class="wp-block-paragraph">The user flow is intentionally short. I do not need to upload a file or prepare a special prompt.</p>
+<h3 class="wp-block-heading" id="1-start-the-voice-conversation">1 — Start the voice conversation</h3>
+<p class="wp-block-paragraph">I click <strong>Start voice session</strong> and allow microphone access. The call dialog shows when the connection is ready. I can speak normally instead of holding a record button for every question.</p>
+<p class="wp-block-paragraph">The agent answers with audio. The spoken question and answer also appear as text in the transcript. This is helpful when I want to verify a product name, command, or setting while listening.</p>
+<h3 class="wp-block-heading" id="2-share-the-current-screen-only-when-i-need-help">2 — Share the current screen only when I need help</h3>
+<p class="wp-block-paragraph">I open the page I want to discuss and click <strong>Share screen</strong>. The browser shows its normal selection dialog. I can choose one tab, one window, or a complete monitor.</p>
+<p class="wp-block-paragraph">The selected surface remains visible in the call. This is important because I always know what the agent can currently see. I can stop sharing at any time before I open another page with sensitive information.</p>
+<figure class="wp-block-image"><img alt="Microsoft Foundry Realtime voice agent discussing the visible Azure model catalog" data-recalc-dims="1" decoding="async" src="assets/e0eab95b17912b72/img_1.jpg"/></figure>
+<p class="wp-block-paragraph">In the screenshot I shared the Microsoft Foundry model catalog. The agent received the visible page as image context. It did not receive control of my browser and it could not click anything for me.</p>
+<h3 class="wp-block-heading" id="3-ask-naturally-and-continue-the-conversation">3 — Ask naturally and continue the conversation</h3>
+<p class="wp-block-paragraph">Now I can ask the same questions I would ask a colleague:</p>
+<ul class="wp-block-list">
+<li>What am I looking at?</li>
+<li>Which option is relevant for my scenario?</li>
+<li>What should I configure next?</li>
+<li>Can you explain this error in simple words?</li>
+<li>What is the difference between the two visible models?</li>
+</ul>
+<p class="wp-block-paragraph">I do not need to describe every label on the page. The screen provides that context. My voice provides the intention behind the question.</p>
+<p class="wp-block-paragraph">I also configured the agent to answer in the language of my latest spoken question. When I ask in German, the answer is German. If I switch to English, the next answer follows in English. This makes the same page useful for different users without a separate language selector.</p>
+<h2 class="wp-block-heading" id="what-came-back-from-the-azure-screen">What came back from the Azure screen?</h2>
+<p class="wp-block-paragraph">I used the experience with the Microsoft Foundry model overview. My German question asked which visible models were relevant for a Realtime voice agent.</p>
+<p class="wp-block-paragraph">The agent answered:</p>
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">Du siehst die Microsoft Foundry Modellübersicht im Bereich „Models“ mit Filteroptionen und einer nach „Featured“ sortierten Liste verfügbarer Modelle im Projekt. Für einen Realtime-Voice-Agent sind zum Beispiel „gpt-realtime-2.1“ und „MAI-Transcribe-1.5“ relevant.</p>
+</blockquote>
+<p class="wp-block-paragraph">The answer referred to information on the shared page. It identified the model overview, the filters, and visible model names. More importantly, the response came back as speech and text. I could immediately ask why one of these models would fit my scenario.</p>
+<figure class="wp-block-image"><img alt="Microsoft Foundry Realtime voice agent answering a German question about the shared Azure page" data-recalc-dims="1" decoding="async" src="assets/e0eab95b17912b72/img_2.jpg"/></figure>
+<p class="wp-block-paragraph">This is the experience I wanted to build. I keep my hands on the current task, ask a short question, and get an answer that uses the information in front of me.</p>
+<h2 class="wp-block-heading" id="why-is-voice-useful-here">Why is voice useful here?</h2>
+<p class="wp-block-paragraph">Text chat is still the better option when I need a long command or want to compare a large amount of text. Voice is useful when I am already working inside another application.</p>
+<figure class="wp-block-table"><table><thead><tr><th>Situation</th><th>Why voice and screen context help</th></tr></thead><tbody><tr><td>Azure configuration</td><td>I can ask about the visible options without leaving the page</td></tr><tr><td>Error message</td><td>I can ask for an explanation while keeping the error open</td></tr><tr><td>Dashboard</td><td>I can discuss the current chart or status without describing every value</td></tr><tr><td>Guided setup</td><td>I can ask what the next step is while I complete the wizard</td></tr><tr><td>Training</td><td>A user can ask questions about the exact screen used in the demonstration</td></tr></tbody></table></figure>
+<p class="wp-block-paragraph">The agent becomes a second layer over the current application. It does not replace the application. It helps me understand what I am seeing and decide what to do next.</p>
+<h2 class="wp-block-heading" id="what-does-live-mean-in-this-example">What does “live” mean in this example?</h2>
+<p class="wp-block-paragraph">The conversation is live because audio moves in both directions with low delay. The agent can also receive updated screen images while I continue speaking. Microsoft documents WebRTC as the browser connection for Realtime audio and supports image input inside the same conversation.</p>
+<p class="wp-block-paragraph">You can find the underlying capabilities in the official <a href="https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/realtime-audio-webrtc" rel="noopener" target="_blank">WebRTC guide</a> and the <a href="https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/realtime-audio" rel="noopener" target="_blank">Realtime audio documentation</a>.</p>
+<p class="wp-block-paragraph">However, the agent does not automatically know everything that changes in Azure. It only knows the screen information I share and the conversation we have. If I need live tenant data that is not visible on the page, I must connect a separate tool or API.</p>
+<p class="wp-block-paragraph">This distinction is important:</p>
+<ul class="wp-block-list">
+<li><strong>Visible live information:</strong> The current page, status, chart, error, or options I share.</li>
+<li><strong>Conversation context:</strong> My spoken questions and the earlier answers in the call.</li>
+<li><strong>Connected business data:</strong> Only available when I deliberately add an API, MCP server, or another tool.</li>
+</ul>
+<p class="wp-block-paragraph">The screen is therefore context, not unrestricted access to the environment.</p>
+<h2 class="wp-block-heading" id="how-does-the-complete-flow-work">How does the complete flow work?</h2>
+<p class="wp-block-paragraph">The application has a browser part, a small FastAPI service, and the Realtime model in Microsoft Foundry. Each part has one clear responsibility.</p>
+<ol class="wp-block-list">
+<li>The browser calls the local token endpoint when I start the voice session.</li>
+<li>The FastAPI service authenticates to Azure with Microsoft Entra ID.</li>
+<li>The service creates a short-lived Realtime client secret for the selected deployment.</li>
+<li>The browser uses this secret to open a WebRTC connection directly to the Realtime service.</li>
+<li>My microphone audio and the spoken response use this live connection.</li>
+<li>Transcripts, status events, and selected screen images use the WebRTC data channel.</li>
+</ol>
+<figure class="wp-block-image"><img alt="Microsoft Foundry Realtime voice agent architecture with browser, FastAPI, WebRTC, and screen context" data-recalc-dims="1" decoding="async" src="assets/e0eab95b17912b72/img_3.jpg"/></figure>
+<p class="wp-block-paragraph">In the diagram you can see the complete path. FastAPI is only needed to create the short-lived session. After that, audio and screen context move directly between the browser and Microsoft Foundry.</p>
+<p class="wp-block-paragraph">The browser manages the microphone and screen permissions. The standard browser picker lets me decide what I want to share. The selected screen stays visible in the call dialog.</p>
+<p class="wp-block-paragraph">The application does not send a permanent screen video to the model. It creates selected still images from the shared surface and adds them to the same conversation as <code>input_image</code> items. The model therefore receives my spoken question together with the current visual context. Its response returns as audio and as a transcript.</p>
+<p class="wp-block-paragraph">The session instructions tell the agent to use only the explicitly shared screen and answer in the language of my latest spoken question. This is why I can ask a German question, receive a German answer, and continue in English without starting another call.</p>
+<p class="wp-block-paragraph">The Azure credential remains inside the FastAPI service. The browser only sees the short-lived Realtime client secret. This is the same principle I use for other browser applications: a permanent Azure credential does not belong inside the page.</p>
+<p class="wp-block-paragraph">If Microsoft Foundry is new for you, my <a href="https://jannikreinhard.com/microsoft-foundry-first-agent/">first Microsoft Foundry agent guide</a> explains the basic project setup. My article about <a href="https://jannikreinhard.com/secure-microsoft-foundry/">secure Microsoft Foundry deployments</a> covers the identity and data boundaries in more detail.</p>
+<h2 class="wp-block-heading" id="what-did-i-deliberately-keep-out-of-the-example">What did I deliberately keep out of the example?</h2>
+<p class="wp-block-paragraph">I wanted a small example that is easy to understand and troubleshoot. I therefore kept several production features out of the lab on purpose.</p>
+<p class="wp-block-paragraph">The example has:</p>
+<ul class="wp-block-list">
+<li>No browser automation or control of the shared page</li>
+<li>No permanent Azure credential in the browser</li>
+<li>No hidden screen capture without the browser picker</li>
+<li>No storage for screen images or transcripts</li>
+<li>No Microsoft Graph or Microsoft Intune write permissions</li>
+<li>No user database or public sign-in flow</li>
+</ul>
+<p class="wp-block-paragraph">This keeps the flow clear. The page opens a Realtime session, sends explicitly selected visual context, and returns speech plus a transcript. Nothing else happens in the background.</p>
+<p class="wp-block-paragraph">Note: If I host this example for other users, I would add authentication, rate limiting, audit events, and a clear retention configuration around the token endpoint. These are hosting tasks and not required for the local lab.</p>
+<h2 class="wp-block-heading" id="how-can-i-test-the-complete-flow-myself">How can I test the complete flow myself?</h2>
+<p class="wp-block-paragraph">The complete example is available here:</p>
+<p class="wp-block-paragraph"><a href="https://github.com/JayRHa/microsoft-foundry-examples/tree/main/examples/realtime-voice-screen-share" rel="noopener" target="_blank">github.com/JayRHa/microsoft-foundry-examples/tree/main/examples/realtime-voice-screen-share</a></p>
+<p class="wp-block-paragraph">After the local server is running, I test the real user flow in the browser. I do not need an automated test mode for this.</p>
+<figure class="wp-block-image"><img alt="Microsoft Foundry Realtime voice agent deployment and manual browser test flow" data-recalc-dims="1" decoding="async" src="assets/e0eab95b17912b72/img_4.jpg"/></figure>
+<p class="wp-block-paragraph">The visual shows the five practical steps. I deploy the model, configure the local service, start the page, speak and share one screen, and then verify the grounded answer.</p>
+<ol class="wp-block-list">
+<li>Open <code>http://127.0.0.1:8000</code>.</li>
+<li>Select <strong>Start voice session</strong> and allow microphone access.</li>
+<li>Wait until the call state shows that the connection is ready.</li>
+<li>Say a short question. I should hear the answer and see both sides in the transcript.</li>
+<li>Select <strong>Share screen</strong> and choose one non-sensitive Azure or browser tab.</li>
+<li>Ask: “What can you see on my screen?” The answer should mention information visible on the page.</li>
+<li>Ask a follow-up question without repeating the page context.</li>
+<li>Ask the next question in German. The spoken answer and transcript should switch to German.</li>
+<li>Stop sharing from the call dialog. The preview should stop and no new screen context should be sent.</li>
+</ol>
+<p class="wp-block-paragraph">I use this small result checklist:</p>
+<figure class="wp-block-table"><table><thead><tr><th>Check</th><th>Expected result</th></tr></thead><tbody><tr><td>Voice connection</td><td>I can speak and hear the agent without pressing a record button</td></tr><tr><td>Transcript</td><td>My question and the agent response appear as text</td></tr><tr><td>Screen grounding</td><td>The answer refers to visible labels, values, or model names</td></tr><tr><td>Follow-up</td><td>The agent remembers the context from the current conversation</td></tr><tr><td>Language</td><td>A German question receives a German spoken answer</td></tr><tr><td>Stop sharing</td><td>The visible preview ends and the screen is no longer updated</td></tr></tbody></table></figure>
+<p class="wp-block-paragraph">For my first conversation, I would use a page that contains clear but non-sensitive information. A Microsoft Foundry catalog, a public dashboard, or public documentation works well. This makes it easy to check whether the answer refers to the visible content.</p>
+<p class="wp-block-paragraph">The important result is not another voice chatbot. It is a conversation about the work already open on my screen. Speech makes the interaction fast. The shared page gives the agent the missing context. Together, both inputs make the answer much more useful.</p>
+<p class="wp-block-paragraph">I hope this is a little help for your own Microsoft Foundry project.</p>
+<p class="wp-block-paragraph">Stay healthy, Cheers Jannik</p>
+<aside aria-labelledby="jr-next-microsoft-foundry-realtime-voice-agent" class="jr-next-journey"><span class="jr-next-eyebrow">Keep troubleshooting</span><h2 id="jr-next-microsoft-foundry-realtime-voice-agent">Move from symptom to root cause</h2></aside> </div>
+</div></div>
+</article>
+</body>
+</html>
