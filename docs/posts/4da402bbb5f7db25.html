@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Manage Samsung Galaxy Firmware Versions to Improve Security and Compliance using Microsoft Intune</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">HTMD / Anoop C Nair</span>
+    <span class="date">July 30, 2026</span>
+  </div>
+  <h1>Manage Samsung Galaxy Firmware Versions to Improve Security and Compliance using Microsoft Intune</h1>
+  <div class="orig">Saved for offline reading · <a href="https://www.anoopcnair.com/manage-samsung-galaxy-firmware-versions-intune/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text"><p class="code-block code-block-6">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><h2 class="wp-block-heading" id="key-takeaways"><strong>Key Takeaways</strong></h2><ul class="wp-block-list has-medium-font-size"><li>Manage<strong> Samsung Galaxy firmware </strong>updates directly from Microsoft Intune.</li><li>Test <strong>new firmware</strong> versions before broad deployment.</li><li>Roll out updates in phases to<strong> reduce risks.</strong></li><li>Control update timing with maintenance windows and <strong>battery requirements</strong></li></ul><p class="wp-block-paragraph">In this post we are discussing Manage Samsung Galaxy Firmware Versions to Improve Security and Compliance using Microsoft Intune. <strong>Microsoft Intune </strong>has received a new update that expands <strong><a href="https://www.anoopcnair.com/intune-device-firmware-dfci-now-supports-vaio/" rel="noreferrer noopener" target="_blank">firmware </a></strong>management capabilities for <strong>Samsung Galaxy</strong> devices through Firmware Versionsintegration. This enhancement gives IT administrators more control over firmware and operating system updates, helping them manage device updates more efficiently across their organization.</p><details class="wp-block-details has-contrast-3-background-color has-background is-layout-flow wp-block-details-is-layout-flow"><summary><strong>Table of Contents</strong></summary>
+</details><h2 class="wp-block-heading" id="manage-samsung-galaxy-firmware-versions-to-improve-security-and-compliance-using-microsoft-intune-1"><strong>Manage Samsung Galaxy Firmware Versions to Improve Security and Compliance using Microsoft Intune</strong></h2><p class="wp-block-paragraph">Managing firmware updates becomes more challenging as the number of mobile devices increases. Organizations often need to test new firmware <strong>versions </strong>before deploying them to all users to avoid compatibility issues with business applications. With this update, administrators can use existing Intune device groups to assign and manage <strong>firmware </strong>versions for<strong> Samsung Galaxy devices</strong>. This allows organizations to keep production devices on a stable version while testing new firmware releases on a smaller group before a deployment.</p><h2 class="wp-block-heading" id="whats-new-in-samsung-knox-e-fota-integration"><strong>What’s New in Samsung Knox E-FOTA Integration</strong></h2><p class="wp-block-paragraph">This update introduces <strong>Samsung Knox E-FOTA</strong> integration with Microsoft Intune, giving administrators more control over Samsung Galaxy firmware and <strong>OS updates</strong>. IT teams can now use existing Intune device groups to manage firmware versions and update <strong>deployments </strong>more effectively.</p><p class="wp-block-paragraph">With Samsung Knox E-FOTA integration, administrators can gain<strong> greater control </strong>over firmware update deployments for managed<strong> Samsung devices</strong>. The feature allows organizations to define <strong>installation </strong>windows, schedule <strong>firmware updates,</strong> and manage how updates are delivered to users.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><ul class="wp-block-list"><li class="has-medium-font-size">The below <strong>Knox E‑FOTA campaign scheduling screen</strong>, where admins define when firmware updates install on managed Samsung devices.</li></ul><figure class="wp-block-table aligncenter"><table class="has-contrast-3-background-color has-background has-fixed-layout"><thead><tr><th>What’s New in Samsung Galaxy Firmware</th><th>Information</th></tr></thead><tbody><tr><td><strong>Firmware control</strong></td><td>Enterprise<strong> Firmware‑Over‑The‑Air</strong> (E‑FOTA) integration now available in Intune for Samsung Galaxy devices.</td></tr><tr><td><strong>Device group targeting</strong></td><td>Firmware <strong>assignments </strong>follow Intune device group membership automatically.</td></tr><tr><td><strong>Battery and postponement rules</strong></td><td>Admins can enforce<strong> battery </strong>requirements and postponement limits for installation timing.</td></tr></tbody></table><figcaption class="wp-element-caption">Manage Samsung Galaxy Firmware Versions to Improve Security and Compliance using Microsoft Intune- Table.1</figcaption></figure><div class="wp-block-image"><figure class="aligncenter size-full"><img alt="Manage Samsung Galaxy Firmware Versions to Improve Security and Compliance using Microsoft Intune - Fig. 1 Creds to MS" class="wp-image-374225" data-lazyloaded="1" data-sizes="(max-width: 702px) 100vw, 702px" decoding="async" src="assets/4da402bbb5f7db25/img_0.webp" title="Manage Samsung Galaxy Firmware Versions to Improve Security and Compliance using Microsoft Intune 2"/><figcaption class="wp-element-caption">Manage Samsung Galaxy Firmware Versions to Improve Security and Compliance using Microsoft Intune – Fig. 1 Creds to MS</figcaption></figure></div><h2 class="wp-block-heading" id="access-android-app-management"><strong>Access Android App Management</strong></h2><p class="wp-block-paragraph">To begin integrating <strong>Samsung Knox E-FOTA</strong> with Microsoft Intune, navigate to the Apps section in the Intune admin center. This area allows administrators to manage applications and services that support Android Enterprise devices. Sign in to the <strong><a href="https://intune.microsoft.com/" rel="noreferrer noopener nofollow" target="_blank">MS Intune</a></strong>, From the Apps, select <strong>Android </strong>to view Android-specific application management options. This is where administrators can add and deploy apps required for <strong>Samsung Knox management</strong>, including the Knox Service Plugin.</p><div class="wp-block-image"><figure class="aligncenter size-full"><img alt="Manage Samsung Galaxy Firmware Versions to Improve Security and Compliance using Microsoft Intune - Fig.2" class="wp-image-374226" data-lazyloaded="1" data-sizes="(max-width: 672px) 100vw, 672px" decoding="async" src="assets/4da402bbb5f7db25/img_1.webp" title="Manage Samsung Galaxy Firmware Versions to Improve Security and Compliance using Microsoft Intune 3"/><figcaption class="wp-element-caption">Manage Samsung Galaxy Firmware Versions to Improve Security and Compliance using Microsoft Intune – Fig.2</figcaption></figure></div><h2 class="wp-block-heading" id="select-managed-google-play-app"><strong>Select Managed Google Play App</strong></h2><p class="wp-block-paragraph">To add the <strong>Samsung Knox Service</strong> Plugin in Microsoft Intune, navigate to the <strong>Android</strong> app creation and select the appropriate platform and category. In this example, the <strong>Android platform</strong> is selected, and the <strong>Line-of-business app </strong>category is used to begin the app deployment process. Next, choose <strong>Managed Google Play app</strong> as the app type. Managed Google Play allows administrators to discover, approve, and deploy Android Enterprise applications directly from Intune.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><div class="wp-block-image"><figure class="aligncenter size-full"><img alt="Manage Samsung Galaxy Firmware Versions to Improve Security and Compliance using Microsoft Intune - Fig.3" class="wp-image-374227" data-lazyloaded="1" data-sizes="auto, (max-width: 715px) 100vw, 715px" decoding="async" src="assets/4da402bbb5f7db25/img_2.webp" title="Manage Samsung Galaxy Firmware Versions to Improve Security and Compliance using Microsoft Intune 4"/><figcaption class="wp-element-caption">Manage Samsung Galaxy Firmware Versions to Improve Security and Compliance using Microsoft Intune – Fig.3</figcaption></figure></div><h2 class="wp-block-heading" id="reference"><strong>Reference</strong></h2><p class="wp-block-paragraph"><a href="https://techcommunity.microsoft.com/blog/microsoftintuneblog/what%E2%80%99s-new-in-microsoft-intune-%E2%80%93-july/4537392" rel="noreferrer noopener nofollow" target="_blank"><strong>What’s new in Microsoft Intune – July</strong></a></p><h2 class="wp-block-heading" id="need-further-assistance-or-have-technical-questions"><strong>Need Further Assistance or Have Technical Questions?</strong></h2><p class="has-contrast-3-background-color has-background wp-block-paragraph">Join the <a href="https://www.linkedin.com/company/how-to-manage-devices/" rel="noreferrer noopener nofollow" target="_blank"><strong>LinkedIn Page</strong></a> and <a href="https://t.me/+Q9lE6G1_BO_bGq97" rel="noreferrer noopener nofollow" target="_blank"><strong>Telegram group</strong></a> to get the latest step-by-step guides and news updates. Join our <a href="https://www.meetup.com/htmd-community-meetup-group/" rel="noreferrer noopener nofollow" target="_blank"><strong>Meetup Page</strong></a> to participate in User group meetings. Also, join the <a href="https://htmd.in/WACM2" rel="noreferrer noopener nofollow" target="_blank"><strong>WhatsApp Community</strong></a>  and the <a href="https://htmd.in/whatsapp_channel" rel="noreferrer noopener nofollow" target="_blank"><strong>WhatsApp channel</strong></a> to get the latest news on Microsoft Technologies. We are there on <a href="https://www.reddit.com/r/ImpMSNews/" rel="noreferrer noopener nofollow" target="_blank"><strong>Reddit</strong></a> as well.</p><h2 class="wp-block-heading" id="author"><strong>Author</strong></h2><p class="wp-block-paragraph"><a href="https://www.linkedin.com/in/anoopcnair/" rel="nofollow noopener" target="_blank"><strong>Anoop C Nair</strong></a> is a Workplace Technology solution architect with 25+ years of experience. Microsoft Certified Trainer. Microsoft MVP from 2015 onwards for consecutive 11+ years! He is a blogger, Speaker, and Founder of HTMD Community and HTMD Conference. His main focus is on Device Management technologies like Intune, Windows, and Cloud PC. He writes about technologies like Intune, SCCM, Windows, Cloud PC, Entra, and Microsoft Security.</p><p class="code-block code-block-8">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="1286776600" data-full-width-responsive="true"></ins> </p><p class="code-block code-block-9">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="8125570634" data-full-width-responsive="true"></ins> </p></div></div></div>
+</article>
+</body>
+</html>
