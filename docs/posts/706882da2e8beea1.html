@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Is WinGet Enterprise Ready? A Deep Dive Into the Evidence</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">MSEndpointMgr</span>
+    <span class="date">July 30, 2026</span>
+  </div>
+  <h1>Is WinGet Enterprise Ready? A Deep Dive Into the Evidence</h1>
+  <div class="orig">Saved for offline reading · <a href="https://msendpointmgr.com/2026/07/30/is-winget-enterprise-ready/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p data-block-type="core"><strong>A deep-dive look at the Windows Package Manager Community Repository. Its manifests, submission pipeline, validation model, and a clear-eyed comparison against curated enterprise catalogs maintained by dedicated commercial teams.</strong></p>
+<nav class="wp-block-stackable-table-of-contents stk-block-table-of-contents stk-block stk-95d34d4" data-block-id="95d34d4"><p class="stk-table-of-contents__title"><strong>Table of Contents</strong></p></nav>
+<h1 class="wp-block-heading" id="0-why-this-post-exists"><a aria-hidden="true" class="aal_anchor" href="#why-this-post-exists" id="why-this-post-exists"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Why this post exists</h1>
+<p data-block-type="core">Sooner or later, everyone managing Windows endpoints in Intune hits the same question. “What’s my favourite cheese?” No, wrong blog. Let me refocus. “How do I get third-party apps into Intune, and how do I keep them patched once they’re there?”</p>
+<p data-block-type="core">Chrome, 7-Zip, Acrobat, Notepad++, Zoom, and the hundred other things your users need but Microsoft doesn’t author. You have 4 routes: </p>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core">Package them yourself and own that thing forever.</li>
+<li data-block-type="core">Pull from the WinGet community repository (WinGet CLI / Store / ISV).</li>
+<li data-block-type="core">Buy a curated catalog from a commercial vendor.</li>
+<li data-block-type="core">Use Microsoft’s own Enterprise App Catalog (as of July 2026 it’s included with Microsoft 365 E5 rather than sold as an Intune Suite add-on).</li>
+</ul>
+<p data-block-type="core">The choice looks like a budget decision. But it’s really much more complex than that. When you start researching it, and after stumbling across some sub-reddits, there are 2 opposing claims:</p>
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow" data-block-type="core">
+<p data-block-type="core">WinGet is solid, there are over 10k apps, it’s flexible and free. Everything goes through automated validation and moderator review so it’s safe.</p>
+</blockquote>
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow" data-block-type="core">
+<p data-block-type="core">WinGet isn’t enterprise ready. Nobody owns the manifests, vendors don’t control them, and there’s no real testing. You need a quality, curated, catalog.</p>
+</blockquote>
+<p data-block-type="core">Both of the above statements get repeated a lot. Which one you hear tends to depend on who you’re talking to rather than on evidence. This post is an attempt to ground the question properly and to honestly remove my own personal bias from the comparison.</p>
+<p class="has-gridlove-acc-color has-gridlove-highlight-acc-background-color has-text-color has-background has-link-color wp-elements-61a5dff47d49f0106daeb70285d25cb3" data-block-type="core"><strong>Full transparency: </strong>I work for Patch My PC. That cuts 2 ways and you should know about both. It means I see catalog work up close, which is useful. It also means I have an obvious interest in one of the answers, so every technical claim about WinGet below links to a primary source you can check without taking my word for anything. Where I can’t do that, in Part 4, I say so plainly rather than hoping you don’t notice.<br/><br/>I’ve written on this subject before, too. In May 2025 I published <a href="https://patchmypc.com/blog/curated-vs-crowdsourced/" rel="noopener" target="_blank">Curated vs. Crowdsourced</a>, setting out the case for professional curation. I’ve kept thinking about it since, and what I wanted to do this time was stand those claims up side by side with the evidence rather than leave them as assertions. So that’s what this is…the same question, with my proverbial “thought patterns” documented.<br/><br/>Plenty of it holds up. Some of it looks different close up, and the validation pipeline is the clearest example. It does more than I credited it with, and Part 2 lays out precisely what it checks and where it stops. That seems worth saying out loud, because a claim you’re willing to re-examine in public is worth more than one you only ever repeat.</p>
+<p data-block-type="core">I’m on holiday…so had some decompress time to focus on this topic. We’re going to take WinGet apart, piece by piece, crumb by crumb, so you get to understand what a “package” actually <em>is</em>, who creates and maintains it, what the validation pipeline does (and, more importantly, what it doesn’t do), and then hold that up against what a commercial curated catalog vendor does before an update reaches your devices.</p>
+<p data-block-type="core">The lens throughout is the one that matters to people like us: <strong>the lifecycle of a Win32 app in Microsoft Intune</strong>. Content, install and uninstall behaviour, detection, requirements, supersedence, and everything that goes wrong between version N and version N+1.</p>
+<p data-block-type="core">A note on terminology before we start. “WinGet” is really 3 things, and conflating them is where most bad takes come from:</p>
+<ol class="wp-block-list" data-block-type="core">
+<li data-block-type="core"><strong>The WinGet client</strong> is the CLI (and COM API/PowerShell module) that ships with App Installer on Windows 11.</li>
+<li data-block-type="core"><strong>The Windows Package Manager Community Repository</strong> (<code>microsoft/winget-pkgs</code> on GitHub) is the default <code>WinGet</code> source, a giant tree of YAML manifests describing where installers live and how to run them.</li>
+<li data-block-type="core"><strong>The msstore source</strong> is the Microsoft Store catalog, also queryable through the client.</li>
+</ol>
+<p data-block-type="core">When people argue about whether “WinGet is Enterprise ready,” they’re almost always arguing about <strong>#2</strong>, the community repository, because that’s where 7-Zip, Notepad++, VLC, Git, and everything else you’d deploy as a Win32 app lives. So that’s where we’ll spend our time.</p>
+<h1 class="wp-block-heading" id="1-before-we-deep-dive"><a aria-hidden="true" class="aal_anchor" href="#before-we-deep-dive" id="before-we-deep-dive"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Before we deep dive</h1>
+<p data-block-type="core">Here’s how a WinGet app gets from a vendor’s website onto your devices.</p>
+<ol class="wp-block-list" data-block-type="core">
+<li data-block-type="core"><strong>The package is just text.</strong> A winget package is a set of <strong>YAML files (manifests)</strong> in a public GitHub repository describing where a vendor’s installer lives, its SHA256 fingerprint, and the switches that install it silently. The repository holds no software of its own, only descriptions. </li>
+<li data-block-type="core"><strong>Anyone can submit a version.</strong> New versions arrive as <strong>pull requests</strong>, raised mostly by community members and their automation rather than by the software vendors themselves. </li>
+<li data-block-type="core"><strong>Every submission is vetted.</strong> An <strong>automated pipeline</strong> runs schema checks, hash verification, malware scanning, and a test install in a sandboxed VM, then a <strong>human moderator</strong> approves it. Merged changes usually reach clients within the hour. </li>
+<li data-block-type="core"><strong>So here’s the obvious question</strong>, and the one this post exists to answer… what exactly does that vetting cover?</li>
+</ol>
+<h2 class="wp-block-heading" id="2-where-this-post-goes"><a aria-hidden="true" class="aal_anchor" href="#where-this-post-goes" id="where-this-post-goes"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Where this post goes</h2>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core"><strong>Part 1</strong> asks <em>what is a package, really?</em> We take two apart line by line: 7-Zip, and then Chrome, which stresses every weak point in the model at once. This is where detection, ProductCodes, and silent switches live.</li>
+<li data-block-type="core"><strong>Part 2</strong> asks <em>who puts new versions in, and what gets tested?</em> The submission and moderation model, hard numbers on how current winget actually is, and a precise account of what the validation pipeline checks and what it leaves alone.</li>
+<li data-block-type="core"><strong>Part 3</strong> asks <em>what breaks between version N and N+1?</em> The specific mechanisms that turn “the new version is in the catalog” into a failed deployment, and what deploying WinGet apps through Intune really involves.</li>
+<li data-block-type="core"><strong>Part 4</strong> asks <em>what does a curated catalog actually do for the money?</em> The dedicated-team model measured against the same yardstick used on winget in Part 2.</li>
+<li data-block-type="core"><strong>Part 5</strong> puts them side by side, followed by a verdict, an evaluation checklist you can use on any catalog including winget, and a method for reproducing the freshness numbers yourself.</li>
+</ul>
+<p data-block-type="core">If you only read one part, make it Part 2. That’s where the evidence is.</p>
+<h1 class="wp-block-heading" id="3-part-1-the-anatomy-of-a-winget-package"><a aria-hidden="true" class="aal_anchor" href="#part-1-the-anatomy-of-a-winget-package" id="part-1-the-anatomy-of-a-winget-package"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Part 1: The anatomy of a WinGet package</h1>
+<p data-block-type="core">The first thing to understand is that the community repository <strong>contains no binaries</strong>. A winget “package” is a set of YAML manifests that point at installers hosted on the vendor’s own infrastructure (or SourceForge, or GitHub releases). When a client installs a package, it downloads the installer from the vendor’s URL, verifies its SHA256 hash against the manifest, and runs it with the silent switches recorded in the manifest.</p>
+<p data-block-type="core">That single design decision drives almost everything else in this comparison:</p>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core">The repository can’t re-package, wrap, or transform anything. What the vendor ships is what runs.</li>
+<li data-block-type="core">If the vendor replaces a binary in place at the same URL, the recorded hash no longer matches and installs fail until someone submits a corrected manifest.</li>
+<li data-block-type="core">Your endpoints can download content from dozens of vendor CDNs, not from a storage location that you control.</li>
+</ul>
+<p data-block-type="core">Manifests live in the repo at a well-defined path:</p>
+<div class="wp-block-codemirror-blocks-code-block code-block"><pre class="CodeMirror" data-setting='{"showPanel":false,"languageLabel":false,"fullScreenButton":true,"copyButton":true,"mode":"powershell","mime":"application/x-powershell","theme":"elegant","lineNumbers":true,"styleActiveLine":false,"lineWrapping":false,"readOnly":true,"fileName":"","language":"PowerShell","maxHeight":"400px","modeName":"powershell"}'>manifests\&lt;first letter of publisher&gt;\&lt;Publisher&gt;\&lt;Package&gt;\&lt;Version&gt;\</pre></div>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/07/image-4.png"><img alt="Manifest Path" class="wp-image-26762" decoding="async" src="assets/706882da2e8beea1/img_0.png"/></a></figure>
+<p data-block-type="core">Each <em>version</em> of each package is its own folder containing (in the modern multi-file format) at minimum 3 files:</p>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core"><code>&lt;Id&gt;.yaml</code>: the <strong>version manifest</strong> (ties the set together, names the default locale)</li>
+<li data-block-type="core"><code>&lt;Id&gt;.installer.yaml</code>: the <strong>installer manifest</strong> (the part that actually matters operationally)</li>
+<li data-block-type="core"><code>&lt;Id&gt;.locale.&lt;locale&gt;.yaml</code>: one or more <strong>locale manifests</strong> (publisher, description, license, URLs)</li>
+</ul>
+<h2 class="wp-block-heading" id="5-teardown-1-7-zip-2602"><a aria-hidden="true" class="aal_anchor" href="#teardown-1-7-zip-26-02" id="teardown-1-7-zip-26-02"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Teardown 1: 7-Zip 26.02</h2>
+<p data-block-type="core">Rather than talk abstractly, let’s pull apart the actual manifest set for <code>7zip.7zip</code> version 26.02, the current release as it exists in <code>winget-pkgs</code> today. (The repo still carries 25.01 from last August, and we’ll diff the two later, because what changed between them is instructive.) The version manifest is trivially small:</p>
+<div class="wp-block-codemirror-blocks-code-block code-block"><pre class="CodeMirror" data-setting='{"showPanel":false,"languageLabel":false,"fullScreenButton":true,"copyButton":true,"mode":"powershell","mime":"application/x-powershell","theme":"elegant","lineNumbers":true,"styleActiveLine":false,"lineWrapping":false,"readOnly":true,"fileName":"","language":"PowerShell","maxHeight":"400px","modeName":"powershell"}'># Created with YamlCreate.ps1 Dumplings Mod
+# yaml-language-server: $schema=https://aka.ms/winget-manifest.version.1.12.0.schema.json
+PackageIdentifier: 7zip.7zip
+PackageVersion: "26.02"
+DefaultLocale: en-US
+ManifestType: version
+ManifestVersion: 1.12.0</pre></div>
+<p data-block-type="core">2 things in those 7 lines already tell a story. First, the comment: <strong><code># Created with YamlCreate.ps1 Dumplings Mod</code></strong>. This manifest wasn’t authored by Igor Pavlov (7-Zip’s developer), and it wasn’t authored by Microsoft. It was generated by a community member’s customised fork of the repository’s own PowerShell authoring script, almost certainly running as part of an individual’s automation. The 25.01 manifest before it carries a different stamp again, <code># Created with komac v2.16.0</code>, a different community tool by a different contributor. Part 2 comes back to this.</p>
+<p data-block-type="core">Second, <code>ManifestVersion: 1.12.0</code>. The manifest schema itself is versioned and evolves continuously (1.0, 1.1, 1.2, and so on up to 1.12), gaining fields over time. Older package versions in the repo sit on older schemas. Tooling that consumes manifests has to cope with all of them.</p>
+<p data-block-type="core">Now the interesting file, the installer manifest. 7-Zip ships <strong>6 installer nodes in this single version</strong>, so here are 2 of them, the x64 EXE and the x64 MSI, with the file-association and command metadata trimmed out:</p>
+<div class="wp-block-codemirror-blocks-code-block code-block"><pre class="CodeMirror" data-setting='{"showPanel":false,"languageLabel":false,"fullScreenButton":true,"copyButton":true,"mode":"powershell","mime":"application/x-powershell","theme":"elegant","lineNumbers":true,"styleActiveLine":false,"lineWrapping":false,"readOnly":true,"fileName":"","language":"PowerShell","maxHeight":"400px","modeName":"powershell"}'>PackageIdentifier: 7zip.7zip
+PackageVersion: "26.02"
+Scope: machine
+UpgradeBehavior: install
+ReleaseDate: 2026-06-26
+ElevationRequirement: elevatesSelf
+Installers:
+- Architecture: x64
+  InstallerType: exe
+  InstallerUrl: https://github.com/ip7z/7zip/releases/download/26.02/7z2602-x64.exe
+  InstallerSha256: 6745FA76DC2EA031596D8678F6F6B99C3C1B435B4164A63485ADBBC7B8D82EF0
+  InstallModes:
+  - interactive
+  - silent
+  InstallerSwitches:
+    Silent: /S
+    SilentWithProgress: /S
+    InstallLocation: /D="&lt;INSTALLPATH&gt;"
+  ProductCode: 7-Zip
+- InstallerLocale: en-US
+  Architecture: x64
+  InstallerType: wix
+  InstallerUrl: https://github.com/ip7z/7zip/releases/download/26.02/7z2602-x64.msi
+  InstallerSha256: DB407A4F6D4999E5C7BC00CE8A882BE94717B56E7FA68140FE3F12605D91643E
+  InstallerSwitches:
+    InstallLocation: INSTALLDIR="&lt;INSTALLPATH&gt;"
+  ProductCode: '{23170F69-40C1-2702-2602-000001000000}'
+  AppsAndFeaturesEntries:
+  - DisplayName: 7-Zip 26.02 (x64 edition)
+    ProductCode: '{23170F69-40C1-2702-2602-000001000000}'
+    UpgradeCode: '{23170F69-40C1-2702-0000-000004000000}'
+  InstallationMetadata:
+    DefaultInstallLocation: '%ProgramFiles%\7-Zip'
+ManifestType: installer
+ManifestVersion: 1.12.0</pre></div>
+<p data-block-type="core">If you package Win32 apps and eat cheese for a living, this file rewards close reading. Across all 6 nodes, here’s what the vendor actually ships:</p>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core">x86 (EXE + WIX)</li>
+<li data-block-type="core">x64 (EXE + WIX)</li>
+<li data-block-type="core">ARM (EXE)</li>
+<li data-block-type="core">ARM64 (EXE)</li>
+</ul>
+<p class="has-gridlove-acc-color has-gridlove-highlight-acc-background-color has-text-color has-background has-link-color wp-elements-b96232b05dd72b695c672f10124b4084" data-block-type="core"><strong>A word on <code>wix</code>, because it looks cryptic.</strong> In winget’s schema, <code>InstallerType</code> is an enum of installer <em>technologies</em>: <code>msi</code>, <code>wix</code>, <code>burn</code>, <code>exe</code>, <code>nullsoft</code>, <code>inno</code>, <code>msix</code>, <code>zip</code>, <code>portable</code> and a few others. <code>wix</code> means it is an MSI, specifically one built with the <a href="https://wixtoolset.org/" rel="noopener" target="_blank">WiX Toolset</a> (Windows Installer XML). It’s a Windows Installer package and msiexec handles it exactly as you’d expect. WinGet distinguishes it from plain <code>msi</code> because the toolset used affects some behaviour and the validation pipeline treats the variants slightly differently. The related value <code>burn</code> is WiX’s bootstrapper, which is an EXE that wraps one or more MSIs, so <code>burn</code> is <em>not</em> an MSI even though it comes from the same toolset. Likewise <code>nullsoft</code> means NSIS and <code>inno</code> means Inno Setup. The generic <code>exe</code> value means what it says…an executable installer whose technology the manifest doesn’t identify.</p>
+<p data-block-type="core"><strong>1 package, 2 installer technologies.</strong> The same version offers both the plain EXE (<code>InstallerType: exe</code>, silenced with <code>/S</code>) and the MSI (<code>InstallerType: wix</code>, standard msiexec semantics). Note that 7-Zip’s EXE is Igor Pavlov’s own custom installer rather than a repackaged NSIS or Inno bundle, which is exactly why the manifest declares the generic <code>exe</code> rather than <code>nullsoft</code>. Which installer a targeted client picks depends on architecture, scope, locale, and client heuristics. That means 2 devices “installing 7zip 26.02 via WinGet” can end up with <strong>different installer technologies, different ProductCodes, and different ARP footprints</strong>.</p>
+<p class="has-gridlove-acc-color has-gridlove-highlight-acc-background-color has-text-color has-background has-link-color wp-elements-469bdbf6ece8990239501fcab42c71b9" data-block-type="core">Now imagine writing a single Intune detection rule to cover that, accurately!</p>
+<p data-block-type="core"><strong><code>ProductCode: 7-Zip</code> is not a GUID.</strong> For all 4 EXE nodes, the “ProductCode” is literally the ARP registry key name <code>7-Zip</code>, because a custom EXE installer has no MSI ProductCode to record. The MSI nodes carry real GUIDs, and they encode more than the naked eye sees:</p>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core">x64 MSI: ProductCode <code>{23170F69-40C1-**2702**-**2602**-000001000000}</code>, UpgradeCode <code>{23170F69-40C1-2702-0000-000004000000}</code></li>
+<li data-block-type="core">x86 MSI: ProductCode <code>{23170F69-40C1-**2701**-**2602**-000001000000}</code>, UpgradeCode <code>{23170F69-40C1-2701-0000-000004000000}</code></li>
+</ul>
+<p data-block-type="core">2 fields are doing work inside those GUIDs. <code>2701</code> and <code>2702</code> identify the <em>architecture</em> lineage (x86 and x64 respectively), and <code>2602</code> is the <em>version</em>, 26.02. So the ProductCode changes on every single release, while the UpgradeCode is stable within an architecture. Note that x86 and x64 have <strong>different UpgradeCodes</strong>, meaning Windows Installer treats them as 2 separate product lineages that will not upgrade one another. Chrome, as we’ll see later, does the opposite and shares a single UpgradeCode across all architectures.</p>
+<p data-block-type="core"><strong><code>AppsAndFeaturesEntries</code> is the detection glue.</strong> The WinGet client decides what’s installed on a machine by scanning ARP (Add/Remove Programs registry entries, the <code>Uninstall</code> keys) and correlating them to manifests using ProductCode, DisplayName, and DisplayVersion. The community repo’s own FAQ is explicit that the “Marketing Version” (what the vendor calls it, the <code>PackageVersion</code>) and the ARP <code>DisplayVersion</code> frequently <strong>disagree</strong>, and when they do, the manifest is supposed to carry the mapping in <code>AppsAndFeaturesEntries</code> under <code>DisplayVersion</code>. If a contributor forgets that mapping (and this is a per-version, per-installer-node responsibility), you get the classic WinGet failure modes: packages that show as perpetually upgradeable, upgrade loops, or packages whose installed version reads as <code>Unknown</code> (which <code>winget upgrade</code> skips by default since v1.3 unless you pass <code>--include-unknown</code>).</p>
+<p data-block-type="core"><strong><code>UpgradeBehavior: install</code></strong> tells the client to run the new installer <em>over the top</em> of the old version and trust the installer to handle it. The alternative, <code>uninstallPrevious</code>, has the client uninstall the old version first. This 1 field is the entire extent of the repository’s “upgrade strategy” modelling, and it’s set per package version, by whoever submits the manifest, based on whatever they observed. We’ll come back to how much can hide behind that single enum.</p>
+<p data-block-type="core"><strong><code>InstallerSwitches</code> are fixed and global.</strong> The silent switch is recorded once for everyone. There is no concept of a <em>transform</em>: no MST support, no per-organisation properties, no “disable auto-update, suppress the desktop shortcut, point it at our license server” layer. If you need <code>TRANSFORMS=corp.mst</code> or <code>ALLUSERS=1 DISABLEUPDATES=1</code>, WinGet’s answer is <code>--override</code> (replace the switches entirely, per invocation, from your own tooling), at which point you’re maintaining the customisation knowledge yourself, outside the catalog. This is arguably the single biggest structural difference from an enterprise packaging workflow, and it’s a <em>design decision</em>, not an oversight. A shared public catalog can’t encode your org’s configuration.</p>
+<p data-block-type="core"><strong>Now diff it against the previous release.</strong> </p>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-26766" decoding="async" src="assets/706882da2e8beea1/img_1.png"/></figure>
+<p data-block-type="core">Both 25.01 and 26.02 sit in the repo, so we can compare 2 adjacent releases of the same package. 3 things moved, and not all of them matter equally, because this is an easy place to overstate the case.</p>
+<p data-block-type="core">First, the <strong>download infrastructure changed</strong>. 25.01’s installers came from <code>https://7-zip.org/a/7z2501-x64.exe</code>. 26.02’s come from <code>https://github.com/ip7z/7zip/releases/download/26.02/7z2602-x64.exe</code>. The vendor moved distribution to GitHub between releases. Note carefully what this does and does not imply. The binary is the vendor’s either way, and a curated catalog has no more influence over Igor Pavlov’s hosting decisions than you do. What differs is <strong>where your endpoints fetch content from</strong>. WinGet-sourced deployments have every device pull directly from the vendor’s domain at install time, so a proxy or firewall allowlist that permitted <code>7-zip.org</code> but not <code>github.com</code> now blocks the app across the estate. Catalogs that publish into Intune stage the content into your tenant, so devices pull from Intune and the vendor’s hosting change is absorbed upstream. That’s a genuine architectural difference, but it belongs to content distribution, not to testing.</p>
+<p data-block-type="core">Second, the <strong>authoring tool changed</strong>: 25.01 was stamped <code># Created with komac v2.16.0</code>, 26.02 <code># Created with YamlCreate.ps1 Dumplings Mod</code>. I want to be careful here, because it would be easy to imply something this doesn’t show. Both are arguably competent tools, both emit schema-valid manifests, and both submissions cleared the same validation pipeline. </p>
+<p class="has-gridlove-acc-color has-gridlove-highlight-acc-background-color has-text-color has-background has-link-color wp-elements-63739a1578918f6466c8548067a65ab8" data-block-type="core">This is not evidence of a quality problem. What it does illustrate is that <strong>continuity of ownership isn’t a property of the model</strong>. </p>
+<p data-block-type="core">The person and the automation maintaining a given package can change from 1 release to the next, and nothing tracks or announces that. Whether it matters to you depends entirely on how much work you expect the pipeline to do as the leveller, which is precisely what Part 2 examines.</p>
+<p data-block-type="core">Third, the MSI <strong>ProductCode advanced</strong> from <code>...-2702-2501-...</code> to <code>...-2702-2602-...</code>, and I mention it mainly to dismiss it. That is simply how MSIs work. The ProductCode changing is normal. What matters is whether whoever authored your <em>detection rule</em> accounted for it, which is a question about who packages the app for Intune rather than about where the manifest came from.</p>
+<p data-block-type="core">So of those 3, 1 is a real architectural difference, 1 is an observation about ownership rather than quality, and 1 is ordinary Windows Installer behaviour. I’m laying them out this way deliberately, because the case for curated catalogs <em>does not rest on any of them</em>. It rests on upgrade testing, uninstall verification, customisation that survives versions, detection authored by someone accountable, and (most importantly) having a support queue when it breaks. Parts 2 and 4 deal with those on the evidence.</p>
+<h2 class="wp-block-heading" id="6-teardown-2-google-chrome"><a aria-hidden="true" class="aal_anchor" href="#teardown-2-google-chrome" id="teardown-2-google-chrome"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Teardown 2: Google Chrome</h2>
+<p data-block-type="core">7-Zip is a friendly case. A somewhat slow-release utility from a vendor who rarely changes anything. So let’s look at the package that stresses every part of this system at once. Here is the real installer manifest for Google.Chrome (version 150.0.7871.187, current in the repo at the time of writing), abbreviated:</p>
+<div class="wp-block-codemirror-blocks-code-block code-block"><pre class="CodeMirror" data-setting='{"showPanel":false,"languageLabel":false,"fullScreenButton":true,"copyButton":true,"mode":"powershell","mime":"application/x-powershell","theme":"elegant","lineNumbers":true,"styleActiveLine":false,"lineWrapping":false,"readOnly":true,"fileName":"","language":"PowerShell","maxHeight":"400px","modeName":"powershell"}'># Created with YamlCreate.ps1 Dumplings Mod
+PackageIdentifier: Google.Chrome
+PackageVersion: 150.0.7871.187
+InstallerType: wix
+Scope: machine
+UpgradeBehavior: install
+ReleaseDate: 2026-07-23
+ElevationRequirement: elevatesSelf
+Installers:
+- Architecture: x64
+  InstallerUrl: https://dl.google.com/dl/chrome/install/googlechromestandaloneenterprise64.msi
+  InstallerSha256: 0859758DF101E12032642EFB9FCD9938532C11304998E363D0AB67266A192E12
+  ProductCode: '{0BC17947-6B63-3A93-ADAB-A1A35AB3231E}'
+  AppsAndFeaturesEntries:
+  - ProductCode: '{0BC17947-6B63-3A93-ADAB-A1A35AB3231E}'
+    UpgradeCode: '{C1DFDF69-5945-32F2-A35E-EE94C99C7CF4}'
+ManifestType: installer
+ManifestVersion: 1.12.0
+</pre></div>
+<p data-block-type="core">(The full manifest also carries x86 and ARM64 nodes…same shape, different ProductCodes, same UpgradeCode.)</p>
+<p data-block-type="core">4 observations here:</p>
+<p data-block-type="core"><strong>1. WinGet’s Chrome <em>is</em> Chrome Enterprise.</strong> The <code>InstallerUrl</code> points at <code>googlechromestandaloneenterprise64.msi</code>, Google’s enterprise standalone MSI, the same binary you’d download from the Chrome Enterprise portal to package by hand.</p>
+<p data-block-type="core"><strong>2. Look closely at that URL: there’s no version in it.</strong> <code>dl.google.com/dl/chrome/install/googlechromestandaloneenterprise64.msi</code> is a <em>stable</em> URL that Google overwrites in place with every Chrome release. But the manifest pins <code>InstallerSha256</code> to one specific binary. The moment Google ships the next Chrome (and for a browser on a roughly 4-week major cadence with security respins in between, that is <em>constantly</em>), the hash recorded for the current manifest no longer matches what the URL serves, and <code>winget install</code> for that version fails with a hash-mismatch error until a contributor lands the next version bump. This isn’t hypothetical. It’s a recurring, documented failure mode for this package: see, for example, <a href="https://github.com/microsoft/winget-pkgs/issues/341106" rel="noopener" target="_blank">issue #341106</a>, an installation-blocking hash mismatch on Chrome 145 in February 2026. The security design is correct, nothing is wrong here…refusing to run a binary that doesn’t match the pinned hash is exactly what you want. But the <em>operational</em> consequence is that the most security-critical app in the catalog is also the one most likely to be transiently uninstallable, precisely in the window right after a release, which is precisely when you want to deploy it.</p>
+<p data-block-type="core"><strong>3. The ProductCode changes every version…the UpgradeCode never does.</strong> Same MSI pattern as 7-Zip, and it has a direct Intune consequence worth spelling out. If you build a Win32 app for Chrome and use <strong>MSI ProductCode detection</strong>, your detection rule is wrong the moment Chrome updates. The new version registers a new ProductCode, the old one disappears, and Intune now reports your app as not installed. The durable detection choices for Chrome are <strong>file version</strong> on <code>%ProgramFiles%\Google\Chrome\Application\chrome.exe</code> with a “greater than or equal” operator, or a registry version check. Knowing which detection method survives an app’s upgrade pattern is per-app knowledge somebody has to hold. Curated catalogs encode that choice into the Win32 apps they generate. With winget-sourced deployments, you research and maintain it yourself. Note also what WinGet itself does here. It doesn’t use ProductCode-as-identity across versions either. It matches the ARP entry, and the stable UpgradeCode is recorded but not used for matching today.</p>
+<p data-block-type="core"><strong>4. Chrome updates itself, and that collides with any version-pinned catalog.</strong> The MSI installs Google Update alongside the browser, and unless you suppress it via policy, Chrome self-updates on its own cadence from the moment it lands. WinGet reads installed versions from ARP at query time, so it will faithfully report the <em>self-updated</em> version, which may be newer than any manifest in the repository, making the repo’s copy of reality intermittently stale in the other direction. In managed estates the standard practice is to disable the self-updater (via Google’s update policies) so that updates flow through your deployment tool, in a waved approach, on your schedule. But the instant you do that, <em>you own Chrome’s patch cadence</em>, and it is a hard one to own. To put a number on it, inside a single week in July 2026 Google shipped 2 stable security updates to Windows: <a href="https://chromereleases.googleblog.com/2026/07/stable-channel-update-for-desktop_0256605430.html" rel="noopener" target="_blank">21 July</a> took it to 150.0.7871.181/.182 with <strong>12 security fixes</strong> (CVE-2026-16413 through CVE-2026-16424), and 23 July took it to 150.0.7871.186/.187 with a further <strong>4</strong>. 16 CVE fixes across 2 releases in the space of ~48 hours, on the most exposed application in your estate. Whatever feeds your deployment tool has to sustain that indefinitely, not just on a good week. That’s a comfortable position when a dedicated team’s catalog is the feed, with a 24-hour target and a published release history. It’s a riskier one when the feed is a community pipeline with no floor (see Part 2).</p>
+<p data-block-type="core">One more detail worth noticing across both teardowns. The authorship comments. 7-Zip 25.01 was generated by Komac; 7-Zip 26.02 and Chrome by “YamlCreate.ps1 Dumplings Mod”, a community member’s customised fork of the repo’s PowerShell tooling, running as part of an individual’s automation. 2 of the most-deployed applications on Windows, kept current in Microsoft’s default package source by volunteers’ projects, with the tooling and the person changing from one version to the next.</p>
+<p class="has-gridlove-acc-color has-gridlove-highlight-acc-background-color has-text-color has-background has-link-color wp-elements-3ffac5dbaf73bfe76f6b776472a90f3b" data-block-type="core">They seemingly do it well, of course. But it’s worth knowing that’s the staffing model before you build compliance processes on top of it.</p>
+<h2 class="wp-block-heading" id="7-what-the-schema-can-express-vs-what-actually-gets-filled-in"><a aria-hidden="true" class="aal_anchor" href="#what-the-schema-can-express-vs-what-actually-gets-filled-in" id="what-the-schema-can-express-vs-what-actually-gets-filled-in"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>What the schema can express vs what actually gets filled in</h2>
+<p data-block-type="core">The full installer schema is genuinely rich: <code>MinimumOSVersion</code>, <code>Platform</code>, <code>Scope</code> (user vs machine), <code>Dependencies</code>, <code>ElevationRequirement</code>, <code>UnsupportedOSArchitectures</code>, per-installer <code>InstallerSuccessCodes</code> and <code>ExpectedReturnCodes</code>, <code>Commands</code>, <code>FileExtensions</code>, <code>NestedInstallerFiles</code> for zips, portable support, and more.</p>
+<p data-block-type="core">But here is the crucial pattern you’ll see over and over with WinGet: <strong>the schema being <em>able</em> to express something and the manifests <em>actually</em> expressing it are different things.</strong> There is no field for memory or disk requirements at all (compare Intune’s requirement rules). <code>MinimumOSVersion</code> is only as accurate as the contributor’s research. Return-code tables are sparsely populated. The metadata quality of any given package is a function of who happened to author that version’s manifest and how careful they were. Which brings us to Part 2.</p>
+<h1 class="wp-block-heading" id="8-part-2-who-actually-puts-new-versions-into-winget-and-what-gets-tested"><a aria-hidden="true" class="aal_anchor" href="#part-2-who-actually-puts-new-versions-into-winget-and-what-gets-tested" id="part-2-who-actually-puts-new-versions-into-winget-and-what-gets-tested"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Part 2: Who actually puts new versions into WinGet, and what gets tested</h1>
+<p data-block-type="core">The community repository is exactly what its name says. Anyone with a GitHub account can submit a new package or a new version of an existing package by opening a pull request containing the manifest folder. The documented flow is:</p>
+<ol class="wp-block-list" data-block-type="core">
+<li data-block-type="core">Author a manifest, with <code>wingetcreate</code> (Microsoft’s tool), <code>YamlCreate.ps1</code> (a community PowerShell script maintained in the repo), or <code>Komac</code> (community, and increasingly the dominant tool; remember our 7-Zip manifest’s header).</li>
+<li data-block-type="core">Validate and test locally: <code>winget validate --manifest</code>, then ideally an install test via the repo’s <code>SandboxTest.ps1</code> in Windows Sandbox.</li>
+<li data-block-type="core">Open a PR (one package version per PR).</li>
+<li data-block-type="core">The automated validation pipeline runs (more below), applying status labels.</li>
+<li data-block-type="core">A <strong>moderator</strong> reviews and approves; approval applies the <code>Moderator-Approved</code> label and, if validation is green, the PR auto-merges.</li>
+<li data-block-type="core">A publishing pipeline rebuilds the source index.</li>
+</ol>
+<p data-block-type="core">If validation fails, the PR is assigned back to the author with a diagnostic label. The author has <strong>7 days</strong> to respond before the PR is closed.</p>
+<p data-block-type="core"><strong>What a real version-bump PR looks like.</strong> Let’s trace the Chrome release from Part 1 all the way through.</p>
+<p data-block-type="core">Google shipped 150.0.7871.187 to the stable channel on 23 July. The manifest arrived via <a href="https://github.com/microsoft/winget-pkgs/pull/406937" rel="noopener" target="_blank">PR #406937</a>, opened at <strong>22:17 UTC that same day</strong> by a contributor’s automation, the <a href="https://github.com/SpecterShell/Dumplings" rel="noopener" target="_blank">SpecterShell/Dumplings</a> project, which is what the <code>Dumplings Mod</code> stamp in the manifest header refers to. It picked up <code>Azure-Pipeline-Passed</code>, then <code>Validation-Completed</code>, then <code>Moderator-Approved</code>, and <strong>merged at 01:31 UTC on 24 July</strong>, followed by <code>Publish-Pipeline-Succeeded</code>.</p>
+<p data-block-type="core"><strong>3 hours and 14 minutes</strong> from pull request to merged manifest, on a security release, including automated validation and a human moderator, overnight. Anybody claiming community submission is inherently slow should look at that number. For what it’s worth, that’s also the same day a commercial catalog published the same version. On this release, for this app, the two models were neck and neck.</p>
+<p data-block-type="core">Now look at what a <em>manually</em> submitted PR actually asserts. Take <a href="https://github.com/microsoft/winget-pkgs/pull/390462" rel="noopener" target="_blank">PR #390462</a>, a change to the VLC manifest, merged in June 2026.</p>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/07/image-7.png"><img alt="Tags maintenance on the VLC manifest. Both local-testing boxes unticked, merged with all pipeline labels green" class="wp-image-26774" decoding="async" src="assets/706882da2e8beea1/img_2.png"/></a></figure>
+<p data-block-type="core">Look at the Manifest Checklist in the middle of that screenshot. The submitter has ticked that they checked for duplicate PRs, that only one manifest is modified, and that it conforms to the 1.12 schema. The two boxes that actually concern testing, <strong>“Validated manifest locally with <code>winget validate</code>“</strong> and <strong>“Tested manifest locally with <code>winget install</code>“</strong>, are both left empty. Now look at the right-hand column: <code>Azure-Pipeline-Passed</code>, <code>Validation-Completed</code>, <code>Moderator-Approved</code>, <code>Publish-Pipeline-Succeeded</code>. It sailed through.</p>
+<p data-block-type="core">Before anyone cries foul, this is a metadata change rather than an installer change, so skipping a local install test was a perfectly reasonable call by the submitter, and the pipeline validated the manifest regardless.Which is why it’s a useful example. <strong>The checklist is a courtesy, not a gate.</strong> Nothing blocks a merge on those boxes in either direction, which means a ticked box tells you what somebody says they did, not what was verified. On a busy repository, that distinction matters.</p>
+<p data-block-type="core">Everything enforceable is in those labels instead. <code>Azure-Pipeline-Passed</code> when validation goes green, <code>Needs-Author-Feedback</code> plus a diagnostic label when it doesn’t, <code>Moderator-Approved</code> when a human signs off, then merge and publish.</p>
+<p data-block-type="core">So when you’re weighing how much to trust a given package, the honest answer is that you’re trusting the pipeline, not the person, and the pipeline only checks the things set out later in this section. For anything it can’t handle, such as interactive-only installers, licence-gated downloads or zipped binaries, the special-case labels come out and a human makes a judgement call.</p>
+<p data-block-type="core">One party is missing from that flow. T<strong>he vendor</strong>. Nothing requires, or even particularly encourages, the software vendor to be the one submitting or reviewing manifests for their own product. Some vendors do maintain their packages. Most don’t. There’s a telling artefact of this on 7-Zip’s own SourceForge support forum…a user asking Igor Pavlov whether the winget 7-Zip package is “official or even verified”, because from the outside there’s no way to tell, and the answer is that the manifests are community-maintained. A “verified developer” workflow does exist in the repository’s own policies, reserving certain optional metadata fields for authenticated vendors, but the <a href="https://github.com/microsoft/winget-pkgs/blob/master/doc/README.md#community-repository-policies" rel="noopener" target="_blank">documentation states plainly</a> that “the verified developer workflow is still in progress.” So today there is no reliable way, from inside the client or the manifest, to tell a vendor-maintained package from a community-maintained one.</p>
+<h2 class="wp-block-heading" id="9-so-who-does-the-work-mostly-bots-and-a-small-crowd"><a aria-hidden="true" class="aal_anchor" href="#so-who-does-the-work-mostly-bots-and-a-small-crowd" id="so-who-does-the-work-mostly-bots-and-a-small-crowd"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>So who does the work? Mostly bots and a small crowd</h2>
+<p data-block-type="core">In practice, new versions arrive through 3 channels:</p>
+<p data-block-type="core"><strong>1. Automation run by project maintainers.</strong> Projects that release on GitHub can wire up <a href="https://github.com/vedantmgoyal9/winget-releaser" rel="noopener" target="_blank">WinGet Releaser</a> or Komac-based GitHub Actions so that publishing a release automatically opens a winget-pkgs PR. This is genuinely excellent for developer tooling. It’s why <code>git</code>, <code>gh</code>, VS Code forks, and the CLI ecosystem are fresh within hours.</p>
+<p data-block-type="core"><strong>2. Automation and semi-automation run by <em>unaffiliated</em> contributors.</strong> A handful of prolific community members run their own pipelines watching hundreds of vendors’ download pages and pushing version bumps via Komac or modified YamlCreate scripts. The 7-Zip and Chrome manifests are both examples, generated by community tooling and submitted by contributors with no relationship to the vendor. The Chrome PR we traced was raised by the <a href="https://github.com/SpecterShell/Dumplings" rel="noopener" target="_blank">SpecterShell/Dumplings</a> project, an open-source monitoring pipeline that watches vendor release channels and files manifest updates automatically. Work like that is why the repository keeps pace as well as it does, and it is worth being clear-eyed about the dependency. A substantial share of the catalog’s freshness rests on independent projects that owe you nothing and can stop at any time.</p>
+<p data-block-type="core"><strong>3. Manual submissions and update requests.</strong> Anyone can file an “[Update Request]” issue or push a PR by hand for anything the bots missed.</p>
+<p class="has-gridlove-acc-color has-gridlove-highlight-acc-background-color has-text-color has-background has-link-color wp-elements-dccfb2bcff47df191ca4f285f9db7b59" data-block-type="core">This distribution has an interesting shape. C<strong>overage and freshness correlate with how automatable and how popular a package is, not with how important it is to your enterprise.</strong></p>
+<p data-block-type="core">An open-source CLI tool releases; a bot PRs it; it’s live the same day. A niche line-of-business adjacent tool (a PDF printer driver, a VPN client, a dictation package) gets updated when someone notices, which can be days, weeks, or never. There is no SLA, because there is nobody for an SLA to bind. The repository’s own <a href="https://github.com/microsoft/winget-pkgs/blob/master/doc/Moderation.md#before-you-request-assistance" rel="noopener" target="_blank">moderation docs</a> frame the timeline candidly. “Please be patient, but reach out if your pull request is outstanding for more than 24 hours”</p>
+<h2 class="wp-block-heading" id="10-how-current-is-winget-really"><a aria-hidden="true" class="aal_anchor" href="#how-current-is-winget-really" id="how-current-is-winget-really"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>How current is WinGet really?</h2>
+<p data-block-type="core">The simplest version of the curated-catalog argument, “winget is always out of date,” doesn’t hold up when you check.</p>
+<p class="has-gridlove-acc-color has-gridlove-highlight-acc-background-color has-text-color has-background has-link-color wp-elements-1a1f0fb4420c54e9461d35af1be6cb38" data-block-type="core">A word first on what I’m <em>not</em> going to do. You will find percentages circulating that match a commercial catalog’s supported-product list against <code>winget-pkgs</code> and report how often each side is ahead. I’m not quoting them, for 3 reasons: I can’t independently reproduce anyone else’s matching methodology, identifier-to-product matching is messy (one product can map to several winget IDs, and vendors count variants differently), and given who signs my paycheque you shouldn’t accept a headline number from me that I can’t show you how to derive. Appendix B sets out a method you can run yourself in an afternoon, and I’d rather you trusted that than trusted me.</p>
+<p data-block-type="core">What I can offer is a check you can repeat in about 30 seconds. 4 apps, all checked on the same morning of 24 July 2026. Alongside the 2 teardown subjects I added Visual Studio Code, because it’s Microsoft’s own application on a fast cadence and was topical in the community while I was writing, and a second browser, because browsers ship security updates more relentlessly than anything else you deploy.</p>
+<div class="kb-table-container kb-table-container26753_64d848-f5 wp-block-kadence-table"><table class="kb-table kb-table26753_64d848-f5">
+<tr class="kb-table-row kb-table-row26753_3fc2f8-bd">
+<th class="kb-table-data kb-table-data26753_08ad22-07" scope="col">
+<p data-block-type="core">App</p>
+</th>
+<th class="kb-table-data kb-table-data26753_5f0204-19" scope="col">
+<p data-block-type="core">Vendor current (stable)</p>
+</th>
+<th class="kb-table-data kb-table-data26753_764fc8-55" scope="col">
+<p data-block-type="core">WinGet community repo</p>
+</th>
+<th class="kb-table-data kb-table-data26753_9cfb65-4a" scope="col">
+<p data-block-type="core">Curated catalogs</p>
+</th>
+</tr>
+<tr class="kb-table-row kb-table-row26753_fbbe5f-ee">
+<td class="kb-table-data kb-table-data26753_5b115b-bb">
+<p data-block-type="core"><strong>7-Zip</strong></p>
+</td>
+<td class="kb-table-data kb-table-data26753_ec9dee-a7">
+<p data-block-type="core">26.02</p>
+</td>
+<td class="kb-table-data kb-table-data26753_ff239f-f9">
+<p data-block-type="core">26.02</p>
+</td>
+<td class="kb-table-data kb-table-data26753_f948f7-f0">
+<p data-block-type="core">26.02 (PMPC and Microsoft EAM)</p>
+</td>
+</tr>
+<tr class="kb-table-row kb-table-row26753_d83d36-fa">
+<td class="kb-table-data kb-table-data26753_609860-c0">
+<p data-block-type="core"><strong>Google Chrome</strong></p>
+</td>
+<td class="kb-table-data kb-table-data26753_e67483-67">
+<p data-block-type="core">150.0.7871.187</p>
+</td>
+<td class="kb-table-data kb-table-data26753_3bf1a9-cf">
+<p data-block-type="core">150.0.7871.187</p>
+</td>
+<td class="kb-table-data kb-table-data26753_cd5d97-c9">
+<p data-block-type="core">150.0.7871.187 (PMPC and Microsoft EAM)</p>
+</td>
+</tr>
+<tr class="kb-table-row kb-table-row26753_b4026d-83">
+<td class="kb-table-data kb-table-data26753_1310f8-34">
+<p data-block-type="core"><strong>Visual Studio Code</strong></p>
+</td>
+<td class="kb-table-data kb-table-data26753_7d1bff-98">
+<p data-block-type="core">1.130</p>
+</td>
+<td class="kb-table-data kb-table-data26753_5e77b9-51">
+<p data-block-type="core">1.129.0</p>
+</td>
+<td class="kb-table-data kb-table-data26753_873e81-96">
+<p data-block-type="core">1.130.0 (PMPC and Microsoft EAM)</p>
+</td>
+</tr>
+<tr class="kb-table-row kb-table-row26753_bb233e-21">
+<td class="kb-table-data kb-table-data26753_c2dbf1-2f">
+<p data-block-type="core"><strong>Brave Browser</strong></p>
+</td>
+<td class="kb-table-data kb-table-data26753_6be032-d4">
+<p data-block-type="core">150.1.92.144</p>
+</td>
+<td class="kb-table-data kb-table-data26753_c2bc00-c2">
+<p data-block-type="core">150.1.92.144</p>
+</td>
+<td class="kb-table-data kb-table-data26753_43c9b3-11">
+<p data-block-type="core">150.1.92.144 (PMPC), 150.1.92.143 (Microsoft EAM)</p>
+</td>
+</tr>
+</table></div>
+<p data-block-type="core">Assume the Chrome and Brave rows are stale by the time you read this. Both browsers had shipped again within days of the check, which is the nature of browsers.</p>
+<p data-block-type="core">A note on method, because it matters more than the result. The vendor column comes from each vendor’s own release channel, not from the <code>ReleaseDate</code> recorded in a winget manifest. That distinction matters: using winget’s own metadata to assess winget’s currency would be circular, and it’s an easy mistake to make. The winget column is read directly from the manifest folders in <code>winget-pkgs</code> at HEAD, not from any third-party index. That distinction is not pedantry: while preparing this table I found a popular community site reporting VS Code’s latest winget version as 1.126.0, four releases stale, when the repository itself carried 1.130.0. Had I trusted the aggregator, I’d have published a false claim about a real product. If you take one methodological point from this post, take that one: for winget, the repository is the only source of truth, and it costs 30 seconds to check.</p>
+<p data-block-type="core">The 2 catalog columns need more explanation, because practice varies between vendors. Some publish a public release <em>feed</em>: dated entries per product showing version, update classification, severity, CVE IDs addressed, and per-file malware-scan results. <a href="https://patchmypc.com/catalog-release-history" rel="noopener" target="_blank">Patch My PC’s catalog release history</a> is one example, and since I work there you should treat that as a statement of fact you can go and verify rather than a claim of superiority; check what your own vendor publishes before assuming either way. </p>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/07/image-8.png"><img alt="" class="wp-image-26775" decoding="async" src="assets/706882da2e8beea1/img_3.png"/></a></figure>
+<p data-block-type="core">Others expose current versions in-console only, so catalog state lives inside their tooling or your management console and a like-for-like external check isn’t possible. You audit it from your own console against whatever release history the vendor provides. </p>
+<figure class="wp-block-image size-full" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/07/image-9.png"><img alt="" class="wp-image-26776" decoding="async" src="assets/706882da2e8beea1/img_4.png"/></a></figure>
+<p data-block-type="core">That table above doesn’t say what a vendor marketing page would want it to say.</p>
+<p data-block-type="core">On 3 of the 4 applications the community repository sits at <strong>exact vendor parity</strong>, including Chrome on the day it absorbed two security releases inside a week. Anyone claiming the community repository is chronically behind the vendors should be asked to explain those rows. On currency, for apps of this profile, it is competitive with anything you can buy.</p>
+<p data-block-type="core">The curated catalogs don’t come out of it unblemished either. On Brave, the commercial catalog matched the vendor at <code>.144</code> while <strong>Microsoft’s Enterprise App Catalog sat one build behind at <code>.143</code></strong>. That’s the real picture. No source is perfect, everyone is chasing the same vendors, and a curated catalog is a <em>floor with someone accountable for it</em>, not a guarantee of being first.</p>
+<p data-block-type="core">The one divergence in winget’s column is Visual Studio Code, sitting at 1.129.0 against a vendor release of 1.130 that had landed the previous day. One release behind, on Microsoft’s own editor, in Microsoft’s own repository.</p>
+<p data-block-type="core"><strong>And then, before publishing, I checked again.</strong> 3 days later <code>winget-pkgs</code> carries a complete 1.130.0 manifest: 4 installers, Inno Setup, valid hashes, authored with <code>wingetcreate</code>. The gap closed on its own, with nobody escalating anything.</p>
+<p data-block-type="core">I’m leaving both observations in, because together they say more than either does alone. The community model self-corrects, often quickly, and a snapshot that catches a package mid-gap is not evidence of a broken system. But notice what the correction depended on…<strong>somebody’s automation running, or somebody caring, within that window</strong>. Nothing measured the gap, nothing reported it, and nothing would have told you it existed while your estate sat on the older build. If your patch policy says “current within 72 hours and evidenced,” an outcome that <em>usually</em> arrives inside 72 hours with no instrumentation is not the same thing as meeting it.</p>
+<p data-block-type="core">So why isn’t that the end of the argument?</p>
+<p data-block-type="core"><strong>First, currency on a good day is not a floor.</strong> A snapshot shows you 1 day. What it cannot show you is variance, and variance is the entire question when you’re accountable for patch compliance. Packages with working automation are current within hours. Packages whose automation broke, whose contributor moved on, or whose installer defeats the pipeline can sit stale indefinitely, and <em>nothing in the system notices or escalates</em>.</p>
+<p data-block-type="core">You don’t have to take that on trust, because the repository documents it structurally. <code>winget-pkgs</code> maintains a standing issue type, <strong><code>[Update Request]</code></strong>, for precisely this situation, and the queue is never empty. Read what that mechanism implies. Packages do fall behind, no monitor detects it, and the discovery path is <em>a user noticing and asking</em>. Popular packages get noticed within hours because thousands of people run them. The line-of-business adjacent tool that 40 people in your finance department depend on may have nobody watching it at all. That’s also the flaw in judging the model by its greatest hits, including my snapshot above. Chrome, 7-Zip and VS Code are the easiest possible cases. Enormous install bases, mature automation, and a great many eyes. Your estate is not made only of apps like those, and the ones nobody else is watching are precisely the ones you’d never notice going stale.</p>
+<p data-block-type="core">There’s a further wrinkle, and VS Code exposes it neatly (not wanting to smear VSCode, but again, it’s been topical recently). Here is the merged pull request history for <code>Microsoft.VisualStudioCode</code> through summer 2026:</p>
+<div class="kb-table-container kb-table-container26753_ba4370-ac wp-block-kadence-table"><table class="kb-table kb-table26753_ba4370-ac">
+<tr class="kb-table-row kb-table-row26753_c48740-b9">
+<th class="kb-table-data kb-table-data26753_5c89d8-bd" scope="col">
+<p data-block-type="core">Version</p>
+</th>
+<th class="kb-table-data kb-table-data26753_83abb4-df" scope="col">
+<p data-block-type="core">Submitted By</p>
+</th>
+<th class="kb-table-data kb-table-data26753_8e77d2-6b" scope="col">
+<p data-block-type="core">PR to Merge</p>
+</th>
+</tr>
+<tr class="kb-table-row kb-table-row26753_cc12b0-b8">
+<td class="kb-table-data kb-table-data26753_55b649-7b">
+<p data-block-type="core">1.124.2</p>
+</td>
+<td class="kb-table-data kb-table-data26753_cb53df-3e">
+<p data-block-type="core">Microsoft member</p>
+</td>
+<td class="kb-table-data kb-table-data26753_a177d9-92">
+<p data-block-type="core">~2 hours</p>
+</td>
+</tr>
+<tr class="kb-table-row kb-table-row26753_53bd28-f9">
+<td class="kb-table-data kb-table-data26753_e4921b-c8">
+<p data-block-type="core">1.125.0</p>
+</td>
+<td class="kb-table-data kb-table-data26753_c83835-39">
+<p data-block-type="core">Microsoft member</p>
+</td>
+<td class="kb-table-data kb-table-data26753_9aa1d9-65">
+<p data-block-type="core">~2.5 days</p>
+</td>
+</tr>
+<tr class="kb-table-row kb-table-row26753_f70137-8b">
+<td class="kb-table-data kb-table-data26753_5d7469-8b">
+<p data-block-type="core">1.125.1</p>
+</td>
+<td class="kb-table-data kb-table-data26753_97764e-15">
+<p data-block-type="core">Microsoft member</p>
+</td>
+<td class="kb-table-data kb-table-data26753_c11ebd-a4">
+<p data-block-type="core">~2 days</p>
+</td>
+</tr>
+<tr class="kb-table-row kb-table-row26753_fc6878-9d">
+<td class="kb-table-data kb-table-data26753_a3d2e7-05">
+<p data-block-type="core">1.126.0</p>
+</td>
+<td class="kb-table-data kb-table-data26753_9f5d6f-e2">
+<p data-block-type="core">Microsoft member</p>
+</td>
+<td class="kb-table-data kb-table-data26753_d12c28-7d">
+<p data-block-type="core">~2 hours</p>
+</td>
+</tr>
+<tr class="kb-table-row kb-table-row26753_78e2bf-d5">
+<td class="kb-table-data kb-table-data26753_b8c689-52">
+<p data-block-type="core">1.129.0</p>
+</td>
+<td class="kb-table-data kb-table-data26753_7b3657-46">
+<p data-block-type="core">Community contributor, via Komac</p>
+</td>
+<td class="kb-table-data kb-table-data26753_c57b25-41">
+<p data-block-type="core">~8 days</p>
+</td>
+</tr>
+<tr class="kb-table-row kb-table-row26753_3e3605-77">
+<td class="kb-table-data kb-table-data26753_4e9806-30">
+<p data-block-type="core">1.130.0</p>
+</td>
+<td class="kb-table-data kb-table-data26753_ebe8b2-a1">
+<p data-block-type="core">Community contributor</p>
+</td>
+<td class="kb-table-data kb-table-data26753_7b4864-4e">
+<p data-block-type="core">~3.5 days</p>
+</td>
+</tr>
+</table></div>
+<p data-block-type="core">Through June, VS Code versions were being submitted by somebody at Microsoft, often clearing the pipeline in a couple of hours and never taking more than ~2.5 days. After 1.126.0 that stopped. Community contributors picked the package up instead, and the same app started taking days rather than hours.</p>
+<p data-block-type="core">2 versions are missing.. <strong>1.127 and 1.128 have no merged pull request at all.</strong> </p>
+<p class="has-gridlove-acc-color has-gridlove-highlight-acc-background-color has-text-color has-background has-link-color wp-elements-1655f7adfc16831d5bad571c279df1a1" data-block-type="core">2 releases of Microsoft’s own editor never arrived in Microsoft’s own default package source. That’s the gap my snapshot caught. Nobody announced the handover, and nothing flagged it.</p>
+<p data-block-type="core">This isn’t a new observation, and it has a sharper precedent. I used this example in my previous 2025 post as well, and it’s worth revisiting here because the VS Code timeline shows what it looks like when the same underlying issue plays out gently rather than badly. Back in 2021 the developers of EarTrumpet filed <a href="https://github.com/microsoft/winget-pkgs/issues/7836" rel="noopener" target="_blank">issue #7836</a>, titled “EarTrumpet manifest incorrectly modified without our knowledge.” Their package’s manifest had been changed by someone else and approved, with the result that <strong>development binaries went out to winget users for roughly 7 weeks</strong>, from late December 2020 to mid-February 2021. The developers pointed out that they owned the software, and had no control over the manifest describing it.</p>
+<p data-block-type="core">The repository has tightened up considerably since then, and I’m not presenting a 5-year-old incident as current practice. The structure that allowed it hasn’t changed. The manifest describing an application and the application itself have different owners, and the person who wrote the software has no special authority over how it’s published. That’s the same root cause as the VS Code handover, just with a worse outcome.</p>
+<p data-block-type="core">None of this is anyone’s fault. Nobody at Microsoft promised to keep submitting VS Code manifests forever, and the contributors who picked it up did unpaid work that was never theirs to do. That’s the point. Maintenance of a package can change hands, slow down, or stop, and nothing anywhere tells you it happened. Not the client, not the manifest, not <code>winget upgrade</code>. Finding out means reading pull request history for that one package, which nobody does across a hundred apps.</p>
+<p data-block-type="core">If you take one practical thing from this post, take that. Before you build a patch process on a winget package, look at who has been submitting it lately, and whether the gap between vendor release and merged manifest is growing.</p>
+<p data-block-type="core">There’s also a subtler gap worth knowing about, separate from the one above. A merged manifest passes through the publish pipeline before the source index rebuilds, and your client caches that index locally until it refreshes. So “the version exists in <code>winget-pkgs</code>“, “my client knows about it”, and “my client can install it right now” are 3 different statements that can disagree for a while. If you’re building compliance reporting on top of <code>winget upgrade</code> output, that gap is yours to account for, and <code>winget source update</code> is worth running before you trust any answer.</p>
+<p data-block-type="core">A curated catalog’s 24-hour target is a <em>floor across the whole supported list</em>, with an organisation accountable for the exceptions. WinGet’s currency is a by-product, excellent for the popular stuff and unwatched everywhere else. For patching-as-compliance, the tail is what you’re paying to eliminate.</p>
+<p data-block-type="core"><strong>Second, and this is where the rest of this post lives:</strong> “the version exists in the catalog” and “the version deploys cleanly over the old one across 10k devices” are entirely different claims. Version presence is the cheapest part of the lifecycle. Everything after it (upgrade behaviour, uninstall hygiene, detection metadata, customisation survival) is where they differ.</p>
+<p data-block-type="core">One structural difference the release feeds make visible while we’re here. Curated catalogs classify a release like Chrome’s 21 July update as a <em>security update</em>, tagged with severity and the specific CVE IDs it addresses (CVE-2026-16413 through CVE-2026-16424 in that batch), which is metadata your compliance reporting can consume directly and your vulnerability scanner can be reconciled against. The winget manifest for the same release records a version string, a release date, and hashes. “This update fixes these 12 CVEs” is not a concept the manifest schema expresses at all. If someone asks you to evidence that a specific CVE has been remediated across the estate, that difference stops being academic.</p>
+<p data-block-type="core">And the human review capacity is public information in the repo’s <code>Moderation.md</code>. The list comprises <strong>11 Microsoft “Windows Package Manager administrator” accounts and 6 community moderators</strong>, the latter volunteers held to an activity bar of 10 PR reviews across 10 packages per trailing 12 months, servicing a repository with <strong>hundreds of open pull requests at any given moment</strong>. These people do heroic work, I’d drink beer with them, and the throughput they achieve is impressive. But 6 volunteers plus a platform team is the entire human review layer for the default software source of every Windows machine on earth. That is the “dedicated team” the enterprise-ready argument rests on.</p>
+<h2 class="wp-block-heading" id="11-what-the-validation-pipeline-actually-checks"><a aria-hidden="true" class="aal_anchor" href="#what-the-validation-pipeline-actually-checks" id="what-the-validation-pipeline-actually-checks"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>What the validation pipeline actually checks</h2>
+<p data-block-type="core">This is the heart of the matter, so let’s be precise. When a PR is opened, an Azure DevOps pipeline (its definition, <code>validation-pipeline.yaml</code>, is public in the repo) runs a sequence Microsoft documents on Learn and in the repo FAQ. Piecing together the public documentation, the checks are:</p>
+<ol class="wp-block-list" data-block-type="core">
+<li data-block-type="core"><strong>Manifest syntax and schema validation.</strong> Is the YAML valid against the declared schema version, are required fields present, does the folder path match the identifier and version?</li>
+<li data-block-type="core"><strong>Installer availability and hash verification.</strong> Every <code>InstallerUrl</code> is downloaded; the SHA256 must match <code>InstallerSha256</code>. Failures surface as labels like <code>Error-Installer-Availability</code>, <code>Error-Hash-Mismatch</code>, <code>Validation-HTTP-Error</code>.</li>
+<li data-block-type="core"><strong>Malware scanning.</strong> Downloaded binaries are scanned “with multiple utilities,” including Microsoft Defender; SmartScreen reputation checks run against URLs. (<code>Validation-Defender-Error</code>, <code>Validation-SmartScreen-Error</code>.)</li>
+<li data-block-type="core"><strong>Install validation in a secured VM.</strong> The installer is <em>executed silently</em> in a sandboxed environment. The FAQ describes checks that no system files were changed, no suspicious services were added, and that the app launches after install without kicking off suspicious processes. Static analysis of installed binaries also runs.</li>
+<li data-block-type="core"><strong>Content and metadata policy validation.</strong> Descriptions are checked against content policies (profanity, adult content, restricted fields).</li>
+<li data-block-type="core"><strong>Human moderation.</strong> A moderator eyeballs the metadata, sometimes tests the install themselves (the repo maintains a <code>SandboxTest.ps1</code> precisely for this), and checks for PUA-ish behaviour before approving.</li>
+</ol>
+<p data-block-type="core">Labels track every state transition (<code>Azure-Pipeline-Passed</code>, <code>Validation-Installation-Error</code>, <code>Needs-Author-Feedback</code>, <code>Needs-Attention</code>, <code>Moderator-Approved</code>), and the moderation doc lists dozens more for special cases that should make any packager smile in recognition: <code>Interactive-Only-Installer</code>, <code>Zip-Binary</code>, <code>Portable-Archive</code>, <code>License-Blocks-Install</code>, <code>Upgrade-Issue</code>, <code>Version-Parameter-Mismatch</code>, <code>DriverInstall</code>, <code>Scripted-Application</code>. The failure taxonomy is a map of everything that goes wrong with third-party installers.</p>
+<p data-block-type="core">Credit where due: <strong>this is a real pipeline, and it’s better than its reputation.</strong> “WinGet doesn’t test anything” is false. Every merged manifest represents an installer that downloaded correctly, hash-verified, passed multi-engine malware scanning, and <strong>installed silently to completion in a clean VM</strong> at the moment of submission.</p>
+<h2 class="wp-block-heading" id="12-what-the-validation-pipeline-does-not-check"><a aria-hidden="true" class="aal_anchor" href="#what-the-validation-pipeline-does-not-check" id="what-the-validation-pipeline-does-not-check"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>What the validation pipeline does <em>not</em> check</h2>
+<p data-block-type="core">Every word in that sentence matters: <em>installed</em>, <em>silently</em>, <em>clean VM</em>, <em>at the moment of submission</em>. Here is what is <strong>not</strong> validated, and this list, not the security scanning, is where the enterprise-readiness argument is actually decided:</p>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core"><strong>Upgrades are not tested.</strong> The pipeline installs version N+1 on a machine that has <em>nothing</em> on it. It does not install version N first and then apply N+1. Whether the upgrade succeeds, whether the old version is removed or left orphaned in ARP, whether <code>UpgradeBehavior: install</code> is still the right call for this release, whether the vendor switched from NSIS to MSI or per-machine to per-user between versions: none of that is exercised. Yet “clean-machine install” is the <em>one scenario that never happens in production patching</em>. In your estate, version N is always already there.</li>
+<li data-block-type="core"><strong>Uninstall is not validated as a gate.</strong> There’s no required check that <code>winget uninstall</code> works silently, and there are long-standing client issues in this area (for example, uninstalls going interactive for packages matched via <code>AppsAndFeaturesEntries</code>, which also breaks <code>uninstallPrevious</code>-style upgrades).</li>
+<li data-block-type="core"><strong>Switch and behaviour regressions between versions aren’t checked.</strong> Nothing verifies that the silent switches recorded for 26.02 still behave like 25.01’s, that a previously suppressed desktop shortcut is still suppressed, or that the installer didn’t start bundling an updater service.</li>
+<li data-block-type="core"><strong>Nothing is re-validated after merge.</strong> Validation is a point-in-time event at PR submission. If the vendor later re-releases the binary at the same URL (hash mismatch, installs break until someone notices and PRs a fix), or the URL dies, the manifest sits broken until a human reports it. This isn’t an edge case. The Chrome teardown in Part 1 shows it as a recurring, documented failure for one of the most-deployed packages in the repository, because Google serves its enterprise MSI from a versionless URL it overwrites at every release.</li>
+<li data-block-type="core"><strong>No configuration or coexistence testing.</strong> One clean VM image. No “does this break when Office is present,” no locale matrix, no user-context vs SYSTEM-context matrix.</li>
+<li data-block-type="core"><strong>Metadata correctness beyond policy is best-effort.</strong> <code>MinimumOSVersion</code>, return codes, <code>DisplayVersion</code> mappings: a moderator may catch errors; nothing systematic does.</li>
+</ul>
+<p data-block-type="core">None of this is a scandal by the way. It’s the sensible scope for a free, public, community-run repository, and it would be daft to expect volunteers to test every upgrade path across thousands of packages. Nobody does that. No commercial vendor does it either. Every app in every catalog carries combinations nobody has tried.</p>
+<p class="has-gridlove-acc-color has-gridlove-highlight-acc-background-color has-text-color has-background has-link-color wp-elements-7a15ba83fc7b8ef2c2091c2b26e49562" data-block-type="core">So the real question isn’t who tested everything. It’s <strong>what happens when the thing nobody tested breaks in your estate.</strong></p>
+<p data-block-type="core">This is where they differ. An app starts leaving the old version behind in Add/Remove Programs. An installer begins refusing to run while the app is open. A vendor quietly switches from per-machine to per-user and half your fleet ends up with two copies. Somebody has to notice, work out what changed, and then do something about it…adjust the package, add a pre-install script to close the process, change the switches, set the detection differently, or flag it as a known issue so you’re not debugging it alone at 5pm on a Friday.</p>
+<p data-block-type="core">With the community repository, that somebody is you. You can raise a GitHub issue, and people may well help, but nobody is obliged to and nobody is going to build your workaround. With a catalog vendor, that work is what you’re paying for…not a promise that everything was tested, but a team whose job is to respond when it wasn’t, and to carry the fix forward so the next version doesn’t reintroduce it.</p>
+<p data-block-type="core">Judge any catalog on that, rather than on testing claims. Testing is what catches the predictable failures. Everything interesting is in what happens after the unpredictable ones.</p>
+<h1 class="wp-block-heading" id="13-part-3-the-nuances-that-bite"><a aria-hidden="true" class="aal_anchor" href="#part-3-the-nuances-that-bite" id="part-3-the-nuances-that-bite"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Part 3: The nuances that bite</h1>
+<p data-block-type="core">These are the specific mechanisms, each traceable to public winget-cli issues and repo docs, through which “the new version appeared in winget” fails to mean “your fleet upgrades cleanly.”</p>
+<p data-block-type="core"><strong>Detection is ARP-string matching, not package accounting.</strong> WinGet has no local database of what <em>it</em> installed. Every <code>winget list</code> and <code>winget upgrade</code> correlates ARP registry entries against manifest metadata at runtime. Strengths: it sees apps installed by any means. Weaknesses: it’s only as good as each version’s <code>AppsAndFeaturesEntries</code> hygiene. The repo FAQ documents the canonical failure: the vendor writes <code>DisplayVersion: 25.1.0.0</code> to ARP while the manifest says <code>PackageVersion: 25.01</code> and nobody adds the mapping, so the package shows an “upgrade available” forever, or flips to <code>Unknown</code> and silently drops out of <code>winget upgrade</code> (excluded by default; opt back in with <code>--include-unknown</code>).</p>
+<p data-block-type="core"><strong>Upgrade loops from side-by-side installs.</strong> Products that legitimately install side-by-side (VC++ Redistributables, .NET runtimes) can trap <code>winget upgrade --all</code> in perpetual reinstalls, acknowledged in the FAQ and tracked in winget-cli issues.</p>
+<p data-block-type="core"><strong><code>uninstallPrevious</code> and its sharp edges.</strong> When the manifest sets <code>UpgradeBehavior: uninstallPrevious</code>, the client uninstalls old then installs new, with documented failure modes. If <code>AppsAndFeaturesEntries</code> matching is involved, the <em>uninstall leg can run interactively</em> (issue #4068: a silent Intune deployment suddenly popping vendor uninstaller UI on user desktops). When the old and new versions use different installer technologies, upgrades can fail or be skipped outright (issue #4677). And whether a package uses <code>install</code> or <code>uninstallPrevious</code> at all is a judgement call made per-version by whoever wrote the manifest.</p>
+<p data-block-type="core"><strong>Publisher and identity migrations.</strong> When an app changes publisher or signing identity, the repo’s documented best practice is a delicate <em>two-package dance</em>: publishing a transition version under the old identifier with carefully partial <code>AppsAndFeaturesEntries</code>, plus a new identifier the client will hop to via ARP matching on the next upgrade. It works. It’s also exactly the kind of institutional-knowledge-dependent fragility that a curated catalog absorbs on your behalf.</p>
+<p data-block-type="core"><strong>The customisation cliff.</strong> Everything above concerns <em>default</em> behaviour. The moment you need what enterprises always need (an MST, a license key property, auto-update disabled, a conflicting process closed before upgrade, a post-install script to strip shortcuts), you’re outside what a shared public manifest can ever express, maintaining <code>--override</code> strings and wrapper logic per app, per version, yourself.</p>
+<h2 class="wp-block-heading" id="14-andthe-intune-specific-reality-"><a aria-hidden="true" class="aal_anchor" href="#the-intune-specific-reality" id="the-intune-specific-reality"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a><strong>The Intune-specific reality</strong></h2>
+<p data-block-type="core">There is no Intune app type that deploys from the community repository. The “Microsoft Store app (new)” type installs from the Microsoft Store catalog, which is the <em>msstore</em> source, not the tree of YAML manifests this post has been dissecting.</p>
+<p data-block-type="core">So deploying community-repo apps through Intune means wrapping <code>winget</code> yourself, usually in a Win32 app or a script, and taking on the problems that come with it. Running the client reliably as SYSTEM is the one most people hit first, along with it not being present yet on a freshly provisioned device, and having to write your own detection logic because Intune has no idea what a winget package is.</p>
+<p data-block-type="core">In practice most people don’t write that wrapper from scratch. They use <strong>PSADT</strong>, the PowerShell App Deployment Toolkit, which is free, open source and community-maintained, and has been the default way to wrap Win32 installs in this ecosystem for years. It’s worth being straight about how much it gives you for nothing…closing running applications with a proper user prompt, deferrals and countdowns, consistent logging, reboot handling, and somewhere sensible to put pre- and post-install logic. Look back at Part 4’s list of what a curated catalog does for you and you’ll notice several of those items are things PSADT already solves, free, if you’re willing to assemble it yourself.</p>
+<p data-block-type="core">Plenty of ISVs know this too. It’s common to find commercial tooling in this space built on the same free community foundations, PSADT and winget among them, with the vendor’s value sitting in the catalog, the testing and the automation around those pieces rather than in the pieces themselves. That’s not a criticism, it’s how most software gets built, but it’s worth knowing when you’re weighing what a subscription actually buys you.</p>
+<p data-block-type="core">None of this is a supported path, mind. If you assemble it yourself, you’ve become the packaging team, the test team and the support team for a mechanism Microsoft doesn’t offer for this purpose. That’s an entirely reasonable trade if you have the skills and the time, and a bad one if you’re relying on a single person who might leave.</p>
+<p data-block-type="core">That gap is real enough that a whole product category has grown up inside it. <strong>Several ISVs now build their business on precisely this. They take the community repository as their content source, then sell the layer Microsoft never shipped.</strong> A proper Intune Win32 app, detection that survives an upgrade, requirements, supersedence, assignments carried forward, reporting. Some are very good, and for plenty of organisations they’re the sensible middle path. Community-sourced content, commercial packaging, none of the wrapper scripts.</p>
+<p data-block-type="core">Be clear about what that does and doesn’t change, though. It solves the Intune plumbing, which is a real engineering problem somebody else has now solved for you. It does not change where the content came from. Everything in Parts 1 and 2 about who authors those manifests, what the pipeline checks, and what happens when a package quietly changes hands still applies, because those manifests are the input. If a manifest goes stale or a URL breaks upstream, the question is whether your ISV catches it or passes it straight through. That’s question 12 in Appendix A, and it’s the one to ask hardest, because two products can both be sold as “curated catalogs” while one works from vendor binaries and the other repackages community manifests.</p>
+<p data-block-type="core">Worth noting that Microsoft’s own answer for enterprise third-party app lifecycle in Intune isn’t “use the community repo” either. <strong>It’s the Enterprise App Catalog</strong> (part of Enterprise App Management). Microsoft looked at this exact problem…and built a curated catalog.</p>
+<p data-block-type="core">The licensing of that catalog is worth knowing. Enterprise App Management was historically a paid Intune Suite add-on. Following an announcement at Ignite 2025, Microsoft moved it into <strong>Microsoft 365 E5</strong>, effective 1 July 2026 with the rollout completing in early August 2026 and eligible tenants provisioned automatically. Note the boundary: E5 gets Enterprise App Management, while E3 receives a smaller set (Intune Plan 2, Remote Help, Advanced Analytics) and does <em>not</em> include it.</p>
+<h1 class="wp-block-heading" id="15-part-4-what-a-curated-catalog-vendor-actually-does"><a aria-hidden="true" class="aal_anchor" href="#part-4-what-a-curated-catalog-vendor-actually-does" id="part-4-what-a-curated-catalog-vendor-actually-does"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Part 4: What a curated catalog vendor actually does</h1>
+<p data-block-type="core">One scoping note before we start. Part 3 described the ISVs that source their content from the community repository and sell the Intune layer on top. Everything below is about the other kind, where the vendor works from the software vendor’s own binaries and does their own testing. Some of it applies to the winget-sourced products too, some of it doesn’t, and the only way to know which is to ask them directly.</p>
+<h2 class="wp-block-heading" id="16-the-dedicated-team-model"><a aria-hidden="true" class="aal_anchor" href="#the-dedicated-team-model" id="the-dedicated-team-model"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>The dedicated-team model</h2>
+<p data-block-type="core">The curated catalog model is a category, not a company. Several commercial vendors operate in this space, and Microsoft’s own Enterprise App Catalog for Intune is built the same way. The difference from the community repository is simple to state really. <strong>A staffed, accountable team whose full-time job is building, testing, and maintaining the catalog, versus individual maintainers and automation contributing on their own initiative.</strong> Now for the part where I have to be straight with you, because it’s the weak spot in this whole post.</p>
+<p data-block-type="core">Everything I said about WinGet in Parts 1 and 2 was checked against something you can open yourself: manifests, pull requests, merge times, labels, issue threads. Nothing below is like that, and I need to explain my position carefully, because it cuts both ways.</p>
+<p data-block-type="core">I work at Patch My PC, shared this with you earlier, so unlike most people writing about this I do see catalog validation work close up, every day. I know what that effort looks like, how much of it there is, and the sorts of problems it catches before customers ever meet them. That’s real insight and it shapes how confident I am about this section.</p>
+<p data-block-type="core">It’s also a problem for you as a reader, for 2 reasons. First, I can’t show you any of it. Internal process isn’t mine to publish, so you’re being asked to weigh confidence I can’t evidence, from someone whose employer benefits from you believing it. Discount that accordingly. Second, and less obviously, seeing one company’s process well doesn’t tell me what the others do. I’m describing a category based largely on my insider view plus what competitors publish about themselves, which is exactly the sort of generalisation that turns out wrong.</p>
+<p data-block-type="core">So treat the list below as claims to test during an evaluation, not facts I’ve established. Where I say “vendors do X,” read it as “vendors say they do X, and in the one case I can see directly, something like X genuinely happens.” Then go and make yours prove it.</p>
+<p data-block-type="core"><strong>Version detection is a team’s job, not a volunteer’s.</strong> A dedicated team plus automation monitors supported vendors’ release channels continuously; new updates are typically tested, packaged, and published to the catalog <strong>within 24 hours of vendor release</strong>. Precision matters here, because an expert will check: vendors in this space generally publish such figures as internal targets, not formal contractual SLAs with penalty clauses. What you’re buying is not a guarantee in the legal sense. It’s an organisation whose <em>business</em> is that target, with a public catalog-release feed you can audit against it, and a support organisation you can escalate to when a title lags. As Part 2 showed, the difference from WinGet isn’t average <em>speed</em> (winget’s bots hit near-parity on the popular overlap); it’s having a floor, and someone accountable for it. Coverage doesn’t depend on whether a package attracted a volunteer’s bot. If it’s on the supported-products list, it gets updated, and lapses are someone’s job to fix.</p>
+<p data-block-type="core"><strong>Testing targets the scenarios patching actually hits.</strong> The published processes cover silent install <em>and</em> silent uninstall, <strong>upgrade testing over previous versions</strong>, and checking detection metadata every release.</p>
+<p data-block-type="core">That upgrade test is harder than it sounds, and this is the part that gets glossed over in most comparisons. The obvious questions are whether the old version went away, whether Add/Remove Programs is left clean, and whether the switches still behave. But <strong>you can’t answer those without knowing what “correct” looks like for that specific application</strong>, because for some products the right outcome is that the old version <em>stays</em>. Runtimes and redistributables are the familiar case, engineering and design software often installs major versions alongside each other on purpose, and plenty of line-of-business apps expect two versions to coexist during a migration. Strip the old one out and you’ve broken something that was working.</p>
+<p data-block-type="core">So the same observation, old version still present after upgrade, is a defect in one app and correct behaviour in another. Getting that judgement wrong in either direction causes real damage: force <code>uninstallPrevious</code> on a coexist-by-design product and you remove something a user needed, or assume coexistence on a product that should upgrade in place and you leave two entries in ARP and a detection rule that reports nonsense. This is the same class of problem behind the upgrade loops in Part 3, where packages that legitimately install side-by-side confuse tooling that assumes one version per product.</p>
+<p data-block-type="core">That per-application judgement is the actual work, and it’s what a catalog team is meant to accumulate and keep current as apps change. To be clear about what it is and isn’t, though: it doesn’t make the binary safer, because that’s the vendor’s file with a verified hash in both models. What it buys is somebody having decided, deliberately and per app, what a correct upgrade looks like, then checking each release against that. WinGet’s clean-VM validation never asks the question, because it only ever installs onto a machine where nothing was there to begin with.</p>
+<p data-block-type="core"><strong>Security validation is comparable in kind, stronger in transparency.</strong> The typical documented process among catalog vendors: the binary is downloaded from the software vendor’s official source; its hash is compared against the digest the software vendor published; the file is scanned through multi-engine services such as VirusTotal, with per-release scan results published for customers to inspect; and the catalog metadata itself is code-signed, with the signature verified by the publishing tooling before anything is used. WinGet’s pipeline covers similar ground, and if you want to criticise the community repository, this is the wrong place to start. That’s worth evidencing rather than asserting, so here are 3 specifics you can verify.</p>
+<p data-block-type="core"><strong>The hash pinning is enforced, not advisory.</strong> You can see it working in a complaint. In <a href="https://github.com/microsoft/winget-pkgs/issues/341106" rel="noopener" target="_blank">issue #341106</a> a user reports being unable to install Chrome at all, because the binary behind that versionless Google URL no longer matched the SHA256 in the manifest. WinGet refused to run it. The thread is somebody frustrated that the security control worked exactly as designed.</p>
+<p data-block-type="core"><strong>The escape hatches ship closed.</strong> Run <code>winget --info</code> and you’ll see a list of admin settings, among them <code>InstallerHashOverride</code> and <code>LocalArchiveMalwareScanOverride</code>, both <strong>Disabled</strong> by default. Installing something whose hash doesn’t match, or skipping a malware scan on a local archive, requires an administrator to deliberately turn protection off first. That’s visible in the diagnostic output attached to the issue above.</p>
+<p data-block-type="core"><strong>The pipeline checks happen before anything reaches you</strong>, as covered in Part 2: multi-engine scanning including Defender, SmartScreen reputation checks against URLs, execution in a secured VM with checks for changed system files and suspicious service creation, then a human moderator.</p>
+<p data-block-type="core">Put together, that’s a supply chain that is hard to attack, and materially better than the “download the installer from a web search” process it replaced for most people. The real differences between the models here are accountability and per-release transparency, not scanning technology.</p>
+<p data-block-type="core"><strong>The customisation layer exists, and survives upgrades.</strong> This is the part WinGet structurally cannot offer. Catalog tooling in this category typically lets you attach per-app customisations that persist across versions: <strong>an MST transform file</strong> (reapplied automatically on subsequent releases, directly answering the “do I need to regenerate my MST every version?” question; and if a new version’s MSI breaks transform compatibility, catching that is exactly what the vendor’s per-release testing is for), modified command lines, pre/post-install scripts, <strong>disabling the app’s self-updater</strong> (registry values, scheduled-task changes: per-app knowledge a dedicated team maintains so yours doesn’t have to), and <strong>managing conflicting processes</strong> (allow the install, auto-close the app, skip and retry later, or prompt the user to close). Every one of those is a category of institutional knowledge that otherwise lives in your packagers’ heads and leaves when they do.</p>
+<p data-block-type="core">One honest qualifier on that list, though. As Part 3 noted, several of those behaviours are not exclusive to paid tooling. PSADT will close a running application with a user prompt, offer deferrals and run your pre- and post-install logic, for free, today. What you’re paying a catalog vendor for isn’t the existence of those capabilities, it’s that somebody has already worked out the right settings for each of a few thousand applications and keeps them working as those applications change. If you only manage 20 apps and enjoy this sort of thing, free tooling plus your own effort is a perfectly rational answer.</p>
+<p data-block-type="core"><strong>And the management-plane integration closes the loop.</strong> Packages arrive <em>in Intune as native Win32 apps</em>: proper detection rules, requirements, return codes, icons, assignments carried across versions.</p>
+<h2 class="wp-block-heading" id="17-where-curated-catalogs-fall-down"><a aria-hidden="true" class="aal_anchor" href="#where-curated-catalogs-fall-down" id="where-curated-catalogs-fall-down"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Where curated catalogs fall down</h2>
+<p data-block-type="core">One of the values at Patch My PC I live by is “No Shenanigans”. A fair comparison needs this section, so here it is.</p>
+<p data-block-type="core"><strong>You can’t inspect the testing you’re paying for.</strong> WinGet’s pipeline is public. You can read the YAML, watch the labels land on a PR, and see the moderator’s comment. A commercial catalog’s test process is a paragraph on a website. When a vendor says “we tested the upgrade,” you’re taking their word for it, and there’s no equivalent of opening a pull request to see what happened.</p>
+<p data-block-type="core"><strong>When it breaks, you wait.</strong> WinGet’s answer to a broken manifest is “anyone can fix it,” which sounds weak until the day you need a fix in the next hour and you can open a PR yourself. With a catalog you file a ticket and join a queue, however good the vendor’s support is.</p>
+<p data-block-type="core"><strong>Coverage is a list somebody else controls.</strong> If your niche app isn’t on the supported-products list, you can request it, but you can’t add it yourself. WinGet’s long tail is enormous by comparison and nobody has to approve your app being in it.</p>
+<p data-block-type="core">That said, most vendors in this space now offer a custom-app capability, and it’s worth understanding what it does and doesn’t cover. You supply the installer for your in-house or unsupported application, the tooling reads the metadata out of it, generates detection rules and requirements, and publishes it into Intune as a proper Win32 app alongside everything from the catalog. For internally developed software and the odd unsupported tool, that’s genuinely useful and it removes most of the manual packaging grind.</p>
+<p data-block-type="core">But notice what you’ve bought there. You’re using the vendor’s <strong>packaging engine</strong>, not their catalog service. Nobody is monitoring your in-house app for new releases, because only you know when there is one. Nobody is testing your upgrade path, because it’s your binary. Nobody is fixing it when version 4 behaves differently from version 3. Custom apps solve the plumbing, which is the same thing PSADT and the winget-sourced ISVs solve. The catalog part, someone else noticing and testing and taking responsibility, is exactly the part that can’t be extended to software only you have.</p>
+<p data-block-type="core"><strong>You’re still trusting a third party.</strong> A catalog vendor didn’t write Chrome either. Both models put an intermediary between you and the software vendor. The difference is one has a contract and a support queue, not that one has eliminated the middleman.</p>
+<p data-block-type="core"><strong>And there’s a dependency you’re taking on.</strong> The catalog is a running service. If the vendor changes direction, raises prices, gets acquired, or drops a product you rely on, that’s your problem to solve. The community repository can’t send you a renewal quote.</p>
+<p data-block-type="core">The downsides are real too: <strong>money</strong> (a per-device subscription vs free, though see the licensing note in Part 3 before assuming you don’t already have a curated catalog), <strong>coverage shape</strong> (a curated supported-products list against the community repo’s far broader long tail; if the app is obscure, WinGet may well carry it when a commercial catalog doesn’t), <strong>vendor lock-in</strong> of your customisation layer, and the fact that you’re still trusting <em>someone else’s</em> testing, just with a contract, a published target, and a support queue attached.</p>
+<h1 class="wp-block-heading" id="18-part-5-head-to-head"><a aria-hidden="true" class="aal_anchor" href="#part-5-head-to-head" id="part-5-head-to-head"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Part 5: Head-to-head</h1>
+<div class="kb-table-container kb-table-container26753_a6a2ff-35 wp-block-kadence-table"><table class="kb-table kb-table26753_a6a2ff-35">
+<tr class="kb-table-row kb-table-row26753_135f0a-19">
+<th class="kb-table-data kb-table-data26753_ad9047-be" scope="col">
+<p data-block-type="core">Dimension</p>
+</th>
+<th class="kb-table-data kb-table-data26753_232e80-ec" scope="col">
+<p data-block-type="core">WinGet community repo</p>
+</th>
+<th class="kb-table-data kb-table-data26753_ba58f6-9f" scope="col">
+<p data-block-type="core">Curated catalog (dedicated team)</p>
+</th>
+</tr>
+<tr class="kb-table-row kb-table-row26753_4eba98-4d">
+<td class="kb-table-data kb-table-data26753_2ea5ed-c7">
+<p data-block-type="core">Who notices new versions</p>
+</td>
+<td class="kb-table-data kb-table-data26753_eab866-f0">
+<p data-block-type="core">Volunteers and unaffiliated bots; often same-day at the head of the distribution, but no SLA and no floor in the tail</p>
+</td>
+<td class="kb-table-data kb-table-data26753_1574ac-7a">
+<p data-block-type="core">Vendor-monitoring team plus automation; 24-hour published target (internal goal, not contractual SLA) across the whole list</p>
+</td>
+</tr>
+<tr class="kb-table-row kb-table-row26753_9ac0fc-75">
+<td class="kb-table-data kb-table-data26753_94aec5-9a">
+<p data-block-type="core">Who authors the package</p>
+</td>
+<td class="kb-table-data kb-table-data26753_725a96-a5">
+<p data-block-type="core">Whoever submits the PR (rarely the vendor)</p>
+</td>
+<td class="kb-table-data kb-table-data26753_d44a2b-07">
+<p data-block-type="core">Vendor’s binary, packaged by a dedicated team</p>
+</td>
+</tr>
+<tr class="kb-table-row kb-table-row26753_bd14aa-dd">
+<td class="kb-table-data kb-table-data26753_f30b9b-39">
+<p data-block-type="core">Clean install tested</p>
+</td>
+<td class="kb-table-data kb-table-data26753_0c11b2-14">
+<p data-block-type="core">Yes: automated, sandboxed, every PR</p>
+</td>
+<td class="kb-table-data kb-table-data26753_813359-0e">
+<p data-block-type="core">Yes</p>
+</td>
+</tr>
+<tr class="kb-table-row kb-table-row26753_34ae3b-c7">
+<td class="kb-table-data kb-table-data26753_4e7d9d-2b">
+<p data-block-type="core">Silent <strong>uninstall</strong> tested</p>
+</td>
+<td class="kb-table-data kb-table-data26753_2de729-75">
+<p data-block-type="core">No, not a gate</p>
+</td>
+<td class="kb-table-data kb-table-data26753_8d353c-7d">
+<p data-block-type="core">Yes</p>
+</td>
+</tr>
+<tr class="kb-table-row kb-table-row26753_5f793a-f4">
+<td class="kb-table-data kb-table-data26753_16da79-be">
+<p data-block-type="core">Switch/behaviour regression between versions</p>
+</td>
+<td class="kb-table-data kb-table-data26753_bded77-5e">
+<p data-block-type="core">No</p>
+</td>
+<td class="kb-table-data kb-table-data26753_cffec4-fa">
+<p data-block-type="core">Yes, per-release testing</p>
+</td>
+</tr>
+<tr class="kb-table-row kb-table-row26753_c51fb4-66">
+<td class="kb-table-data kb-table-data26753_8b800c-b0">
+<p data-block-type="core">Malware/supply-chain checks</p>
+</td>
+<td class="kb-table-data kb-table-data26753_13360c-62">
+<p data-block-type="core">Yes: hash pinning, Defender plus multi-engine, SmartScreen, sandbox detonation</p>
+</td>
+<td class="kb-table-data kb-table-data26753_e19fee-28">
+<p data-block-type="core">Yes: vendor-hash match, multi-engine scanning with published results, signed catalog</p>
+</td>
+</tr>
+<tr class="kb-table-row kb-table-row26753_c0a1bd-2d">
+<td class="kb-table-data kb-table-data26753_578c4a-74">
+<p data-block-type="core">MST / transforms / org config</p>
+</td>
+<td class="kb-table-data kb-table-data26753_ec9a6a-94">
+<p data-block-type="core">No, structurally impossible; <code>--override</code> DIY</p>
+</td>
+<td class="kb-table-data kb-table-data26753_1db87d-dc">
+<p data-block-type="core">Yes, persisted across versions</p>
+</td>
+</tr>
+<tr class="kb-table-row kb-table-row26753_24fa3e-4f">
+<td class="kb-table-data kb-table-data26753_54b2f6-ee">
+<p data-block-type="core">Self-updater control, conflicting processes</p>
+</td>
+<td class="kb-table-data kb-table-data26753_506a6d-c0">
+<p data-block-type="core">No</p>
+</td>
+<td class="kb-table-data kb-table-data26753_6bcab2-3f">
+<p data-block-type="core">Yes, built-in options</p>
+</td>
+</tr>
+<tr class="kb-table-row kb-table-row26753_84bb7b-1c">
+<td class="kb-table-data kb-table-data26753_fe50cc-20">
+<p data-block-type="core">Intune integration</p>
+</td>
+<td class="kb-table-data kb-table-data26753_b1659c-b5">
+<p data-block-type="core">None for the community repo; wrapper scripts plus custom detection</p>
+</td>
+<td class="kb-table-data kb-table-data26753_393cd1-4e">
+<p data-block-type="core">Native Win32 apps, detection, requirements, auto-supersedence</p>
+</td>
+</tr>
+<tr class="kb-table-row kb-table-row26753_475571-ba">
+<td class="kb-table-data kb-table-data26753_6f57a7-b4">
+<p data-block-type="core">Content distribution</p>
+</td>
+<td class="kb-table-data kb-table-data26753_ecb331-23">
+<p data-block-type="core">Vendor CDNs direct to endpoints</p>
+</td>
+<td class="kb-table-data kb-table-data26753_a579ca-aa">
+<p data-block-type="core">Through your management plane’s content flow</p>
+</td>
+</tr>
+<tr class="kb-table-row kb-table-row26753_b260d8-d5">
+<td class="kb-table-data kb-table-data26753_edf958-b3">
+<p data-block-type="core">Coverage breadth</p>
+</td>
+<td class="kb-table-data kb-table-data26753_39e591-ee">
+<p data-block-type="core">Enormous long tail, no approval needed</p>
+</td>
+<td class="kb-table-data kb-table-data26753_38d560-b3">
+<p data-block-type="core">Curated list of thousands of enterprise titles; most vendors add a custom-app route for anything not on it, though that gives you the packaging rather than the monitoring and testing</p>
+</td>
+</tr>
+<tr class="kb-table-row kb-table-row26753_4b62d3-d6">
+<td class="kb-table-data kb-table-data26753_6b837a-e2">
+<p data-block-type="core">Cost</p>
+</td>
+<td class="kb-table-data kb-table-data26753_8a3726-e6">
+<p data-block-type="core">Free</p>
+</td>
+<td class="kb-table-data kb-table-data26753_e391f2-b0">
+<p data-block-type="core">Subscription for commercial vendors; Microsoft’s Enterprise App Catalog is included with M365 E5 from July 2026 (not E3)</p>
+</td>
+</tr>
+<tr class="kb-table-row kb-table-row26753_20e682-aa">
+<td class="kb-table-data kb-table-data26753_b40948-26">
+<p data-block-type="core">Accountability when it breaks</p>
+</td>
+<td class="kb-table-data kb-table-data26753_2b1a3f-62">
+<p data-block-type="core">GitHub issue, volunteer goodwill</p>
+</td>
+<td class="kb-table-data kb-table-data26753_e96564-39">
+<p data-block-type="core">Support contract</p>
+</td>
+</tr>
+<tr class="kb-table-row kb-table-row26753_10b049-bd">
+<td class="kb-table-data kb-table-data26753_c41e45-f4">
+<p data-block-type="core">Can you inspect the testing?</p>
+</td>
+<td class="kb-table-data kb-table-data26753_bc0956-9f">
+<p data-block-type="core">Yes: pipeline, labels, PR history and moderator comments are all public</p>
+</td>
+<td class="kb-table-data kb-table-data26753_8ac328-08">
+<p data-block-type="core">No: the process is described on a website, not shown</p>
+</td>
+</tr>
+<tr class="kb-table-row kb-table-row26753_4b46bd-b5">
+<td class="kb-table-data kb-table-data26753_e4c9ea-da">
+<p data-block-type="core">If it’s broken and you need it fixed today</p>
+</td>
+<td class="kb-table-data kb-table-data26753_70a759-d8">
+<p data-block-type="core">Fix it yourself, open a PR</p>
+</td>
+<td class="kb-table-data kb-table-data26753_3c37ef-1d">
+<p data-block-type="core">File a ticket and wait for the vendor</p>
+</td>
+</tr>
+<tr class="kb-table-row kb-table-row26753_907e20-6b">
+<td class="kb-table-data kb-table-data26753_58ade7-e7">
+<p data-block-type="core">Lock-in</p>
+</td>
+<td class="kb-table-data kb-table-data26753_667870-2f">
+<p data-block-type="core">None: manifests are public YAML, no contract, walk away any time</p>
+</td>
+<td class="kb-table-data kb-table-data26753_f9bb5f-40">
+<p data-block-type="core">Your customisations live in the vendor’s tooling and have to be rebuilt elsewhere</p>
+</td>
+</tr>
+<tr class="kb-table-row kb-table-row26753_2bd94f-89">
+<td class="kb-table-data kb-table-data26753_872749-40">
+<p data-block-type="core">Ongoing dependency</p>
+</td>
+<td class="kb-table-data kb-table-data26753_596a77-0c">
+<p data-block-type="core">None beyond the repo existing</p>
+</td>
+<td class="kb-table-data kb-table-data26753_88c9ae-dc">
+<p data-block-type="core">A live service, a renewal, a roadmap and a price you don’t control</p>
+</td>
+</tr>
+</table></div>
+<p data-block-type="core"></p>
+<h1 class="wp-block-heading" id="19-verdict-the-wrong-question-answered-properly"><a aria-hidden="true" class="aal_anchor" href="#verdict" id="verdict"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Verdict</h1>
+<p class="has-gridlove-acc-color has-gridlove-highlight-acc-background-color has-text-color has-background has-link-color wp-elements-8769c77e9aab70e19b69d71ee7e9c478" data-block-type="core">“Is WinGet enterprise ready?” is the wrong question, because WinGet and a curated catalog are not the same <em>kind</em> of thing.</p>
+<p data-block-type="core"><strong>WinGet is a distribution protocol with a community-maintained metadata layer.</strong> As that, it’s better-engineered than some of its critics claim. The security model (hash pinning, scanning, sandbox detonation, human moderation) is defensible. For developer tooling, for the long tail, for standing up a dev workstation, for anything where “install the current version silently on a clean-ish machine” is the whole requirement, it’s good and it’s free.</p>
+<p data-block-type="core"><strong>A curated catalog is an application lifecycle engineering service.</strong> You’re not paying for hosted manifests, and it isn’t really “we tested everything” either, because nobody has. What you’re paying for is someone whose job it is to notice the release, exercise the upgrade rather than just the clean install, keep your customisations working across versions, deal with self-updaters and running processes, put correct detection and requirements into your management plane, and then respond when an app does something nobody predicted. That last one matters most, because it’s the part that recurs forever. The community repository, reasonably and by design, doesn’t attempt any of it.</p>
+<p data-block-type="core"><strong>And there’s a part of this that gets undersold, including by me until now…the support.</strong> Not ticket-closing support, the other kind. Understanding an application is one thing. Delivering it reliably to thousands of Windows devices through Intune, ConfigMgr or WSUS is a separate discipline, and it’s where most of the pain actually lives. Third-party patching is not easy, and very little of the difficulty is in the app itself.</p>
+<p data-block-type="core">A good vendor support team knows their catalog, obviously. What makes them worth the money is that they also know <em>your delivery path</em>. They’ll ask what your deployment ring structure looks like, whether the app is going out as required or available, what your detection is doing, whether the Intune management extension is behaving on that build, why a deployment reports success while the app clearly isn’t there, how your customisation interacts with the update, what your maintenance windows are doing to a reboot-sensitive installer. That’s platform expertise sitting alongside application expertise, and the two together are the thing customers actually lean on. When an update lands badly at 4pm, you don’t want a knowledge-base article, you want somebody who has seen this exact combination before across a few thousand other tenants.</p>
+<p data-block-type="core">There’s no equivalent to that in the free path, and it isn’t a criticism of the community, just a fact about what a repository is. A GitHub issue can get a manifest fixed. It won’t help you work out why an install succeeded on your pilot ring and failed on ten thousand devices, because nobody there has visibility of your environment or any obligation to care about it.</p>
+<p data-block-type="core">That’s what “accountability” means in practice, and it’s worth testing hard during an evaluation rather than taking on faith, mine included. Ask a prospective vendor to describe the last time they helped a customer debug something that turned out to be a platform problem rather than a catalog problem.</p>
+<p data-block-type="core">So, for an attempt at an evidence-led conclusion…<strong>the “WinGet is validated, therefore enterprise ready” argument fails not on security, and not on freshness, but on scope.</strong> On security, the pipeline has some noteworthy credibility. On freshness, the community repository is demonstrably competitive, for the most part, for widely deployed apps, as the live snapshot in Part 2 shows. What remains is everything freshness doesn’t measure: clean-install-only validation of community-authored metadata, no upgrade testing, no uninstall gate, no customisation layer, no floor under the freshness distribution when automation silently fails, and no native path into Intune. The strongest single piece of evidence is Microsoft’s own behaviour: when Microsoft productised third-party app lifecycle for Intune, it didn’t wire the community repo in. It built the Enterprise App Catalog, a curated, Microsoft-prepared and tested catalog with guided supersedence. The company that ships WinGet reached the same conclusion this post does.</p>
+<p data-block-type="core">Just know which problem you’re solving before you choose.</p>
+<h3 class="wp-block-heading" id="20-one-last-thing-and-its-the-caveat-id-want-if-i-were-reading-this-rather-than-writing-it"><a aria-hidden="true" class="aal_anchor" href="#one-last-thing-and-its-the-caveat-id-want-if-i-were-reading-this-rather-than-writing-it" id="one-last-thing-and-its-the-caveat-id-want-if-i-were-reading-this-rather-than-writing-it"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>One last thing, and it’s the caveat I’d want if I were reading this rather than writing it.</h3>
+<p data-block-type="core">I’ve hopefully proved the WinGet half of this post. You can open every manifest, PR and label I cited and check them yourself in an afternoon. I haven’t proved the other half, and I can’t. Let me be specific about where I stand on each part of it.</p>
+<p data-block-type="core"><strong>On the curated model itself, I’m confident.</strong> I see that work daily because of where I work, and I know how much of it there is. But confidence isn’t evidence, internal process isn’t mine to publish, and my employer benefits from you agreeing with me. Weigh it accordingly.</p>
+<p data-block-type="core"><strong>On other commercial ISVs, I have no visibility at all.</strong> I don’t know how they test, how deep it goes, or what happens when something breaks. For the ones sourcing content from the community repository in particular, I can’t tell you whether they add their own testing on top of what the pipeline already did, or simply repackage what’s there. That’s not a dig, I honestly don’t know. It’s why question 12 in the checklist exists, and you should ask it rather than assume the answer either way.</p>
+<p data-block-type="core"><strong>On Microsoft’s Enterprise App Catalog, I’d point you at 2 things to check yourself rather than take my view.</strong> It’s a real curated catalog, it’s now included with E5, and for a lot of organisations it’ll be the sensible starting point precisely because it’s already paid for. Whether it’s sufficient on its own depends on 2 questions with answers you can get without asking me. First, put its app list next to the supported-products list of any specialist vendor and see whether the software your business actually runs is covered. Second, apply the support question from the verdict: when the problem turns out to be your delivery path rather than the package, what help do you get, and from whom? Those two answers will tell you whether you need anything beyond what E5 already gives you. I have a view on it, and I’m the wrong person to be giving it to you.</p>
+<h1 class="wp-block-heading" id="21-appendix-a-questions-to-ask-of-any-catalog-including-winget"><a aria-hidden="true" class="aal_anchor" href="#appendix-a-questions-to-ask-of-any-catalog-including-winget" id="appendix-a-questions-to-ask-of-any-catalog-including-winget"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Appendix A: Questions to ask of <em>any</em> catalog (including WinGet)</h1>
+<ol class="wp-block-list" data-block-type="core">
+<li data-block-type="core">Who is responsible for noticing a new vendor release, and how fast?</li>
+<li data-block-type="core">Is the upgrade path from version N to N+1 tested, or only clean install? And how do you decide what a correct upgrade looks like for an app that’s designed to run versions side by side?</li>
+<li data-block-type="core">Is silent <strong>uninstall</strong> verified per version?</li>
+<li data-block-type="core">When the vendor re-releases a binary in place, what re-validates the content?</li>
+<li data-block-type="core">How are my per-org customisations (MST, properties, scripts) expressed, and do they persist across versions automatically?</li>
+<li data-block-type="core">What happens to the app’s self-updater?</li>
+<li data-block-type="core">How does detection metadata (ProductCode, DisplayVersion, ARP) get corrected when the vendor changes it?</li>
+<li data-block-type="core">How does the package reach my management plane: natively, or via wrappers I maintain?</li>
+<li data-block-type="core">When an update breaks in my environment, who works out what changed, and who builds the workaround? Does that fix carry forward to the next version, or do I re-apply it every release?</li>
+<li data-block-type="core">Does your support cover how I’m <em>delivering</em> the app, or only your catalog content? If the problem turns out to be Intune, ConfigMgr or WSUS rather than your package, do I get help or a boundary? Describe the last time you debugged a platform issue for a customer.</li>
+<li data-block-type="core">Can I see the security scan results for the exact binary I’m deploying?</li>
+<li data-block-type="core">Where does your content actually come from: the software vendor directly, or the WinGet community repository? If it’s the latter, what happens when an upstream manifest is wrong or stale?</li>
+</ol>
+<p data-block-type="core">Ask them of WinGet and most of the answers are “nobody,” “no,” or “when someone notices.” But read that as a scope statement rather than a failing. A free public repository was never trying to own your upgrade paths or your MSTs, and it says so.</p>
+<p data-block-type="core">Ask the same 12 of any vendor and you should get answers in writing. <strong>Question 10</strong> separates a catalog supplier from a partner, because plenty of vendors will fix their package and stop precisely at the boundary of your platform. <strong>Question 12</strong> matters because 2 products can both be sold as curated catalogs while one works from vendor binaries and the other repackages community manifests. Neither is wrong, but they carry different risks and you should know which you’re buying. If any answer comes back vague, treat a vague answer as an answer in itself.</p>
+<h1 class="wp-block-heading" id="22-appendix-b-reproduce-the-freshness-comparison-yourself"><a aria-hidden="true" class="aal_anchor" href="#appendix-b-reproduce-the-freshness-comparison-yourself" id="appendix-b-reproduce-the-freshness-comparison-yourself"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Appendix B: Reproduce the freshness comparison yourself</h1>
+<p data-block-type="core">Freshness claims are only as good as their method, so here is one you can rerun yourself. The comparison takes an afternoon:</p>
+<ol class="wp-block-list" data-block-type="core">
+<li data-block-type="core"><strong>Get the curated list.</strong> Some catalog vendors publish supported-products lists.</li>
+<li data-block-type="core"><strong>Get winget’s list from the repository itself.</strong> Clone <code>microsoft/winget-pkgs</code> and walk the <code>manifests/</code> tree (each leaf folder is a version of a package identifier), or query the source index via <code>winget search</code> or the COM API against the <code>winget</code> source. Do <strong>not</strong> use third-party winget browser sites for this. As noted in Part 2, one of them reported a package four releases behind what the repository actually carried. They cache, and they are not authoritative.</li>
+<li data-block-type="core"><strong>Match titles to identifiers.</strong> This is the hard part: normalise names (strip editions, architectures, “x64”, vendor prefixes) and only score pairs you can match with high confidence. Report your match rate. A comparison that silently drops hard cases in either direction is a thumb on the scale.</li>
+<li data-block-type="core"><strong>Compare versions per matched pair</strong> at the same timestamp: exact match, winget behind (by how many releases?), or winget ahead. Version-string normalisation matters (<code>25.01</code> vs <code>25.1.0.0</code>; remember the Marketing-vs-DisplayVersion distinction from Part 1). Do not use the manifest’s <code>ReleaseDate</code> as a proxy for how fast winget picked something up. That field records the vendor’s release date. For pickup latency you want the <em>merge date</em> from the package’s commit history, compared against the vendor’s own announcement.</li>
+<li data-block-type="core"><strong>Rerun it weekly.</strong> A single snapshot tells you about a day. The distribution over time, especially maximum staleness per package, is the operationally meaningful number, and it’s the one a point-in-time parity percentage hides.</li>
+</ol>
+<h1 class="wp-block-heading" id="23-appendix-c-sources"><a aria-hidden="true" class="aal_anchor" href="#appendix-c-sources" id="appendix-c-sources"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Appendix C: Sources</h1>
+<p data-block-type="core"><strong>WinGet / Microsoft (primary):</strong></p>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core"><a href="https://github.com/microsoft/winget-pkgs/blob/master/doc/README.md" rel="noopener" target="_blank">winget-pkgs doc/README.md (submission and validation process)</a>, including <a href="https://github.com/microsoft/winget-pkgs/blob/master/doc/README.md#community-repository-policies" rel="noopener" target="_blank">Community Repository Policies</a>, where the verified developer workflow is documented as still in progress</li>
+<li data-block-type="core"><a href="https://github.com/microsoft/winget-pkgs/blob/master/doc/FAQ.md" rel="noopener" target="_blank">winget-pkgs doc/FAQ.md (safety checks, ARP/DisplayVersion, Unknown versions, upgrade loops, publisher changes)</a></li>
+<li data-block-type="core"><a href="https://github.com/microsoft/winget-pkgs/blob/master/doc/Moderation.md" rel="noopener" target="_blank">winget-pkgs doc/Moderation.md (moderator roster, powers, label list)</a></li>
+<li data-block-type="core"><a href="https://github.com/microsoft/winget-pkgs/blob/master/DevOpsPipelineDefinitions/validation-pipeline.yaml" rel="noopener" target="_blank">winget-pkgs validation pipeline definition</a></li>
+<li data-block-type="core"><a href="https://learn.microsoft.com/en-us/windows/package-manager/package/winget-validation" rel="noopener" target="_blank">Microsoft Learn: winget validation and PR labels</a></li>
+<li data-block-type="core"><a href="https://learn.microsoft.com/en-us/windows/package-manager/package/repository" rel="noopener" target="_blank">Microsoft Learn: manifest submission</a></li>
+<li data-block-type="core"><a href="https://github.com/microsoft/winget-pkgs/tree/master/manifests/7/7zip/7zip" rel="noopener" target="_blank">7zip.7zip manifests (teardown source)</a></li>
+<li data-block-type="core"><a href="https://github.com/microsoft/winget-pkgs/tree/master/manifests/g/Google/Chrome" rel="noopener" target="_blank">Google.Chrome manifests (teardown source)</a></li>
+<li data-block-type="core"><a href="https://github.com/microsoft/winget-pkgs/issues/341106" rel="noopener" target="_blank">winget-pkgs #341106: Chrome installer hash mismatch</a>. Cited twice in this post, once as the operational cost of pinning a hash to a versionless URL, and once as evidence the pinning is enforced. The <code>winget --info</code> output attached to that issue also shows the client’s admin settings, including <code>InstallerHashOverride</code> and <code>LocalArchiveMalwareScanOverride</code>, both disabled by default</li>
+<li data-block-type="core"><a href="https://github.com/microsoft/winget-pkgs/pull/406937" rel="noopener" target="_blank">winget-pkgs PR #406937</a>: the Chrome 150.0.7871.187 submission traced in Part 2, opened 23 July 2026 at 22:17 UTC and merged 24 July at 01:31 UTC</li>
+<li data-block-type="core"><a href="https://github.com/SpecterShell/Dumplings" rel="noopener" target="_blank">SpecterShell/Dumplings</a>, the community monitoring and submission pipeline behind that PR and the <code>Dumplings Mod</code> manifest stamps</li>
+<li data-block-type="core">Snapshot sources: <a href="https://chromereleases.googleblog.com/" rel="noopener" target="_blank">Chrome Releases blog</a> and specifically the <a href="https://chromereleases.googleblog.com/2026/07/stable-channel-update-for-desktop_0256605430.html" rel="noopener" target="_blank">21 July 2026 Stable Channel Update for Desktop</a> (150.0.7871.181/.182, 12 security fixes), <a href="https://www.7-zip.org/download.html" rel="noopener" target="_blank">7-Zip downloads</a>, <a href="https://code.visualstudio.com/updates" rel="noopener" target="_blank">VS Code release notes</a>, and the live <code>winget-pkgs</code> manifests linked above</li>
+<li data-block-type="core"><a href="https://github.com/microsoft/winget-pkgs/tree/master/manifests/m/Microsoft/VisualStudioCode" rel="noopener" target="_blank">Microsoft.VisualStudioCode manifests</a> and the <a href="https://github.com/microsoft/winget-pkgs/pulls?q=is%3Apr+is%3Amerged+Microsoft.VisualStudioCode+in%3Atitle" rel="noopener" target="_blank">merged pull requests for that package</a>. The submission handover described in Part 2 is visible in the author and timestamp of each: <a href="https://github.com/microsoft/winget-pkgs/pull/392421" rel="noopener" target="_blank">1.126.0</a> and earlier from a Microsoft member, <a href="https://github.com/microsoft/winget-pkgs/pull/403330" rel="noopener" target="_blank">1.129.0</a> and <a href="https://github.com/microsoft/winget-pkgs/pull/406486" rel="noopener" target="_blank">1.130.0</a> from community contributors</li>
+<li data-block-type="core"><a href="https://github.com/microsoft/winget-pkgs/pull/390462" rel="noopener" target="_blank">winget-pkgs PR #390462</a>: the VLC submission whose checklist is quoted in Part 2, merged with both local-testing boxes unticked</li>
+<li data-block-type="core"><a href="https://github.com/microsoft/winget-cli/issues/4068" rel="noopener" target="_blank">winget-cli #4068: non-silent uninstall with AppsAndFeaturesEntries</a></li>
+<li data-block-type="core"><a href="https://github.com/microsoft/winget-cli/issues/4677" rel="noopener" target="_blank">winget-cli #4677: uninstallPrevious fails across installer-technology changes</a></li>
+<li data-block-type="core"><a href="https://learn.microsoft.com/en-us/intune/app-management/deployment/enterprise-app-management" rel="noopener" target="_blank">Microsoft Learn: Intune Enterprise App Management</a>, <a href="https://learn.microsoft.com/en-us/intune/app-management/deployment/add-enterprise-catalog-app" rel="noopener" target="_blank">add an Enterprise App Catalog app</a>, and <a href="https://learn.microsoft.com/en-us/intune/app-management/deployment/update-enterprise-supersedence" rel="noopener" target="_blank">guided update supersedence</a></li>
+<li data-block-type="core"><a href="https://techcommunity.microsoft.com/blog/microsoftintuneblog/microsoft-365-adds-advanced-microsoft-intune-solutions-at-scale/4474272" rel="noopener" target="_blank">Microsoft Intune blog: Microsoft 365 adds advanced Intune solutions at scale</a> (the E3/E5 packaging change that brings Enterprise App Management into E5 from July 2026). Verify current entitlement against Microsoft’s own licensing documentation and your tenant before making a purchasing decision on the strength of it.</li>
+</ul>
+<p data-block-type="core"><strong>Tooling / community:</strong></p>
+<p data-block-type="core"><strong>Curated catalog capabilities:</strong></p>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core"><a href="https://patchmypc.com/catalog-release-history/2026-releases/" rel="noopener" target="_blank">Patch My PC catalog release history</a>, cited in Part 2 as an example of a publicly published release feed. Each entry carries the product version, update classification, severity, creation date, malware-scan detection ratio with a link to the full scan, and any CVE IDs addressed.</li>
+<li data-block-type="core">The capability claims in Part 4 (release-monitoring targets, security validation with published multi-engine scan results, signed catalog metadata, MST/transform persistence, self-updater controls, conflicting-process handling) are drawn from the public process documentation and knowledge bases that the major commercial catalog vendors maintain. Each vendor documents these differently. When evaluating a product, verify every capability in Appendix A against that vendor’s own documentation rather than taking the category description here as a datasheet.</li>
+</ul>
+<p data-block-type="core"><em>All claims about winget-pkgs process and the example manifests were verified against the live repository in July 2026. Label lists and moderator rosters change; check the linked docs for current stat</em>e.</p>
+<p class="post-views content-post post-26753 entry-meta load-static">
+<span class="post-views-icon dashicons dashicons-chart-bar"></span> <span class="post-views-label">Views:</span> <span class="post-views-count">275</span>
+</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
