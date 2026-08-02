@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intune On Demand Device Sync Now Uses IC3 for IME Workloads</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Call4Cloud (Rudy Ooms)</span>
+    <span class="date">August 1, 2026</span>
+  </div>
+  <h1>Intune On Demand Device Sync Now Uses IC3 for IME Workloads</h1>
+  <div class="orig">Saved for offline reading · <a href="https://patchmypc.com/blog/intune-on-demand-device-sync-now-uses-ic3-for-ime-workloads/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="post-content">
+<p class="wp-block-paragraph"><a href="https://patchmypc.com/blog/inside-the-improved-on-demand-sync-for-windows-devices/">In our previous investigation,</a> the improved Device Sync action sent two WNS notifications. One woke <strong>WindowsMDMPush</strong> so the Windows MDM client could trigger the Policy refresh. The other targeted the IME Notification App and carried a <strong>DirectSync </strong>request for <strong>Win32 apps, PowerShell scripts, and Proactive Remediations.</strong></p>
+<p class="wp-block-paragraph">When I pressed<strong> Sync again with v2 of this sync button implementation</strong>, something had changed. WindowsMDMPush was still activated through WNS, but the IME request now appeared in NotificationInfraLogs as an incoming<strong><a href="https://patchmypc.com/blog/ic3-from-wns-to-real-time-device-and-ime-actions/"> IC3 Trouter request. </a></strong>The payload was almost identical to the one we captured before. The workloads had not changed. The transport used to reach IME had.</p>
+<figure class="wp-block-image size-full"><a data-caption="The current Sync action is hybrid. WNS still wakes Windows MDM, while IC3 and Trouter now carry the IME DirectSync request." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-9.jpg"><picture class="wp-image-190840" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-9.jpg.webp 927w, https://patchmypc.com/app/uploads/2026/08/image-9-300x225.jpg.webp 300w, https://patchmypc.com/app/uploads/2026/08/image-9-768x576.jpg.webp 768w" sizes="(max-width: 927px) 100vw, 927px" type="image/webp"/>
+<img alt="The current Sync action is hybrid. WNS still wakes Windows MDM, while IC3 and Trouter now carry the IME DirectSync request." data-lazy-sizes="(max-width: 927px) 100vw, 927px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-9.jpg 927w, https://patchmypc.com/app/uploads/2026/08/image-9-300x225.jpg 300w, https://patchmypc.com/app/uploads/2026/08/image-9-768x576.jpg 768w" decoding="async" src="assets/123a35a51dd448c1/img_0.jpg"/><noscript><img alt="The current Sync action is hybrid. WNS still wakes Windows MDM, while IC3 and Trouter now carry the IME DirectSync request." decoding="async" src="assets/123a35a51dd448c1/img_1.jpg"/></noscript>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-it-started-as-a-windows-mdm-only-device-sync">It started as a Windows MDM-only Device Sync<span class="clth-copy-icon" data-heading-id="h-it-started-as-a-windows-mdm-only-device-sync"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The original <strong>Windows Remote Sync action</strong> was built around the<strong> Windows MDM stack</strong>. When an administrator pressed Sync in the Intune portal, Intune asked Windows Push Notification Services to send a small notification to the device. That notification did not contain policies. It only told Windows that the device should contact Intune again.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image.png"><picture class="wp-image-190846" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image.png.webp 665w, https://patchmypc.com/app/uploads/2026/08/image-300x173.png.webp 300w" sizes="(max-width: 665px) 100vw, 665px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 665px) 100vw, 665px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image.png 665w, https://patchmypc.com/app/uploads/2026/08/image-300x173.png 300w" decoding="async" src="assets/123a35a51dd448c1/img_2.png"/><noscript><img alt="" decoding="async" src="assets/123a35a51dd448c1/img_3.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">Windows then activated the WindowsMDMPush task. The device enrollment components started the OMA DM client, opened a management session, and asked Intune for policy and compliance work. The Intune Management Extension was not part of that chain.</p>
+<p class="wp-block-paragraph">That is why the button often felt incomplete. Win32 apps, PowerShell scripts, and Proactive Remediations are not processed by the Windows MDM client. They belong to IME and followed their own schedules. A configuration policy could arrive after <strong><a href="https://learn.microsoft.com/nb-no/intune/device-management/actions/sync?pivots=windows">pressing Sync,</a></strong> while a newly assigned required app still appeared to do nothing.</p>
+<p class="wp-block-paragraph">The important point for this story is simple: the first version only woke the Windows MDM side of the device.</p>
+<h2 class="wp-block-heading" id="h-the-first-improvement-added-ime-workloads-to-device-sync">The first improvement added IME workloads to Device Sync<span class="clth-copy-icon" data-heading-id="h-the-first-improvement-added-ime-workloads-to-device-sync"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Microsoft fixed the biggest limitation by adding a second notification beside <strong>WindowsMDMPush</strong>. The Windows MDM notification stayed in place, but a separate notification now targeted <strong><a href="https://patchmypc.com/blog/inside-the-improved-on-demand-sync-for-windows-devices/">the IME Notification App and carried a Sidecar notification payload.</a></strong></p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-1.jpg"><picture class="wp-image-190837" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-1.jpg.webp 665w, https://patchmypc.com/app/uploads/2026/08/image-1-300x225.jpg.webp 300w" sizes="(max-width: 665px) 100vw, 665px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 665px) 100vw, 665px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-1.jpg 665w, https://patchmypc.com/app/uploads/2026/08/image-1-300x225.jpg 300w" decoding="async" src="assets/123a35a51dd448c1/img_4.jpg"/><noscript><img alt="" decoding="async" src="assets/123a35a51dd448c1/img_5.jpg"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">That payload selected the workloads. NotificationIntent was set to 2, which maps to Win32AppWorkload. SyncType was set to DirectSync. AdditionalWorkloads contained 8 and 9, which map to PowerShellScriptWorkload and ProactiveRemediation.</p>
+<p class="wp-block-paragraph">Inside IME, the request used the existing device action pipeline. DeviceActionCallbackAsync handled the incoming action and then called the workload specific handlers. TriggerWin32AppAsync started the Win32 app check, TriggerPowerShellScriptAsync started the script check, and TriggerProactiveRemediationAsync started the remediation sync.</p>
+<p class="wp-block-paragraph">This was the first real improvement. One click could now wake both management clients. The Windows MDM client refreshed policies and compliance, while IME immediately checked its workloads. At that point the workloads had changed, but both notification paths still used WNS.</p>
+<h2 class="wp-block-heading" id="h-wns-replaced-with-ic3-in-the-ime-for-device-sync">WNS Replaced with IC3 in the IME for Device Sync<span class="clth-copy-icon" data-heading-id="h-wns-replaced-with-ic3-in-the-ime-for-device-sync"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The newer capture shows the next step. The Windows MDM side still records the raw notification that activates WindowsMDMPush. That part has not moved. The IME side is different. Instead of another WNS activation for the IME Notification App, NotificationInfraLogs records Processing incoming Trouter request.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-2.jpg"><picture class="wp-image-190838" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-2.jpg.webp 665w, https://patchmypc.com/app/uploads/2026/08/image-2-300x225.jpg.webp 300w" sizes="(max-width: 665px) 100vw, 665px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 665px) 100vw, 665px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-2.jpg 665w, https://patchmypc.com/app/uploads/2026/08/image-2-300x225.jpg 300w" decoding="async" src="assets/123a35a51dd448c1/img_6.jpg"/><noscript><img alt="" decoding="async" src="assets/123a35a51dd448c1/img_7.jpg"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">The message contains the same values as before. NotificationIntent is still 2. SyncType is still DirectSync. <strong>AdditionalWorkloads is now written as 9;8 instead of 8;9</strong>, but it still selects Proactive Remediations and PowerShell scripts. The order is different. The selected workloads are not.</p>
+<p class="wp-block-paragraph">The important detail is that clicking Sync does not create a direct browser connection to the device. The portal submits an action to the Intune service. The client side files do not expose the complete internal service routing, so that middle hop should not be presented as if it were visible in the binaries. The evidence becomes direct again when Trouter delivers the request to IME.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-3.jpg"><picture class="wp-image-190836" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-3.jpg.webp 643w, https://patchmypc.com/app/uploads/2026/08/image-3-300x225.jpg.webp 300w" sizes="(max-width: 643px) 100vw, 643px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 643px) 100vw, 643px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-3.jpg 643w, https://patchmypc.com/app/uploads/2026/08/image-3-300x225.jpg 300w" decoding="async" src="assets/123a35a51dd448c1/img_8.jpg"/><noscript><img alt="" decoding="async" src="assets/123a35a51dd448c1/img_9.jpg"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">That existing connection is the real time part of the design. Before anyone presses Sync, IME receives the notification infrastructure configuration through its normal check in. The response supplies the registrar endpoint, the Trouter endpoint, the token endpoint, and the configuration lifetime. IME stores those values under SOFTWARE\Microsoft\IntuneManagementExtension\IC3, obtains a token, registers its listener, and starts the Trouter client.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image.jpg"><picture class="wp-image-190835" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image.jpg.webp 638w, https://patchmypc.com/app/uploads/2026/08/image-300x85.jpg.webp 300w" sizes="(max-width: 638px) 100vw, 638px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 638px) 100vw, 638px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image.jpg 638w, https://patchmypc.com/app/uploads/2026/08/image-300x85.jpg 300w" decoding="async" src="assets/123a35a51dd448c1/img_10.jpg"/><noscript><img alt="" decoding="async" src="assets/123a35a51dd448c1/img_11.jpg"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">The investigated code now lets us show that connection at code level rather than only through symbol names. IC3Client.StartAsync builds TrouterClientOptions from the downloaded configuration, creates the token provider, creates the Trouter client, registers MessageListener on /notification, attaches the connection events, and calls TrouterClient.Start().</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-4.jpg"><picture class="wp-image-190839" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-4.jpg.webp 639w, https://patchmypc.com/app/uploads/2026/08/image-4-300x244.jpg.webp 300w" sizes="(max-width: 639px) 100vw, 639px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 639px) 100vw, 639px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-4.jpg 639w, https://patchmypc.com/app/uploads/2026/08/image-4-300x244.jpg 300w" decoding="async" src="assets/123a35a51dd448c1/img_12.jpg"/><noscript><img alt="" decoding="async" src="assets/123a35a51dd448c1/img_13.jpg"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">Figure 6. Decompiled IC3Client.StartAsync from the uploaded IntuneWindowsAgent executable. The method creates the Trouter client, registers the /notification listener, and starts the persistent connection.</p>
+<h2 class="wp-block-heading" id="h-what-happens-inside-ime-after-you-press-device-sync">What happens inside IME after you press Device Sync<span class="clth-copy-icon" data-heading-id="h-what-happens-inside-ime-after-you-press-device-sync"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Once the connection is already active, the later Device Sync action can use it. The service side action targets the IME notification infrastructure and Trouter pushes the request over the existing WebSocket. The client side path starts in MessageListener.ProcessRequestAsync.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-15.jpg"><picture class="wp-image-190852" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-15.jpg.webp 665w, https://patchmypc.com/app/uploads/2026/08/image-15-300x225.jpg.webp 300w" sizes="(max-width: 665px) 100vw, 665px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 665px) 100vw, 665px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-15.jpg 665w, https://patchmypc.com/app/uploads/2026/08/image-15-300x225.jpg 300w" decoding="async" src="assets/123a35a51dd448c1/img_14.jpg"/><noscript><img alt="" decoding="async" src="assets/123a35a51dd448c1/img_15.jpg"/></noscript>
+</picture>
+</a></figure>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-6.jpg"><picture class="wp-image-190844" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-6.jpg.webp 638w, https://patchmypc.com/app/uploads/2026/08/image-6-300x90.jpg.webp 300w" sizes="(max-width: 638px) 100vw, 638px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 638px) 100vw, 638px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-6.jpg 638w, https://patchmypc.com/app/uploads/2026/08/image-6-300x90.jpg 300w" decoding="async" src="assets/123a35a51dd448c1/img_16.jpg"/><noscript><img alt="" decoding="async" src="assets/123a35a51dd448c1/img_17.jpg"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">Figure 8. NotificationInfraLogs from the Device Sync action shows the Trouter request, DirectSync payload, acknowledgement, and background processing.</p>
+<h3 class="wp-block-heading" id="h-processrequestasync">ProcessRequestAsync<span class="clth-copy-icon" data-heading-id="h-processrequestasync"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">ProcessRequestAsync validates the request, creates the processing context, parses MessagePayload, checks the IC3 version, starts background processing, and returns the response. CreateProcessingContext is also where the immediate Accepted for processing response and HTTP status 200 are prepared.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-13.jpg"><picture class="wp-image-190850" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-13.jpg.webp 639w, https://patchmypc.com/app/uploads/2026/08/image-13-300x224.jpg.webp 300w" sizes="(max-width: 639px) 100vw, 639px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 639px) 100vw, 639px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-13.jpg 639w, https://patchmypc.com/app/uploads/2026/08/image-13-300x224.jpg 300w" decoding="async" src="assets/123a35a51dd448c1/img_18.jpg"/><noscript><img alt="" decoding="async" src="assets/123a35a51dd448c1/img_19.jpg"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">Figure 9. Decompiled MessageListener.ProcessRequestAsync and CreateProcessingContext. This is the code path that prepares the immediate acknowledgement.</p>
+<h3 class="wp-block-heading" id="h-parsemessagepayload">ParseMessagePayload<span class="clth-copy-icon" data-heading-id="h-parsemessagepayload"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">ParseMessagePayload reads TrouterRequest.Body and passes it to the message processor. The resulting MessagePayload contains DeviceCheckinContent together with IC3Version and MinIC3Version. StartBackgroundProcessing then creates BackgroundMessageProcessor and starts it with the same cancellation token.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-8.jpg"><picture class="wp-image-190842" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-8.jpg.webp 639w, https://patchmypc.com/app/uploads/2026/08/image-8-300x234.jpg.webp 300w" sizes="(max-width: 639px) 100vw, 639px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 639px) 100vw, 639px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-8.jpg 639w, https://patchmypc.com/app/uploads/2026/08/image-8-300x234.jpg 300w" decoding="async" src="assets/123a35a51dd448c1/img_20.jpg"/><noscript><img alt="" decoding="async" src="assets/123a35a51dd448c1/img_21.jpg"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">Figure 10. Decompiled ParseMessagePayload and StartBackgroundProcessing. The Trouter request body becomes MessagePayload and is handed to the background processor.</p>
+<h3 class="wp-block-heading" id="h-backgroundmessageprocessor">BackgroundMessageProcessor.<span class="clth-copy-icon" data-heading-id="h-backgroundmessageprocessor"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">The next handoff is especially important. BackgroundMessageProcessor.ProcessMessageAsync calls deviceActionCallback with payload.DeviceCheckinContent. In other words, IC3 is not introducing a second app or script engine. It feeds the new transport into the existing device action callback.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-7.jpg"><picture class="wp-image-190849" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-7.jpg.webp 639w, https://patchmypc.com/app/uploads/2026/08/image-7-300x115.jpg.webp 300w" sizes="(max-width: 639px) 100vw, 639px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 639px) 100vw, 639px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-7.jpg 639w, https://patchmypc.com/app/uploads/2026/08/image-7-300x115.jpg 300w" decoding="async" src="assets/123a35a51dd448c1/img_22.jpg"/><noscript><img alt="" decoding="async" src="assets/123a35a51dd448c1/img_23.jpg"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">Figure 11. Decompiled BackgroundMessageProcessor.ProcessMessageAsync. DeviceCheckinContent is passed directly to the existing deviceActionCallback.</p>
+<h3 class="wp-block-heading" id="h-sidecarnotificationpayload">SidecarNotificationPayload<span class="clth-copy-icon" data-heading-id="h-sidecarnotificationpayload"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">The callback parses the same SidecarNotificationPayload used by the earlier WNS implementation. It reads NotificationIntent, SyncType, and AdditionalWorkloads. The primary intent can trigger its own handler, while TriggerAdditionalWorkloads handles the extra values from the semicolon separated list.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-10.jpg"><picture class="wp-image-190845" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-10.jpg.webp 639w, https://patchmypc.com/app/uploads/2026/08/image-10-300x206.jpg.webp 300w" sizes="(max-width: 639px) 100vw, 639px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 639px) 100vw, 639px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-10.jpg 639w, https://patchmypc.com/app/uploads/2026/08/image-10-300x206.jpg 300w" decoding="async" src="assets/123a35a51dd448c1/img_24.jpg"/><noscript><img alt="" decoding="async" src="assets/123a35a51dd448c1/img_25.jpg"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">Figure 12. Decompiled EmsAgentService.DeviceActionCallbackAsync. The IC3 payload enters the existing workload dispatcher and reaches the Win32, PowerShell, and remediation callbacks.</p>
+<h3 class="wp-block-heading" id="h-sidecarnotification">SidecarNotification<span class="clth-copy-icon" data-heading-id="h-sidecarnotification"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">The SidecarNotification DLL confirms the numeric values rather than leaving them as assumptions. Win32AppWorkload is 2, PowerShellScriptWorkload is 8, and ProactiveRemediation is 9. The same DLL also contains GetSyncType and GetAdditionalWorkloads, which read the exact keys used in the DirectSync payload.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-14.jpg"><picture class="wp-image-190843" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-14.jpg.webp 639w, https://patchmypc.com/app/uploads/2026/08/image-14-300x229.jpg.webp 300w" sizes="(max-width: 639px) 100vw, 639px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 639px) 100vw, 639px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-14.jpg 639w, https://patchmypc.com/app/uploads/2026/08/image-14-300x229.jpg 300w" decoding="async" src="assets/123a35a51dd448c1/img_26.jpg"/><noscript><img alt="" decoding="async" src="assets/123a35a51dd448c1/img_27.jpg"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">Figure 13. Decompiled SidecarNotificationActionType and payload extension methods from the uploaded SidecarNotification DLL.</p>
+<h3 class="wp-block-heading" id="h-triggeradditionalworkloads">TriggerAdditionalWorkloads<span class="clth-copy-icon" data-heading-id="h-triggeradditionalworkloads"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">AgentCommon contains the code that handles the 9;8 value. TriggerAdditionalWorkloads splits the string on semicolons, caps it at twenty entries, validates every value against SidecarNotificationActionType, skips the primary intent and duplicate values, creates a new ClientContext, and dispatches the matching workload callback. The code only supports the three workload values that matter here: 2, 8, and 9.</p>
+<figure class="wp-block-image size-full"><a data-caption="Decompiled NotificationWorkloadHelper.TriggerAdditionalWorkloads from AgentCommon.dll. The method parses 9;8 and dispatches the matching workload callbacks." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-5.jpg"><picture class="wp-image-190841" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-5.jpg.webp 639w, https://patchmypc.com/app/uploads/2026/08/image-5-300x229.jpg.webp 300w" sizes="(max-width: 639px) 100vw, 639px" type="image/webp"/>
+<img alt="Decompiled NotificationWorkloadHelper.TriggerAdditionalWorkloads from AgentCommon.dll. The method parses 9;8 and dispatches the matching workload callbacks." data-lazy-sizes="(max-width: 639px) 100vw, 639px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-5.jpg 639w, https://patchmypc.com/app/uploads/2026/08/image-5-300x229.jpg 300w" decoding="async" src="assets/123a35a51dd448c1/img_28.jpg"/><noscript><img alt="Decompiled NotificationWorkloadHelper.TriggerAdditionalWorkloads from AgentCommon.dll. The method parses 9;8 and dispatches the matching workload callbacks." decoding="async" src="assets/123a35a51dd448c1/img_29.jpg"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">The complete code path can now be followed without relying on a list of strings. IC3Client.StartAsync creates the live Trouter connection. MessageListener.ProcessRequestAsync accepts the incoming request. BackgroundMessageProcessor passes DeviceCheckinContent into deviceActionCallback. EmsAgentService.DeviceActionCallbackAsync then routes the primary and additional workload values into the existing IME handlers.</p>
+<h2 class="wp-block-heading" id="h-turning-the-investigation-into-a-live-ic3-sync-monitor">Turning the investigation into a live IC3 Sync monitor<span class="clth-copy-icon" data-heading-id="h-turning-the-investigation-into-a-live-ic3-sync-monitor"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Once the two notification paths were clear, I wanted to see them together instead of constantly switching between the Windows event logs and NotificationInfraLogs. That is why I built the Intune Notification Monitor. The goal was not to simulate Intune, but to correlate the real client side evidence produced by the next Sync action and turn it into one readable flow.</p>
+<p class="wp-block-paragraph">The monitor also made the speed improvement immediately visible. Because IME already has an active IC3 and Trouter connection before anyone presses Sync, the DirectSync request does not have to wait for the next scheduled IME check in. In our captured actions, the IC3 request arrived and started the IME workload flow within milliseconds of pressing Sync in the Intune portal.</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-4-1024x554.png"><picture class="wp-image-190873" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-4-1024x554.png.webp 1024w, https://patchmypc.com/app/uploads/2026/08/image-4-300x162.png.webp 300w, https://patchmypc.com/app/uploads/2026/08/image-4-768x416.png.webp 768w, https://patchmypc.com/app/uploads/2026/08/image-4-1536x831.png.webp 1536w, https://patchmypc.com/app/uploads/2026/08/image-4.png.webp 1846w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-4-1024x554.png 1024w, https://patchmypc.com/app/uploads/2026/08/image-4-300x162.png 300w, https://patchmypc.com/app/uploads/2026/08/image-4-768x416.png 768w, https://patchmypc.com/app/uploads/2026/08/image-4-1536x831.png 1536w, https://patchmypc.com/app/uploads/2026/08/image-4.png 1846w" decoding="async" src="assets/123a35a51dd448c1/img_30.png"/><noscript><img alt="" decoding="async" src="assets/123a35a51dd448c1/img_31.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">That timing is an observation from our captures and should not be treated as a guaranteed response time. However, it clearly shows the advantage of delivering the request over an already established connection.</p>
+<h2 class="wp-block-heading" id="h-the-current-intune-sync-design-is-hybrid">The current Intune Sync design is hybrid<span class="clth-copy-icon" data-heading-id="h-the-current-intune-sync-design-is-hybrid"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Putting everything together, pressing Sync now starts two related but separate client paths. The Intune Notification Monitor can display them as one Hybrid action, but the evidence underneath remains distinct. The Windows MDM branch begins with WNS and WindowsMDMPush. The IME branch begins when IC3 and Trouter deliver the DirectSync request to NotificationMessageListener.</p>
+<p class="wp-block-paragraph">On the Windows MDM side, the built in client handles policies, compliance, and the OMA DM session. On the IME side, the already established Trouter connection carries DeviceCheckinContent into the existing DeviceActionCallbackAsync pipeline, which then dispatches Win32 apps, PowerShell scripts, and Proactive Remediations.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-12.jpg"><picture class="wp-image-190851" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-12.jpg.webp 665w, https://patchmypc.com/app/uploads/2026/08/image-12-300x225.jpg.webp 300w" sizes="(max-width: 665px) 100vw, 665px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 665px) 100vw, 665px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-12.jpg 665w, https://patchmypc.com/app/uploads/2026/08/image-12-300x225.jpg 300w" decoding="async" src="assets/123a35a51dd448c1/img_32.jpg"/><noscript><img alt="" decoding="async" src="assets/123a35a51dd448c1/img_33.jpg"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">The most accurate description is therefore not that Intune Sync has completely moved to IC3. The current implementation is hybrid. WNS remains the wake up path for Windows MDM. IC3 and Trouter are now the delivery path for the IME DirectSync request. The monitor does not change that architecture; it simply makes both halves visible in one place.</p>
+<p class="wp-block-paragraph">One click in the portal now coordinates two clients through two different notification paths. The Sync button looks almost unchanged. Underneath it, the architecture has changed completely, and the live monitor gives us a practical way to watch that change happen on the device.</p>
+<p class="wp-block-paragraph">Receiving and acknowledging the request is only the first part. The next question is how Intune follows both paths and turns their progress into the new Sync Status window. That is the next part of the story.</p>
+<h2 class="wp-block-heading" id="h-what-about-the-new-sync-status-window">What about the new Sync status window?<span class="clth-copy-icon" data-heading-id="h-what-about-the-new-sync-status-window"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The new Sync status pane is the visible part of this improved flow. After the device is notified, Intune follows the different Sync areas separately and shows whether policies, applications, and scripts completed successfully.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-1.png"><img alt="" class="wp-image-190847" data-lazy-sizes="(max-width: 572px) 100vw, 572px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-1.png 572w, https://patchmypc.com/app/uploads/2026/08/image-1-300x205.png 300w" decoding="async" src="assets/123a35a51dd448c1/img_34.png"/><noscript><img alt="" class="wp-image-190847" decoding="async" src="assets/123a35a51dd448c1/img_35.png"/></noscript></a></figure>
+<p class="wp-block-paragraph">How those individual results are collected, correlated, and returned to the portal deserves its own technical investigation and a dedicated follow up blog.</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

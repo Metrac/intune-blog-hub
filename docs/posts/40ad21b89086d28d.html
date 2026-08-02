@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intune assignment filters for every in-support Windows build</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">MSEndpointMgr</span>
+    <span class="date">August 1, 2026</span>
+  </div>
+  <h1>Intune assignment filters for every in-support Windows build</h1>
+  <div class="orig">Saved for offline reading · <a href="https://msendpointmgr.com/2026/08/01/intune-assignment-filters-windows-builds/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<nav class="wp-block-stackable-table-of-contents stk-block-table-of-contents stk-block stk-c640e86" data-block-id="c640e86"><p class="stk-table-of-contents__title">Table of Contents</p></nav>
+<h1 class="wp-block-heading" id="0-overview"><a aria-hidden="true" class="aal_anchor" href="#overview" id="overview"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Overview</h1>
+<p data-block-type="core">Assignment filters get created the way most Intune objects get created. Adhoc, one at a time, in a hurry, because a deployment needed one <em>right now</em>. 6 months later you have <code>Win11</code>, <code>Windows 11 devices</code>, <code>W11-Test</code>, and <code>Filter - windows 11 (new)</code>, 3 of which do the same thing slightly differently and none of which anyone trusts. The next admin needing a Windows 11 filter will create yet another one. Rinse, repeat.</p>
+<p data-block-type="core">The portal offers nothing to help here. There’s no bulk create and no import, so filters go in one at a time. Fine for 1, tedious for 20, and if you’re an MSP standing up the same set for every customer it’s 20 times however many tenants you have (unless you got some Graph skillz like the kool kidz).</p>
+<p data-block-type="core">Defining the filters as code fixes it. You get consistent names, rules you can review before they reach the tenant, and a library you can redeploy into any tenant in about 30 seconds.</p>
+<p data-block-type="core">There are 2 halves to this blog. Creating filters for Windows builds and getting hold of those accurate Windows build numbers to put in them, which is what the second half is for. Filters first.</p>
+<h1 class="wp-block-heading" id="1-filters"><a aria-hidden="true" class="aal_anchor" href="#filters" id="filters"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Filters</h1>
+<p data-block-type="core">For the Microsoft Graph fans, filters live at a single endpoint:</p>
+<pre class="wp-block-code" data-block-type="core"><code>https://graph.microsoft.com/beta/deviceManagement/assignmentFilters</code></pre>
+<p data-block-type="core">The JSON body for POST/PATCH requests isn’t hugely complex:</p>
+<pre class="wp-block-code" data-block-type="core"><code>{
+  "displayName": "WIN-OS-Min-W11-23H2",
+  "description": "Windows 11 23H2 or newer",
+  "platform": "windows10AndLater",
+  "rule": "(device.operatingSystemVersion -ge \"10.0.22631\")",
+  "assignmentFilterManagementType": "devices",
+  "roleScopeTags": ["0"]
+}</code></pre>
+<p class="has-gridlove-acc-color has-gridlove-highlight-acc-background-color has-text-color has-background has-link-color wp-elements-99b1c2da8f4c23b4c4895600607ce8e8" data-block-type="core">The one to watch is <code>assignmentFilterManagementType</code>. It takes <code>devices</code> or <code>apps</code>.</p>
+<p data-block-type="core">You’ll need <code>DeviceManagementConfiguration.ReadWrite.All</code> to Create/Update Filters through the Graph.</p>
+<h2 class="wp-block-heading" id="2-limitations"><a aria-hidden="true" class="aal_anchor" href="#limitations" id="limitations"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Limitations</h2>
+<p data-block-type="core">A few limits worth knowing as per the docs <a href="https://learn.microsoft.com/en-us/intune/fundamentals/filters/overview" rel="noopener" target="_blank">Create assignment filters in Microsoft Intune</a>:</p>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core"><strong>200 assignment filters per tenant.</strong> Generous, until every team starts creating one-off filters nobody else understands.</li>
+<li data-block-type="core"><strong>3,072 characters per filter.</strong> You will not hit this with a version rule. You might with a long <code>-in</code> list of version numbers or alike.</li>
+<li data-block-type="core"><strong>Managed app filters apply to app protection policies and app configuration policies only.</strong> The docs are explicit that they don’t apply to other policies like compliance or device configuration profiles. Worth knowing before you build a beautiful set of <code>APP-</code> filters and wonder why you can’t select them anywhere.</li>
+<li data-block-type="core"><strong>Managed device filters need the device enrolled in Intune.</strong> Obvious when you say it out loud, less obvious when you’re wondering why a filter preview looks wrong.</li>
+</ul>
+<h2 class="wp-block-heading" id="3-platform"><a aria-hidden="true" class="aal_anchor" href="#platform" id="platform"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Platform</h2>
+<p data-block-type="core">Working with filters in the UI is relatively straight forward. When creating filters through Graph you’ll want to validate the platform enums. They are documented at <a href="https://learn.microsoft.com/en-us/graph/api/resources/intune-policyset-deviceplatformtype?view=graph-rest-beta" rel="noopener" target="_blank">devicePlatformType enum type – Microsoft Graph beta | Microsoft Learn</a></p>
+<figure class="wp-block-image size-full" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/08/image-3.png"><img alt="" class="wp-image-26845" decoding="async" src="assets/40ad21b89086d28d/img_0.png"/></a></figure>
+<p data-block-type="core">If you wan’t your first Graph call to check the filters in your tenant. Try:</p>
+<pre class="wp-block-code" data-block-type="core"><code>Connect-MgGraph -Scopes "DeviceManagementConfiguration.Read.All" -NoWelcome
+$filters = (Invoke-MgGraphRequest -Method GET -Uri "https://graph.microsoft.com/beta/deviceManagement/assignmentFilters").value
+$filters | Select-Object displayName, platform, assignmentFilterManagementType, rule | Format-Table -AutoSize</code></pre>
+<figure class="wp-block-image size-full" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/08/image-2.png"><img alt="" class="wp-image-26844" decoding="async" src="assets/40ad21b89086d28d/img_1.png"/></a></figure>
+<p data-block-type="core">In this post we are going to be using <code>windows10AndLater</code>.</p>
+<h2 class="wp-block-heading" id="4-naming"><a aria-hidden="true" class="aal_anchor" href="#naming" id="naming"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Naming</h2>
+<p data-block-type="core">Good practice dictates you should have a naming convention for anything you create in Entra/Intune. Before you generate anything, make a decision on this. At assignment time filters appear alphabetically in a flat, fairly narrow dropdown, and the person choosing one often didn’t create it.</p>
+<p data-block-type="core">I am not the oracle of truth here, but im going with this pattern for a naming convention:</p>
+<pre class="wp-block-code" data-block-type="core"><code>&lt;PLATFORM&gt;-&lt;CATEGORY&gt;-&lt;SPECIFIC&gt;</code></pre>
+<p data-block-type="core">With a product code in the <code>&lt;SPECIFIC&gt;</code> part wherever the same label could mean 2 different things. Example:</p>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core"><strong>WIN-OS-Min-W11-23H2</strong><br/>Windows, OS version, minimum, Windows 11 23H2</li>
+<li data-block-type="core"><strong>WIN-OS-Only-W11-23H2</strong><br/>Windows, OS version, that release only</li>
+<li data-block-type="core"><strong>WIN-MFR-Lenovo</strong><br/>Windows, manufacturer, Lenovo</li>
+</ul>
+<p data-block-type="core">The <code>W11</code> is in there because 22H2 was a Windows 10 release and a Windows 11 release on different builds, so the release number alone isn’t always unique.</p>
+<h1 class="wp-block-heading" id="5-windows-build-numbers"><a aria-hidden="true" class="aal_anchor" href="#windows-build-numbers" id="windows-build-numbers"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Windows Build Numbers</h1>
+<p data-block-type="core">Every version number in a filter library is a constant. <code>10.0.22621</code> is Windows 11 22H2, <code>10.0.26100</code> is 24H2, and if you fat-finger one the filter still saves happily and matches precisely nothing.</p>
+<p class="has-gridlove-acc-color has-gridlove-highlight-acc-background-color has-text-color has-background has-link-color wp-elements-ca9e48652aa8baffb2e5e1052d7779a1" data-block-type="core"><strong>Note: </strong>The <code>osVersion</code> property is being deprecated. Use <code>operatingSystemVersion</code> when building your filters (even though operatingSystemVersion is still marked as in public preview).</p>
+<p data-block-type="core">The meat and bone of this post is to help you understand that you don’t have to hardcode them. The <strong>Windows Update for Business deployment service</strong> publishes a catalog through Graph and it will hand you the build numbers after some filtering.</p>
+<p data-block-type="core">Windows ships new releases and retires old ones, so a filter library that was accurate the week you built it naturally drifts. The script further down is written to be re-run. Point it at the catalog again in 6 months and whatever has shipped since is just there in the output, so you top up the filters you care about instead of going hunting for build numbers a second time.</p>
+<h2 class="wp-block-heading" id="6-catalog"><a aria-hidden="true" class="aal_anchor" href="#catalog" id="catalog"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Catalog</h2>
+<p data-block-type="core">The entries live here:</p>
+<pre class="wp-block-code" data-block-type="core"><code>https://graph.microsoft.com/beta/admin/windows/updates/catalog/entries</code></pre>
+<p data-block-type="core">3 entry types come back. <code>qualityUpdateCatalogEntry</code> covers the monthly cumulatives, and expanding its <code>productRevisions</code> gives you the OS builds each update applies to. <code>featureUpdateCatalogEntry</code> covers feature updates, which I come back to later. <code>recoveryUpdateCatalogEntry</code> covers quick machine recovery updates and isn’t relevant here.</p>
+<p data-block-type="core">The quality update revisions are what we’re after:</p>
+<pre class="wp-block-code" data-block-type="core"><code>{
+  "id": "10.0.19045.6809",
+  "product": "Windows 10",
+  "version": "22H2",
+  "displayName": "Windows 10, version 22H2, build 19045.6809",
+  "osBuild": {
+    "majorVersion": 10,
+    "minorVersion": 0,
+    "buildNumber": 19045,
+    "updateBuildRevision": 6809
+  },
+  "knowledgeBaseArticle": { "id": "KB5073724" }
+}</code></pre>
+<p data-block-type="core"><code>osBuild</code> breaks the version into its 4 parts, which is exactly the pattern <code>operatingSystemVersion</code> in the filter compares against. The properties are documented at <a href="https://learn.microsoft.com/en-us/graph/api/resources/windowsupdates-productrevision?view=graph-rest-beta" rel="noopener" target="_blank">productRevision resource type</a> and <a href="https://learn.microsoft.com/en-us/graph/api/resources/windowsupdates-buildversiondetails?view=graph-rest-beta" rel="noopener" target="_blank">buildVersionDetails resource type</a>.</p>
+<p data-block-type="core"><code>WindowsUpdates.Read.All</code> is enough to poke the endpoint and here is a snippet that will let you poke around:</p>
+<pre class="wp-block-code" data-block-type="core"><code>Connect-MgGraph -Scopes 'WindowsUpdates.Read.All' -NoWelcome
+
+$uri = @(
+    'https://graph.microsoft.com/beta/admin/windows/updates/catalog/entries'
+    "?`$filter=isof('microsoft.graph.windowsUpdates.qualityUpdateCatalogEntry')"
+    '&amp;$expand=microsoft.graph.windowsUpdates.qualityUpdateCatalogEntry/productRevisions'
+    '&amp;$orderby=releaseDateTime desc'
+    '&amp;$top=1'
+) -join ''
+
+$entry = (Invoke-MgGraphRequest -Method GET -Uri $uri -OutputType PSObject).value[0]
+
+$entry.displayName
+$entry.productRevisions | Select-Object product, version, @{n='Build'; e={$_.osBuild.buildNumber}}</code></pre>
+<figure class="wp-block-image size-full" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/08/image-5.png"><img alt="Windows Builds example" class="wp-image-26847" decoding="async" src="assets/40ad21b89086d28d/img_2.png"/></a></figure>
+<p data-block-type="core">This example shows 1 catalog entry, and every build it applies to.</p>
+<p data-block-type="core">The <code>$filter</code> focuses on quality updates, because feature update entries have no <code>productRevisions</code> to expand. The <code>$expand</code> pulls the builds back with the entry.</p>
+<p data-block-type="core">Worth looking at that display name of that catalog entry too. <code>D Update</code> is the optional non-security release that ships later in the month, not the Patch Tuesday one, and the newest entry in the catalog is often one of these. </p>
+<p data-block-type="core">There’s no Windows 10 in that list, despite the entry being called “for Windows 10 and later”. Windows 10 is past end of support, so anything still receiving updates is doing so through ESU, and <a href="https://learn.microsoft.com/en-us/windows/whats-new/extended-security-updates" rel="noopener" target="_blank">ESU is security updates only</a>.</p>
+<p data-block-type="core">So the newest entry is not the whole picture. If you built a filter library from that 1 call you’d have no Windows 10 filters at all, which is why the script we share later does more.</p>
+<p class="has-gridlove-acc-color has-gridlove-highlight-acc-background-color has-text-color has-background has-link-color wp-elements-38928a93d09aa1bf96e86dd5e97ba196" data-block-type="core">Note: <code>$top</code> is capped at 5 on this endpoint.</p>
+<p data-block-type="core">Scaling that example up is mostly paging through the Graph results. This script will pull a few entries instead of 1, flatten every revision out of every entry, and de-dupe the results.</p>
+<pre class="wp-block-code" data-block-type="core"><code>Connect-MgGraph -Scopes 'WindowsUpdates.Read.All' -NoWelcome
+
+$uri = @(
+    'https://graph.microsoft.com/beta/admin/windows/updates/catalog/entries'
+    "?`$filter=isof('microsoft.graph.windowsUpdates.qualityUpdateCatalogEntry')"
+    '&amp;$expand=microsoft.graph.windowsUpdates.qualityUpdateCatalogEntry/productRevisions'
+    '&amp;$orderby=releaseDateTime desc'
+    '&amp;$top=5'
+) -join ''
+
+$entries = [System.Collections.Generic.List[object]]::new()
+$page    = 0
+
+do {
+    $response = Invoke-MgGraphRequest -Method GET -Uri $uri -OutputType PSObject
+    foreach ($entry in $response.value) { $entries.Add($entry) }
+    $uri = $response.'@odata.nextLink'
+    $page++
+}
+while ($uri -and $page -lt 4)
+
+$builds = foreach ($entry in $entries) {
+    foreach ($revision in $entry.productRevisions) {
+
+        $build = $revision.osBuild
+
+        [pscustomobject]@{
+            Product     = $revision.product
+            Release     = $revision.version
+            BaseBuild   = '{0}.{1}.{2}' -f $build.majorVersion, $build.minorVersion, $build.buildNumber
+            BuildNumber = [int]$build.buildNumber
+        }
+    }
+}
+
+$builds |
+    Sort-Object BaseBuild -Unique |
+    Sort-Object BuildNumber |
+    Format-Table Product, Release, BaseBuild -AutoSize</code></pre>
+<p data-block-type="core">Nice. Every Windows build Microsoft is currently servicing, in about 20 lines of code.</p>
+<figure class="wp-block-image size-full" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/08/image-6.png"><img alt="" class="wp-image-26848" decoding="async" src="assets/40ad21b89086d28d/img_3.png"/></a></figure>
+<p data-block-type="core"><code>Sort-Object BaseBuild -Unique</code> is doing the deduplication.</p>
+<h2 class="wp-block-heading" id="7-windows-11-26h1-is-a-problem-child"><a aria-hidden="true" class="aal_anchor" href="#windows-11-26h1-is-a-problem-child" id="windows-11-26h1-is-a-problem-child"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Windows 11 26H1 is a Problem Child</h2>
+<p data-block-type="core">There’s a wrong assumption for everything you’re about to do with these build numbers. A higher build number means a newer release. That logic held for decades…but it doesn’t any more (Thank you Microsoft).</p>
+<p data-block-type="core">Windows 11 26H1 is build 28000. Windows 11 26H2, announced in June 2026 and the later release, is build 26300. Math broken Will Robinson.</p>
+<p data-block-type="core">26H1 arrived in Canary as 28000, deliberately breaking from the 26xxx numbering. It carries platform changes for specific silicon rather than features. 24H2, 25H2 and 26H2 share a servicing branch and move between themselves with an enablement package, while 26H1 sits on a different Windows core. Check the current <a href="https://blogs.windows.com/windows-insider/" rel="noopener" target="_blank">Windows Insider blog</a>.</p>
+<p data-block-type="core">The obvious way we would have expressed a version filter is with a greater-than-or-equal comparison. Like:</p>
+<pre class="wp-block-code" data-block-type="core"><code>(device.operatingSystemVersion -ge "10.0.28000")</code></pre>
+<p data-block-type="core">Call that “26H1 or newer” and it’s wrong the moment 26H2 ships, because 26300 is lower than 28000. Doh. Any rule with its floor set at 28000 or above stops matching the newest release in your estate the day 26H2 arrives at 26300. A device that upgrades from 25H2 to 26H2 goes from matching your baseline to not matching it, by moving forwards.</p>
+<p data-block-type="core">It works the other way too. Every <code>-ge</code> rule drawn below 28000 picks up 26H1 devices, because 28000 is higher than everything else in the list.</p>
+<p class="has-gridlove-acc-color has-gridlove-highlight-acc-background-color has-text-color has-background has-link-color wp-elements-bb4f03230806a646513de950de9430ba" data-block-type="core"><strong>Note: </strong>26H2 isn’t in the output of the script at the time of the blog, even though I keep mentioning it. The catalog is the Windows Update for Business deployment service catalog, so it lists what the service can deploy to production devices. Insider builds aren’t deployable through it and don’t appear, and as I write this 26H2 is still Experimental.</p>
+<h1 class="wp-block-heading" id="8-generating-filters"><a aria-hidden="true" class="aal_anchor" href="#generating-filters" id="generating-filters"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Generating Filters</h1>
+<h2 class="wp-block-heading" id="9-the-script"><a aria-hidden="true" class="aal_anchor" href="#the-script" id="the-script"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>The Script</h2>
+<p data-block-type="core">This script, <a href="https://github.com/byteben/MSGraph/blob/main/Get-IntuneWindowsVersionFilter.ps1" rel="noopener" target="_blank">MSGraph/Get-IntuneWindowsVersionFilter.ps1 at main · byteben/MSGraph</a>, is similar to the builds example above but with a naming convention bolted on, so instead of a list of builds you get a list of filter definitions ready to be created. 2 per release, following the <code>&lt;PLATFORM&gt;-&lt;CATEGORY&gt;-&lt;SPECIFIC&gt;</code> pattern from earlier, with the rule text written out for each one.</p>
+<p class="has-gridlove-acc-color has-gridlove-highlight-acc-background-color has-text-color has-background has-link-color wp-elements-f8def6e0dfeafc80070f6b7752b5d532" data-block-type="core"><strong>Note:</strong> By default this script only generates the definitions. Add -Create to make them, which I cover further down.</p>
+<pre class="wp-block-code" data-block-type="core"><code>&lt;#
+.SYNOPSIS
+    Generates Intune assignment filter definitions for every in-support Windows release.
+
+.DESCRIPTION
+    Reads the Windows Update for Business deployment service catalog through Microsoft
+    Graph and returns two assignment filter definitions per Windows release:
+
+      WIN-OS-Min-&lt;product&gt;-&lt;release&gt;   that release or newer, for servicing baselines
+      WIN-OS-Only-&lt;product&gt;-&lt;release&gt;  that release and nothing else
+
+    For builds that have an LTSC edition it also returns a pair of SKU scoped filters,
+    since LTSC and the GA channel share a build number:
+
+      WIN-OS-Only-&lt;product&gt;-&lt;release&gt;-GAC   that build, General Availability Channel
+      WIN-OS-Only-&lt;product&gt;-&lt;release&gt;-LTSC  that build, LTSC editions only
+
+    Use -NoSkuVariants to suppress those if you have no LTSC devices.
+
+    Rules are built against the operatingSystemVersion property, which supports version
+    comparison operators. Each "Only" rule is bounded one build wide, so it cannot absorb
+    an out-of-support release sitting in the gap above it.
+
+    DeployableUntil comes from the feature update catalog entries and is the date the
+    release stops being offered as an upgrade. It is blank for releases the deployment
+    service no longer offers, which includes Windows 10 and the silicon specific builds.
+
+    Read-only by default. With -Create it presents the definitions in a grid, and creates
+    or updates whatever you tick. Matching is on display name, so a second run patches a
+    drifted rule rather than making a duplicate. Supports -WhatIf.
+
+.NOTES
+    Requires  : Microsoft.Graph.Authentication
+                WindowsUpdates.Read.All, plus DeviceManagementConfiguration.ReadWrite.All
+                when -Create is used
+    Endpoint  : beta only, subject to change
+    Roles     : Intune Administrator or Windows Update Deployment Administrator
+
+    The catalog reports the General Availability Channel release for a build. LTSC shares
+    its build number with the GA channel and nothing in the API identifies which builds
+    have an LTSC edition, so those builds are listed in $LtscBuilds by hand. Verify the
+    SKU names in $LtscSkus against the device properties reference before you deploy
+    anything that depends on them.
+
+.EXAMPLE
+    $filters = .\Get-IntuneWindowsVersionFilter.ps1
+
+    Returns the definitions as objects. Nothing is written to the tenant.
+
+.EXAMPLE
+    .\Get-IntuneWindowsVersionFilter.ps1 -Create -WhatIf
+
+    Opens the grid, then reports what would be created or updated without doing it.
+
+.EXAMPLE
+    .\Get-IntuneWindowsVersionFilter.ps1 -NoSkuVariants
+
+    Skips the LTSC and GAC filters entirely.
+#&gt;
+
+[CmdletBinding(SupportsShouldProcess)]
+param(
+    # Skip the GAC and LTSC scoped filters if you have no LTSC in the estate
+    [switch]$NoSkuVariants,
+
+    # Pick filters from a grid and create them in Intune. Without this the script
+    # only returns the definitions and touches nothing
+    [switch]$Create
+)
+
+# Builds that have an LTSC edition sharing the build number with the GA channel.
+# Nothing in the update catalog identifies LTSC, so this is maintained by hand.
+# LTSC ships roughly every 3 years, so add a line when the next one lands.
+$LtscBuilds = @{
+    '10.0.19044' = 'LTSC 2021'
+    '10.0.26100' = 'LTSC 2024'
+}
+
+# SKU values reported by LTSC editions. Check these against the device properties
+# reference for your own estate, IoT variants have been reported not to match.
+$LtscSkus = '"EnterpriseS", "EnterpriseSN"'
+
+# Install the Microsoft Graph SDK if required
+if (-not (Get-Module -ListAvailable -Name Microsoft.Graph.Authentication)) {
+    Install-Module Microsoft.Graph.Authentication -Scope CurrentUser
+}
+Import-Module Microsoft.Graph.Authentication
+
+# Only ask for write access if we're actually going to write
+$scopes = @('WindowsUpdates.Read.All')
+if ($Create) { $scopes += 'DeviceManagementConfiguration.ReadWrite.All' }
+
+Connect-MgGraph -Scopes $scopes -NoWelcome
+
+# The catalog endpoint allows a maximum of five entries per page
+$uri = @(
+    'https://graph.microsoft.com/beta/admin/windows/updates/catalog/entries'
+    "?`$filter=isof('microsoft.graph.windowsUpdates.qualityUpdateCatalogEntry')"
+    '&amp;$expand=microsoft.graph.windowsUpdates.qualityUpdateCatalogEntry/productRevisions'
+    '&amp;$orderby=releaseDateTime desc'
+    '&amp;$top=5'
+) -join ''
+
+$entries      = [System.Collections.Generic.List[object]]::new()
+$maximumPages = 4
+$page         = 0
+
+# Retrieve up to 20 recent catalog entries
+do {
+    $response = Invoke-MgGraphRequest -Method GET -Uri $uri -OutputType PSObject
+    foreach ($entry in $response.value) {
+        $entries.Add($entry)
+    }
+    $uri = $response.'@odata.nextLink'
+    $page++
+}
+while ($uri -and $page -lt $maximumPages)
+
+# Feature update entries carry the build number directly, along with the date the
+# release stops being deployable. Only covers releases still offered as an upgrade
+$featureUri = 'https://graph.microsoft.com/beta/admin/windows/updates/catalog/entries' +
+              "?`$filter=isof('microsoft.graph.windowsUpdates.featureUpdateCatalogEntry')"
+
+$deployableUntil = @{}
+
+foreach ($feature in (Invoke-MgGraphRequest -Method GET -Uri $featureUri -OutputType PSObject).value) {
+    if ($feature.buildNumber -and $feature.deployableUntilDateTime) {
+        $deployableUntil[[string]$feature.buildNumber] = [datetime]$feature.deployableUntilDateTime
+    }
+}
+
+# Flatten to one row per revision. Patch level is deliberately discarded
+$versions = foreach ($entry in $entries) {
+    foreach ($revision in $entry.productRevisions) {
+
+        $build = $revision.osBuild
+
+        [pscustomobject]@{
+            Product         = $revision.product
+            Release         = $revision.version
+            BaseBuild       = '{0}.{1}.{2}' -f $build.majorVersion, $build.minorVersion, $build.buildNumber
+            BuildNumber     = [int]$build.buildNumber
+            Prefix          = '{0}.{1}'     -f $build.majorVersion, $build.minorVersion
+            DeployableUntil = $deployableUntil[[string]$build.buildNumber]
+        }
+    }
+}
+
+# One row per Windows release
+$windowsVersions = $versions |
+    Sort-Object BaseBuild -Unique |
+    Sort-Object BuildNumber
+
+# Short code per product, so 22H2 filters can't be confused between Windows 10 and 11
+function Get-ProductCode {
+    param([string]$ProductName)
+    switch ($ProductName) {
+        'Windows 10' { 'W10'; break }
+        'Windows 11' { 'W11'; break }
+        default      { $ProductName -replace '\s', '' }
+    }
+}
+
+$filters = foreach ($version in $windowsVersions) {
+
+    $code  = Get-ProductCode -ProductName $version.Product
+    $label = '{0} {1}' -f $version.Product, $version.Release
+
+    # A release occupies exactly one build number; only the revision moves.
+    # So the upper bound is this build plus one, not the next release in the list.
+    # Bounding on the next release would swallow any out-of-support build in between.
+    $upperBound = '{0}.{1}' -f $version.Prefix, ($version.BuildNumber + 1)
+
+    # This release or newer. A servicing baseline, and deliberately crosses products
+    [pscustomobject]@{
+        Product           = $version.Product
+        Release           = $version.Release
+        BaseBuild         = $version.BaseBuild
+        DeployableUntil   = $version.DeployableUntil
+        FilterName        = 'WIN-OS-Min-{0}-{1}' -f $code, $version.Release
+        FilterDescription = '{0} or newer. Build {1} and above, including later Windows releases.' -f $label, $version.BaseBuild
+        FilterRule        = '(device.operatingSystemVersion -ge "{0}")' -f $version.BaseBuild
+    }
+
+    # This release and nothing else. The range is one build wide and never
+    # depends on what comes next
+    $lower    = 'device.operatingSystemVersion -ge "{0}"' -f $version.BaseBuild
+    $upper    = 'device.operatingSystemVersion -lt "{0}"' -f $upperBound
+    $onlyRule = "($lower) and ($upper)"
+
+    [pscustomobject]@{
+        Product           = $version.Product
+        Release           = $version.Release
+        BaseBuild         = $version.BaseBuild
+        DeployableUntil   = $version.DeployableUntil
+        FilterName        = 'WIN-OS-Only-{0}-{1}' -f $code, $version.Release
+        FilterDescription = '{0} only. Build {1} and its revisions.' -f $label, $version.BaseBuild
+        FilterRule        = $onlyRule
+    }
+
+    # Only builds with an LTSC edition get the SKU split. Everything else has
+    # nothing to separate, so a -LTSC filter there would never match anything
+    if (-not $NoSkuVariants -and $LtscBuilds.ContainsKey($version.BaseBuild)) {
+
+        $ltscName = $LtscBuilds[$version.BaseBuild]
+
+        [pscustomobject]@{
+            Product           = $version.Product
+            Release           = $version.Release
+            BaseBuild         = $version.BaseBuild
+            DeployableUntil   = $version.DeployableUntil
+            FilterName        = 'WIN-OS-Only-{0}-{1}-GAC' -f $code, $version.Release
+            FilterDescription = '{0}, General Availability Channel only. Build {1} is shared with {2}, which this excludes.' -f $label, $version.BaseBuild, $ltscName
+            FilterRule        = "$onlyRule and (device.operatingSystemSKU -notIn [$LtscSkus])"
+        }
+
+        [pscustomobject]@{
+            Product           = $version.Product
+            Release           = $version.Release
+            BaseBuild         = $version.BaseBuild
+            DeployableUntil   = $version.DeployableUntil
+            FilterName        = 'WIN-OS-Only-{0}-{1}-LTSC' -f $code, $version.Release
+            FilterDescription = '{0} {2} only. Build {1}, restricted to LTSC SKUs.' -f $label, $version.BaseBuild, $ltscName
+            FilterRule        = "$onlyRule and (device.operatingSystemSKU -in [$LtscSkus])"
+        }
+    }
+}
+
+# Estate wide SKU filters. No version bound at all, so these cover every LTSC
+# release including ones the catalog never returns, and never need regenerating
+if (-not $NoSkuVariants) {
+
+    $filters += [pscustomobject]@{
+        Product           = 'Windows'
+        Release           = 'Any'
+        BaseBuild         = ''
+        DeployableUntil   = $null
+        FilterName        = 'WIN-SKU-LTSC'
+        FilterDescription = 'All LTSC devices, any build. Covers releases the update catalog does not return.'
+        FilterRule        = "(device.operatingSystemSKU -in [$LtscSkus])"
+    }
+
+    $filters += [pscustomobject]@{
+        Product           = 'Windows'
+        Release           = 'Any'
+        BaseBuild         = ''
+        DeployableUntil   = $null
+        FilterName        = 'WIN-SKU-GAC'
+        FilterDescription = 'All non LTSC devices, any build.'
+        FilterRule        = "(device.operatingSystemSKU -notIn [$LtscSkus])"
+    }
+}
+
+Write-Host ""
+Write-Host ("Generated {0} filter definitions from {1} Windows releases" -f
+    $filters.Count, $windowsVersions.Count) -ForegroundColor Cyan
+
+# Without -Create the definitions go to the pipeline and nothing is touched.
+# PowerShell formats objects with more than 4 properties as a list, so running
+# it bare looks the same as it always did
+if (-not $Create) {
+    return $filters
+}
+
+# ---------------------------------------------------------------------------
+# Creation
+# ---------------------------------------------------------------------------
+
+if (-not (Get-Command Out-GridView -ErrorAction SilentlyContinue)) {
+    throw 'Out-GridView is not available. On Linux or macOS install Microsoft.PowerShell.ConsoleGuiTools and swap it for Out-ConsoleGridView.'
+}
+
+Write-Host 'Opening the grid, tick the filters you want and click OK.' -ForegroundColor Cyan
+
+$selected = @($filters |
+    Select-Object Product, Release, BaseBuild, DeployableUntil, FilterName, FilterDescription, FilterRule |
+    Out-GridView -Title 'Select the filters to create in Intune' -PassThru)
+
+if (-not $selected) {
+    Write-Host 'Nothing selected, nothing created.' -ForegroundColor Yellow
+    return
+}
+
+Write-Host ("Selected {0} of {1}" -f $selected.Count, $filters.Count) -ForegroundColor Cyan
+
+$baseUri = 'https://graph.microsoft.com/beta/deviceManagement/assignmentFilters'
+
+# Existing filters, so a second run patches rather than duplicates
+$existing = @{}
+$uri = $baseUri
+do {
+    $response = Invoke-MgGraphRequest -Method GET -Uri $uri -OutputType PSObject
+    foreach ($filter in $response.value) { $existing[$filter.displayName] = $filter }
+    $uri = $response.'@odata.nextLink'
+}
+while ($uri)
+
+Write-Host ("Tenant already has {0} assignment filters" -f $existing.Count) -ForegroundColor Cyan
+Write-Host ""
+
+$created = 0; $updated = 0; $unchanged = 0
+
+foreach ($definition in $selected) {
+
+    $description = '{0} Generated from the WUfB catalog on {1:yyyy-MM-dd}.' -f
+                       $definition.FilterDescription, (Get-Date)
+
+    $current = $existing[$definition.FilterName]
+
+    if ($current) {
+
+        if ($current.rule -eq $definition.FilterRule) {
+            Write-Host ("  Exists     {0}" -f $definition.FilterName) -ForegroundColor DarkGray
+            Write-Host ("             rule already matches, nothing to do") -ForegroundColor DarkGray
+            $unchanged++
+            continue
+        }
+
+        Write-Host ("  Update     {0}" -f $definition.FilterName) -ForegroundColor Yellow
+        Write-Host ("             old rule: {0}" -f $current.rule) -ForegroundColor DarkGray
+        Write-Host ("             new rule: {0}" -f $definition.FilterRule) -ForegroundColor DarkGray
+        $updated++
+
+        if ($PSCmdlet.ShouldProcess($definition.FilterName, 'Update assignment filter')) {
+
+            # platform and management type are immutable, so don't send them
+            $patchBody = [ordered]@{
+                description = $description
+                rule        = $definition.FilterRule
+            } | ConvertTo-Json -Depth 10
+
+            Invoke-MgGraphRequest -Method PATCH -Uri "$baseUri/$($current.id)" `
+                -Body $patchBody -ContentType 'application/json'
+        }
+    }
+    else {
+
+        Write-Host ("  Create     {0}" -f $definition.FilterName) -ForegroundColor Green
+        Write-Host ("             {0}" -f $definition.FilterRule) -ForegroundColor DarkGray
+        $created++
+
+        if ($PSCmdlet.ShouldProcess($definition.FilterName, 'Create assignment filter')) {
+
+            $body = [ordered]@{
+                '@odata.type'                  = '#microsoft.graph.deviceAndAppManagementAssignmentFilter'
+                displayName                    = $definition.FilterName
+                description                    = $description
+                platform                       = 'windows10AndLater'
+                rule                           = $definition.FilterRule
+                assignmentFilterManagementType = 'devices'
+                roleScopeTags                  = @('0')
+            } | ConvertTo-Json -Depth 10
+
+            Invoke-MgGraphRequest -Method POST -Uri $baseUri `
+                -Body $body -ContentType 'application/json'
+        }
+    }
+}
+
+Write-Host ""
+Write-Host ("Created {0}, updated {1}, already correct {2}" -f
+    $created, $updated, $unchanged) -ForegroundColor Cyan</code></pre>
+<figure class="wp-block-image size-full" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/08/image-9.png"><img alt="" class="wp-image-26857" decoding="async" src="assets/40ad21b89086d28d/img_4.png"/></a></figure>
+<figure class="wp-block-image size-full" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/08/image-10.png"><img alt="" class="wp-image-26858" decoding="async" src="assets/40ad21b89086d28d/img_5.png"/></a></figure>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/08/image-11.png"><img alt="" class="wp-image-26859" decoding="async" src="assets/40ad21b89086d28d/img_6.png"/></a></figure>
+<h2 class="wp-block-heading" id="10-ltsc"><a aria-hidden="true" class="aal_anchor" href="#ltsc" id="ltsc"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>LTSC</h2>
+<p data-block-type="core">You’ll have spotted Windows 10 21H2 in the results because a cumulative update in July 2026 is still being serviced. GA channel Windows 10 21H2 went out of support back in 2024, so the only reason build 19044 is still being serviced is Enterprise LTSC 2021 and IoT Enterprise LTSC 2021.</p>
+<p data-block-type="core">That’s because LTSC shares its build number with the GA channel. LTSC 2021 is 19044, the same as Windows 10 21H2. LTSC 2024 is 26100, the same as Windows 11 24H2. An LTSC device and a GA device on the same build are indistinguishable by version number, so no <code>operatingSystemVersion</code> filter rule will separate them.</p>
+<p data-block-type="core">I wanted the script to work out which builds have an LTSC edition rather than me maintaining a list. There’s a friendlyNames property on the product, so let’s have a look at it. Feed it a KB number from the revisions you already pulled.</p>
+<pre class="wp-block-code" data-block-type="core"><code>Connect-MgGraph -Scopes 'WindowsUpdates.Read.All' -NoWelcome
+
+foreach ($kb in 5101684, 5099539) {
+
+    $uri = "https://graph.microsoft.com/beta/admin/windows/updates/products/FindByKbNumber(kbNumber=$kb)"
+    $products = (Invoke-MgGraphRequest -Method GET -Uri $uri -OutputType PSObject).value
+
+    foreach ($product in $products) {
+        [pscustomobject]@{
+            KB            = $kb
+            Name          = $product.name
+            FriendlyNames = $product.friendlyNames -join ' | '
+        }
+    }
+}</code></pre>
+<figure class="wp-block-image size-full" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/08/image-12.png"><img alt="" class="wp-image-26860" decoding="async" src="assets/40ad21b89086d28d/img_7.png"/></a></figure>
+<p data-block-type="core">Windows 10 LTSC is in there as its own product. “Windows 10 Enterprise LTSC 2021”, named, sitting alongside 22H2.</p>
+<p data-block-type="core">Windows 11 LTSC 2024 is not. Build 26100 comes back as Windows 11 24H2 and as Windows Server 2025, and that’s your lot. Enterprise LTSC 2024 runs on that same build and the catalog never mentions it.</p>
+<p data-block-type="core">So 26100 is 3 products. Windows 11 24H2, Windows Server 2025, and Windows 11 Enterprise LTSC 2024. The API will name 2 of them. Building detection on friendlyNames would only ever work for Windows 10, which is the half on its way out, and would miss the one that matters for the next decade.</p>
+<p class="has-gridlove-acc-color has-gridlove-highlight-acc-background-color has-text-color has-background has-link-color wp-elements-94a134ff44de0e4bab3a3b5eb20a4af5" data-block-type="core"><strong>Note:</strong> There’s no list endpoint (that I could find) for products. You can only get at them with FindByKbNumber or FindByCatalogId, so there’s no way to enumerate everything and go looking for LTSC.</p>
+<p data-block-type="core">Which leaves a hand maintained list, and it’s the only hardcoding in the script (im sorry).</p>
+<pre class="wp-block-code" data-block-type="core"><code>$LtscBuilds = @{
+    '10.0.19044' = 'LTSC 2021'
+    '10.0.26100' = 'LTSC 2024'
+}</code></pre>
+<p data-block-type="core">LTSC ships every 2 or 3 years, so this isn’t the sort of thing that goes stale between blog posts. Build numbers change monthly and come from the API. LTSC releases don’t, and the API doesn’t have them.</p>
+<p class="has-gridlove-acc-color has-gridlove-highlight-acc-background-color has-text-color has-background has-link-color wp-elements-ed9563b11543bacc6f44ec3105abeae0" data-block-type="core"><strong>Note: </strong>There’s no entry for LTSC 2019 because build 17763 never comes back from the catalog, so a key for it would sit there matching nothing. It’s supported until January 2029 though.</p>
+<p data-block-type="core"><code>operatingSystemSKU</code> is the property that separates them, because it describes the edition rather than the build. LTSC editions report as <code>EnterpriseS</code>, so the 2 filters you actually want have no version in them at all:</p>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core">WIN-SKU-LTSC (device.operatingSystemSKU -in [“EnterpriseS”, “EnterpriseSN”])</li>
+<li data-block-type="core">WIN-SKU-GAC (device.operatingSystemSKU -notIn [“EnterpriseS”, “EnterpriseSN”])</li>
+</ul>
+<p data-block-type="core">They cover every LTSC release including the ones the API doesn’t show, they don’t care what build anything is on, and they never need regenerating. </p>
+<p data-block-type="core">The script also generates a version bounded pair for each build in the list above, for if you ever need to be specific about a release:</p>
+<pre class="wp-block-code" data-block-type="core"><code>(device.operatingSystemVersion -ge "10.0.26100") and (device.operatingSystemVersion -lt "10.0.26101") and (device.operatingSystemSKU -in ["EnterpriseS", "EnterpriseSN"])</code></pre>
+<h2 class="wp-block-heading" id="feature-updates"><a aria-hidden="true" class="aal_anchor" href="#feature-updates" id="feature-updates"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Feature Updates</h2>
+<p data-block-type="core">One more thing in that catalog worth having. The <code>featureUpdateCatalogEntry</code> entries carry the build number directly and they know when a release stops being deployable.</p>
+<pre class="wp-block-code" data-block-type="core"><code>{
+    "@odata.type": "#microsoft.graph.windowsUpdates.featureUpdateCatalogEntry",
+    "displayName": "Windows 11, version 25H2",
+    "deployableUntilDateTime": "2028-10-10T00:00:00Z",
+    "version": "Windows 11, version 25H2",
+    "buildNumber": "26200"
+}</code></pre>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core">Windows 11, version 23H2 22631 deployable until 2026-11-10</li>
+<li data-block-type="core">Windows 11, version 24H2 26100 deployable until 2027-10-12</li>
+<li data-block-type="core">Windows 11, version 25H2 26200 deployable until 2028-10-10</li>
+</ul>
+<p data-block-type="core">What’s interesting is there is no Windows 10, because it isn’t an upgrade target any more, and no 26H1, because it only ever arrives on devices that ship with it. So this can’t replace the quality update route for finding builds. What it does give you is how long each release has left, which is exactly the question you’re asking when you decide which filters are worth creating. The script pulls it in and adds <code>DeployableUntil</code> to every filter it generates, blank where the API has nothing to say.</p>
+<h2 class="wp-block-heading" id="11-which-filters-should-you-actually-create"><a aria-hidden="true" class="aal_anchor" href="#which-filters-should-you-actually-create" id="which-filters-should-you-actually-create"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Which Filters Should You Actually Create?</h2>
+<p data-block-type="core">Not all of them. The script generates the full matrix because I have no idea what your baseline is.</p>
+<p data-block-type="core">Look at the top row. WIN-OS-Min-W10-21H2 is -ge “10.0.19044”, and 19044 is the lowest build in the list, so every in-support Windows device satisfies it. That filter is a long winded way of writing “all devices” and Intune already has one of those.</p>
+<p data-block-type="core">A <strong>Min</strong> filter is only worth creating at a build you’ve actually decided to draw a line at. Most organisations have 1 or 2 of those, not 6. If your supported floor is Windows 11 23H2, take Min-W11-23H2 and bin the rest. DeployableUntil helps you here, a release with 2 years left is worth building a filter around, one that stops being deployable in a few months is worth a filter for chasing stragglers and not much else.</p>
+<p data-block-type="core"><strong>Only</strong> filters are for releases you’re doing something specific with. Piloting the newest one, chasing the last few off the oldest, scoping an app that misbehaves on a particular build.</p>
+<p data-block-type="core">Treat the output as a menu and take the rows that match decisions you’ve actually made. The 200 filter cap isn’t really your constraint, the dropdown is, and version filters look more alike than most things in it.</p>
+<h1 class="wp-block-heading" id="12-creating-filters"><a aria-hidden="true" class="aal_anchor" href="#creating-filters" id="creating-filters"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Creating Filters</h1>
+<p data-block-type="core">Everything so far only reports. Go ahead and use the output to build your filters manually in the UI, im not going to teach you how to do that.</p>
+<p data-block-type="core">If you want to use Graph and PowerShell (we can be friends), the same script will create them. Run it with <code>-Create</code> and it opens a grid so you can tick the ones you want.</p>
+<p data-block-type="core"><a href="https://github.com/byteben/MSGraph/blob/main/Get-IntuneWindowsVersionFilter.ps1" rel="noopener" target="_blank">MSGraph/Get-IntuneWindowsVersionFilter.ps1 at main · byteben/MSGraph</a></p>
+<pre class="wp-block-code" data-block-type="core"><code>.\Get-IntuneWindowsVersionFilter.ps1 -Create</code></pre>
+<p class="has-gridlove-acc-color has-gridlove-highlight-acc-background-color has-text-color has-background has-link-color wp-elements-2d87fd6a6165e0589ee714bfb2df3f0b" data-block-type="core"><strong>Note:</strong> <code>-Create</code> asks for <code>DeviceManagementConfiguration.ReadWrite.All</code> on top of the read scope. Without the switch it only ever asks for <code>WindowsUpdates.Read.All</code>.</p>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/08/image-19.png"><img alt="" class="wp-image-26870" decoding="async" src="assets/40ad21b89086d28d/img_8.png"/></a></figure>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/08/image-20.png"><img alt="" class="wp-image-26871" decoding="async" src="assets/40ad21b89086d28d/img_9.png"/></a></figure>
+<p data-block-type="core">The script is idempotent. Matching is on display name, so running it again patches a filter whose rule has drifted rather than creating a duplicate, and leaves alone anything already correct.</p>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-26874" decoding="async" src="assets/40ad21b89086d28d/img_10.png"/></figure>
+<p data-block-type="core">There’s <code>-WhatIf</code> too, which does the selection and tells you what it would do without touching anything.</p>
+<pre class="wp-block-code" data-block-type="core"><code>.\Get-IntuneWindowsVersionFilter.ps1 -Create -WhatIf</code></pre>
+<h1 class="wp-block-heading" id="13-gotchas"><a aria-hidden="true" class="aal_anchor" href="#gotchas" id="gotchas"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Gotchas</h1>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core">Platform and management type are immutable. You can’t PATCH a filter from devices to apps, or change its platform. Get it wrong and the fix is delete and recreate, which breaks every assignment referencing it.</li>
+<li data-block-type="core">Filters can’t be deleted while in use.</li>
+<li data-block-type="core">Only use the 4th part of the build number deliberately. It’s the build patch level, it changes monthly.</li>
+<li data-block-type="core">A higher build number no longer means a newer release. 26H1 is 28000, 26H2 is 26300.</li>
+<li data-block-type="core">Absence from this API is not absence from your estate. LTSC 2019 is supported until 2029 and build 17763 doesn’t show up at all.</li>
+</ul>
+<h1 class="wp-block-heading" id="14-sumary"><a aria-hidden="true" class="aal_anchor" href="#summary" id="summary"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Summary</h1>
+<p data-block-type="core">I went into this wanting to stop hardcoding build numbers and came out with a better appreciation of how much the update catalog knows and how much it deliberately doesn’t tell you.</p>
+<p data-block-type="core">The build numbers are all there and they’re accurate. The servicing story around them is not so we had to color in some missing pieces. </p>
+<p data-block-type="core">What I’d really like is for the LTSC editions to turn up in the product data. It already knows about Windows Server 2025 sharing build 26100, and about IoT Enterprise as a distinct edition elsewhere in the API. Adding Enterprise LTSC to that would cost very little and would let all of us stop maintaining lookup tables in scripts. If anyone from the product group is reading, that’s the ask (or show me the light/endpoint where we can get this).</p>
+<p data-block-type="core">Happy filtering folks!</p>
+<p class="post-views content-post post-26830 entry-meta load-static">
+<span class="post-views-icon dashicons dashicons-chart-bar"></span> <span class="post-views-label">Views:</span> <span class="post-views-count">195</span>
+</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
