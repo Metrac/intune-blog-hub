@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Foundry IQ Deep Dive: Knowledge Bases for AI Agents</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">August 4, 2026</span>
+  </div>
+  <h1>Foundry IQ Deep Dive: Knowledge Bases for AI Agents</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/foundry-iq-knowledge-bases/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p class="wp-block-paragraph">Every team that builds AI agents ends up building the same thing: a retrieval pipeline that feeds company knowledge into the agent. And most of these pipelines are built again and again, per agent, per project. Foundry IQ is Microsoft’s answer to this problem — a shared knowledge layer in Microsoft Foundry that any number of agents can plug into. In this blog post I explain how Foundry IQ works under the hood, how you create a knowledge base and wire it into an agent, and where the limits are. At the end you can decide if it should replace your custom RAG setup.</p>
+<span id="more-19769"></span>
+<h2 class="wp-block-heading" id="what-is-foundry-iq">What Is Foundry IQ?</h2>
+<p class="wp-block-paragraph">Foundry IQ was announced at Ignite 2025, together with the rebranding from Azure AI Foundry to Microsoft Foundry. The <a href="https://learn.microsoft.com/en-us/azure/foundry/agents/concepts/what-is-foundry-iq" rel="noopener" target="_blank">official definition</a> is a managed knowledge layer that turns enterprise data into reusable, permission-aware knowledge bases for AI agents.</p>
+<p class="wp-block-paragraph">The building blocks are simple:</p>
+<ul class="wp-block-list">
+<li>A <strong>knowledge source</strong> is a connection to data — a blob container, a website, a SharePoint site, a Fabric lakehouse.</li>
+<li>A <strong>knowledge base</strong> bundles one or more knowledge sources plus the parameters that control retrieval. One knowledge base can hold up to 10 sources.</li>
+<li>Agents query the knowledge base through <strong>agentic retrieval</strong>, and multiple agents can share the same knowledge base.</li>
+</ul>
+<p class="wp-block-paragraph">One important thing to understand: Foundry IQ is built on top of <strong>Azure AI Search</strong>. The knowledge base is an object that lives on your search service. So you are not choosing between Foundry IQ and Azure AI Search — Foundry IQ is the new front door to it.</p>
+<p class="wp-block-paragraph">Honesty about the status, because it matters for planning: parts of this are generally available through the Azure AI Search REST API version <code>2026-04-01</code>, but the good parts — answer synthesis, higher reasoning effort, several source kinds — still need the <code>2026-05-01-preview</code> API. The Foundry portal and Azure portal experiences are preview across the board.</p>
+<p class="wp-block-paragraph">Note: Microsoft ships three “IQs”: Work IQ (Microsoft 365 signals), Fabric IQ (semantic data layer) and Foundry IQ (enterprise knowledge for agents). They are separate products. Copilot knowledge sources and Foundry IQ knowledge sources are not interchangeable.</p>
+<h2 class="wp-block-heading" id="which-knowledge-sources-can-i-use">Which Knowledge Sources Can I Use?</h2>
+<p class="wp-block-paragraph">There are twelve kinds in two classes, and the difference matters for architecture decisions.</p>
+<p class="wp-block-paragraph"><strong>Indexed sources</strong> are ingested into a search index on your service. Azure AI Search chunks the content, vectorizes it and keeps it fresh with an indexer schedule. Generally available in the <code>2026-04-01</code> API: existing search indexes, Azure Blob Storage and OneLake lakehouses. In preview: Azure SQL, direct file upload and indexed SharePoint.</p>
+<p class="wp-block-paragraph"><strong>Remote sources</strong> are not ingested at all. They are queried live at retrieval time. Web (Bing grounding) is the GA one here. The most interesting one is remote SharePoint (preview): it goes through the Copilot Retrieval API, the content never leaves SharePoint, and SharePoint enforces the user permissions at query time. The catch: end users need a Microsoft 365 Copilot license. Also remote and in preview: Fabric data agents, Fabric ontology, MCP servers and Work IQ.</p>
+<p class="wp-block-paragraph">For a blob knowledge source, Azure AI Search generates the whole ingestion pipeline for you — data source, skillset, index and indexer. You can set the embedding model (for example text-embedding-3-large), a chat model for image verbalization, and an ingestion schedule. This alone removes a lot of plumbing code that I used to write by hand.</p>
+<p class="wp-block-paragraph">Hint: You can pin a source with <code>alwaysQuery: true</code> so it is searched on every retrieval, and the <code>retrievalInstructions</code> text on the knowledge base steers which source the planner picks for which kind of question. Write it like you would explain it to a colleague.</p>
+<h2 class="wp-block-heading" id="how-does-agentic-retrieval-work">How Does Agentic Retrieval Work?</h2>
+<p class="wp-block-paragraph">This is the part that makes Foundry IQ more than a nicer API around vector search. When an agent sends a question, the <a href="https://learn.microsoft.com/en-us/azure/search/agentic-retrieval-overview" rel="noopener" target="_blank">agentic retrieval engine</a> runs a small pipeline:</p>
+<ol class="wp-block-list">
+<li><strong>Query planning.</strong> An LLM breaks the question into focused subqueries. It uses the conversation history, fixes typos and decides which knowledge sources to query.</li>
+<li><strong>Parallel execution.</strong> The subqueries run at the same time, each as keyword, vector or hybrid search.</li>
+<li><strong>Semantic reranking.</strong> Every result set goes through the semantic ranker, so results from different sources end up on one relevance scale.</li>
+<li><strong>Output.</strong> You either get the reranked chunks with citations (extractive mode) or a synthesized answer written by an LLM.</li>
+</ol>
+<figure class="wp-block-image"><img alt="Foundry IQ agentic retrieval pipeline: query planning, parallel execution, semantic reranking" data-recalc-dims="1" decoding="async" src="assets/627b1f5cf09c5c51/img_0.jpg"/></figure>
+<p class="wp-block-paragraph">How much of this pipeline runs is controlled by the <strong>retrieval reasoning effort</strong>:</p>
+<ul class="wp-block-list">
+<li><strong>minimal</strong> — no LLM at all. Your query goes straight to the sources as text and vector search. Cheapest and fastest, but no query planning and no answer synthesis.</li>
+<li><strong>low</strong> (the default) — a single pass of LLM query planning with parallel subqueries, and answer synthesis with a budget of up to 5,000 answer tokens.</li>
+<li><strong>medium</strong> — adds reflective search: after the first pass, a semantic classifier checks whether the results are good enough, and if not, the engine runs one retry with a revised query plan. Up to 10,000 answer tokens, available in select regions.</li>
+</ul>
+<figure class="wp-block-image"><img alt="Foundry IQ retrieval reasoning effort levels minimal, low and medium compared" data-recalc-dims="1" decoding="async" src="assets/627b1f5cf09c5c51/img_1.jpg"/></figure>
+<p class="wp-block-paragraph">Microsoft claims around <a href="https://techcommunity.microsoft.com/blog/azure-ai-foundry-blog/foundry-iq-boost-response-relevance-by-36-with-agentic-retrieval/4470720" rel="noopener" target="_blank">36 percent higher response relevance</a> compared to single-shot RAG. That is a vendor benchmark, so treat it with care — but the direction matches my experience: multi-query plus reranking beats one vector search almost every time the question is not trivial.</p>
+<h2 class="wp-block-heading" id="how-do-i-create-a-knowledge-base">How Do I Create a Knowledge Base?</h2>
+<p class="wp-block-paragraph">The portal path is the easiest start. I assume you have a Foundry project with a deployed chat model and some documents to ground on.</p>
+<ol class="wp-block-list">
+<li>Go to <a href="https://ai.azure.com" rel="nofollow">https://ai.azure.com</a>, sign in and make sure the <strong>New Foundry</strong> toggle is on. Open your project.</li>
+<li>In the top menu, click on <strong>Build → Knowledge</strong>.</li>
+</ol>
+<figure class="wp-block-image"><img alt="Foundry portal - project - Build - Knowledge tab — the knowledge base list or empty state with" data-recalc-dims="1" decoding="async" src="assets/627b1f5cf09c5c51/img_2.jpg"/></figure>
+<ol class="wp-block-list" start="3">
+<li>
+<p><strong>Create or connect an Azure AI Search service</strong> that supports agentic retrieval. For a PoC the free tier works, and the free monthly retrieval-token allowance keeps the experiment cheap.</p>
+</li>
+<li>
+<p><strong>Create a knowledge base</strong> and add your knowledge sources one at a time — for example a blob container, where the indexer pipeline with chunking and embeddings is generated for you.</p>
+</li>
+<li>Configure the retrieval properties: reasoning effort and whether you want answer synthesis. Then test a few questions directly in the Knowledge tab; answers come back with citations.</li>
+</ol>
+<p class="wp-block-paragraph">The same thing as code, because the knowledge base is just an object on the search service (preview API):</p>
+<pre class="wp-block-code"><code class="language-http">PUT {search-url}/knowledgebases/intune-kb?api-version=2026-05-01-preview
+{
+  "name": "intune-kb",
+  "knowledgeSources": [ { "name": "intune-docs-blob" } ],
+  "retrievalInstructions": "Use the intune-docs source for device management questions.",
+  "outputMode": "answerSynthesis",
+  "retrievalReasoningEffort": { "kind": "low" },
+  "models": [ { "kind": "azureOpenAI", "azureOpenAIParameters": {
+      "resourceUri": "https://&lt;aoai&gt;.openai.azure.com",
+      "deploymentId": "gpt-5-mini", "modelName": "gpt-5-mini" } } ]
+}
+</code></pre>
+<p class="wp-block-paragraph">Hint: The GA API version (<code>2026-04-01</code>) is deliberately smaller: no <code>outputMode</code>, no <code>retrievalInstructions</code>, no reasoning effort setting and no multi-turn message history — in practice that means extractive retrieval with minimal effort. Query planning with answer synthesis needs the preview API. Keep this in mind for production commitments.</p>
+<h2 class="wp-block-heading" id="how-do-i-connect-the-knowledge-base-to-an-agent">How Do I Connect the Knowledge Base to an Agent?</h2>
+<p class="wp-block-paragraph">This surprised me positively: the integration mechanism is plain <strong>MCP</strong>. Every knowledge base exposes an MCP endpoint with exactly one tool, <code>knowledge_base_retrieve</code>. In the Foundry portal you go to the <strong>Agents</strong> tab, open your agent and connect the knowledge base under its knowledge settings — done.</p>
+<p class="wp-block-paragraph">For code, two pieces of plumbing come first. The project needs a connection to the knowledge base endpoint: a project connection of category <code>RemoteTool</code> with <code>authType: ProjectManagedIdentity</code> and audience <code>https://search.azure.com/</code>. And the project’s managed identity needs the <strong>Search Index Data Reader</strong> role on the search service. Generic resource connections are managed under <strong>Operate → Admin →</strong> your project <strong>→ Connected resources → Add connection</strong>.</p>
+<figure class="wp-block-image"><img alt="Foundry portal - Operate - Admin - project - Connected resources tab - Add connection dialog" data-recalc-dims="1" decoding="async" src="assets/627b1f5cf09c5c51/img_3.jpg"/></figure>
+<p class="wp-block-paragraph">Then the agent definition references the MCP endpoint (<a href="https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/foundry-iq-connect" rel="noopener" target="_blank">full guide</a>):</p>
+<pre class="wp-block-code"><code class="language-python"># pip install "azure-ai-projects&gt;=2.0.0" azure-identity  (Projects 2.x - 1.x is incompatible)
+from azure.identity import DefaultAzureCredential
+from azure.ai.projects import AIProjectClient
+from azure.ai.projects.models import PromptAgentDefinition, MCPTool
+
+project = AIProjectClient(
+    endpoint="https://&lt;resource&gt;.ai.azure.com/api/projects/&lt;project&gt;",
+    credential=DefaultAzureCredential())
+
+agent = project.agents.create_version(
+    agent_name="intune-assistant",
+    definition=PromptAgentDefinition(
+        model="gpt-5-mini",
+        instructions="Answer from the knowledge base and cite sources. If nothing is found, say so.",
+        tools=[MCPTool(
+            server_label="knowledge-base",
+            server_url="https://&lt;search&gt;.search.windows.net/knowledgebases/intune-kb/mcp?api-version=2026-05-01-preview",
+            require_approval="never",
+            allowed_tools=["knowledge_base_retrieve"],
+            project_connection_id="&lt;remote-tool-connection-id&gt;")]))
+
+openai = project.get_openai_client()
+resp = openai.responses.create(
+    input="How do I configure device categories?",
+    extra_body={"agent_reference": {"name": agent.name, "type": "agent_reference"}})
+print(resp.output_text)
+</code></pre>
+<p class="wp-block-paragraph">Because the interface is standard MCP, the same knowledge base also works from the Microsoft Agent Framework, Claude, LangChain or any other MCP-capable client. This is a real advantage over the old proprietary tool integrations. Note: at the time of writing this flow is Python-only (<code>azure-ai-projects</code> 2.x); C#, JavaScript and Java do not support it yet.</p>
+<figure class="wp-block-image"><img alt="agent playground with a question answered from the knowledge base and the source citations" data-recalc-dims="1" decoding="async" src="assets/627b1f5cf09c5c51/img_4.jpg"/></figure>
+<p class="wp-block-paragraph">Before Foundry IQ, you attached an Azure AI Search tool (one index, single-shot query) or the file search tool (per-agent vector store) to your agent. Here is my honest comparison:</p>
+<figure class="wp-block-table"><table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Use when</th>
+<th>Trade-off</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Foundry IQ knowledge base</td>
+<td>Several sources or agents, permission-aware retrieval</td>
+<td>Preview API for the good parts, more moving parts</td>
+</tr>
+<tr>
+<td>Azure AI Search tool</td>
+<td>One index, one agent, full query control</td>
+<td>You build query logic and citations yourself</td>
+</tr>
+<tr>
+<td>File search tool</td>
+<td>Quick demo with a handful of files</td>
+<td>Per-agent silo, no reuse</td>
+</tr>
+</tbody>
+</table></figure>
+<p class="wp-block-paragraph">For anything that has more than one data source or more than one agent, the knowledge base wins. The file search tool is now itself just a knowledge source type you can federate into a knowledge base — that tells you where this is going.</p>
+<p class="wp-block-paragraph">Note: If you still run the old Azure OpenAI <strong>“On Your Data”</strong> pattern (the “Add your data” button in the classic chat playground), plan your migration now: it is deprecated and <strong>retires on October 14, 2026</strong>. The official migration target is exactly this stack — Foundry Agent Service plus Foundry IQ.</p>
+<h2 class="wp-block-heading" id="what-does-it-cost">What Does It Cost?</h2>
+<p class="wp-block-paragraph">Two meters run. <strong>Azure AI Search</strong> bills retrieval tokens for subquery execution and semantic reranking — there is a free monthly token allowance, and the standard plan turns on pay-as-you-go beyond it. <strong>Azure OpenAI</strong> bills the tokens for query planning and answer synthesis on the model you assign to the knowledge base. The <a href="https://learn.microsoft.com/en-us/azure/search/agentic-retrieval-overview" rel="noopener" target="_blank">docs example</a> lands at about $4.32 for 2,000 retrievals with gpt-4o-mini — in my view very reasonable for what the pipeline does.</p>
+<p class="wp-block-paragraph">The cost levers, in order of impact: reasoning effort, number of knowledge sources, and content organization (fewer, better-curated sources mean less fan-out). The <code>activity</code> log in every retrieve response shows exactly which subqueries were issued and what they consumed — that is your cost debugging tool.</p>
+<h2 class="wp-block-heading" id="the-approach-i-actually-use">The Approach I Actually Use</h2>
+<ol class="wp-block-list">
+<li>Start with <strong>one blob knowledge source</strong> and let the auto-generated pipeline do chunking and vectorization. Do not hand-build a skillset first.</li>
+<li>Start with reasoning effort <strong>minimal</strong> and measure quality with your own evaluation set (I described my setup in <a href="https://jannikreinhard.com/microsoft-foundry-agent-evaluations/">how to evaluate AI agents in Microsoft Foundry</a>). Only go to low or medium if the numbers demand it — the step to low buys query planning, the step to medium buys the retry pass.</li>
+<li>Use <strong>extractive mode</strong> for agents — the agent’s own model does the reasoning anyway. Answer synthesis only when retrieval output goes directly to users.</li>
+<li>One knowledge base per domain, not per agent. Reuse is the whole point.</li>
+</ol>
+<h2 class="wp-block-heading" id="pitfalls-i-now-avoid">Pitfalls I Now Avoid</h2>
+<ul class="wp-block-list">
+<li><strong>Doing per-user security through the agent tool.</strong> The user token is passed via the <code>x-ms-query-source-authorization</code> header, but Foundry Agent Service applies MCP headers per agent definition, not per request. For real per-user trimming, call the Responses API directly.</li>
+<li><strong>Treating web sources like index sources.</strong> A web knowledge source always summarizes the web content with an LLM before it lands in your results, so the knowledge base needs a model reference even in extractive mode — and you get cited summaries, not verbatim page text. The <code>modelWebSummarization</code> entry in the activity log shows what that step consumes.</li>
+<li><strong>Treating the auto-generated index as editable.</strong> The blob source generates data source, skillset, index and indexer from a fixed template. Hand-editing these objects breaks the sync.</li>
+<li><strong>Forgetting the knowledge base and its sources must live on the same search service.</strong> Plan capacity on one service per domain — and remember the limit of 10 sources per knowledge base when you cut your domains.</li>
+</ul>
+<h2 class="wp-block-heading" id="where-this-is-heading">Where This Is Heading</h2>
+<p class="wp-block-paragraph">Retrieval is becoming infrastructure. The interesting signal is that Microsoft put the whole thing behind MCP: knowledge stops being a per-platform feature and becomes an endpoint any agent can call — Foundry agents today, your Agent Framework workflows tomorrow, third-party clients the day after. If you are building agents on Microsoft Foundry, I would stop writing custom RAG pipelines now and put that energy into good knowledge sources and honest evaluations. The details live in the <a href="https://learn.microsoft.com/en-us/azure/foundry/agents/concepts/what-is-foundry-iq" rel="noopener" target="_blank">Foundry IQ documentation</a>.</p>
+<p class="wp-block-paragraph">I hope this helps you to skip a few detours that I took.</p>
+<p class="wp-block-paragraph">Stay healthy,</p>
+<p class="wp-block-paragraph">Cheers Jannik</p>
+<aside aria-labelledby="jr-next-foundry-iq-knowledge-bases" class="jr-next-journey"><span class="jr-next-eyebrow">Continue with retrieval and knowledge</span><h2 id="jr-next-foundry-iq-knowledge-bases">Design a production knowledge layer</h2></aside> </div>
+</div></div>
+</article>
+</body>
+</html>

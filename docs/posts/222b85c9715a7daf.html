@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Microsoft Foundry Setup: Project, Model and Deployment</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">August 4, 2026</span>
+  </div>
+  <h1>Microsoft Foundry Setup: Project, Model and Deployment</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/microsoft-foundry-setup-project-model-deployment/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p class="wp-block-paragraph">The first Microsoft Foundry screen can feel like a wall of new words. <strong>Workspace</strong>, <strong>project</strong>, <strong>model</strong> and <strong>deployment</strong> appear almost at once, even though they do different jobs. If you are new to Foundry, start with this: a project is the concrete use case your team works on, a model is the capability you want to try, and a deployment is the named version that an app can call. The word <em>workspace</em> needs a little more care — I explain that below.</p>
+<p class="wp-block-paragraph">You can create all three quickly. The useful part is making the first setup easy to understand when you return to it next week. In this post I show the small, practical structure I use before an experiment turns into an application dependency.</p>
+<p class="wp-block-paragraph">The video below shows the practical click path in German. This article adds a beginner-friendly explanation around it, so you know what each choice means before you move on.</p>
+<span id="more-20421"></span>
+<h2 class="wp-block-heading" id="start-with-one-small-outcome">Start With One Small Outcome</h2>
+<p class="wp-block-paragraph">Before you open the model catalog, write down one sentence about the first thing you want to test. For example: “Turn an internal support question into a short checklist.” That is enough for a first run. You do not need an agent, a document store and five tools on day one.</p>
+<p class="wp-block-paragraph">For a first Microsoft Foundry setup, I aim for this simple path:</p>
+<ol class="wp-block-list">
+<li>Create or select a development project.</li>
+<li>Add one model deployment with a name that explains its purpose.</li>
+<li>Open Playground and test one normal question, one unclear question and one question the setup should not answer.</li>
+</ol>
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p><strong>New to Foundry?</strong> Do not worry about every option in the portal. Start with a development scope and one narrow task. You can add data, tools and production controls once the basic behaviour is clear.</p>
+</blockquote>
+<h2 class="wp-block-heading" id="what-does-a-good-setup-need-to-achieve">What Does a Good Setup Need to Achieve?</h2>
+<p class="wp-block-paragraph">A good setup is not the biggest one. It is the smallest setup where the ownership, location and next technical step are obvious. When somebody asks where the model runs, which project owns the test or what an application calls, the answer should not depend on who clicked through the portal first.</p>
+<p class="wp-block-paragraph">For me, the first outcome is a clear boundary. I want to know which Azure subscription owns the cost, which resource group groups the work, which region or data boundary is acceptable and which team can make changes. This is basic Azure work, but it matters even more for AI because requests can contain business context, source data and user input.</p>
+<p class="wp-block-paragraph">The second outcome is a clear path from experiment to use. A model in the catalog is only an option. A model deployment is the usable endpoint that an application can address. A project gives the team a place to work with that capability in Foundry. Mixing those three names up is the easiest way to make a small proof of concept hard to explain six weeks later.</p>
+<p class="wp-block-paragraph">Finally, I want a written decision, even if it is only a short README next to the code. It should say what the setup is for, who owns it, what data boundary applies and which deployment name an application may use. That is enough structure for a first internal experiment. It is also enough to spot when an experiment is growing into a real service.</p>
+<h2 class="wp-block-heading" id="microsoft-foundry-setup-choose-the-boundary-before-the-model">Microsoft Foundry Setup: Choose the Boundary Before the Model</h2>
+<p class="wp-block-paragraph">The Microsoft Foundry setup starts outside the model catalog. Start with the Azure scope instead:</p>
+<ol class="wp-block-list">
+<li>Pick the subscription that should own cost, policy and access.</li>
+<li>Pick a resource group that makes the project easy to find and clean up.</li>
+<li>Pick a location after you understand the data-residency requirement, not because it is the first region in a drop-down list.</li>
+<li>Decide whether the work is only model inference or whether the team needs project capabilities such as Playground and agents.</li>
+</ol>
+<p class="wp-block-paragraph">Microsoft documents these as separate pieces for a reason. A Foundry resource can hold model deployments and serve inference on its own. A hub and project can be connected to that resource when you need the wider Foundry experience, including Playground or agents. That distinction is useful: do not create extra structure only because a tutorial did, but do create the project boundary when people, data and agent work need a shared home. The current <a href="https://learn.microsoft.com/en-us/azure/foundry/foundry-models/how-to/quickstart-create-resources" rel="noopener" target="_blank">Microsoft resource guide</a> is a good reference before you choose the route.</p>
+<figure class="wp-block-image"><img alt="Microsoft Foundry Create a project dialog showing the project name, hub, resource group and location" data-recalc-dims="1" decoding="async" src="assets/222b85c9715a7daf/img_0.jpg"/></figure>
+<p class="wp-block-paragraph"><em>The </em><em>Create a project</em><em> dialog is the first place where the important choices become visible: project name, hub, resource group and location. Screenshot from <a href="https://learn.microsoft.com/en-us/azure/foundry/foundry-models/how-to/quickstart-create-resources" rel="noopener" target="_blank">Microsoft Learn</a>. The portal UI can change, but these choices are worth pausing on.</em></p>
+<p class="wp-block-paragraph">I use simple names at this stage. For example, <code>foundry-support-dev</code> is easier to understand than a generated resource name. The name should say what the resource is for and which environment it belongs to. It does not need to encode every model, person or feature. Those things change too often.</p>
+<p class="wp-block-paragraph">There is also a practical security benefit. If development and production are separate from the beginning, test traffic cannot quietly share the same deployment, spending limit and access model as a user-facing workload. You can still keep the setup small. Separate does not have to mean complicated.</p>
+<figure class="wp-block-image"><img alt="Microsoft Foundry setup: project, model and deployment boundaries" data-recalc-dims="1" decoding="async" src="assets/222b85c9715a7daf/img_1.jpg"/></figure>
+<h2 class="wp-block-heading" id="workspace-project-model-and-deployment-what-is-the-difference">Workspace, Project, Model and Deployment: What Is the Difference?</h2>
+<p class="wp-block-paragraph">These terms sound close, but they answer different questions. The confusing part is that <strong>workspace</strong> is often used as a general word and also appears in older, hub-based Foundry documentation. In the current Foundry portal, the real Azure parent object is a <strong>Foundry resource</strong> and a <strong>project</strong> is a child of it.</p>
+<figure class="wp-block-table"><table>
+<thead>
+<tr>
+<th>Part</th>
+<th>The question it answers</th>
+<th>What I keep stable</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Foundry resource</td>
+<td>What is the shared Azure boundary for this platform?</td>
+<td>Subscription, resource group, region, network and policy decisions</td>
+</tr>
+<tr>
+<td>Workspace / hub in older docs</td>
+<td>What is the shared area that projects inherit from?</td>
+<td>Treat it as older or broader vocabulary; check whether the guide is for the classic portal</td>
+</tr>
+<tr>
+<td>Foundry project</td>
+<td>Which specific use case or environment is the team building?</td>
+<td>Purpose, team scope, project connections and test assets</td>
+</tr>
+<tr>
+<td>Model</td>
+<td>Which underlying capability do we want to evaluate?</td>
+<td>Model family and the reason it fits the task</td>
+</tr>
+<tr>
+<td>Deployment</td>
+<td>Which named configuration may an app call?</td>
+<td>Deployment name, environment and intended workload</td>
+</tr>
+</tbody>
+</table></figure>
+<p class="wp-block-paragraph">I find the office analogy useful. The <strong>Foundry resource</strong> is the building: it sets the shared address, security and operating boundary. A <strong>project</strong> is one room in that building for a clear job, for example <code>support-agent-dev</code>. The word <strong>workspace</strong> describes that shared place in everyday conversation, but it is not a second project object you need to create in the current portal.</p>
+<p class="wp-block-paragraph">In other words: use one Foundry resource when the team should share the same platform boundary, then create a project for each meaningful use case or environment. A support agent in development and an HR agent in production should not become one large project just because they are both “AI work.” Give each one a name that explains its job.</p>
+<p class="wp-block-paragraph"><strong>Note:</strong> If a screenshot or Microsoft Learn guide mentions a <em>hub</em> or <em>workspace</em>, check whether it is describing the classic, hub-based experience. New Foundry projects are the direction for current end-to-end scenarios, while hub-based projects remain a classic-portal concept. Microsoft’s <a href="https://learn.microsoft.com/en-us/azure/foundry/what-is-foundry" rel="noopener" target="_blank">current resource model overview</a> and <a href="https://learn.microsoft.com/en-us/azure/foundry/how-to/navigate-from-classic" rel="noopener" target="_blank">migration map</a> are the two references I use before following an older click path.</p>
+<p class="wp-block-paragraph">The model is the capability being evaluated. The catalog may offer several versions, providers and deployment types. I choose it against a concrete task: summarising support cases, producing structured extraction, helping with a knowledge-base question or calling a tool. “The newest one” is not a selection rule.</p>
+<p class="wp-block-paragraph">The deployment turns the model choice into something a client can call. That is why I treat its name as an interface. An app should depend on <code>support-chat-prod</code>, not on the person who created it or the month it was deployed. If I later need a second configuration for a controlled test, I create a second clearly named deployment instead of silently changing the one the app uses.</p>
+<p class="wp-block-paragraph">Microsoft explicitly supports deploying the same model more than once when the deployments use different names. This is helpful when configurations, content filters or usage patterns need to be tested side by side. It is not a reason to duplicate everything. Keep one stable path for each purpose and make the reason visible.</p>
+<h2 class="wp-block-heading" id="cheat-sheet-the-setup-choices-that-matter">Cheat Sheet: The Setup Choices That Matter</h2>
+<figure class="wp-block-table"><table>
+<thead>
+<tr>
+<th>If you are doing this</th>
+<th>Start with</th>
+<th>Do not skip</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A short model test</td>
+<td>One development scope and a clear deployment name</td>
+<td>Cost owner and model availability in the chosen region</td>
+</tr>
+<tr>
+<td>A Playground experiment</td>
+<td>A project with one focused task</td>
+<td>A small prompt set that proves the behaviour you expect</td>
+</tr>
+<tr>
+<td>An internal agent proof of concept</td>
+<td>Development project, named deployment and least-privilege access</td>
+<td>Data source and tool boundaries before connecting them</td>
+</tr>
+<tr>
+<td>A production workload</td>
+<td>Separate production scope and written ownership</td>
+<td>Data residency, identity, monitoring and a rollout decision</td>
+</tr>
+</tbody>
+</table></figure>
+<p class="wp-block-paragraph">The point of this table is not to turn every test into an architecture review. It is to avoid the two missing decisions that are expensive later: where data may be processed and what an application is allowed to depend on.</p>
+<p class="wp-block-paragraph">For a first model test, I often stay deliberately narrow. One project, one task, one deployment and a small list of prompts are enough. Add more only when the work needs it. A large catalog and many tools do not make the test more trustworthy.</p>
+<h3 class="wp-block-heading" id="keep-a-small-setup-record">Keep a Small Setup Record</h3>
+<p class="wp-block-paragraph">I keep a small record next to the work from the first day. It is not a long architecture document. One page is normally enough. It contains the problem statement, subscription, resource group, region or data zone, project name, deployment name, model choice and the person or team who owns the next decision.</p>
+<p class="wp-block-paragraph">I add the source and tool boundary as well. If the agent answers only from the prompt today, I write that down. If a later iteration adds a document collection or a custom function, the record changes with it. This makes the scope visible without turning a quick experiment into a paperwork exercise.</p>
+<p class="wp-block-paragraph">The last line is the test path: which prompts passed, which prompt exposed a gap and what needs to happen before the work moves forward. That line is especially useful when a different colleague returns to the project. They can see the intent before they see the portal configuration.</p>
+<p class="wp-block-paragraph">I also record what I deliberately did not build. For example, “no production users”, “no customer data” or “no write-capable tools” are healthy limits for an early test. Clear limits make it easier to approve the next step because everyone can see what has not happened yet.</p>
+<h2 class="wp-block-heading" id="the-simple-decision-tree-i-use">The Simple Decision Tree I Use</h2>
+<p class="wp-block-paragraph">When I set up a new use case, I go through these questions in this order:</p>
+<ol class="wp-block-list">
+<li><strong>What is the task?</strong> Write one sentence that a colleague could recognise. “Answer internal support questions from approved documentation” is better than “build an AI assistant.”</li>
+<li><strong>What is the boundary?</strong> Choose subscription, environment, owner and allowed data location.</li>
+<li><strong>What is the working area?</strong> Create or select the Foundry resource and project that fit the boundary.</li>
+<li><strong>Which model can serve the task?</strong> Check availability and the deployment type offered in that region.</li>
+<li><strong>What will the client call?</strong> Create a purposeful deployment name before you paste it into code or a tool configuration.</li>
+<li><strong>How will I verify it?</strong> Keep a short prompt set, expected behaviours and a way to see which deployment answered.</li>
+</ol>
+<p class="wp-block-paragraph">The order matters. If I choose the model first, I can end up backing into a region or processing decision that the business cannot accept. If I create the deployment first, I can end up with a name that looks harmless until it becomes a client contract. The Microsoft Foundry setup is easier when each decision has a home.</p>
+<figure class="wp-block-image"><img alt="Microsoft Foundry setup readiness checklist before the first deployment" data-recalc-dims="1" decoding="async" src="assets/222b85c9715a7daf/img_2.jpg"/></figure>
+<h2 class="wp-block-heading" id="pitfalls-i-now-avoid">Pitfalls I Now Avoid</h2>
+<p class="wp-block-paragraph">The first pitfall is treating a portal demo as a production environment. A successful answer proves that the current prompt reached the current model. It does not answer who owns the cost, whether the correct people have access, which data boundary applies or how the service will be monitored.</p>
+<p class="wp-block-paragraph">The second pitfall is using a deployment name that describes a temporary moment. Names such as <code>gpt-test-final-v4</code> work until a script, agent or app starts relying on them. I use a name that states the workload and environment instead, then keep the model change as a separate, reviewed decision.</p>
+<p class="wp-block-paragraph">The third pitfall is connecting every available capability at once. File search, web search and custom tools are useful, but every connection changes the data path and the failure modes. Start with the smallest set that can prove the use case. Add a connection only when the prompt set shows a real gap.</p>
+<p class="wp-block-paragraph">The fourth pitfall is assuming a region name answers every compliance question. The deployment type also affects where prompts and responses are processed. Before a production decision, read the current deployment-type guidance and confirm it with the people responsible for policy and data protection. The answer can change as model availability changes.</p>
+<h2 class="wp-block-heading" id="where-this-is-heading">Where This Is Heading</h2>
+<p class="wp-block-paragraph">Once the setup is stable, I move the important parts out of memory and into repeatable configuration. That can start with a short document and a simple CLI check. Microsoft documents how to list models and their available SKUs, create a named deployment and verify that its provisioning state is <code>Succeeded</code> in the <a href="https://learn.microsoft.com/en-us/azure/foundry/foundry-models/how-to/create-model-deployments" rel="noopener" target="_blank">model deployment guide</a>.</p>
+<pre class="wp-block-code"><code class="language-bash"># Check the deployment that an application is expected to call.
+az cognitiveservices account deployment show \
+  --deployment-name support-chat-prod \
+  --name &lt;foundry-resource-name&gt; \
+  --resource-group &lt;resource-group&gt;
+</code></pre>
+<p class="wp-block-paragraph">You do not need to automate everything on day one. But the more important the workload becomes, the less I want critical choices to exist only in a portal history. A consistent project, a deliberate model decision and a stable deployment name are the right first ingredients.</p>
+<p class="wp-block-paragraph">If you are choosing between many models after the initial setup, my post on the <a href="https://jannikreinhard.com/microsoft-foundry-model-router/">Microsoft Foundry model router and catalog</a> is the useful next read. It goes deeper into choosing a model at request time without losing control of the decision.</p>
+<p class="wp-block-paragraph">I hope this is a little help.</p>
+<p class="wp-block-paragraph">Stay healthy, Cheers Jannik</p>
+<aside aria-labelledby="jr-next-microsoft-foundry-setup-project-model-deployment" class="jr-next-journey"><span class="jr-next-eyebrow">Build the next layer</span><h2 id="jr-next-microsoft-foundry-setup-project-model-deployment">Continue your agent architecture</h2></aside> </div>
+</div></div>
+</article>
+</body>
+</html>
