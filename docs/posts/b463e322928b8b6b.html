@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Microsoft Foundry Model Deployment: A Practical Guide</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">August 5, 2026</span>
+  </div>
+  <h1>Microsoft Foundry Model Deployment: A Practical Guide</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/microsoft-foundry-model-deployment-guide/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p class="wp-block-paragraph">Seeing a model in the Microsoft Foundry catalog is not the same as having a model that an application can use. The bridge is the <strong>deployment</strong>. Think of it as the saved, named configuration that your app talks to. Your code does not call a vague catalog entry; it calls the deployment name you create.</p>
+<p class="wp-block-paragraph">That makes the portal form more important than it looks. It connects a model, a deployment type and a name that people and code will depend on. In this post I explain those three choices in plain English before you put a model behind an agent or an application.</p>
+<p class="wp-block-paragraph">The video below shows the practical deployment path in German. Here I add the questions that are easy to miss while the portal is open — and a simple path for a first deployment.</p>
+<p class="jr-youtube-embed"><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/IEy0X8YV0EQ?feature=oembed" title="YouTube video player">VIDEO</iframe></p>
+<span id="more-20423"></span>
+<h2 class="wp-block-heading" id="first-know-the-three-things-you-are-choosing">First, Know the Three Things You Are Choosing</h2>
+<p class="wp-block-paragraph">Before you press <strong>Deploy</strong>, make sure you can point to these three things:</p>
+<ol class="wp-block-list">
+<li><strong>Model:</strong> the capability you want to test, such as a chat or reasoning model.</li>
+<li><strong>Deployment type:</strong> how the request is processed and which data boundary, billing and capacity options apply.</li>
+<li><strong>Deployment name:</strong> the stable label that your Playground, script or app will use.</li>
+</ol>
+<p class="wp-block-paragraph">If you only remember one rule, make it this: the model is the engine; the deployment is the named connection to that engine. A clear name such as <code>support-chat-dev</code> is far easier to understand later than <code>test-final-v4</code>.</p>
+<figure class="wp-block-image"><img alt="Microsoft Foundry deployment dialog highlighting the deployment name and deployment type fields" data-recalc-dims="1" decoding="async" src="assets/b463e322928b8b6b/img_0.jpg"/></figure>
+<p class="wp-block-paragraph"><em>This Microsoft Learn screenshot shows the two fields I pause at first: </em><em>Deployment name</em><em> and </em><em>Deployment type</em><em>. The exact models and labels can vary by region and over time. <a href="https://learn.microsoft.com/en-us/azure/foundry/foundry-models/concepts/deployment-types" rel="noopener" target="_blank">Source: Microsoft Learn</a>.</em> </p>
+<figure class="wp-block-image"><img alt="Current Microsoft Foundry portal home page showing the selected project and the Home, Discover, Build and Operate sections" data-recalc-dims="1" decoding="async" src="assets/b463e322928b8b6b/img_1.jpg"/></figure>
+<p class="wp-block-paragraph"><em>In the current portal, I start in </em><em>Discover</em><em> to find a model, then use </em><em>Build &gt; Models</em><em> to validate the deployment that an application will call. Screenshot from <a href="https://learn.microsoft.com/en-us/azure/foundry/how-to/navigate-from-classic" rel="noopener" target="_blank">Microsoft Learn</a>.</em> </p>
+<h2 class="wp-block-heading" id="microsoft-foundry-model-deployment-more-than-a-button">Microsoft Foundry Model Deployment: More Than a Button</h2>
+<p class="wp-block-paragraph">A model deployment joins four decisions that should stay visible:</p>
+<ul class="wp-block-list">
+<li><strong>The model and version</strong> tell Foundry what capability you want to use.</li>
+<li><strong>The deployment type</strong> determines the processing location, billing model and performance characteristics available for that model.</li>
+<li><strong>The deployment name</strong> is what the client uses in requests.</li>
+<li><strong>The environment</strong> tells everybody whether this is a short experiment, development, staging or production.</li>
+</ul>
+<p class="wp-block-paragraph">I do not treat these as four separate forms. They are one decision with different consequences. A technically good model can still be the wrong choice if the available deployment type does not meet the data boundary. A correct deployment can still cause avoidable work if its name does not make clear which application it belongs to.</p>
+<p class="wp-block-paragraph">For a first test, keep the click path short: choose a model that is available to your resource, read the processing note beside the deployment type, give the deployment a purpose-and-environment name, create it, then wait for its provisioning state to show <code>Succeeded</code>. Only after that should you start testing prompts in Playground.</p>
+<p class="wp-block-paragraph">Microsoft’s current documentation makes one point clear: the type affects where data is processed, whether requests are pay-per-token or use reserved capacity, and the expected throughput or latency variation. I choose the boundary and workload first. Then I pick the concrete SKU offered for the model and region. The <a href="https://learn.microsoft.com/en-us/azure/foundry/foundry-models/concepts/deployment-types" rel="noopener" target="_blank">deployment-type overview</a> is the source I check when this decision matters.</p>
+<p class="wp-block-paragraph">There is no universal best deployment. Global Standard is a reasonable starting point for many variable workloads when global processing is acceptable. A Data Zone type is more useful when a defined data zone matters. Provisioned capacity is a different conversation: it is about reserved throughput and predictability, not a free performance switch. Batch is for large asynchronous work, not an interactive chat request.</p>
+<p class="wp-block-paragraph">Before I open the catalog, I write down four answers.</p>
+<p class="wp-block-paragraph"><strong>First: where may prompts and responses be processed?</strong> This is a design requirement, not a model preference. Global deployments may process inference data in any Azure region. Data Zone types process it inside the selected Microsoft data zone. Regional Standard types process it in the deployment region. Data stored at rest follows the designated geography, but that does not make the inference-processing choice disappear.</p>
+<p class="wp-block-paragraph"><strong>Second: what does the traffic look like?</strong> A proof of concept that sees a few prompts per day has a different need from a steady business service. Variable or bursty traffic usually fits a Standard type better. A workload with consistent high volume and a tight latency expectation may justify discussing provisioned throughput. I do not promise a latency number before I measure it with the real prompts and tools.</p>
+<p class="wp-block-paragraph"><strong>Third: what is the unit of ownership?</strong> Each environment needs a clear owner for cost and changes. In a small team, that can be one person and a short document. In a larger team, it should map to the application owner and the normal Azure change path.</p>
+<p class="wp-block-paragraph"><strong>Fourth: what will consume the deployment?</strong> A Playground test, an agent and a web application may share a model family, but they should not automatically share the same deployment. The client dependency should be intentional.</p>
+<figure class="wp-block-image"><img alt="Microsoft Foundry model deployment decision path for residency and workload" data-recalc-dims="1" decoding="async" src="assets/b463e322928b8b6b/img_2.jpg"/></figure>
+<h2 class="wp-block-heading" id="use-the-deployment-name-as-a-contract">Use the Deployment Name as a Contract</h2>
+<p class="wp-block-paragraph">The deployment name is the small detail that becomes important first. Microsoft requests use the deployment name in the <code>model</code> parameter. Once an app, agent or script depends on it, changing the name has the same effect as changing any other endpoint contract.</p>
+<p class="wp-block-paragraph">I keep names short and purposeful. A pattern such as <code>&lt;workload&gt;-&lt;environment&gt;</code> is enough for many teams:</p>
+<figure class="wp-block-table"><table><thead><tr><th>Name</th><th>What it communicates</th><th>A good use</th></tr></thead><tbody><tr><td><code>support-chat-dev</code></td><td>Development version of a support workload</td><td>Prompt and integration testing</td></tr><tr><td><code>support-chat-prod</code></td><td>Stable production contract</td><td>The application configuration</td></tr><tr><td><code>document-extract-eval</code></td><td>Bounded evaluation purpose</td><td>Comparing a model or filter configuration</td></tr><tr><td><code>research-batch-prod</code></td><td>Offline production processing</td><td>Large asynchronous work</td></tr></tbody></table></figure>
+<p class="wp-block-paragraph">I avoid model names and vague words such as <code>new</code>, <code>final</code> or <code>test</code> as the primary identifier. The model version can change as the deployment is deliberately updated. The workload name should remain understandable to a human reading a log, budget report or environment variable.</p>
+<p class="wp-block-paragraph">The same model can be deployed more than once under different names. Microsoft calls this out as useful when you need to compare configurations such as content filters. That is a good pattern for a controlled evaluation. It becomes a bad pattern when nobody can explain the difference between five deployments with nearly identical names. Put the reason in the deployment description or the project README.</p>
+<figure class="wp-block-image"><img alt="Microsoft Foundry model deployment name as an application contract" data-recalc-dims="1" decoding="async" src="assets/b463e322928b8b6b/img_3.jpg"/></figure>
+<h2 class="wp-block-heading" id="cheat-sheet-which-type-fits-the-workload">Cheat Sheet: Which Type Fits the Workload?</h2>
+<figure class="wp-block-table"><table><thead><tr><th>Deployment type</th><th>I consider it when</th><th>The trade-off to accept</th></tr></thead><tbody><tr><td>Global Standard</td><td>Traffic changes, global processing is acceptable and I want a straightforward start</td><td>Best-effort service and more latency variation at scale</td></tr><tr><td>Data Zone Standard</td><td>The workload must stay in the EU, US or APAC data zone</td><td>Availability and model options may differ from the global path</td></tr><tr><td>Provisioned</td><td>A high, consistent workload needs reserved capacity and lower latency variation</td><td>Capacity is reserved; this needs forecasting and an economic reason</td></tr><tr><td>Batch</td><td>The work is large and asynchronous, such as offline enrichment</td><td>It is not for a user waiting in a chat window</td></tr></tbody></table></figure>
+<p class="wp-block-paragraph">The table is a starting conversation, not compliance advice. Not every model supports every type in every region. I check the model availability before committing to the rest of the design. If the desired model and the required data boundary do not meet, changing the model may be safer than weakening the boundary.</p>
+<p class="wp-block-paragraph">One useful detail for experiments is instant access, which Microsoft currently labels preview. It can be convenient when you only need to try a supported model by name. I keep preview paths out of my default production design until the service terms, support level and operating model fit the use case.</p>
+<h3 class="wp-block-heading" id="measure-the-workload-you-have">Measure the Workload You Have</h3>
+<p class="wp-block-paragraph">I do not choose capacity from a slide deck. I start with the prompts the application will receive. A short classification prompt, a long document extraction request and an agent that calls tools can look like the same workload on a diagram. They create different request sizes, output lengths and waiting times.</p>
+<p class="wp-block-paragraph">For an interactive scenario, I measure a small representative set at the expected concurrency. I keep the raw response time, failures, output length and the part of the journey that the user waits for. If a tool call or a data lookup dominates the experience, changing the model deployment type will not fix it.</p>
+<p class="wp-block-paragraph">For a batch scenario, I look at throughput, completion window and recoverability. A lower unit cost is useful only if the result still arrives when the downstream process needs it. The goal is not to create a perfect benchmark. It is to avoid buying predictability for a problem that lives somewhere else in the system.</p>
+<h2 class="wp-block-heading" id="the-simple-decision-tree-i-use">The Simple Decision Tree I Use</h2>
+<p class="wp-block-paragraph">My first question is not “Which is the most powerful model?” It is “Which requirement cannot move?” The answers create a short decision path:</p>
+<ol class="wp-block-list">
+<li><strong>Data boundary first.</strong> If global inference processing is not acceptable, narrow the selection to Data Zone or regional options before comparing models.</li>
+<li><strong>Workload second.</strong> Decide whether traffic is interactive and variable, steady and high-volume, or asynchronous in bulk.</li>
+<li><strong>Model availability third.</strong> Check the actual provider, version, SKU and capacity available to the target Foundry resource. Do not copy a choice from another region without checking.</li>
+<li><strong>Deployment name fourth.</strong> Create a stable name that matches the workload and environment.</li>
+<li><strong>Test fifth.</strong> Use representative prompts and a realistic concurrency level. A single happy-path prompt gives no evidence about latency variance, tool failures or cost.</li>
+<li><strong>Promote deliberately.</strong> If the test becomes useful, document the decision and create the production deployment through the team’s normal process.</li>
+</ol>
+<p class="wp-block-paragraph">This is also where a model router can help later. If one application has genuinely different request classes, routing can select a model under defined rules. It does not replace the first deployment decision. I describe that distinction in my <a href="https://jannikreinhard.com/microsoft-foundry-model-router/">Foundry model router and catalog deep dive</a>.</p>
+<h2 class="wp-block-heading" id="verify-the-deployment-before-an-app-depends-on-it">Verify the Deployment Before an App Depends on It</h2>
+<p class="wp-block-paragraph">The portal status is useful, but I also like an explicit verification step. Microsoft documents the Azure CLI path: list the models that are available to the resource, create the deployment with its model information and query the provisioning state. A deployment is ready only after the state reports <code>Succeeded</code>.</p>
+<p class="wp-block-paragraph">After the deployment succeeds, run an intentionally small request from the same identity and network path that the next component will use. If the next component is an application, do not stop at a developer’s interactive portal login. If it is an agent, test the agent path and any tool permission separately. The model responding is not proof that every surrounding dependency is ready.</p>
+<p class="wp-block-paragraph">I also check whether the configuration records the model version, type and expected capacity. The name alone is not enough to reconstruct the decision. It is the contract; the record explains the contract.</p>
+<h3 class="wp-block-heading" id="a-small-deployment-record-is-enough">A Small Deployment Record Is Enough</h3>
+<p class="wp-block-paragraph">The record for a Microsoft Foundry model deployment can stay short. Include the workload owner, environment, deployment name, model and version, type, data-processing assumption, expected traffic and date of the last verification. Add a link to the prompt set or test run when it exists.</p>
+<p class="wp-block-paragraph">This is useful when a model is updated, a team changes the app configuration or a cost question appears. Nobody has to reverse engineer the answer from a portal screen. The deployment becomes an understandable component of the application instead of a mysterious string in an environment variable.</p>
+<h2 class="wp-block-heading" id="pitfalls-i-now-avoid">Pitfalls I Now Avoid</h2>
+<p class="wp-block-paragraph">The biggest mistake is deciding on a type from a label alone. “Global” and “EU” sound clear, but the exact processing wording and availability are part of the service documentation. I read the current documentation, then involve the right security or privacy contact before calling a workload production-ready.</p>
+<p class="wp-block-paragraph">The next mistake is treating capacity as a number to maximise. More capacity is not automatically better. First check the request pattern, output length, tool use and the expected number of concurrent users. Then measure. Provisioned capacity is useful when the workload makes the reservation worthwhile; it is not a substitute for a realistic test.</p>
+<p class="wp-block-paragraph">Another common problem is reusing a development deployment in production because it already works. This leaves test prompts, experimental filters and production cost in the same place. A separate named production deployment creates a clearer rollback and ownership path.</p>
+<p class="wp-block-paragraph">Finally, do not hard-code a temporary portal choice in many places. Put the deployment name in one configuration boundary. When the team deliberately changes the deployment, there should be one obvious place to review the impact.</p>
+<h2 class="wp-block-heading" id="where-this-is-heading">Where This Is Heading</h2>
+<p class="wp-block-paragraph">For a first Microsoft Foundry model deployment, the practical goal is simple. Choose a type that respects the data boundary, create a name that an app can safely depend on and verify it before the next layer uses it. The rest can evolve with the workload.</p>
+<p class="wp-block-paragraph">The <a href="https://learn.microsoft.com/en-us/azure/foundry/foundry-models/how-to/create-model-deployments" rel="noopener" target="_blank">official Microsoft deployment guide</a> is worth keeping close because model versions, availability and tooling move quickly. It also shows the exact properties required when you automate deployments with the CLI or Bicep.</p>
+<p class="wp-block-paragraph">From here, the next useful step is not necessarily another model. It can be a small Playground session that tests one agent task against the deployment with realistic prompts. That keeps the experiment focused and gives you evidence before more infrastructure is added.</p>
+<p class="wp-block-paragraph">I hope this is a little help.</p>
+<p class="wp-block-paragraph">Stay healthy, Cheers Jannik</p>
+<aside aria-labelledby="jr-next-microsoft-foundry-model-deployment-guide" class="jr-next-journey"><span class="jr-next-eyebrow">Build the next layer</span><h2 id="jr-next-microsoft-foundry-model-deployment-guide">Continue your agent architecture</h2></aside> </div>
+</div></div>
+</article>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Security Copilot Agents in Intune: What You Get in 2026</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">August 6, 2026</span>
+  </div>
+  <h1>Security Copilot Agents in Intune: What You Get in 2026</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/security-copilot-agents-intune/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p class="wp-block-paragraph">Microsoft is bringing AI agents into more and more admin portals. In this blog post I explain the Security Copilot agents in Intune: the Policy Configuration Agent, the Change Review Agent, and the new Vulnerability Remediation Agent. I show what each agent actually does, how you can enable them, and what you should watch out for. I also cover an important licensing change: Microsoft 365 E5 and E7 tenants get Security Copilot capacity included at no additional cost.</p>
+<span id="more-19505"></span>
+<h2 class="wp-block-heading" id="what-are-security-copilot-agents-in-intune">What Are Security Copilot Agents in Intune?</h2>
+<p class="wp-block-paragraph">Security Copilot agents in Intune are AI-powered assistants that run directly inside the Microsoft Intune admin center. They are built on Microsoft Security Copilot. The idea is simple: an agent observes data in your tenant, reasons about it, and gives you suggestions. You as the admin review the suggestions and decide what happens. The agents do not apply changes on their own. Each agent is built for one specific use case and works within Intune role-based access control (RBAC). You find them all under the <strong>Agents</strong> node in the admin center. The full list of Security Copilot agents in Intune is documented on <a href="https://learn.microsoft.com/en-us/intune/copilot/agents/" rel="dofollow noopener" target="_blank">Microsoft Learn</a>.</p>
+<h2 class="wp-block-heading" id="which-agents-are-available-in-intune">Which Agents Are Available in Intune?</h2>
+<p class="wp-block-paragraph">In 2026 there are three Security Copilot agents in Intune that matter for daily work. Here is my short overview:</p>
+<figure class="wp-block-table"><table>
+<thead>
+<tr>
+<th>Agent</th>
+<th>What it does</th>
+<th>Status</th>
+<th>When I use it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Policy Configuration Agent</td>
+<td>Turns documents or plain-language requirements into a settings catalog policy</td>
+<td>Available</td>
+<td>When I build a baseline from CIS, STIG, NIST, or internal security documents</td>
+</tr>
+<tr>
+<td>Change Review Agent</td>
+<td>Evaluates Multi Admin Approval requests for PowerShell scripts and recommends approve, reject, or needs more info</td>
+<td>Public preview</td>
+<td>As a second opinion before I approve a script request</td>
+</tr>
+<tr>
+<td>Vulnerability Remediation Agent</td>
+<td>Prioritizes CVEs from Microsoft Defender Vulnerability Management and gives step-by-step Intune remediation guidance</td>
+<td>Public preview (for all customers since June 2026)</td>
+<td>For my regular vulnerability triage on Windows clients</td>
+</tr>
+</tbody>
+</table></figure>
+<p class="wp-block-paragraph">Note: There was also a Device Offboarding Agent. Microsoft retired it. New setup ended on April 30, 2026, and the agent was removed from the admin center on June 1, 2026. Move existing offboarding workflows back to the normal device lifecycle options in Intune.</p>
+<figure class="wp-block-image"><img alt="Security Copilot agents in Intune: Policy Configuration, Change Review and Vulnerability" data-recalc-dims="1" decoding="async" src="assets/49427935673ab3d0/img_0.jpg"/></figure>
+<h2 class="wp-block-heading" id="what-does-the-policy-configuration-agent-do">What Does the Policy Configuration Agent Do?</h2>
+<p class="wp-block-paragraph">With the Policy Configuration Agent you upload a document or write your requirements in plain language, for example “All laptops must have BitLocker enabled with AES-256 encryption”. The agent parses the text, finds the matching settings in the Intune settings catalog, and recommends values for them. You review the suggestions, remove what you do not want, and then let the agent create the policy. The agent also lists requirements it could not map to a setting, so you see the gaps and can document how you handle them. The result is a normal settings catalog policy. It is not enforced until you assign it yourself. Windows is the supported platform, and only one agent instance per tenant is supported. In my view this is the most useful of the Security Copilot agents in Intune when you get a hardening document from your security team and need to turn it into a real policy.</p>
+<h2 class="wp-block-heading" id="what-does-the-change-review-agent-do">What Does the Change Review Agent Do?</h2>
+<p class="wp-block-paragraph">The Change Review Agent looks at Multi Admin Approval requests for PowerShell scripts on Windows devices. It aggregates signals from Microsoft Defender Vulnerability Management, Microsoft Entra ID identity risk, and the historical context in Intune. For each request it recommends one of three actions: approve, reject, or needs more info, together with the rationale and what the script is intended to do. It reviews a maximum of 10 requests per run, and the final decision always stays with you. A nice detail: after a run, the <strong>My requests</strong> and <strong>All requests</strong> pages under <strong>Tenant administration</strong> &gt; <strong>Multi Admin Approval</strong> show an <strong>Agent Response</strong> column for script requests, so you can open the suggestion right where you approve. If Multi Admin Approval is new for you: I wrote about the recent MAA enforcement on Graph API calls in <a href="https://jannikreinhard.com/intune-multi-admin-approval-graph-api/">my last blog post</a>. I would use the agent as a fast risk summary, but I would still read the script myself before I approve it.</p>
+<p class="wp-block-paragraph">The Vulnerability Remediation Agent is the newest of the Security Copilot agents in Intune. Since June 2026 it is in public preview for all customers — before that it was a limited preview for a small group. It uses data from Microsoft Defender Vulnerability Management to identify CVEs on your managed Windows devices and apps in Intune. The agent prioritizes the findings based on CVSS scores, exposure impact, and device count. For each suggestion you see the affected CVEs, a summarized impact analysis, the exposed devices, and step-by-step guidance for how to remediate the issue with Intune. After you remediate something, you can mark the suggestion as applied so the agent keeps a record over time.</p>
+<p class="wp-block-paragraph">One technical difference: this agent runs under a Microsoft Entra agentic identity instead of your admin account. During setup, Intune provisions an agentic user in your Entra directory, and the agent runs with exactly the permissions you delegate to this user. This fits nicely into the topic of my post about how to <a href="https://jannikreinhard.com/protect-ai-agents-with-microsoft-defender-for-endpoint/">protect AI agents with Microsoft Defender for Endpoint</a>.</p>
+<p class="wp-block-paragraph">Note: The CVE counts and the exposed device list only cover Windows client editions. Windows Server devices are not included.</p>
+<figure class="wp-block-image"><img alt="Vulnerability Remediation Agent flow from Defender Vulnerability Management data to" data-recalc-dims="1" decoding="async" src="assets/49427935673ab3d0/img_1.jpg"/></figure>
+<h2 class="wp-block-heading" id="how-can-i-enable-the-agents">How Can I Enable the Agents?</h2>
+<p class="wp-block-paragraph">To use the Security Copilot agents in Intune, you need Security Copilot enabled in your tenant with security compute units (SCUs) available, plus a Microsoft Intune Plan 1 subscription. The Change Review Agent also needs Microsoft Entra ID P2 and Microsoft Defender Vulnerability Management. The Vulnerability Remediation Agent needs Defender Vulnerability Management as well, which comes with Defender for Endpoint Plan 2 or the standalone license. All three agents are supported in the public cloud only, not in the government clouds. The setup itself is quick:</p>
+<ol class="wp-block-list">
+<li>Sign in to the Microsoft Intune admin center (intune.microsoft.com) with the least privileged role for the agent.</li>
+<li>Go to <strong>Agents</strong> and select the agent you want, for example <strong>Policy Configuration Agent</strong>.</li>
+<li>In <strong>Overview</strong>, select <strong>Set up agent</strong>. The pane shows the required permissions and plugins.</li>
+<li>Select <strong>Start agent</strong> to run it for the first time.</li>
+</ol>
+<p class="wp-block-paragraph">For the Vulnerability Remediation Agent there are two extra steps. After setup you must delegate the required permissions to the agentic user — an Intune read-only role in the Intune admin center and a Security Reader equivalent in the Defender portal. Agent runs stay disabled until this is done. Then use the <strong>Run Readiness Check</strong> button on the agent page to verify everything is in place; once the check passes, the <strong>Run</strong> button and scheduling become available.</p>
+<p class="wp-block-paragraph">Hint: You can reach the Vulnerability Remediation Agent from both the <strong>Agents</strong> node and the <strong>Endpoint security</strong> node. It is the same agent behind both paths.</p>
+<h2 class="wp-block-heading" id="what-about-licensing-and-scu-costs">What About Licensing and SCU Costs?</h2>
+<p class="wp-block-paragraph">This is the part many admins missed. The Security Copilot agents in Intune consume security compute units every time they run. Until now that meant provisioning and paying for SCUs separately. At Ignite 2025 Microsoft announced that Security Copilot is included for all Microsoft 365 E5 and E7 customers. The rollout started on November 18, 2025 for existing Security Copilot customers and continues in phases for all eligible tenants — check the Message center and the banners in the admin portals to see when your tenant is enabled.</p>
+<p class="wp-block-paragraph">The included capacity: 400 SCUs per month for every 1,000 paid user licenses, up to 10,000 SCUs per month. It scales down for smaller tenants too — with 400 user licenses you get 160 SCUs per month. The capacity is provisioned automatically as a “Default Security Copilot Capacity”, with zero-click activation and no Azure setup. Details are on <a href="https://learn.microsoft.com/en-us/copilot/security/security-copilot-inclusion" rel="dofollow noopener" target="_blank">Microsoft Learn</a>.</p>
+<p class="wp-block-paragraph">Three honest notes on this:</p>
+<ul class="wp-block-list">
+<li>Unused SCUs do not roll over to the next month.</li>
+<li>If you exceed the included SCUs, Microsoft plans to throttle usage at a future date, with an option to buy more at 6 USD per SCU pay-as-you-go. You get 30 days notice before that starts.</li>
+<li>The inclusion covers the SCUs, not the prerequisites. Licenses like Defender for Endpoint Plan 2 (outside E5) or Entra ID P2 still need to be in place for the agents that require them.</li>
+</ul>
+<h2 class="wp-block-heading" id="what-should-i-watch-out-for">What Should I Watch Out For?</h2>
+<p class="wp-block-paragraph">A few honest points from my side about the Security Copilot agents in Intune:</p>
+<ul class="wp-block-list">
+<li><strong>Review before you apply.</strong> All output is a suggestion. Check the recommended settings, read the script, and validate the remediation steps before you act.</li>
+<li><strong>RBAC and identity.</strong> The agents run with the permissions of the setup account or the agentic user. Keep this least privileged. Also note: in the current preview, Vulnerability Remediation Agent suggestions can be visible to admins outside their assigned scope, and the agent does not support scope tags yet.</li>
+<li><strong>SCU consumption.</strong> Every run costs SCUs. With the E5 and E7 inclusion this is less painful, but monitor your usage in the Security Copilot usage dashboard, especially with scheduled runs.</li>
+<li><strong>No pause button.</strong> Once you start a run, you cannot stop or pause it.</li>
+<li><strong>Authentication expiry.</strong> For the agents that run under an admin identity (Policy Configuration and Change Review), the authentication expires if the agent does not run for 90 days. Intune shows a renewal banner on the agent page — select <strong>Renew authentication</strong> there. Vulnerability Remediation Agent instances that were set up with a human identity before the agentic identity release must be switched to an agentic identity; the old tokens expire 90 days after the release.</li>
+</ul>
+<p class="wp-block-paragraph">In this blog post I showed you the three Security Copilot agents in Intune, what they do, how to enable them, and where the limits are. My recommendation: start with the Policy Configuration Agent, because the review workflow is easy to control, and then test the Vulnerability Remediation Agent in the preview. I hope this is a little help.</p>
+<p class="wp-block-paragraph">Stay healthy, Cheers Jannik</p>
+<aside aria-labelledby="jr-next-security-copilot-agents-intune" class="jr-next-journey"><span class="jr-next-eyebrow">Continue the security path</span><h2 id="jr-next-security-copilot-agents-intune">Turn the control into an operating model</h2></aside> </div>
+</div></div>
+</article>
+</body>
+</html>
