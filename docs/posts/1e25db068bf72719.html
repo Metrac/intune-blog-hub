@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Agentic OS: How I Run Notion, Outlook, Codex and OneDrive</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">August 7, 2026</span>
+  </div>
+  <h1>My Agentic OS: How I Run Notion, Outlook, Codex and OneDrive</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/agentic-operating-system/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p class="jr-title-context">Topic of this page: My Agentic OS: How I Run Notion, Outlook, Codex and OneDrive</p>
+<p class="wp-block-paragraph">I do not need another AI chat window. I need an <strong>agentic operating system</strong> that knows where my work starts, where every result belongs and which actions still require me. That difference sounds small, but it is the reason my daily setup keeps working even as I add more agents, repositories, documents and content channels.</p>
+<p class="wp-block-paragraph">My current system connects Notion, Outlook, Codex, reusable skills, OneDrive, GitHub and scheduled automations. Codex is my primary execution layer. Claude Code gives me a second coding path when its strengths fit the task better or when I need to distribute a long coding day across both subscriptions. Notion gives me the working context for the day. Outlook owns communication and time. OneDrive remains the system of record for documents and media, while GitHub owns code. The tools are not interchangeable, and that is the point.</p>
+<p class="wp-block-paragraph">This post is not a list of apps I like. It is the operating model I use every day: how work enters the system, how I choose what matters, how an agent gets the right instructions, where the output is stored and where I deliberately keep a human approval step.</p>
+<span id="more-20191"></span>
+<h2 class="wp-block-heading" id="what-do-i-mean-by-an-agentic-operating-system">What do I mean by an agentic operating system?</h2>
+<p class="wp-block-paragraph">An agentic operating system is not one application and it is not one giant prompt. It is the combination of routing rules, stable systems of record, reusable procedures and scheduled triggers that let an AI agent do useful work without guessing how my world is organized.</p>
+<p class="wp-block-paragraph">The agent is only one part of the system. The more important parts are the boundaries around it:</p>
+<ul class="wp-block-list">
+<li>Where does a new task enter?</li>
+<li>Which source contains the current truth?</li>
+<li>Which skill describes the correct workflow?</li>
+<li>Where should the result be stored?</li>
+<li>What can run automatically?</li>
+<li>Which step needs my review before it becomes external?</li>
+</ul>
+<p class="wp-block-paragraph">I learned that the hard way. If all tools can do everything, no tool truly owns anything. Notes end up in repositories, scripts live in document folders, drafts are mistaken for published content and the agent spends more time searching than executing.</p>
+<p class="wp-block-paragraph">My rule is simple: <strong>one tool, one primary job</strong>. The agent can cross the boundaries, but it must understand them first.</p>
+<figure class="wp-block-image"><img alt="Agentic operating system daily control loop from capture to human review" data-recalc-dims="1" decoding="async" src="assets/1e25db068bf72719/img_0.jpg"/></figure>
+<p class="wp-block-paragraph">The following table is the shortest useful description of my setup.</p>
+<figure class="wp-block-table"><table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Primary responsibility</th>
+<th>What I deliberately do not use it for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Notion</td>
+<td>Current context, today’s outcomes, task state, notes and daily logs</td>
+<td>Final document storage or source code</td>
+</tr>
+<tr>
+<td>Outlook</td>
+<td>Mail, calendar, commitments and incoming communication</td>
+<td>Long-term knowledge management</td>
+</tr>
+<tr>
+<td>OneDrive</td>
+<td>Documents, media assets, personal procedures and channel-specific skills</td>
+<td>Git repositories</td>
+</tr>
+<tr>
+<td>GitHub</td>
+<td>Source code, history, reviews, CI and deployable deliverables</td>
+<td>Personal documents or loose content assets</td>
+</tr>
+<tr>
+<td>Codex</td>
+<td>Primary execution, inspection, implementation and verification</td>
+<td>Owning the only copy of information</td>
+</tr>
+<tr>
+<td>Claude Code</td>
+<td>Alternative coding path with different strengths and additional daily capacity</td>
+<td>A second independent filing system</td>
+</tr>
+<tr>
+<td>Schedules</td>
+<td>Recurring triggers, briefings, syncs, monitors and maintenance</td>
+<td>Unattended external publishing</td>
+</tr>
+<tr>
+<td>Me</td>
+<td>Intent, priority, approval and accountability</td>
+<td>Manually repeating work a safe skill can perform</td>
+</tr>
+</tbody>
+</table></figure>
+<p class="wp-block-paragraph">This separation makes the setup feel calm. I always know where to look first, and the agent can make the same decision without a long explanation in every prompt.</p>
+<figure class="wp-block-image"><img alt="Agentic operating system tool ownership across Notion Outlook OneDrive GitHub Codex and schedules" data-recalc-dims="1" decoding="async" src="assets/1e25db068bf72719/img_1.jpg"/></figure>
+<h2 class="wp-block-heading" id="how-does-my-day-actually-start">How does my day actually start?</h2>
+<p class="wp-block-paragraph">My Notion Personal Hub is my most-used entry point and the daily command center for the whole system. It gives me one place to understand what matters now before I open individual repositories, mailboxes or document folders. It is intentionally not a wall of every open task. In the morning I choose no more than three outcomes and mark only those items for today. During the day, new thoughts, links and tasks can land in the inbox without forcing me to organize them immediately. In the evening I update the status, save the daily highlight and clear the most important open loops.</p>
+<p class="wp-block-paragraph">The pattern is:</p>
+<ol class="wp-block-list">
+<li><strong>Morning:</strong> choose one to three outcomes.</li>
+<li><strong>During the day:</strong> capture first, organize later.</li>
+<li><strong>Execution:</strong> hand a concrete outcome to Codex with the relevant workspace in scope.</li>
+<li><strong>Verification:</strong> inspect the real result, not just the agent’s summary.</li>
+<li><strong>Evening:</strong> update state, record the highlight and leave a clean starting point for tomorrow.</li>
+</ol>
+<p class="wp-block-paragraph">This is where Notion is stronger than a loose collection of documents. It shows the state of work. It does not need to hold every final artifact.</p>
+<p class="wp-block-paragraph">Outlook complements that view. Mail and calendar are not passive archives in my setup. They are an intake layer for commitments: a meeting creates context, a message can create an action and a reply can close a loop. My Outlook folder model mirrors the same numbered structure I use elsewhere, so filing a conversation does not require a new mental map.</p>
+<p class="wp-block-paragraph"><strong>Note:</strong> I still keep personal messages in the inbox for manual triage. Rules are useful for predictable, high-volume mail, but I do not want an automation to hide a conversation just because it matched a broad condition.</p>
+<h2 class="wp-block-heading" id="why-do-notion-outlook-and-onedrive-use-the-same-structure">Why do Notion, Outlook and OneDrive use the same structure?</h2>
+<p class="wp-block-paragraph">Consistency is more valuable than the theoretically perfect hierarchy. My main routing model is:</p>
+<ul class="wp-block-list">
+<li><code>_Inbox</code></li>
+<li><code>01 Privat</code></li>
+<li><code>02 Finanzen</code></li>
+<li><code>03 Beruf</code></li>
+<li><code>04 Community</code></li>
+<li><code>05 Business</code></li>
+<li><code>06 System</code></li>
+</ul>
+<p class="wp-block-paragraph">Notion uses these areas as navigation and context. Outlook uses them to classify communication. OneDrive uses them for the actual document hierarchy. Because the buckets stay stable, I can move from a task to a mail and then to the supporting document without translating between three unrelated systems.</p>
+<p class="wp-block-paragraph">Inside OneDrive I keep the hierarchy shallow and use clear names. New files land in <code>_Inbox</code> and are sorted quickly. Documents follow the pattern <code>YYYY.MM.DD - Source - Title.ext</code>. Community work is organized by channel, and each channel keeps its assets, content and automation close together. Cross-channel brand assets live centrally, while system-level skills belong under <code>06 System/Skills</code>.</p>
+<p class="wp-block-paragraph">This co-location is important. A WordPress skill should live next to the WordPress channel rules and templates. A LinkedIn skill should understand the LinkedIn format and the same central brand voice. A mailbox skill belongs with the system automation. I do not want one anonymous skills folder that loses the connection to the process it is supposed to represent.</p>
+<p class="wp-block-paragraph"><span class="jr-inline-emphasis">Hint:</span> A folder structure becomes valuable when it answers routing questions. If you still need to open five folders to decide where a file belongs, the hierarchy is describing categories rather than helping you work.</p>
+<h2 class="wp-block-heading" id="how-do-codex-and-reusable-skills-execute-the-work">How do Codex and reusable skills execute the work?</h2>
+<p class="wp-block-paragraph">Codex is the primary execution layer in my agentic operating system. I use it to inspect repositories, create drafts, update files, verify live systems and coordinate work across tools. But the quality does not come from asking it to “be smart.” It comes from giving it a repeatable procedure.</p>
+<p class="wp-block-paragraph">That procedure is a skill.</p>
+<p class="wp-block-paragraph">A skill is a folder with a <code>SKILL.md</code> file and, when useful, scripts, references, examples and templates. The agent sees the short description first and loads the detailed workflow only when the task matches. The official <a href="https://agentskills.io/specification" rel="noopener" target="_blank">Agent Skills specification</a> calls this progressive disclosure. It lets me keep many specialized workflows available without stuffing all instructions into every request.</p>
+<p class="wp-block-paragraph">My public <a href="https://github.com/JayRHa/AgentSkills" rel="noopener" target="_blank">AgentSkills repository</a> contains reusable examples, while personal channel and system skills stay close to the OneDrive workflows they operate. I have skills for WordPress drafts, LinkedIn posts, mailbox organization, content generation and many other repeated tasks.</p>
+<p class="wp-block-paragraph">The important part is that a skill captures more than tone. A useful skill includes the safety gates, file locations, validation commands, naming rules, templates and the definition of “done.” For example, my blog workflow knows that a new article remains a draft, uses the correct author and brand, creates the expected image set, applies SEO metadata and runs a final audit. Publishing still needs an explicit decision.</p>
+<p class="wp-block-paragraph">This is also why skills are more valuable than a collection of prompt snippets. A prompt gives advice. A good skill gives the agent an executable operating procedure.</p>
+<p class="wp-block-paragraph">If you want the technical structure, I described it in detail in <a href="https://jannikreinhard.com/agent-skills-explained/">Agent Skills Explained: How to Build Your First Skill</a>. OpenAI also shows the same direction in its official Codex use case for <a href="https://developers.openai.com/codex/use-cases" rel="noopener" target="_blank">saving repeated workflows as skills</a>.</p>
+<h2 class="wp-block-heading" id="why-is-claude-code-still-part-of-the-setup">Why is Claude Code still part of the setup?</h2>
+<p class="wp-block-paragraph">Codex is my default execution layer, but Claude Code is deliberately part of the setup because it has strengths of its own. Some repositories or coding tasks fit its workflow and tool surface better. In other cases, I want a genuinely independent implementation path instead of another attempt with the same execution model. It is therefore more than an emergency fallback, even though I do not send every task to both tools.</p>
+<p class="wp-block-paragraph">There is also a practical capacity reason. Both products run within subscription usage limits, and long coding sessions can consume a meaningful part of the available daily capacity. I distribute suitable coding work between Codex and Claude Code instead of exhausting one subscription early and interrupting the rest of the day. The decision is still based on task fit and expected quality first; available capacity helps decide between two good options.</p>
+<p class="wp-block-paragraph">The rule is that both tools must respect the same sources of truth. Switching the execution layer must not create a second document system, a second set of naming conventions or a different brand voice. The selected tool changes <span class="jr-inline-emphasis">how</span> the work is executed, not <span class="jr-inline-emphasis">where</span> the work belongs.</p>
+<p class="wp-block-paragraph">That distinction prevents a common problem: two capable agents slowly building two incompatible versions of the same personal system.</p>
+<h2 class="wp-block-heading" id="how-do-i-separate-documents-from-repositories">How do I separate documents from repositories?</h2>
+<p class="wp-block-paragraph">OneDrive is for documents and assets. GitHub is for code and versioned technical deliverables. On my Mac, repositories follow the local pattern:</p>
+<pre class="wp-block-code"><code class="language-text">/Repo/
+└── &lt;owner-or-organization&gt;/
+    └── &lt;repository&gt;/
+        ├── source code
+        ├── tests
+        ├── documentation
+        └── CI/CD configuration
+</code></pre>
+<p class="wp-block-paragraph">This structure matters because I work across personal repositories, company repositories and community projects. Grouping by owner or organization prevents similarly named projects from becoming ambiguous. It also makes the remote ownership visible before I make a commit or push a change.</p>
+<p class="wp-block-paragraph">Repository documentation remains inside the repository, because it must evolve with the code. General documents, media, contracts, blog assets and personal operating procedures remain in OneDrive. When a blog post references a runnable example, the article lives in WordPress and the example lives in GitHub. Each system keeps the artifact it is best equipped to version and review.</p>
+<h2 class="wp-block-heading" id="which-schedules-run-without-me">Which schedules run without me?</h2>
+<p class="wp-block-paragraph">Schedules turn repeated work into an operating layer rather than a memory test. Each active routine has a defined purpose, a known source of truth and an expected output. The goal is not to automate every decision. It is to make sure recurring checks, preparation and synchronization happen consistently before they become urgent.</p>
+<p class="wp-block-paragraph">My configured routines currently cover areas such as:</p>
+<ul class="wp-block-list">
+<li>a 06:00 morning briefing that brings together the context I need before the day starts;</li>
+<li>a daily Personal Hub sync that keeps my primary entry point aligned with current priorities, notes and task state;</li>
+<li>a weekly deeper Personal Hub review that surfaces stalled work, closes open loops and resets priorities;</li>
+<li>daily website and SEO visibility checks that make indexing, content and discoverability problems visible early;</li>
+<li>forum discussion monitoring that surfaces relevant technical questions and opportunities to contribute;</li>
+<li>GitHub and production health reviews that highlight failing workflows, open engineering signals, runtime issues and release drift;</li>
+<li>mailbox retention maintenance that keeps recurring low-value mail from becoming permanent clutter;</li>
+<li>selected content and contribution workflows that research, prepare and package work before a human publishing decision.</li>
+</ul>
+<p class="wp-block-paragraph">I also keep many additional recurring workflows in a paused state. These cover work that benefits from a repeatable procedure but should not run automatically. When I need one, I trigger it manually and still get the same inputs, safety gates and expected output as a scheduled routine. This gives me an on-demand automation library without turning every repeated task into a permanent background process.</p>
+<p class="wp-block-paragraph">That separation is deliberate. Automation should have an operating state, an owner and an obvious way to stop it. “We automated it once” is not the same as “this should run forever.”</p>
+<p class="wp-block-paragraph">The schedules also do not remove the human gate. Monitoring, sorting, preparing and drafting are excellent automation targets. Sending, publishing, deleting or making a consequential external change needs a clearer approval boundary.</p>
+<h2 class="wp-block-heading" id="what-is-the-decision-tree-i-actually-use">What is the decision tree I actually use?</h2>
+<p class="wp-block-paragraph">When a new piece of work enters the system, I use this decision flow:</p>
+<ol class="wp-block-list">
+<li><span class="jr-inline-emphasis">Is it an action or current context?</span> Put it in Notion and decide whether it is one of today’s outcomes.</li>
+<li><span class="jr-inline-emphasis">Is it a message, meeting or commitment?</span> Keep the source in Outlook and link or create the necessary action.</li>
+<li><span class="jr-inline-emphasis">Is the final artifact a document or media file?</span> Store it in the matching OneDrive bucket using the naming standard.</li>
+<li><span class="jr-inline-emphasis">Is it code or a versioned technical deliverable?</span> Work in <code>/Repo/&lt;owner&gt;/&lt;repository&gt;</code> and keep the history in GitHub.</li>
+<li><span class="jr-inline-emphasis">Have I done this workflow before?</span> Use or improve the relevant skill instead of rewriting the instructions.</li>
+<li><span class="jr-inline-emphasis">Does it repeat on a predictable cadence?</span> Add a schedule only after the manual workflow is stable.</li>
+<li><span class="jr-inline-emphasis">Does it create an external or irreversible effect?</span> Keep a human review or confirmation gate.</li>
+</ol>
+<p class="wp-block-paragraph">That is the real operating system. The individual apps can change. These routing decisions are what keep the setup understandable.</p>
+<h2 class="wp-block-heading" id="which-pitfalls-do-i-now-avoid">Which pitfalls do I now avoid?</h2>
+<ul class="wp-block-list">
+<li><span class="jr-inline-emphasis">One giant prompt:</span> It becomes stale, expensive and hard to validate. I split durable procedures into focused skills.</li>
+<li><span class="jr-inline-emphasis">Using Notion as a file server:</span> Notion holds context and state; OneDrive holds the document of record.</li>
+<li><span class="jr-inline-emphasis">Putting code in OneDrive:</span> Repositories belong in GitHub with reviews, history and CI.</li>
+<li><span class="jr-inline-emphasis">Letting every agent invent a structure:</span> Codex and Claude Code follow the same routing and naming rules.</li>
+<li><span class="jr-inline-emphasis">Automating external actions too early:</span> I automate preparation and verification before I automate publication.</li>
+<li><span class="jr-inline-emphasis">Creating schedules without ownership:</span> Every recurring run needs a purpose, status and stop path.</li>
+<li><span class="jr-inline-emphasis">Trusting the summary instead of the system:</span> For important work I verify the actual file, branch, draft state or live result.</li>
+<li><span class="jr-inline-emphasis">Building a perfect hierarchy before using it:</span> I keep stable top-level buckets and evolve only the useful detail underneath.</li>
+</ul>
+<p class="wp-block-paragraph">My older <a href="https://jannikreinhard.com/my-daily-tools-the-stack-that-runs-my-day/">daily tools overview</a> explains the individual apps. The agentic operating system is the next step: it connects the tools through responsibility, procedure and verification.</p>
+<h2 class="wp-block-heading" id="how-would-i-build-a-smaller-version-today">How would I build a smaller version today?</h2>
+<p class="wp-block-paragraph">Start with one loop, not my full setup.</p>
+<p class="wp-block-paragraph">Choose one inbox, one task view, one document store and one code store. Write down the routing rules in plain language. Then turn one repeated workflow into a skill. Run it manually several times, add validation and only then give it a schedule.</p>
+<p class="wp-block-paragraph">A useful first version can be very small:</p>
+<pre class="wp-block-code"><code class="language-text">Capture -&gt; Choose one outcome -&gt; Execute with one skill
+        -&gt; Store in the correct system -&gt; Review the real result
+</code></pre>
+<p class="wp-block-paragraph">The goal is not maximum automation. The goal is reliable momentum with less repeated coordination. When the system knows where truth lives and the agent knows the procedure, I can focus on the decision that still needs me.</p>
+<p class="wp-block-paragraph">That is what makes the setup feel like an operating system instead of a pile of AI tools.</p>
+<p class="wp-block-paragraph">Stay healthy,</p>
+<p class="wp-block-paragraph">Cheers Jannik</p>
+<aside aria-labelledby="jr-next-agentic-operating-system" class="jr-next-journey"><span class="jr-next-eyebrow">Build the next layer</span><h2 id="jr-next-agentic-operating-system">Continue your agent architecture</h2></aside> </div>
+</div></div>
+</article>
+</body>
+</html>
