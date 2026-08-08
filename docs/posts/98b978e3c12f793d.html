@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intune Newsletter – 7th August 2026</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Andrew Taylor</span>
+    <span class="date">August 7, 2026</span>
+  </div>
+  <h1>Intune Newsletter – 7th August 2026</h1>
+  <div class="orig">Saved for offline reading · <a href="https://andrewstaylor.com/2026/08/07/intune-newsletter-7th-august-2026/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text">
+<p>Back again already, some weeks I feel like I finish putting together one newsletter and immediately start the next!  A slightly lighter week this week, but it is holiday season so everyone is hopefully off enjoying themselves before it all begins again next month (including conference season resuming)</p>
+<hr/>
+<h1>Community Content</h1>
+<p>Have you ever wanted to automatically generate filters for every Windows version including dealing with those which just don’t match the standard numbering scheme?  You’re in luck, check out this post and script from <a href="https://www.linkedin.com/in/byteben/">Ben Whitmore</a></p>
+<blockquote class="wp-embedded-content" data-secret="IGkUe4Qv3f"><p><a href="https://msendpointmgr.com/2026/08/01/intune-assignment-filters-windows-builds/">Intune assignment filters for every in-support Windows build</a></p></blockquote>
+<p></p>
+<hr/>
+<p>If you have seen the new AI enabled cloud PC report in the portal and want to know how it’s working in Graph, try this post from <a href="https://www.linkedin.com/in/andrei-shchetkin/?locale=en">Andrei Shchetkin</a></p>
+<p><a href="https://shchetkin.dev/reverse-engineering-the-intune-portal-the-ai-enabled-cloud-pc-report/">https://shchetkin.dev/reverse-engineering-the-intune-portal-the-ai-enabled-cloud-pc-report/</a></p>
+<hr/>
+<p>This post from <a href="https://www.linkedin.com/in/jan-mulder/">Jan Mulder</a> digs deep into the new Shadow AI detection now in preview and how it all works</p>
+<blockquote class="wp-embedded-content" data-secret="TfSlKKGcC9"><p><a href="https://wolkenman.wordpress.com/2026/08/03/intune-and-ai-shadow-ai-detection/">Intune and AI –  Shadow AI detection / prevention</a></p></blockquote>
+<p></p>
+<hr/>
+<p>macOS has finally caught up with Windows compliance and now supports custom compliance.  This post from <a href="https://www.linkedin.com/in/someshpathak/">Somesh Pathak</a> runs through how to use it</p>
+<blockquote class="wp-embedded-content" data-secret="cUVtXxC1A4"><p><a href="https://intuneirl.com/custom-compliance-comes-to-macos-going-beyond-the-built-in-policy/">Custom Compliance Comes to macOS: Going Beyond the Built-in Policy</a></p></blockquote>
+<p></p>
+<hr/>
+<p>Entra password policies are, well, basically non-existent.  So what do you do if you want to force password restrictions?  Enter device lock policies within Intune as covered in-depth here by <a href="https://www.linkedin.com/in/nickydewestelinck/">Nicky De Westelinck</a></p>
+<blockquote class="wp-embedded-content" data-secret="6CDIZlmcgX"><p><a href="https://www.nickydewestelinck.be/2026/08/04/strengthening-endpoint-security-with-device-lock-policies-in-microsoft-intune/">Strengthening Endpoint Security with Device Lock Policies in Microsoft Intune</a></p></blockquote>
+<p></p>
+<hr/>
+<p><a href="https://www.linkedin.com/in/jannik-r/">Jannik Reinhard</a> looks at all of the functionality currently available in Security Copilot</p>
+<blockquote class="wp-embedded-content" data-secret="heY4vidmBM"><p><a href="https://jannikreinhard.com/security-copilot-agents-intune/">Security Copilot Agents in Intune: What You Get in 2026</a></p></blockquote>
+<p></p>
+<hr/>
+<p>Passkey is soon to be the preferred auth method and the end of SMS as MFA.  Learn more about this change here from <a href="https://www.linkedin.com/in/shehanperera85/">Shehan Perera</a></p>
+<blockquote class="wp-embedded-content" data-secret="T1p7XRelHn"><p><a href="https://emsroute.com/2026/08/06/system-preferred-authentication-and-passkeys/">System-Preferred Authentication and September 1st Passkey Change</a></p></blockquote>
+<p></p>
+<p> </p>
+<hr/>
+<h1><a id="video"></a>Video Content</h1>
+<p>Now for this weeks video content, starting with part 1 in a new series from <a href="https://www.linkedin.com/in/manishbangia/">Manish Bangia</a> covering Intune Compliance policies.  This one looks at the baseline features in a Windows Compliance Policy</p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/s-ie8waDFkk?feature=oembed" title="Microsoft Intune Compliance Policies – Beginner's Guide (Part 1 of 3)">VIDEO</iframe></p>
+<hr/>
+<h1><a id="microsoft"></a>Microsoft Content</h1>
+<p>Onto this weeks Microsoft content with the all-important Windows News You can Use for July from <a href="https://www.linkedin.com/in/chrismorrissey2009/">Chris Morrissey</a></p>
+<p><a href="https://techcommunity.microsoft.com/t5/windows-it-pro-blog/windows-news-you-can-use-july-2026/ba-p/4543588">https://techcommunity.microsoft.com/t5/windows-it-pro-blog/windows-news-you-can-use-july-2026/ba-p/4543588</a></p>
+<hr/>
+<p>Windows 10 Enterprise LTSC 2021 is going EOL in January.  Find out what this means for you here with <a href="https://www.linkedin.com/in/jasonleznek/">Jason Leznek</a></p>
+<p><a href="https://techcommunity.microsoft.com/blog/windows-itpro-blog/plan-for-windows-10-enterprise-ltsc-2021-end-of-support/4539866">https://techcommunity.microsoft.com/blog/windows-itpro-blog/plan-for-windows-10-enterprise-ltsc-2021-end-of-support/4539866</a></p>
+<hr/>
+<p>That’s all for this week, have a great weekend!</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
