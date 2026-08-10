@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WAM Bam, Thank You Ma’am. What Changed in the Microsoft Graph SDK</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">MSEndpointMgr</span>
+    <span class="date">August 9, 2026</span>
+  </div>
+  <h1>WAM Bam, Thank You Ma’am. What Changed in the Microsoft Graph SDK</h1>
+  <div class="orig">Saved for offline reading · <a href="https://msendpointmgr.com/2026/08/09/microsoft-graph-sdk-wam/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p data-block-type="core">If you are sometimes slow updating your lab modules, like me, you may have noticed that when you ran <code>Connect-MgGraph</code> to do your Intune magic, you didn’t get a browser prompt for that interactive login. That’s because <strong>WAM in the Microsoft Graph SDK</strong> is now doing the heavy lifting on Windows. What is this sourcery?</p>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="Microsoft Graph SDK and WAM" class="wp-image-26890" decoding="async" src="assets/110505b1d47bbfe0/img_0.png"/></figure>
+<p data-block-type="core">That’s the Windows account picker! The change comes from <strong>WAM in the Microsoft Graph SDK</strong>, which became the <strong>default </strong>interactive authentication path on Windows in version 2.34.0.</p>
+<p data-block-type="core">Nothing changed in your script. Nothing changed in Graph. Nothing changed in Intune. What changed is the Microsoft Graph PowerShell SDK, on 20 December 2025, in version 2.34.0. (Please don’t berate me for bad module housekeeping, im super aware I was 8 months out of date here).</p>
+<p data-block-type="core">The thing now doing the work is WAM. It isn’t new, Windows has had it for years. What’s new is the SDK using it by default.</p>
+<nav class="wp-block-stackable-table-of-contents stk-block-table-of-contents stk-block stk-3df90de" data-block-id="3df90de"><p class="stk-table-of-contents__title">Table of Contents</p></nav>
+<h2 class="wp-block-heading" id="0-what-is-wam"><a aria-hidden="true" class="aal_anchor" href="#what-is-wam" id="what-is-wam"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>What is WAM?</h2>
+<p data-block-type="core">The Web Account Manager is a component in Windows that acts as an authentication broker. The relevance here, with the Graph SDK, is that it benefits users with accounts known to Windows, such as the one already signed into the active Windows session.</p>
+<p data-block-type="core">So instead of your script spawning a browser, sending you to login.microsoftonline.com and catching the redirect, the token request goes to a Windows component that already knows who’s signed in.</p>
+<p class="has-gridlove-acc-color has-gridlove-highlight-acc-background-color has-text-color has-background has-link-color wp-elements-da31c3d8607e1b3a458076767c684436" data-block-type="core"><strong>Note:</strong> WAM is not a replacement for delegated authentication. This is <em><strong>still </strong></em>delegated access, still a user context. Only the mechanism for getting the token changed.</p>
+<p data-block-type="core">It’s worth being clear before we dive in, that this only affects interactive, delegated, sign-in. If your scripts authenticate with a certificate, a client secret out of Key Vault, or a managed identity, none of this applies and you can stop reading (no pressure). WAM is a mechanism for signing a user in.</p>
+<p data-block-type="core">Another thing to note before we move on, it’s not only the Graph SDK PowerShell module that benefits from the Windows WAM. Az.Accounts and ExchangeOnlineManagement PowerShell modules have benefited from this for a couple of years now.</p>
+<p data-block-type="core">The prompt’s dont render the same way, which is worth pointing out. The one we see here for <code>Connect-AzAccoun</code>t (similar to the <code>Connect-MgGraph</code>) looks to be the native Windows broker UI.</p>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="Connect-AzAccount and WAM" class="wp-image-26893" decoding="async" src="assets/110505b1d47bbfe0/img_1.png"/></figure>
+<p data-block-type="core"><code>Connect-ExchangeOnline</code> shows a white “Pick an account” card with the Microsoft logo instead. That’s the MSAL account picker, surfacing the same WAM known accounts through the web identity styling rather than the OS shell.</p>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="Connect-ExchangeOnline and WAM" class="wp-image-26892" decoding="async" src="assets/110505b1d47bbfe0/img_2.png"/></figure>
+<h2 class="wp-block-heading" id="1-what-changed-and-when"><a aria-hidden="true" class="aal_anchor" href="#what-changed-in-the-microsoft-graph-sdk" id="what-changed-in-the-microsoft-graph-sdk"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>What Changed in the Microsoft Graph SDK?</h2>
+<p data-block-type="core">The <a href="https://github.com/microsoftgraph/msgraph-sdk-powershell/releases#release-v2.34.0" rel="noopener" target="_blank">release notes</a> are quite clear for version 2.34.0 of the SDK released in December 2025:</p>
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow" data-block-type="core">
+<p data-block-type="core">The Graph Powershell SDK now enables WAM by default on Windows systems. This setting cannot be disabled, any options providing functionality to disable it are now deprecated.</p>
+</blockquote>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="Graph SDK Release Notes" class="wp-image-26895" decoding="async" src="assets/110505b1d47bbfe0/img_3.png"/></figure>
+<p data-block-type="core">Well, nice Christmas present Microsoft, thank you. What was noteable was the inability to disable the WAM option, like you could in the Az.Accounts and ExchangeOnlineManagement PowerShell modules. That siad, the ability to disable WAM came a little later. Here is a mini timeline:</p>
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="WAM Tiemline" class="wp-image-26897" decoding="async" src="assets/110505b1d47bbfe0/img_4.png"/></figure>
+<h2 class="wp-block-heading" id="2-on-by-default"><a aria-hidden="true" class="aal_anchor" href="#on-by-default" id="on-by-default"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>On by Default</h2>
+<p data-block-type="core">Version 2.34.0 was the awkward initial release that may have caught you out. On Windows, WAM was now the default for interactive auth and there was no supported way to turn it off.</p>
+<p data-block-type="core">You might spot this option and think otherwise:</p>
+<div class="wp-block-codemirror-blocks-code-block code-block"><pre class="CodeMirror" data-setting='{"showPanel":false,"languageLabel":false,"fullScreenButton":true,"copyButton":true,"mode":"powershell","mime":"application/x-powershell","theme":"elegant","lineNumbers":true,"styleActiveLine":false,"lineWrapping":false,"readOnly":true,"fileName":"","language":"PowerShell","maxHeight":"400px","modeName":"powershell"}'>Set-MgGraphOption -DisableLoginByWAM $true</pre></div>
+<p data-block-type="core">The problem is that, when using the SDK’s default <strong>Microsoft Graph Command Line Tools</strong> application, setting it doesn’t actually disable WAM.</p>
+<p data-block-type="core">The SDK’s own <a href="https://github.com/microsoftgraph/msgraph-sdk-powershell/blob/main/docs/authentication.md?utm_source=chatgpt.com" rel="noopener" target="_blank">authentication documentation</a> tells you that:</p>
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow" data-block-type="core">
+<p data-block-type="core">Signin by Web Account Manager (WAM) is enabled by default on Windows and cannot be disabled. Setting this option to $False will have no effect on Windows systems. Except if you use your own app.</p>
+</blockquote>
+<p data-block-type="core">So you can do this:</p>
+<div class="wp-block-codemirror-blocks-code-block code-block"><pre class="CodeMirror" data-setting='{"showPanel":false,"languageLabel":false,"fullScreenButton":true,"copyButton":true,"mode":"powershell","mime":"application/x-powershell","theme":"elegant","lineNumbers":true,"styleActiveLine":false,"lineWrapping":false,"readOnly":true,"fileName":"","language":"PowerShell","maxHeight":"400px","modeName":"powershell"}'>Set-MgGraphOption -DisableLoginByWAM $true
+Get-MgGraphOption</pre></div>
+<p data-block-type="core">and happily see the option configured. Then do this:</p>
+<div class="wp-block-codemirror-blocks-code-block code-block"><pre class="CodeMirror" data-setting='{"showPanel":false,"languageLabel":false,"fullScreenButton":true,"copyButton":true,"mode":"powershell","mime":"application/x-powershell","theme":"elegant","lineNumbers":true,"styleActiveLine":false,"lineWrapping":false,"readOnly":true,"fileName":"","language":"PowerShell","maxHeight":"400px","modeName":"powershell"}'>Connect-MgGraph -Scopes 'User.Read'</pre></div>
+<p data-block-type="core">and still get WAM.</p>
+<p data-block-type="core">That’s expected behaviour with the default Graph SDK application, not the setting being ignored. The setting is only honored when you auth with your <strong>own app registration</strong>.</p>
+<p data-block-type="core">That capability arrived in <strong>2.35.0</strong>. With a custom <code>-ClientId</code>, the SDK could finally honour <code>DisableLoginByWAM</code> and fall back to browser-based interactive authentication.</p>
+<p class="has-gridlove-acc-color has-gridlove-highlight-acc-background-color has-text-color has-background has-link-color wp-elements-d5fa47027c24446384ba1d84640665cb" data-block-type="core">And that’s why, if you need browser authentication rather than WAM, you will need <strong>Graph SDK 2.35.1 or later + your own app registration</strong>.</p>
+<h2 class="wp-block-heading" id="3-when-you-still-need-the-browser"><a aria-hidden="true" class="aal_anchor" href="#when-you-still-need-the-browser" id="when-you-still-need-the-browser"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>When You Still Need the Browser</h2>
+<p data-block-type="core">For many admins running interactive scripts from their favorite PC, WAM is probably an improvement. Pick an account Windows already knows about, authenticate, no need to close that orphaned redirect tab in your browser, get on with your day.</p>
+<p data-block-type="core">The problems start when the Windows session you’re using isn’t a good representation of the identity you actually want to use with Graph. That comes up in a few, fairly typical, admin scenarios. Here are 2</p>
+<h3 class="wp-block-heading" id="4-privileged-access-workstations-and-jump-boxes"><a aria-hidden="true" class="aal_anchor" href="#privileged-access-workstations-and-jump-boxes" id="privileged-access-workstations-and-jump-boxes"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Privileged Access Workstations and Jump Boxes</h3>
+<p data-block-type="core">A PAW or jump box is a good example.</p>
+<p data-block-type="core">You might be signed into Windows with one account but deliberately use a different privileged identity for Intune administration.</p>
+<p data-block-type="core">With the old browser flow, that was straightforward. The browser opened and you chose or entered the account you wanted.</p>
+<p data-block-type="core">WAM changes that relationship because authentication is now being brokered by Windows and starts with the accounts known to that Windows session. On shared, privileged or tightly controlled admin workstations, that can be exactly what you <em>don’t</em> want.</p>
+<h3 class="wp-block-heading" id="5-vs-code-and-embedded-terminals"><a aria-hidden="true" class="aal_anchor" href="#vs-code-and-embedded-terminals" id="vs-code-and-embedded-terminals"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>VS Code and Embedded Terminals</h3>
+<p data-block-type="core">VS Code is slightly different because authentication can work perfectly well, but the WAM dialog can appear <strong>behind</strong> the application. Can you spot it?</p>
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="WAM Prompt Hidden" class="wp-image-26902" decoding="async" src="assets/110505b1d47bbfe0/img_5.png"/></figure>
+<p data-block-type="core">From the terminal it looks like <code>Connect-MgGraph</code> has just stopped.</p>
+<p data-block-type="core">It hasn’t. Windows is patiently waiting for you to find the authentication window hiding behind everything else. The newer SDK warning even calls this out.</p>
+<h2 class="wp-block-heading" id="6-check-what-youre-actually-running"><a aria-hidden="true" class="aal_anchor" href="#check-what-youre-actually-running" id="check-what-youre-actually-running"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Check What You’re Actually Running</h2>
+<p data-block-type="core">Before troubleshooting WAM, check which Graph SDK you’re actually running.</p>
+<p data-block-type="core">Depending on the terminal, application and PowerShell host you’re using, you can have multiple versions of the Graph SDK installed on the same machine. Windows PowerShell 5.1, PowerShell 7, VS Code and applications hosting PowerShell may not all be loading modules from the same place.</p>
+<p data-block-type="core">So don’t assume that because you updated <code>Microsoft.Graph</code> in one PowerShell session, everything else you launch is now using that version.</p>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/08/image-35.png"><img alt="" class="wp-image-26905" decoding="async" src="assets/110505b1d47bbfe0/img_6.png"/></a></figure>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/08/image-36.png"><img alt="" class="wp-image-26906" decoding="async" src="assets/110505b1d47bbfe0/img_7.png"/></a></figure>
+<p data-block-type="core">A quick sanity check:</p>
+<div class="wp-block-codemirror-blocks-code-block code-block"><pre class="CodeMirror" data-setting='{"showPanel":false,"languageLabel":false,"fullScreenButton":true,"copyButton":true,"mode":"powershell","mime":"application/x-powershell","theme":"elegant","lineNumbers":true,"styleActiveLine":false,"lineWrapping":false,"readOnly":true,"fileName":"","language":"PowerShell","maxHeight":"400px","modeName":"powershell"}'>(Get-Command Connect-MgGraph).Version</pre></div>
+<figure class="wp-block-image size-full is-resized" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/08/image-37.png"><img alt="" class="wp-image-26908" decoding="async" src="assets/110505b1d47bbfe0/img_8.png"/></a></figure>
+<h2 class="wp-block-heading" id="7-can-you-tell-if-wam-was-used"><a aria-hidden="true" class="aal_anchor" href="#can-you-tell-if-wam-was-used" id="can-you-tell-if-wam-was-used"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Can You Tell if WAM Was Used?</h2>
+<p data-block-type="core">Did Connect-MgGraph actually leverage WAM? Thats quite easy to test.</p>
+<div class="wp-block-codemirror-blocks-code-block code-block"><pre class="CodeMirror" data-setting='{"showPanel":false,"languageLabel":false,"fullScreenButton":true,"copyButton":true,"mode":"powershell","mime":"application/x-powershell","theme":"elegant","lineNumbers":true,"styleActiveLine":false,"lineWrapping":false,"readOnly":true,"fileName":"","language":"PowerShell","maxHeight":"400px","modeName":"powershell"}'>Get-MgContext | Format-List *</pre></div>
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="" class="wp-image-26912" decoding="async" src="assets/110505b1d47bbfe0/img_9.png"/></figure>
+<p data-block-type="core">On a WAM-backed interactive connection, you’ll see something like:</p>
+<div class="wp-block-codemirror-blocks-code-block code-block"><pre class="CodeMirror" data-setting='{"showPanel":false,"languageLabel":false,"fullScreenButton":true,"copyButton":true,"mode":"powershell","mime":"application/x-powershell","theme":"elegant","lineNumbers":true,"styleActiveLine":false,"lineWrapping":false,"readOnly":true,"fileName":"","language":"PowerShell","maxHeight":"400px","modeName":"powershell"}'>ClientId            : 14d82eec-204b-4c2f-b7e8-296a70dab67e
+AuthType            : Delegated
+TokenCredentialType : InteractiveBrowser
+AppName             : Microsoft Graph Command Line Tools
+WamEnabled          : True</pre></div>
+<p data-block-type="core">One slightly confusing detail that you shouldn’t let trip you up:</p>
+<div class="wp-block-codemirror-blocks-code-block code-block"><pre class="CodeMirror" data-setting='{"showPanel":false,"languageLabel":false,"fullScreenButton":true,"copyButton":true,"mode":"powershell","mime":"application/x-powershell","theme":"elegant","lineNumbers":true,"styleActiveLine":false,"lineWrapping":false,"readOnly":true,"fileName":"","language":"PowerShell","maxHeight":"400px","modeName":"powershell"}'>TokenCredentialType : InteractiveBrowser</pre></div>
+<p data-block-type="core">That does <strong>not</strong> mean the old browser flow was used.</p>
+<h2 class="wp-block-heading" id="default-graph-client"><a aria-hidden="true" class="aal_anchor" href="#default-graph-client" id="default-graph-client"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Default Graph Client</h2>
+<p data-block-type="core">The context also exposes another useful detail:</p>
+<p data-block-type="core">With the normal:</p>
+<div class="wp-block-codemirror-blocks-code-block code-block"><pre class="CodeMirror" data-setting='{"showPanel":false,"languageLabel":false,"fullScreenButton":true,"copyButton":true,"mode":"powershell","mime":"application/x-powershell","theme":"elegant","lineNumbers":true,"styleActiveLine":false,"lineWrapping":false,"readOnly":true,"fileName":"","language":"PowerShell","maxHeight":"400px","modeName":"powershell"}'>Connect-MgGraph -Scopes 'User.Read'</pre></div>
+<p data-block-type="core">you’ll see:</p>
+<div class="wp-block-codemirror-blocks-code-block code-block"><pre class="CodeMirror" data-setting='{"showPanel":false,"languageLabel":false,"fullScreenButton":true,"copyButton":true,"mode":"powershell","mime":"application/x-powershell","theme":"elegant","lineNumbers":true,"styleActiveLine":false,"lineWrapping":false,"readOnly":true,"fileName":"","language":"PowerShell","maxHeight":"400px","modeName":"powershell"}'>14d82eec-204b-4c2f-b7e8-296a70dab67e</pre></div>
+<p data-block-type="core">and:</p>
+<div class="wp-block-codemirror-blocks-code-block code-block"><pre class="CodeMirror" data-setting='{"showPanel":false,"languageLabel":false,"fullScreenButton":true,"copyButton":true,"mode":"powershell","mime":"application/x-powershell","theme":"elegant","lineNumbers":true,"styleActiveLine":false,"lineWrapping":false,"readOnly":true,"fileName":"","language":"PowerShell","maxHeight":"400px","modeName":"powershell"}'>AppName : Microsoft Graph Command Line Tools</pre></div>
+<p data-block-type="core">That’s the default Microsoft application that’s used for the Graph PowerShell SDK we’ve been talking about.</p>
+<figure class="wp-block-image size-full" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/08/image-44.png"><img alt="" class="wp-image-26921" decoding="async" src="assets/110505b1d47bbfe0/img_10.png"/></a></figure>
+<p data-block-type="core">So this gives us a useful snapshot:</p>
+<div class="wp-block-codemirror-blocks-code-block code-block"><pre class="CodeMirror" data-setting='{"showPanel":false,"languageLabel":false,"fullScreenButton":true,"copyButton":true,"mode":"powershell","mime":"application/x-powershell","theme":"elegant","lineNumbers":true,"styleActiveLine":false,"lineWrapping":false,"readOnly":true,"fileName":"","language":"PowerShell","maxHeight":"400px","modeName":"powershell"}'>Get-MgContext | Select-Object AppName, ClientId, AuthType, TokenCredentialType, WamEnabled</pre></div>
+<p data-block-type="core">With the default client on Windows:</p>
+<div class="wp-block-codemirror-blocks-code-block code-block"><pre class="CodeMirror" data-setting='{"showPanel":false,"languageLabel":false,"fullScreenButton":true,"copyButton":true,"mode":"powershell","mime":"application/x-powershell","theme":"elegant","lineNumbers":true,"styleActiveLine":false,"lineWrapping":false,"readOnly":true,"fileName":"","language":"PowerShell","maxHeight":"400px","modeName":"powershell"}'>AppName             : Microsoft Graph Command Line Tools
+ClientId            : 14d82eec-204b-4c2f-b7e8-296a70dab67e
+AuthType            : Delegated
+TokenCredentialType : InteractiveBrowser
+WamEnabled          : True</pre></div>
+<p data-block-type="core">And importantly, as we saw earlier, the SDK itself tells us on connection that WAM cannot be disabled while using that default <code>ClientId</code>.</p>
+<h2 class="wp-block-heading" id="switching-wam-off"><a aria-hidden="true" class="aal_anchor" href="#switching-wam-off" id="switching-wam-off"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Switching WAM Off</h2>
+<p data-block-type="core">After understanding how the Windows WAM is now leveraged in the Graph SDK, you may want to actually disable it. Cool, we can do that with the <code>Set-MgGraphOption -DisableLoginByWAM $true</code> command.</p>
+<p data-block-type="core">Even after setting that MgGraph option to disable WAM, if we use the default client:</p>
+<div class="wp-block-codemirror-blocks-code-block code-block"><pre class="CodeMirror" data-setting='{"showPanel":false,"languageLabel":false,"fullScreenButton":true,"copyButton":true,"mode":"powershell","mime":"application/x-powershell","theme":"elegant","lineNumbers":true,"styleActiveLine":false,"lineWrapping":false,"readOnly":true,"fileName":"","language":"PowerShell","maxHeight":"400px","modeName":"powershell"}'>Set-MgGraphOption -DisableLoginByWAM $true
+Disconnect-MgGraph
+Connect-MgGraph -Scopes 'User.Read' -NoWelcome
+Get-MgContext | Select-Object AppName, ClientId, TokenCredentialType, WamEnabled</pre></div>
+<p data-block-type="core">WAM remains in play because we’re still using Microsoft’s default application. Go test it for yourself. To actually take the browser path for auth, we need our own application registration and Graph Authentication 2.35.1 or later:</p>
+<div class="wp-block-codemirror-blocks-code-block code-block"><pre class="CodeMirror" data-setting='{"showPanel":false,"languageLabel":false,"fullScreenButton":true,"copyButton":true,"mode":"powershell","mime":"application/x-powershell","theme":"elegant","lineNumbers":true,"styleActiveLine":false,"lineWrapping":false,"readOnly":true,"fileName":"","language":"PowerShell","maxHeight":"400px","modeName":"powershell"}'>Set-MgGraphOption -DisableLoginByWAM $true
+Disconnect-MgGraph
+$clientId = '&lt;client-id&gt;'
+$tenantId = '&lt;tenant-id&gt;'
+Connect-MgGraph -ClientId $clientId -tenantId $tenantId -Scopes 'User.Read' -NoWelcome</pre></div>
+<p data-block-type="core">Then check the context again:</p>
+<div class="wp-block-codemirror-blocks-code-block code-block"><pre class="CodeMirror" data-setting='{"showPanel":false,"languageLabel":false,"fullScreenButton":true,"copyButton":true,"mode":"powershell","mime":"application/x-powershell","theme":"elegant","lineNumbers":true,"styleActiveLine":false,"lineWrapping":false,"readOnly":true,"fileName":"","language":"PowerShell","maxHeight":"400px","modeName":"powershell"}'>Get-MgContext | Select-Object AppName, ClientId, TokenCredentialType, WamEnabled</pre></div>
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="" class="wp-image-26918" decoding="async" src="assets/110505b1d47bbfe0/img_11.png"/></figure>
+<h2 class="wp-block-heading" id="redirect-ur-is"><a aria-hidden="true" class="aal_anchor" href="#redirect-uris" id="redirect-uris"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Redirect URI’s</h2>
+<p data-block-type="core">If you’re using your own app registration, the redirect URI needs to support the authentication method you’re using.</p>
+<p data-block-type="core">For browser-based interactive authentication, add:</p>
+<p data-block-type="core">under <strong>Authentication &gt; Mobile and desktop applications</strong>. If you also want the same app registration to support WAM, add the broker redirect URI:</p>
+<div class="wp-block-codemirror-blocks-code-block code-block"><pre class="CodeMirror" data-setting='{"showPanel":false,"languageLabel":false,"fullScreenButton":true,"copyButton":true,"mode":"powershell","mime":"application/x-powershell","theme":"elegant","lineNumbers":true,"styleActiveLine":false,"lineWrapping":false,"readOnly":true,"fileName":"","language":"PowerShell","maxHeight":"400px","modeName":"powershell"}'>ms-appx-web://Microsoft.AAD.BrokerPlugin/&lt;your-client-id&gt;</pre></div>
+<p data-block-type="core">Without that broker redirect, WAM will fail with <code>AADSTS50011</code> because the redirect URI used by WAM isn’t registered against your app.</p>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/08/image-43.png"><img alt="" class="wp-image-26920" decoding="async" src="assets/110505b1d47bbfe0/img_12.png"/></a></figure>
+<p data-block-type="core">Once both redirect URIs are configured, the same custom app registration can support either authentication path:</p>
+<div class="wp-block-codemirror-blocks-code-block code-block"><pre class="CodeMirror" data-setting='{"showPanel":false,"languageLabel":false,"fullScreenButton":true,"copyButton":true,"mode":"powershell","mime":"application/x-powershell","theme":"elegant","lineNumbers":true,"styleActiveLine":false,"lineWrapping":false,"readOnly":true,"fileName":"","language":"PowerShell","maxHeight":"400px","modeName":"powershell"}'>http://localhost
+ms-appx-web://Microsoft.AAD.BrokerPlugin/&lt;your-client-id&gt;</pre></div>
+<figure class="wp-block-image size-large" data-block-type="core"><a class="gridlove-popup-img" href="https://msendpointmgr.com/wp-content/uploads/2026/08/image-42.png"><img alt="" class="wp-image-26919" decoding="async" src="assets/110505b1d47bbfe0/img_13.png"/></a></figure>
+<p data-block-type="core">The first supports the standard interactive browser flow. The second supports WAM.</p>
+<h2 class="wp-block-heading" id="summary"><a aria-hidden="true" class="aal_anchor" href="#summary" id="summary"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Summary</h2>
+<p data-block-type="core">WAM itself isn’t new, and neither is delegated authentication. What changed is the route <code>Connect-MgGraph</code> now takes to interactively authenticate a user on Windows.</p>
+<p data-block-type="core">For most interactive use cases, I actually quite like it. Windows already knows about my accounts, the account picker is quick, and I don’t end up with another pointless authentication tab left open in my browser.</p>
+<p data-block-type="core">The interesting part is what happens when that Windows context isn’t the context you want to use. PAWs, jump boxes, embedded terminals and other admin scenarios can make the independence of a browser-based login useful.</p>
+<p data-block-type="core">From Graph SDK 2.34.0, WAM became the default on Windows. If you’re happy with that, there’s nothing you need to change. If you’re using delegated auth with the default <strong>Microsoft Graph Command Line Tools</strong> app and you’re still getting the old browser flow, check your Graph SDK version.</p>
+<p data-block-type="core">If you’re not, use Graph Authentication 2.35.1 or later, bring your own app registration, set <code>DisableLoginByWAM</code>, and make sure the app has the correct redirect URI for the authentication path you want.</p>
+<p data-block-type="core">And if you’re troubleshooting somebody else’s machine, don’t assume the version of Graph you just updated is the version their <code>Connect-MgGraph</code> is actually running.</p>
+<p data-block-type="core">Check the command. Check the context. Check <code>WamEnabled</code>.</p>
+<p data-block-type="core">Happy Graphing!</p>
+<p class="post-views content-post post-26884 entry-meta load-static">
+<span class="post-views-icon dashicons dashicons-chart-bar"></span> <span class="post-views-label">Views:</span> <span class="post-views-count">134</span>
+</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
