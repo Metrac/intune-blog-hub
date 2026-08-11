@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Automating Bulk Graph API Permission Assignment in Microsoft Entra App Registrations</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">HTMD / Anoop C Nair</span>
+    <span class="date">August 10, 2026</span>
+  </div>
+  <h1>Automating Bulk Graph API Permission Assignment in Microsoft Entra App Registrations</h1>
+  <div class="orig">Saved for offline reading · <a href="https://www.anoopcnair.com/bulk-graph-api-permission-assignment-entra/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text"><p class="code-block code-block-6">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><h2 class="wp-block-heading" id="key-takeaways"><strong>Key Takeaways</strong></h2><ul class="wp-block-list"><li class="has-medium-font-size"><strong>App Registration </strong>creates an identity record for an application in Entra ID.</li><li class="has-medium-font-size">It enables apps to authenticate against<strong> Microsoft Entra ID.</strong></li><li class="has-medium-font-size"><strong>App Registrations</strong> define how apps integrate with Microsoft services and APIs.</li><li class="has-medium-font-size">They generate unique identifiers <strong>(Client ID, Tenant ID)</strong> for secure access.</li></ul><p class="wp-block-paragraph">Automating <strong>Bulk Graph API Permission Assignment</strong> in<strong> Microsoft Entra </strong>App Registrations! <a data-id="https://www.anoopcnair.com/restrict-entra-multi-tenant-app-registrations/" data-type="link" href="https://www.anoopcnair.com/restrict-entra-multi-tenant-app-registrations/" rel="noreferrer noopener" target="_blank"><strong>App registrations</strong> </a>in <strong>Microsoft Entra</strong> form the backbone of application <strong>identity</strong>, enabling secure authentication, seamless API integration, and precise permission management across modern cloud environments. While they establish the <strong>identity </strong>and <strong>integration points</strong>, the real challenge lies in managing an ever‑expanding set of <strong>permissions</strong>, an area where automation significantly reduces manual effort, improves consistency, and minimises errors.</p><details class="wp-block-details has-contrast-3-background-color has-background has-medium-font-size is-layout-flow wp-block-details-is-layout-flow"><summary><strong>Table of Contents</strong></summary>
+</details><h2 class="wp-block-heading" id="understanding-permissions-and-consent-in-microsoft-entra-id"><strong>Understanding API Permissions in Microsoft Entra ID</strong></h2><p class="wp-block-paragraph">When working with the Microsoft identity platform, <strong>permissions </strong>and <strong>consent</strong> are at the heart of building secure applications. They define how apps interact with protected resources and ensure that access is granted only with the right level of <strong>authorisation</strong>. This article walks through the core principles of permissions and consent, showing how <strong>developers </strong>and <strong>administrators</strong> can design applications that request access responsibly and transparently.</p><p class="wp-block-paragraph">By applying these concepts, you can build solutions that inspire trust while maintaining<strong> strong security boundaries</strong>. Consider scenarios where an application needs to connect to<strong> Microsoft 365 services</strong>, such as reading email, accessing calendar events, or retrieving <strong>Intune </strong>device compliance data. In each case, the app must first obtain authorisation from the resource owner. Depending on the <strong>scope of access</strong> requested, <strong>users</strong> or <strong>administrators </strong>can grant or deny consent.</p><p class="wp-block-paragraph">For <strong>Intune</strong>, this might involve permissions to manage <strong>device policies,</strong> read <strong>compliance status</strong>, or <strong>configure applications </strong>across enrolled devices. By understanding how permissions and consent operate, you can ensure your applications request only what they truly need, at the right time, and from the right audience, resulting in <strong>secure</strong>, <strong>efficient</strong>, and <strong>trustworthy </strong>integrations.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><h2 class="wp-block-heading" id="d"><strong>Difference Between Delegated Access and App-only Access</strong></h2><p class="wp-block-paragraph">Access models in <strong>Microsoft Entra </strong>can be broadly divided into two scenarios: <strong>delegated access</strong> and <strong>app‑only access.</strong> Each approach defines how an <strong>application </strong>interacts with resources and what type of permissions are required.</p><div class="wp-block-image"><figure class="aligncenter size-full"><img alt="Automating Bulk Graph API Permission Assignment in Microsoft Entra App Registrations-Fig-01" class="wp-image-375106" data-lazyloaded="1" data-sizes="(max-width: 904px) 100vw, 904px" decoding="async" src="assets/b1d9e5bf44dd0318/img_0.webp" title="Automating Bulk Graph API Permission Assignment in Microsoft Entra App Registrations 2"/><figcaption class="wp-element-caption">Automating Bulk Graph API Permission Assignment in Microsoft Entra App Registrations-Fig-01</figcaption></figure></div><h2 class="wp-block-heading" id="delegated-access"><strong>Delegated Access</strong></h2><p class="wp-block-paragraph">In a <strong>delegated scenario</strong>, a user signs into a <strong>client application</strong>, and the app performs actions on behalf of that user. This requires <strong>delegated permissions</strong>-often referred to <strong>as <em>scopes</em></strong>-which specify exactly what the app can do with the user’s identity. Both the <strong>user </strong>and <strong>the client application</strong> must be authorised: the user grants consent, and the app must be configured with the correct scopes. For example, an <strong>Intune‑integrated app</strong> might request <strong>delegated permissions</strong> to read device compliance details or manage app configurations, but only while acting under a signed‑in user’s authority.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><h2 class="wp-block-heading" id="app-only-access"><strong>App‑Only Access</strong></h2><p class="wp-block-paragraph">In contrast, <strong>app‑only access</strong> allows an application to operate independently, without a <strong>user session</strong>. This model is common in automation, background services, and scenarios such as scheduled backups, where user context is unnecessary or impractical. Instead of delegated scopes, <strong>app‑only</strong> access relies on <strong><em>application permissions</em> </strong>(sometimes called app roles). Once <strong>administrators </strong>grant these permissions, the app can directly call <strong>resource APIs</strong>, such as Intune, to retrieve <strong>device inventory</strong>, <strong>enforce compliance policies</strong>, or push <strong>configuration updates </strong>across the tenant. This approach ensures secure, large‑scale operations without tying actions to a <strong>single user account.</strong></p><figure class="wp-block-table aligncenter"><table class="has-contrast-3-background-color has-background has-fixed-layout"><thead><tr><th>Feature / Scenario</th><th>Delegated Access</th><th>App‑Only Access</th></tr></thead><tbody><tr><th><strong>User Context</strong></th><td>Requires a signed‑in user; app acts on behalf of that user.</td><td>No user required; app runs independently.</td></tr><tr><th><strong>Permission Type</strong></th><td>Delegated permissions (<em>scopes</em>).</td><td>Application permissions (<em>app roles</em>).</td></tr><tr><th><strong>Authorization Flow</strong></th><td>Both the user and the client app must be authorised separately.</td><td>Only the client app needs to be authorized.</td></tr><tr><th><strong>Consent Source</strong></th><td>Consent granted by the user or administrator.</td><td>Consent granted by administrator only.</td></tr><tr><th><strong>Use Cases</strong></th><td>Apps needing user‑specific data (e.g., reading a user’s email, calendar, or Intune device compliance tied to that user).</td><td>Automation, background services, daemons, or tenant‑wide operations (e.g., Intune policy enforcement, device inventory, or bulk configuration).</td></tr><tr><th><strong>Scope of Access</strong></th><td>Limited to the signed‑in user’s data and actions.</td><td>Broad, tenant‑level access across all users/devices depending on permissions.</td></tr><tr><th><strong>Examples</strong></th><td>A helpdesk app checking compliance for a specific user’s device.</td><td>A scheduled service pulling Intune compliance reports for all devices nightly.</td></tr></tbody></table><figcaption class="wp-element-caption">Automating Bulk Graph API Permission Assignment in Microsoft Entra App Registrations. Table-01</figcaption></figure><h2 class="wp-block-heading" id="a"><strong>Automation to Add Graph API Permissions in Microsoft Entra App Registration</strong></h2><p class="wp-block-paragraph">Well, let’s see how we can <strong>automate </strong>the process of adding bulk <strong>Graph API Permission Assignment</strong> in Microsoft Entra App Registrations. Certainly, you can use the same code to add a <strong>single permission </strong>as well. Below are the <strong>prerequisites</strong> to run the code.</p><ul class="wp-block-list"><li class="has-medium-font-size">Have the <strong>App ID</strong> of your Microsoft Entra App Registration available</li><li class="has-medium-font-size">Ensure the <strong>Microsoft Graph PowerShell module</strong> is installed on your system.</li><li class="has-medium-font-size">Verify your account has the <strong>Application.ReadWrite.All</strong> permission assigned before running the code.</li></ul><pre class="wp-block-code has-contrast-3-background-color has-background has-medium-font-size"><code><strong>Read more :</strong> <a data-id="https://www.anoopcnair.com/install-microsoft-graph-powershell-modules/" data-type="link" href="https://www.anoopcnair.com/install-microsoft-graph-powershell-modules/" rel="noreferrer noopener" target="_blank"><strong>Best Guide to Install Microsoft Graph PowerShell Modules</strong></a></code></pre><p class="wp-block-paragraph">The list of API permissions must be stored in a text file and assigned to the <code><strong>$PermissionFile</strong></code> variable, and you should ensure that the <code><strong>$ResourceAppId</strong></code>.You can assign <strong>API permissions</strong> as either <strong><em>Application</em> type </strong>or <strong><em>Delegated</em> type.</strong> If your app requires delegated permissions, change the <code><strong>$PermissionType</strong></code> variable to <code><strong>Delegated</strong></code>. By default, the permission type is set to <strong><code>Application</code>.</strong></p><pre class="wp-block-code has-contrast-3-background-color has-background has-medium-font-size"><code><strong><em># Add-EntraAppPermission.ps1
+# Adds an API permission (Application or Delegated) to an app registration in Entra ID.
+# Developer: Sujin Nelladath
+# LinkedIn: https://www.linkedin.com/in/sujin-nelladath-8911968a/
+# Version: 1.0.0
+#
+# Note: this only the permission request. You still need to go click
+# "Grant admin consent" in the Entra admin center afterwards.
+#
+
+
+param(
+    [string]$TargetAppId = "Enter the AppId here",   # Replace with your app registration's AppId (not ObjectId)
+    [string[]]$PermissionName,
+    [string]$PermissionFile = "E:\Permissions.txt", # Path to a text file containing permission names (one per line). Lines starting with # are ignored.
+    [ValidateSet("Application", "Delegated")]
+    [string]$PermissionType = "Application", #change to delegated if you want to add delegated permissions instead of application permissions
+    [string]$ResourceAppId = "00000003-0000-0000-c000-000000000000" # Microsoft Graph
+)
+
+$ErrorActionPreference = "Stop"
+
+# Load permission names from the file if none were passed in directly.
+if (-not $PermissionName)
+{
+    if (-not (Test-Path $PermissionFile))
+    {
+        throw "No -PermissionName given and permission file not found: $PermissionFile"
+    }
+    $PermissionName = Get-Content $PermissionFile | ForEach-Object { $_.Trim() } | Where-Object { $_ }
+}
+
+$PermissionName = $PermissionName | Select-Object -Unique
+if (-not $PermissionName)
+{
+    throw "No permissions to add."
+}
+
+Connect-MgGraph -Scopes "Application.ReadWrite.All" -NoWelcome
+
+# --- Look up the resource app (e.g. Microsoft Graph) and the permissions on it ---
+$resourceApp = (Invoke-MgGraphRequest -Uri "v1.0/servicePrincipals?`$filter=appId eq '$ResourceAppId'").value[0]
+if (-not $resourceApp)
+{
+    throw "Resource app '$ResourceAppId' not found in this tenant."
+}
+
+$isAppPermission = $PermissionType -eq "Application"
+$availablePerms  = if ($isAppPermission) { $resourceApp.appRoles } else { $resourceApp.oauth2PermissionScopes }
+$accessType      = if ($isAppPermission) { "Role" } else { "Scope" }
+
+$permsToResolve = @()
+foreach ($name in $PermissionName)
+{
+    $match = $availablePerms | Where-Object { $_.value -eq $name }
+    if (-not $match)
+    {
+        throw "Permission '$name' ($PermissionType) not found on $($resourceApp.displayName)."
+    }
+    $permsToResolve += $match
+}
+
+# --- Look up the target app registration ---
+$targetApp = (Invoke-MgGraphRequest -Uri "v1.0/applications?`$filter=appId eq '$TargetAppId'").value[0]
+if (-not $targetApp)
+{
+    throw "App registration '$TargetAppId' not found."
+}
+
+# --- Work out which permissions are new, and add them ---
+$access = @($targetApp.requiredResourceAccess)
+$existingEntry = $access | Where-Object { $_.resourceAppId -eq $ResourceAppId }
+$existingIds = @()
+if ($existingEntry)
+{
+    $existingIds = $existingEntry.resourceAccess | ForEach-Object { $_.id }
+}
+
+$newPerms = @()
+foreach ($perm in $permsToResolve)
+{
+    if ($existingIds -contains $perm.id)
+    {
+        Write-Host "'$($perm.value)' is already on $($targetApp.displayName) - skipping." -ForegroundColor Red
+    }
+    else
+    {
+        $newPerms += @{ id = $perm.id; type = $accessType }
+    }
+}
+
+if ($newPerms.Count -eq 0)
+{
+    Write-Host "Nothing to do - all requested permissions are already there." -ForegroundColor Yellow
+    return
+}
+
+if ($existingEntry)
+{
+    $existingEntry.resourceAccess = @($existingEntry.resourceAccess) + $newPerms
+}
+else
+{
+    $access += @{ resourceAppId = $ResourceAppId; resourceAccess = $newPerms }
+}
+
+$body = @{ requiredResourceAccess = $access } | ConvertTo-Json -Depth 10
+Invoke-MgGraphRequest -Method Patch -Uri "v1.0/applications/$($targetApp.id)" -Body $body | Out-Null
+
+Write-Host "Added $($newPerms.Count) permission(s) ($PermissionType) to Entra App registrations : $($targetApp.displayName)." -ForegroundColor Green
+Write-Host "Requested Permissions: $($PermissionName -join ', ')" -ForegroundColor DarkCyan
+Write-Host "Don't forget to grant admin consent manually in Entra admin center &gt; App registrations &gt; API permissions." -ForegroundColor Yellow</em></strong></code></pre><div class="wp-block-image"><figure class="aligncenter size-large"><img alt="Automating Bulk Graph API Permission Assignment in Microsoft Entra App Registrations-Fig-02" class="wp-image-375112" data-lazyloaded="1" data-sizes="(max-width: 1024px) 100vw, 1024px" decoding="async" src="assets/b1d9e5bf44dd0318/img_1.webp" title="Automating Bulk Graph API Permission Assignment in Microsoft Entra App Registrations 3"/><figcaption class="wp-element-caption">Automating Bulk Graph API Permission Assignment in Microsoft Entra App Registrations-Fig-02</figcaption></figure></div><p class="wp-block-paragraph"><strong>DeviceManagementScripts.ReadWrite.All, DeviceManagementManagedDevices.PrivilegedOperations.All, ServiceMessage.Read.</strong> For this automation, the requested API permissions are listed below along with the corresponding output.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><pre class="wp-block-code has-contrast-3-background-color has-background has-medium-font-size"><code><strong>Download the code</strong> :<strong> <a data-id="https://github.com/nelladath/Add-EntraAppPermissions/blob/main/Add-EntraAppPermission.ps1" data-type="link" href="https://github.com/nelladath/Add-EntraAppPermissions/blob/main/Add-EntraAppPermission.ps1" rel="noreferrer noopener nofollow" target="_blank">Add-EntraAppPermission.ps1</a></strong></code></pre><div class="wp-block-image"><figure class="aligncenter size-large"><img alt="Automating Bulk Graph API Permission Assignment in Microsoft Entra App Registrations-Fig-03" class="wp-image-375119" data-lazyloaded="1" data-sizes="auto, (max-width: 1024px) 100vw, 1024px" decoding="async" src="assets/b1d9e5bf44dd0318/img_2.webp" title="Automating Bulk Graph API Permission Assignment in Microsoft Entra App Registrations 4"/><figcaption class="wp-element-caption">Automating Bulk Graph API Permission Assignment in Microsoft Entra App Registrations-Fig-03</figcaption></figure></div><h2 class="wp-block-heading" id="verify-grant-admin-consent-manually-in-entra-admin-center"><strong>Verify &amp; Grant Admin Consent Manually in Entra Admin Center</strong></h2><p class="wp-block-paragraph">The automation executed successfully. At the end of the run, you may have noticed a warning: <strong><em>Don’t forget to grant admin consent manually in the Entra admin center &gt; App registrations &gt; API permissions.</em> </strong>The script does not <strong>grant admin consent</strong> automatically; it is intentionally designed to ensure that all requested permissions are reviewed thoroughly before consent is granted manually. Let me show you how to perform this step in the<strong> Entra portal.</strong></p><ul class="wp-block-list"><li class="has-medium-font-size"><strong>Sign in</strong> to the Microsoft <strong><a href="https://entra.microsoft.com/" rel="noreferrer noopener nofollow" target="_blank">Entra admin center</a> </strong>with your credentials.</li><li class="has-medium-font-size">Then go to <strong>Entra ID &gt; App Registration</strong></li><li class="has-medium-font-size">Select the <strong>application</strong> you want to configure.</li><li class="has-medium-font-size">Go to <strong>API permissions</strong>.</li></ul><div class="wp-block-image"><figure class="aligncenter size-large"><img alt="Automating Bulk Graph API Permission Assignment in Microsoft Entra App Registrations-Fig-05" class="wp-image-375134" data-lazyloaded="1" data-sizes="auto, (max-width: 1024px) 100vw, 1024px" decoding="async" src="assets/b1d9e5bf44dd0318/img_3.webp" title="Automating Bulk Graph API Permission Assignment in Microsoft Entra App Registrations 5"/><figcaption class="wp-element-caption">Automating Bulk Graph API Permission Assignment in Microsoft Entra App Registrations-Fig-04</figcaption></figure></div><p class="wp-block-paragraph">Locate <strong>Grant admin consent</strong>, review the requested permissions, and grant consent <strong>manually</strong>. I have requested <strong>DeviceManagementScripts.ReadWrite.All, DeviceManagementManagedDevices.PrivilegedOperations.All, ServiceMessage.Read.All</strong></p><div class="wp-block-image"><figure class="aligncenter size-large"><img alt="Automating Bulk Graph API Permission Assignment in Microsoft Entra App Registrations-Fig-05" class="wp-image-375135" data-lazyloaded="1" data-sizes="auto, (max-width: 1024px) 100vw, 1024px" decoding="async" src="assets/b1d9e5bf44dd0318/img_4.jpg" title="Automating Bulk Graph API Permission Assignment in Microsoft Entra App Registrations 6"/><figcaption class="wp-element-caption">Automating Bulk Graph API Permission Assignment in Microsoft Entra App Registrations-Fig-05</figcaption></figure></div><h2 class="wp-block-heading" id="e"><strong>End Result</strong></h2><p class="wp-block-paragraph">The current status shows <em><strong>Not granted for Sujin’s Org</strong></em>. After clicking <em><strong>Grant admin consent for Sujin’s Org</strong></em>, the status will update to <em><strong>Granted for Sujin’s Org</strong></em> and display a <strong>green check mark.</strong></p><div class="wp-block-image"><figure class="aligncenter size-large"><img alt="Automating Bulk Graph API Permission Assignment in Microsoft Entra App Registrations-Fig-06" class="wp-image-375137" data-lazyloaded="1" data-sizes="auto, (max-width: 1024px) 100vw, 1024px" decoding="async" src="assets/b1d9e5bf44dd0318/img_5.webp" title="Automating Bulk Graph API Permission Assignment in Microsoft Entra App Registrations 7"/><figcaption class="wp-element-caption">Automating Bulk Graph API Permission Assignment in Microsoft Entra App Registrations-Fig-06</figcaption></figure></div><h2 class="wp-block-heading" id="need-further-assistance-or-have-technical-questions"><strong>Need Further Assistance or Have Technical Questions?</strong></h2><pre class="wp-block-code has-contrast-3-background-color has-background"><code>Join the <a href="https://www.linkedin.com/company/how-to-manage-devices/" rel="noreferrer noopener nofollow" target="_blank"><strong>LinkedI</strong></a><strong><a href="https://www.linkedin.com/company/how-to-manage-devices/" rel="noreferrer noopener nofollow" target="_blank">n</a></strong><a href="https://www.linkedin.com/company/how-to-manage-devices/" rel="noreferrer noopener nofollow" target="_blank"><strong> Page</strong></a> and <a href="https://t.me/+Q9lE6G1_BO_bGq97" rel="noreferrer noopener nofollow" target="_blank"><strong>Telegram group</strong></a> to get the latest step-by-step guides and news updates. Join our <a href="https://www.meetup.com/htmd-community-meetup-group/" rel="noreferrer noopener nofollow" target="_blank"><strong>Meetup Page</strong></a> to participate in User group meetings. Also, Join the <a href="https://chat.whatsapp.com/CeMXHSD61HtDBJwe78IZwV" rel="noreferrer noopener nofollow" target="_blank"><strong>WhatsApp Community</strong></a> to get the latest news on Microsoft Technologies. We are there on <a href="https://www.reddit.com/r/ImpMSNews/" rel="noreferrer noopener nofollow" target="_blank"><strong>Reddit</strong> </a>as well.</code></pre><h2 class="wp-block-heading" id="author"><strong>Author</strong></h2><p class="wp-block-paragraph"><strong>About the Author:</strong> <a href="http://linkedin.com/in/sujin-nelladath-8911968a" rel="noreferrer noopener nofollow" target="_blank"><strong>Sujin Nelladath, </strong></a>a <strong>Microsoft Graph MVP</strong> with over 13 years of experience in Intune device management and Automation solutions, writes and shares his experiences with Microsoft device management technologies, Azure, DevOps, Graph API and PowerShell automation.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><p class="code-block code-block-8">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="1286776600" data-full-width-responsive="true"></ins> </p><p class="code-block code-block-9">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="8125570634" data-full-width-responsive="true"></ins> </p></div></div></div>
+</article>
+</body>
+</html>

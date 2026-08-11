@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Multi-Agent Orchestration in Microsoft Foundry: A Deep Dive</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">August 11, 2026</span>
+  </div>
+  <h1>Multi-Agent Orchestration in Microsoft Foundry: A Deep Dive</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/microsoft-foundry-multi-agent-orchestration/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p class="wp-block-paragraph">One agent alone rarely solves a real business process. As soon as you build something serious, you want a triage agent, a specialist for your knowledge base, maybe one that creates tickets — and something that coordinates them. In this blog post I do a deep dive into multi-agent orchestration in Microsoft Foundry. I explain how the story changed three times within one year, how the Microsoft Agent Framework patterns work, and which pattern I would choose for which scenario. At the end you will know exactly where to build your orchestration today so that it does not get deprecated next year.</p>
+<p class="wp-block-paragraph">I already wrote about <a href="https://jannikreinhard.com/microsoft-foundry-first-agent/">building your first agent in Microsoft Foundry</a>. This post is the next step: making several agents work together.</p>
+<span id="more-19767"></span>
+<h2 class="wp-block-heading" id="why-did-the-multi-agent-story-change-three-times">Why Did the Multi-Agent Story Change Three Times?</h2>
+<p class="wp-block-paragraph">This is the part that confuses most people, so let us clear it up first. Microsoft shipped three different multi-agent mechanisms in roughly one year:</p>
+<ol class="wp-block-list">
+<li><strong>Connected agents (classic).</strong> The original feature in the classic Foundry Agent Service — the old threads-and-runs platform. A main agent delegated to sub-agents through natural-language routing. The new Agent Service, which reached general availability on March 16, 2026, <a href="https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/migrate" rel="noopener" target="_blank">removed connected agents completely</a>; the replacement is the A2A tool (more on it below). The classic platform itself retires on March 31, 2027.</li>
+<li><strong>Portal workflows (preview).</strong> A visual designer in the Foundry portal for declarative agent sequences with if-else and for-each logic. It never reached general availability, and <a href="https://learn.microsoft.com/en-us/azure/foundry/agents/concepts/workflow" rel="noopener" target="_blank">Microsoft is retiring the workflow designer on December 1, 2026</a>. If you need a visual designer after that, Logic Apps is the recommended target.</li>
+<li><strong>Microsoft Agent Framework.</strong> The open-source SDK that merged Semantic Kernel and AutoGen into one platform. It <a href="https://devblogs.microsoft.com/agent-framework/microsoft-agent-framework-version-1-0/" rel="noopener" target="_blank">reached version 1.0 GA on April 3, 2026</a> and it is the place where Microsoft wants you to build orchestration from now on.</li>
+</ol>
+<figure class="wp-block-image"><img alt="Multi-agent orchestration in Microsoft Foundry: connected agents and portal workflows retire," data-recalc-dims="1" decoding="async" src="assets/4a2ef32a3fb86bbd/img_0.jpg"/></figure>
+<p class="wp-block-paragraph">By the way, connected agents were not the only removal: the Deep Research <em>tool</em> is gone too. If you need deep research today, you combine the Deep Research model with the Web Search tool.</p>
+<p class="wp-block-paragraph">The division of labor is now clear: the Agent Framework is the SDK where the orchestration logic lives, and Foundry provides the production hosting, scaling, and observability around it. If you remember only one thing from this post, remember this sentence.</p>
+<p class="wp-block-paragraph">Note: If you still have connected agents or portal workflows running, you do not have to panic. Exported workflow YAML keeps running when deployed as a hosted agent, and there is a <a href="https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/migrate" rel="noopener" target="_blank">migration guide and tool</a> for classic agents. But do not start anything new on the old mechanisms.</p>
+<h2 class="wp-block-heading" id="what-is-the-microsoft-agent-framework">What Is the Microsoft Agent Framework?</h2>
+<p class="wp-block-paragraph">The Agent Framework is the official successor of both Semantic Kernel and AutoGen, built by the same teams. Both predecessors are in maintenance mode now — bug and security fixes only — so all new pro-code agent work should start here. It combines the simple abstractions of AutoGen with the enterprise features of Semantic Kernel. Version 1.0 is available for <a href="https://learn.microsoft.com/en-us/agent-framework/overview/" rel="noopener" target="_blank">Python and .NET, with Go in public preview</a>.</p>
+<p class="wp-block-paragraph">Installation is one line (the Foundry connector ships as its own package):</p>
+<pre class="wp-block-code"><code>pip install agent-framework agent-framework-foundry azure-identity
+</code></pre>
+<p class="wp-block-paragraph">Connecting it to Microsoft Foundry is also simple. You create a chat client against your Foundry project and create agents from it — each agent is your model deployment plus its own instructions:</p>
+<pre class="wp-block-code"><code class="language-python"># Two Agent Framework agents on one Foundry model deployment
+from agent_framework_foundry import FoundryChatClient
+from azure.identity import DefaultAzureCredential
+
+client = FoundryChatClient(
+    endpoint="https://&lt;resource&gt;.services.ai.azure.com/api/projects/&lt;project&gt;",
+    model="gpt-5-mini",
+    credential=DefaultAzureCredential(),
+)
+
+writer = client.create_agent(name="writer", instructions="Write a first draft.")
+reviewer = client.create_agent(name="reviewer", instructions="Review and improve the draft.")
+</code></pre>
+<p class="wp-block-paragraph">Sign in with <code>az login</code> first — the credential picks up your session. That is all the setup you need for the patterns below.</p>
+<h2 class="wp-block-heading" id="which-orchestration-patterns-are-built-in">Which Orchestration Patterns Are Built In?</h2>
+<p class="wp-block-paragraph">The framework ships <a href="https://learn.microsoft.com/en-us/agent-framework/workflows/orchestrations/" rel="noopener" target="_blank">five ready-made orchestration patterns</a>. This is the heart of the topic, so let us go through them one by one.</p>
+<h3 class="wp-block-heading" id="1-sequential-the-pipeline">1. Sequential — the pipeline</h3>
+<p class="wp-block-paragraph">Each agent consumes the output of the previous one. Perfect when the task has a natural order: draft, review, finalize. This is also the pattern I recommend for your first multi-agent system, so here it is complete and runnable:</p>
+<pre class="wp-block-code"><code class="language-python"># Sequential two-agent workflow with the Microsoft Agent Framework
+import asyncio
+from agent_framework import SequentialBuilder
+from agent_framework_foundry import FoundryChatClient
+from azure.identity import DefaultAzureCredential
+
+async def main():
+    client = FoundryChatClient(
+        endpoint="https://&lt;resource&gt;.services.ai.azure.com/api/projects/&lt;project&gt;",
+        model="gpt-5-mini",
+        credential=DefaultAzureCredential(),
+    )
+    researcher = client.create_agent(
+        name="researcher",
+        instructions="Collect the key facts on the topic as a short bullet list.",
+    )
+    writer = client.create_agent(
+        name="writer",
+        instructions="Turn the bullet list into a short, friendly summary for IT admins.",
+    )
+
+    # Researcher runs first, its output becomes the writer's input
+    workflow = SequentialBuilder().participants([researcher, writer]).build()
+    result = await workflow.run("What is the Model Context Protocol?")
+    print(result.get_outputs()[-1])
+
+asyncio.run(main())
+</code></pre>
+<h3 class="wp-block-heading" id="2-concurrent-the-fan-out">2. Concurrent — the fan-out</h3>
+<p class="wp-block-paragraph">All agents work on the same task in parallel and the results are aggregated. I use this when I want independent perspectives, for example three agents checking a policy change for security, licensing, and user impact at the same time.</p>
+<h3 class="wp-block-heading" id="3-group-chat-the-moderated-discussion">3. Group chat — the moderated discussion</h3>
+<p class="wp-block-paragraph">An orchestrator decides who speaks next. The selection can be round-robin, a custom function, or even another LLM. One detail you should know: the agents do not share a session. The orchestrator broadcasts each response to all participants to keep the context in sync — which means token usage grows with every turn and every additional participant.</p>
+<h3 class="wp-block-heading" id="4-handoff-pass-the-full-task">4. Handoff — pass the full task</h3>
+<p class="wp-block-paragraph">One agent passes complete control to a specialist and does not take it back. This is the classic support triage: the triage agent decides if the order agent or the returns agent takes over. Important difference to the old connected agents: a handoff transfers ownership of the task, while the agent-as-tools model always returned control to the main agent.</p>
+<h3 class="wp-block-heading" id="5-magentic-the-manager">5. Magentic — the manager</h3>
+<p class="wp-block-paragraph">A manager agent plans the task, keeps a task ledger, delegates to specialists, tracks progress, and replans when things stall. It is based on the Magentic-One research from AutoGen. This is the most powerful pattern and also the least predictable in cost, because the manager iterates until it is satisfied. The builder lets you cap this with a maximum round count and a maximum stall count — set both, always, and enable human plan review for anything expensive.</p>
+<figure class="wp-block-image"><img alt="Microsoft Agent Framework orchestration patterns: sequential, concurrent, handoff and magentic" data-recalc-dims="1" decoding="async" src="assets/4a2ef32a3fb86bbd/img_1.jpg"/></figure>
+<p class="wp-block-paragraph">Hint: All five patterns support human-in-the-loop. You can mark a tool with <code>approval_mode="always_require"</code> and the workflow pauses until a human approves. For anything that changes production systems I always turn this on.</p>
+<h2 class="wp-block-heading" id="cheat-sheet-which-pattern-for-which-job">Cheat Sheet: Which Pattern for Which Job?</h2>
+<figure class="wp-block-table"><table>
+<thead>
+<tr>
+<th>Pattern</th>
+<th>Use when</th>
+<th>Cost you pay</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Single agent + tools</td>
+<td>One agent with good tools can do it</td>
+<td>None — always check this first</td>
+</tr>
+<tr>
+<td>Sequential</td>
+<td>The task has a fixed order</td>
+<td>Latency adds up per step</td>
+</tr>
+<tr>
+<td>Concurrent</td>
+<td>You want independent answers in parallel</td>
+<td>Tokens multiply by agent count</td>
+</tr>
+<tr>
+<td>Group chat</td>
+<td>Agents must react to each other</td>
+<td>Context broadcast on every turn</td>
+</tr>
+<tr>
+<td>Handoff</td>
+<td>A specialist should own the task</td>
+<td>Routing quality depends on descriptions</td>
+</tr>
+<tr>
+<td>Magentic</td>
+<td>Open-ended, complex problems</td>
+<td>Least predictable token cost</td>
+</tr>
+<tr>
+<td>A2A tool</td>
+<td>The other agent is on another team, platform, or cloud</td>
+<td>Preview; network hop and auth setup</td>
+</tr>
+</tbody>
+</table></figure>
+<h2 class="wp-block-heading" id="how-do-i-get-this-into-production-hosted-agents">How Do I Get This Into Production? Hosted Agents</h2>
+<p class="wp-block-paragraph">Orchestration code on your laptop is nice, but the production home for it is <a href="https://learn.microsoft.com/en-us/azure/foundry/agents/concepts/hosted-agents" rel="noopener" target="_blank">hosted agents in Foundry Agent Service</a>. Hosted agents reached general availability in July 2026 and they are framework-agnostic: Agent Framework, LangGraph, the OpenAI Agents SDK, or plain custom code — you push a container image to Azure Container Registry (or hand Foundry a zip and it builds the image), and Foundry runs it. The fastest deployment path is the Azure Developer CLI: declare the agent as a service of type <code>azure.ai.agent</code> in <code>azure.yaml</code>, then <code>azd provision</code> and <code>azd deploy</code>.</p>
+<p class="wp-block-paragraph">What you get for free is quite a lot:</p>
+<ul class="wp-block-list">
+<li><strong>A VM-isolated sandbox per session</strong> with a persistent home directory. Sessions scale to zero after 15 minutes idle (state is kept) and are deleted after 30 days of inactivity.</li>
+<li><strong>An automatic Microsoft Entra agent identity</strong> and a dedicated endpoint per agent.</li>
+<li><strong>Immutable versions with weighted rollouts</strong>, so you can canary a new agent version with, say, 10 percent of traffic.</li>
+<li><strong>OpenTelemetry tracing into Application Insights</strong>, injected automatically.</li>
+</ul>
+<p class="wp-block-paragraph">The compute is billed by consumption during active sessions: $0.0994 per vCPU-hour plus $0.0118 per GiB-hour (US East), on top of model tokens and tool meters. Because idle sessions scale to zero, a lightly used orchestration is cheap. Hosted agents run in about 20 regions, including Sweden Central, Germany West Central, and Switzerland North — good news for European data residency.</p>
+<figure class="wp-block-image"><img alt="Foundry portal - Build - Agents showing the agents list with a hosted agent and its version" data-recalc-dims="1" decoding="async" src="assets/4a2ef32a3fb86bbd/img_2.jpg"/></figure>
+<figure class="wp-block-image"><img alt="Foundry portal - Operate hub with traces and monitoring for a running multi-agent workflow" data-recalc-dims="1" decoding="async" src="assets/4a2ef32a3fb86bbd/img_3.jpg"/></figure>
+<p class="wp-block-paragraph">One thing surprised me: you cannot attach tools directly to a hosted agent definition. Hosted agents consume Foundry tools — Code Interpreter, Azure AI Search, OpenAPI, MCP servers — through a single <strong>Toolbox</strong> MCP endpoint. A Toolbox is a versioned bundle of tools that you define once under <span class="jr-inline-emphasis">Build → Tools</span> and that any MCP-capable runtime can consume. So your agent code speaks standard MCP, and Foundry serves its whole tool ecosystem behind that one endpoint. Plan your Toolbox before you plan your container.</p>
+<figure class="wp-block-image"><img alt="Foundry portal - Build - Tools catalog with the tool list and the Connect tool button" data-recalc-dims="1" decoding="async" src="assets/4a2ef32a3fb86bbd/img_4.jpg"/></figure>
+<h2 class="wp-block-heading" id="where-do-a2a-and-mcp-fit-in">Where Do A2A and MCP Fit In?</h2>
+<p class="wp-block-paragraph">The two protocols answer two different questions, and mixing them up causes a lot of confusion:</p>
+<ul class="wp-block-list">
+<li><span class="jr-inline-emphasis">MCP (Model Context Protocol)</span> connects an agent to <span class="jr-inline-emphasis">tools</span>. In Foundry the MCP tool is GA: you attach an <code>MCPTool</code> to a prompt agent, ideally with an <code>allowed_tools</code> list and an approval flow, and the catalog under <span class="jr-inline-emphasis">Build → Tools</span> already contains more than 1,400 entries.</li>
+<li><span class="jr-inline-emphasis">A2A (Agent2Agent)</span> connects an agent to <span class="jr-inline-emphasis">other agents</span> — also across platforms and clouds. Foundry supports both directions, both currently in public preview. Your agent can call a remote A2A endpoint via the A2A tool, and you can <a href="https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/enable-agent-to-agent-endpoint" rel="noopener" target="_blank">expose a Foundry agent as an A2A endpoint</a> with a published agent card at <code>/.well-known/agent-card.json</code>. Incoming calls are Microsoft Entra only — no anonymous access, no API keys — and the least-privilege role for callers is Foundry Agent Consumer.</li>
+</ul>
+<p class="wp-block-paragraph">Setting up the outgoing side is a small click path: in the portal go to <span class="jr-inline-emphasis">Build → Tools → Connect tool → Custom</span> tab → <span class="jr-inline-emphasis">Agent2Agent (A2A)</span> → <span class="jr-inline-emphasis">Create</span>, then enter a name, the endpoint URL of the remote agent, and the authentication — an API key header, OAuth, the project managed identity, or the agent identity. In the SDK the connection becomes a normal tool:</p>
+<pre class="wp-block-code"><code class="language-python"># Attach a remote A2A agent as a tool (public preview)
+from azure.ai.projects.models import A2APreviewTool, PromptAgentDefinition
+
+agent = project.agents.create_version(
+    agent_name="dispatcher",
+    definition=PromptAgentDefinition(
+        model="gpt-5-mini",
+        instructions="Route network questions to the network specialist agent.",
+        tools=[A2APreviewTool(project_connection_id=conn.id)],
+    ),
+)
+</code></pre>
+<p class="wp-block-paragraph">Two runtime details matter. First, the calling agent stays in control: the remote answer is summarized back into the caller’s context. Second, this is a peer call, not a handoff — the user keeps talking to your agent. A2A is also the platform bridge: Copilot Studio speaks it too (GA there since April 2026), so a low-code front-end agent in Teams can delegate to your Foundry orchestration — see my <a href="https://jannikreinhard.com/foundry-vs-copilot-studio/">Foundry vs Copilot Studio</a> post.</p>
+<figure class="wp-block-image"><img alt="Foundry portal - Connect tool - Custom tab - Agent2Agent (A2A) dialog with name, endpoint URL," data-recalc-dims="1" decoding="async" src="assets/4a2ef32a3fb86bbd/img_5.jpg"/></figure>
+<p class="wp-block-paragraph">My simple rule: MCP for tools, A2A for delegation across team or platform boundaries, Agent Framework patterns for orchestration inside one solution.</p>
+<h2 class="wp-block-heading" id="what-about-shared-memory">What About Shared Memory?</h2>
+<p class="wp-block-paragraph">One question that always comes up in multi-agent designs: how do my agents remember things across sessions? Foundry has an answer in preview — <span class="jr-inline-emphasis">memory stores</span>. You create a memory store in the project, attach it to agents via the memory search tool, and partition it with a scope so that each user only sees their own memories. Because several agents can attach the same store, this is also a simple way to share long-term context inside one solution.</p>
+<p class="wp-block-paragraph">Note: Memory is still preview, but no longer free — billing started on June 1, 2026 ($0.25 per 1,000 stored events, $0.25 per 1,000 long-term memories per month, $0.50 per 1,000 retrievals in US East). Small numbers, but they multiply with agent count.</p>
+<h2 class="wp-block-heading" id="the-approach-i-actually-use">The Approach I Actually Use</h2>
+<p class="wp-block-paragraph">When I plan a multi-agent solution today, I go through this list:</p>
+<ol class="wp-block-list">
+<li><span class="jr-inline-emphasis">Can one agent with good tools do it?</span> Then I do not build multi-agent at all. Every additional agent adds latency, cost, and failure modes.</li>
+<li><span class="jr-inline-emphasis">Fixed process?</span> Sequential workflow in Agent Framework, deployed as a hosted agent.</li>
+<li><span class="jr-inline-emphasis">Routing to specialists?</span> Handoff pattern, with clear one-sentence descriptions per specialist — the routing quality is only as good as these descriptions.</li>
+<li><span class="jr-inline-emphasis">Open-ended research or analysis?</span> Magentic, with the round and stall limits set and human plan review enabled, because the token bill can surprise you.</li>
+<li><span class="jr-inline-emphasis">The other agent belongs to another team or platform?</span> A2A, not a shared workflow.</li>
+</ol>
+<h2 class="wp-block-heading" id="pitfalls-i-now-avoid">Pitfalls I Now Avoid</h2>
+<ul class="wp-block-list">
+<li><span class="jr-inline-emphasis">Building new solutions on connected agents or the portal workflow designer.</span> Both are on a published retirement path. I only build orchestration in Agent Framework now.</li>
+<li><span class="jr-inline-emphasis">Magentic without limits.</span> The manager replans on stalls, and without a round limit and a stall limit you pay for its patience. Set both, always.</li>
+<li><span class="jr-inline-emphasis">Group chat for large agent counts.</span> Because every response is broadcast to all participants, ten agents means ten context copies per turn. Above three or four agents I switch to handoff or magentic.</li>
+<li><span class="jr-inline-emphasis">Forgetting that publishing changes identity.</span> Unpublished agents share the project’s agent identity; when you publish an agent, it gets its own Entra agent identity — and existing role assignments do not carry over. Plan the RBAC re-assignment into your release step.</li>
+<li><span class="jr-inline-emphasis">Assuming citations flow through delegation.</span> Sub-agent citations were never guaranteed to reach the user in the old connected-agents model, and a summarized A2A answer has the same problem. In my workflows, the agent that talks to the user is the one that does the grounding.</li>
+</ul>
+<h2 class="wp-block-heading" id="where-this-is-heading">Where This Is Heading</h2>
+<p class="wp-block-paragraph">The direction is clear: orchestration logic moves into open source (Agent Framework), the runtime moves into Foundry hosted agents, and the connective tissue becomes standard protocols — MCP for tools, A2A for agent-to-agent. Microsoft retiring its own portal designer in favor of the SDK tells you everything about where they see the future. If you want to go deeper into the platform basics first, start with my <a href="https://jannikreinhard.com/microsoft-foundry-first-agent/">first-agent walkthrough</a> and the comparison of <a href="https://jannikreinhard.com/foundry-vs-copilot-studio/">Microsoft Foundry vs Copilot Studio</a>, and keep the <a href="https://learn.microsoft.com/en-us/agent-framework/overview/" rel="noopener" target="_blank">Agent Framework docs</a> bookmarked.</p>
+<p class="wp-block-paragraph">I hope this deep dive helps you to place your orchestration bet on the right platform.</p>
+<p class="wp-block-paragraph">Stay healthy, Cheers Jannik</p>
+<aside aria-labelledby="jr-next-microsoft-foundry-multi-agent-orchestration" class="jr-next-journey"><span class="jr-next-eyebrow">Build the next layer</span><h2 id="jr-next-microsoft-foundry-multi-agent-orchestration">Continue your agent architecture</h2></aside> </div>
+</div></div>
+</article>
+</body>
+</html>
