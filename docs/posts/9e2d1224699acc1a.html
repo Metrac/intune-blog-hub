@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Claude Code in GitHub Actions: Automate Standard Tasks</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">August 13, 2026</span>
+  </div>
+  <h1>Claude Code in GitHub Actions: Automate Standard Tasks</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/claude-code-github-actions/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p class="jr-title-context">Topic of this page: Claude Code GitHub Actions: Easy Setup in 15 Minutes</p>
+<p class="wp-block-paragraph">Most of us use AI coding agents interactively: you sit in the terminal, type a prompt, and watch the agent work. But a lot of the work in a repository is not interactive at all. Reviewing pull requests, triaging new issues, writing release notes, updating documentation — these are standard tasks that repeat every week. In this blog post I show you how to run Claude Code inside your GitHub pipelines with Claude Code GitHub Actions, so these tasks run automatically while you do something else.</p>
+<span id="more-19551"></span>
+<h2 class="wp-block-heading" id="what-is-the-claude-code-github-action">What is the Claude Code GitHub Action?</h2>
+<p class="wp-block-paragraph">Claude Code GitHub Actions is the official way to run the Claude Code agent inside a GitHub Actions workflow. The action is called <a href="https://github.com/anthropics/claude-code-action" rel="noopener" target="_blank">anthropics/claude-code-action</a> and the current version is <code>@v1</code>. Under the hood it starts the same agent you know from the terminal — but on a GitHub-hosted runner, with access to your repository. It is built on the Claude Agent SDK, so everything the agent can do locally (read code, run commands, push commits, open pull requests) also works in the pipeline.</p>
+<p class="wp-block-paragraph">The action works in two modes, and since v1 it detects the right one automatically:</p>
+<ul class="wp-block-list">
+<li><strong>Interactive mode:</strong> Claude responds when someone mentions <code>@claude</code> in an issue or pull request comment. You write “@claude fix the TypeError in the dashboard component” and Claude analyzes the code, pushes a fix, and answers in the thread. You can change the trigger word with the <code>trigger_phrase</code> input.</li>
+<li><strong>Automation mode:</strong> You give the action a <code>prompt</code> in the workflow file. Then it runs immediately when the workflow triggers — on every pull request, on a schedule, or on any other GitHub event. This is the mode for standard tasks.</li>
+</ul>
+<p class="wp-block-paragraph">Note: Your code stays on the GitHub runners. The action sends the relevant context to the Claude API, but there is no third-party service in between.</p>
+<h2 class="wp-block-heading" id="how-do-i-set-it-up">How do I set it up?</h2>
+<p class="wp-block-paragraph">The setup is genuinely simple. If you have Claude Code in the terminal, one command does almost everything:</p>
+<ol class="wp-block-list">
+<li>Open Claude Code in a checkout of your repository and run <code>/install-github-app</code>.</li>
+<li>The command installs the Claude GitHub App on the repository. The app needs read and write permissions for Contents, Issues, and Pull requests. You must be a repository admin for this step.</li>
+<li>The command then adds the workflow file and asks for your Anthropic API key, which it stores as the repository secret <code>ANTHROPIC_API_KEY</code>.</li>
+<li>Test it: open an issue and write a comment with <code>@claude</code> — for example “@claude explain what this repository does”.</li>
+</ol>
+<figure class="wp-block-image"><img alt="A GitHub issue with a comment &quot;@claude explain what this repository does&quot; and Claude's" data-recalc-dims="1" decoding="async" src="assets/9e2d1224699acc1a/img_0.jpg"/></figure>
+<p class="wp-block-paragraph">If you prefer the manual way, install the app from <a href="https://github.com/apps/claude" rel="noopener" target="_blank">github.com/apps/claude</a>, add the <code>ANTHROPIC_API_KEY</code> secret yourself, and copy the example workflow into <code>.github/workflows/</code>. The minimal workflow for the mention mode looks like this:</p>
+<pre class="wp-block-code"><code class="language-yaml">name: Claude Code
+on:
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+jobs:
+  claude:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          # Responds to @claude mentions in comments
+</code></pre>
+<p class="wp-block-paragraph">Hint: Never write the API key directly into the workflow file. Always use a GitHub secret. This sounds obvious, but it is the most common mistake I see in shared workflow examples.</p>
+<p class="wp-block-paragraph">Note: The quick setup only works with a direct Claude API key. If your company runs Claude through Amazon Bedrock or Google Cloud, the action supports that too — you authenticate the runner with OIDC (no stored cloud keys) and set <code>use_bedrock: "true"</code> or <code>use_vertex: "true"</code>. The <a href="https://code.claude.com/docs/en/github-actions" rel="noopener" target="_blank">official guide</a> has complete workflow examples for both.</p>
+<figure class="wp-block-image"><img alt="Claude Code GitHub Actions mention flow from @claude comment to commit, PR or answer" data-recalc-dims="1" decoding="async" src="assets/9e2d1224699acc1a/img_1.jpg"/></figure>
+<h2 class="wp-block-heading" id="how-can-i-automate-standard-tasks">How can I automate standard tasks?</h2>
+<p class="wp-block-paragraph">The mention mode is nice, but the real value of Claude Code GitHub Actions is the automation mode. When you set the <code>prompt</code> input, the agent runs without any human trigger. Three examples that I find useful in practice:</p>
+<p class="wp-block-paragraph"><strong>1. A review on every pull request.</strong> This is a complete workflow file — copy it to <code>.github/workflows/claude-review.yml</code> and it works:</p>
+<pre class="wp-block-code"><code class="language-yaml">name: Claude Code Review
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            Review this pull request. Focus on bugs, security issues
+            and missing error handling — not on code style.
+            Post the findings as a comment on the pull request.
+          claude_args: |
+            --model claude-sonnet-5
+            --max-turns 10
+</code></pre>
+<p class="wp-block-paragraph">Three things to notice: <code>timeout-minutes</code> is the hard stop against runaway jobs, <code>--max-turns 10</code> limits how long the agent iterates (10 is also the default), and <code>--model</code> pins the model. I use Claude Sonnet 5 (<code>claude-sonnet-5</code>) here because it is fast and strong at code review; for the hardest tasks you can switch to Claude Opus 4.8 (<code>claude-opus-4-8</code>), and for cheap high-volume jobs like labeling there is Claude Haiku 4.5 (<code>claude-haiku-4-5</code>).</p>
+<p class="wp-block-paragraph"><strong>2. A scheduled report.</strong> With a cron trigger, Claude summarizes what happened in the repository — every morning, without anyone asking:</p>
+<pre class="wp-block-code"><code class="language-yaml">on:
+  schedule:
+    - cron: "0 7 * * 1-5"
+...
+          prompt: "Summarize yesterday's commits and the open issues. Post the summary as a new issue titled 'Daily report'."
+</code></pre>
+<p class="wp-block-paragraph"><strong>3. Issue triage.</strong> Trigger on <code>issues: [opened]</code> and let the prompt label the issue, check for duplicates, and ask the reporter for missing information. New issues arrive pre-sorted.</p>
+<p class="wp-block-paragraph">The <code>claude_args</code> input passes any Claude Code CLI argument into the run. The ones I actually use: <code>--max-turns</code> to limit how long the agent works, <code>--model</code> to pick the model, and <code>--allowedTools</code> to restrict what the agent may do. The <code>prompt</code> input also accepts skill invocations like <code>/skill-name</code>, so you can package your team’s process as a skill in <code>.claude/skills/</code> and run exactly that process in the pipeline — just add an <code>actions/checkout</code> step before the action so the skill files are on the runner.</p>
+<figure class="wp-block-image"><img alt="Claude Code GitHub Actions automation mode: PR review, daily report and issue triage as" data-recalc-dims="1" decoding="async" src="assets/9e2d1224699acc1a/img_2.jpg"/></figure>
+<h2 class="wp-block-heading" id="what-is-the-difference-between-the-two-modes">What is the difference between the two modes?</h2>
+<figure class="wp-block-table"><table>
+<thead>
+<tr>
+<th></th>
+<th>Interactive (@claude mention)</th>
+<th>Automation mode (prompt)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Trigger</td>
+<td>A human writes @claude in a comment</td>
+<td>Any GitHub event: PR, schedule, issue</td>
+</tr>
+<tr>
+<td>Prompt</td>
+<td>Comes from the comment text</td>
+<td>Fixed in the workflow file</td>
+</tr>
+<tr>
+<td>Best for</td>
+<td>Ad-hoc questions and fixes</td>
+<td>Recurring standard tasks</td>
+</tr>
+<tr>
+<td>Human in the loop</td>
+<td>Yes, per request</td>
+<td>Only when reviewing the result</td>
+</tr>
+</tbody>
+</table></figure>
+<h2 class="wp-block-heading" id="what-should-i-know-about-costs-and-guardrails">What should I know about costs and guardrails?</h2>
+<p class="wp-block-paragraph">Every run consumes GitHub Actions minutes and Claude API tokens. A few things keep this under control:</p>
+<ul class="wp-block-list">
+<li><strong>Set <code>--max-turns</code></strong> (the default is 10). Without a sensible limit, a confused agent can iterate for a long time.</li>
+<li><strong>Set a workflow timeout</strong> with <code>timeout-minutes</code> on the job. This is your hard stop against runaway jobs.</li>
+<li><strong>Use a <code>CLAUDE.md</code></strong> in the repository root. Claude reads it in every run — coding standards, review criteria, and project rules belong there, not in every prompt.</li>
+<li><span class="jr-inline-emphasis">Restrict tools</span> with <code>--allowedTools</code> when a workflow only needs to read. A triage workflow does not need to push commits.</li>
+<li><span class="jr-inline-emphasis">Use concurrency controls.</span> GitHub’s <code>concurrency</code> setting prevents five parallel Claude runs when someone pushes five commits in a row.</li>
+<li><span class="jr-inline-emphasis">Review before merge.</span> I treat Claude’s pull requests like a colleague’s pull requests. The agent is good, but the responsibility stays with you.</li>
+</ul>
+<p class="wp-block-paragraph">Note: In enterprise-managed GitHub organizations, a policy often blocks Actions from creating pull requests (“GitHub Actions is not permitted to create or approve pull requests”). I ran into this with one of my own automation projects. The fix is either an admin enabling that setting, or using a custom GitHub App token via <code>github_token</code> instead of the default Actions token.</p>
+<h2 class="wp-block-heading" id="where-does-this-fit-in-the-bigger-picture">Where does this fit in the bigger picture?</h2>
+<p class="wp-block-paragraph">For me this is the same shift I described in <a href="https://jannikreinhard.com/why-cli-tools-are-beating-mcp-for-ai-agents/">why CLI tools are beating MCP for AI agents</a>: the agent becomes a normal building block in your existing tooling. A pipeline step that thinks is still just a pipeline step — it has a trigger, a budget, and a log. If you want to see how skills, MCP and CLI tools relate to each other, I mapped that out in <a href="https://jannikreinhard.com/skills-mcp-cli-computer-use-mapping-the-ai-tooling-surface-in-2026/">my AI tooling overview</a>.</p>
+<p class="wp-block-paragraph">My recommendation: start with the mention mode, because it is one command to set up and immediately useful. Then pick one standard task that annoys you every week — for me it was pull request triage — and move it to automation mode. The full documentation is in the official <a href="https://code.claude.com/docs/en/github-actions" rel="noopener" target="_blank">Claude Code GitHub Actions guide</a>.</p>
+<p class="wp-block-paragraph">I hope this is a little help.</p>
+<p class="wp-block-paragraph">Stay healthy, Cheers Jannik</p>
+<aside aria-labelledby="jr-next-claude-code-github-actions" class="jr-next-journey"><span class="jr-next-eyebrow">Continue exploring</span><h2 id="jr-next-claude-code-github-actions">Practical guides for your next step</h2></aside> </div>
+</div></div>
+</article>
+</body>
+</html>
