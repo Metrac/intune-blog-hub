@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inside Intune’s New Sync Status Window</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Call4Cloud (Rudy Ooms)</span>
+    <span class="date">August 13, 2026</span>
+  </div>
+  <h1>Inside Intune’s New Sync Status Window</h1>
+  <div class="orig">Saved for offline reading · <a href="https://patchmypc.com/blog/inside-intunes-new-sync-status-window/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="post-content">
+<p class="wp-block-paragraph">Microsoft has quietly improved the <a href="https://patchmypc.com/blog/intune-on-demand-device-sync-now-uses-ic3-for-ime-workloads/">Windows device sync experience in Intune</a>. Instead of only sending a push request that tells the device to check in through IC3 and WNS, the portal can now also open a live Sync status window that shows the progress Intune receives back from the service. That change matters because Intune is no longer relying on one single device-side engine. Windows MDM still follows its own path, while Intune Management Extension workloads use a separate path. The portal then pulls those results together into one monitoring pane.</p>
+<h2 class="wp-block-heading" id="h-what-the-new-sync-status-pane-looks-like">What the New Sync Status pane looks like<span class="clth-copy-icon" data-heading-id="h-what-the-new-sync-status-pane-looks-like"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The current pane opens on the right side of the device page after <strong><a href="https://learn.microsoft.com/en-us/intune/device-management/actions/sync?pivots=windows">Sync is triggered.</a></strong> In this example below, it shows a completed notification step, a partial success result for Policies, and completed summary rows for Applications and Scripts.</p>
+<figure class="wp-block-image size-large"><a data-caption="Current Sync status pane example from the device page in Intune." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-9-1024x559.png"><picture class="wp-image-191871" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-9-1024x559.png.webp 1024w, https://patchmypc.com/app/uploads/2026/08/image-9-300x164.png.webp 300w, https://patchmypc.com/app/uploads/2026/08/image-9-768x419.png.webp 768w, https://patchmypc.com/app/uploads/2026/08/image-9.png.webp 1257w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="Current Sync status pane example from the device page in Intune." data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-9-1024x559.png 1024w, https://patchmypc.com/app/uploads/2026/08/image-9-300x164.png 300w, https://patchmypc.com/app/uploads/2026/08/image-9-768x419.png 768w, https://patchmypc.com/app/uploads/2026/08/image-9.png 1257w" decoding="async" src="assets/7678f3edadb8c768/img_0.png"/><noscript><img alt="Current Sync status pane example from the device page in Intune." decoding="async" src="assets/7678f3edadb8c768/img_1.png"/></noscript>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-what-changed">What changed<span class="clth-copy-icon" data-heading-id="h-what-changed"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The important change is not just a nicer sync status window. The portal now behaves more like a lightweight monitoring client. It starts the Sync action, opens the pane, and keeps polling for updated status while the action is in progress.</p>
+<p class="wp-block-paragraph">At the same time, the device-side paths are different depending on the workload. Classic Windows MDM still uses WNS and the WindowsMDMPush path. IME workloads use the <strong><a href="https://patchmypc.com/blog/intune-on-demand-device-sync-now-uses-ic3-for-ime-workloads/">notification path built around IC3</a></strong> and Trouter DirectSync. That split is the reason one Sync action can light up different rows in the pane.</p>
+<h2 class="wp-block-heading" id="h-the-big-sync-status-overview">The big Sync Status Overview<span class="clth-copy-icon" data-heading-id="h-the-big-sync-status-overview"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph" id="h-the-big-picture">This first diagram is the map for the rest of the article. It shows how one Sync action is accepted, monitored, split into workload-specific paths, correlated by the service, and finally returned to the Sync status pane.</p>
+<figure class="wp-block-image size-large"><a data-caption="Sync status high overview" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-12-1024x672.png"><picture class="wp-image-191875" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-12-1024x672.png.webp 1024w, https://patchmypc.com/app/uploads/2026/08/image-12-300x197.png.webp 300w, https://patchmypc.com/app/uploads/2026/08/image-12-768x504.png.webp 768w, https://patchmypc.com/app/uploads/2026/08/image-12.png.webp 1280w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="Sync status high overview" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-12-1024x672.png 1024w, https://patchmypc.com/app/uploads/2026/08/image-12-300x197.png 300w, https://patchmypc.com/app/uploads/2026/08/image-12-768x504.png 768w, https://patchmypc.com/app/uploads/2026/08/image-12.png 1280w" decoding="async" src="assets/7678f3edadb8c768/img_2.png"/><noscript><img alt="Sync status high overview" decoding="async" src="assets/7678f3edadb8c768/img_3.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">The Sync Window pane is therefore best understood as a summarized service view. It is not a direct log viewer, and it is not a one-to-one mirror of every individual action on the device.</p>
+<h2 class="wp-block-heading" id="h-breaking-the-main-sync-status-window-flow-into-smaller-parts">Breaking the main Sync Status Window flow into smaller parts<span class="clth-copy-icon" data-heading-id="h-breaking-the-main-sync-status-window-flow-into-smaller-parts"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The high level flow is useful, but it becomes much easier to explain once it is broken into smaller pieces. The next diagrams zoom in on the portal sequence, the split between Windows MDM and IME, the Policies row, and the Applications and Scripts rows.</p>
+<h3 class="wp-block-heading" id="h-1-from-sync-click-to-live-monitoring">1. From Sync click to live monitoring<span class="clth-copy-icon" data-heading-id="h-1-from-sync-click-to-live-monitoring"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">The first part is fully portal-side. The browser sends syncDevice, the service accepts the action, a monitoring record is created, and the Sync status pane opens. Only after that does the polling loop begin.</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-11-1024x643.png"><picture class="wp-image-191874" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-11-1024x643.png.webp 1024w, https://patchmypc.com/app/uploads/2026/08/image-11-300x188.png.webp 300w, https://patchmypc.com/app/uploads/2026/08/image-11-768x482.png.webp 768w, https://patchmypc.com/app/uploads/2026/08/image-11.png.webp 1237w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-11-1024x643.png 1024w, https://patchmypc.com/app/uploads/2026/08/image-11-300x188.png 300w, https://patchmypc.com/app/uploads/2026/08/image-11-768x482.png 768w, https://patchmypc.com/app/uploads/2026/08/image-11.png 1237w" decoding="async" src="assets/7678f3edadb8c768/img_4.png"/><noscript><img alt="" decoding="async" src="assets/7678f3edadb8c768/img_5.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph"><em>Portal side sequence from clicking Sync to opening the live monitoring pane.</em></p>
+<p class="wp-block-paragraph">That distinction matters during troubleshooting. A successful syncDevice response only proves that the request was accepted. It does not prove that every workload has already started or completed.</p>
+<h3 class="wp-block-heading" id="h-2-one-sync-action-splits-into-two-notification-paths">2. One Sync action splits into two notification paths<span class="clth-copy-icon" data-heading-id="h-2-one-sync-action-splits-into-two-notification-paths"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">What looks like one action in the portal is delivered through two different device side paths. Windows MDM is still woken through WNS and the WindowsMDMPush task. IME uses the IC3 and Trouter path through NotificationMessageListener.</p>
+<figure class="wp-block-image size-full"><a data-caption="Sync status what it does when triggering a sync" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-18.jpg"><picture class="wp-image-191863" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-18.jpg.webp 668w, https://patchmypc.com/app/uploads/2026/08/image-18-300x225.jpg.webp 300w" sizes="(max-width: 668px) 100vw, 668px" type="image/webp"/>
+<img alt="Sync status what it does when triggering a sync" data-lazy-sizes="(max-width: 668px) 100vw, 668px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-18.jpg 668w, https://patchmypc.com/app/uploads/2026/08/image-18-300x225.jpg 300w" decoding="async" src="assets/7678f3edadb8c768/img_6.jpg"/><noscript><img alt="Sync status what it does when triggering a sync" decoding="async" src="assets/7678f3edadb8c768/img_7.jpg"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph"><em>One Sync action, two different device side notification paths.</em></p>
+<p class="wp-block-paragraph">This split explains why the pane is not backed by one single Sync engine. Policies live on the Windows MDM side. Applications and Scripts live on the IME side.</p>
+<h3 class="wp-block-heading" id="h-3-zoom-in-on-the-policies-row">3. Zoom in on the Policies row<span class="clth-copy-icon" data-heading-id="h-3-zoom-in-on-the-policies-row"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">The Policies row is best explained through the classic Windows MDM path. WNS carries the notification, WindowsMDMPush wakes the MDM client, OMADMClient opens an OMA DM session, and<strong> <a href="https://learn.microsoft.com/en-us/windows/client-management/oma-dm-protocol-support">policy results (status)</a> </strong>are returned to the service. The service then exposes that summary through getSyncStatus.</p>
+<figure class="wp-block-image size-large"><a data-caption="the full  Sync status tracker" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-13-1024x596.png"><picture class="wp-image-191876" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-13-1024x596.png.webp 1024w, https://patchmypc.com/app/uploads/2026/08/image-13-300x175.png.webp 300w, https://patchmypc.com/app/uploads/2026/08/image-13-768x447.png.webp 768w, https://patchmypc.com/app/uploads/2026/08/image-13.png.webp 1253w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="the full  Sync status tracker" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-13-1024x596.png 1024w, https://patchmypc.com/app/uploads/2026/08/image-13-300x175.png 300w, https://patchmypc.com/app/uploads/2026/08/image-13-768x447.png 768w, https://patchmypc.com/app/uploads/2026/08/image-13.png 1253w" decoding="async" src="assets/7678f3edadb8c768/img_8.png"/><noscript><img alt="the full  Sync status tracker" decoding="async" src="assets/7678f3edadb8c768/img_9.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">There is another boundary worth calling out. In this investigation, classic Windows MDM activity clearly contributes to the Policies row, but WinDC or MMP C policy paths were not proven to be part of the on demand Sync results shown here. For now, the safest conclusion is that the pane surfaces the results Intune chose to aggregate, not every policy path that exists on the device.</p>
+<h3 class="wp-block-heading" id="h-4-zoom-in-on-applications-and-scripts">4. Zoom in on Applications and Scripts<span class="clth-copy-icon" data-heading-id="h-4-zoom-in-on-applications-and-scripts"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">Inside the IME, Applications and Scripts are handled by separate workload engines. When the DirectSync notification reaches IME, the Win32 app workload wakes up and starts processing the required applications that are applicable to the device. That processing is recorded in <strong><code>AppWorkload.log</code>,</strong> while the resulting application state is reported back to the Intune service and eventually reflected in the Applications row. Platform PowerShell scripts follow their own execution path, with the actual script execution visible in <code>AgentExecutor.log</code> and the resulting state reported back separately for the Scripts row.</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-16-1024x603.png"><picture class="wp-image-191974" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-16-1024x603.png.webp 1024w, https://patchmypc.com/app/uploads/2026/08/image-16-300x177.png.webp 300w, https://patchmypc.com/app/uploads/2026/08/image-16-768x452.png.webp 768w, https://patchmypc.com/app/uploads/2026/08/image-16.png.webp 1516w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-16-1024x603.png 1024w, https://patchmypc.com/app/uploads/2026/08/image-16-300x177.png 300w, https://patchmypc.com/app/uploads/2026/08/image-16-768x452.png 768w, https://patchmypc.com/app/uploads/2026/08/image-16.png 1516w" decoding="async" src="assets/7678f3edadb8c768/img_10.png"/><noscript><img alt="" decoding="async" src="assets/7678f3edadb8c768/img_11.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">The new Sync Window pane is designed to give quick visibility, while the detailed logs on the device remain the place for deeper troubleshooting.</p>
+<h2 class="wp-block-heading" id="h-how-this-helps-during-troubleshooting">How this helps during troubleshooting<span class="clth-copy-icon" data-heading-id="h-how-this-helps-during-troubleshooting"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The biggest value of the new pane is visibility. Before this experience, an admin could trigger Sync and then wait without much feedback. Now you immediately get a service-side view that shows whether Intune accepted the action and whether the main result buckets have started returning data.</p>
+<ul class="wp-block-list">
+<li>If Notifying device completes, you know the action was at least accepted and tracked by the service.(AKA the device is online)</li>
+<li>If Policies moves but Applications or Scripts do not, that points you toward the split between the Windows MDM path and the IME path.</li>
+<li>If Applications or Scripts show offered counts, you can pivot into AppWorkload.log or AgentExecutor.log on the device for detail (pulled by remote diag collection).</li>
+<li>If Policies shows partial success, you know there is work to do, but the pane alone does not tell you which exact policy objects failed… which is a shame…</li>
+</ul>
+<figure class="wp-block-image size-large"><a data-caption="the new sync status window" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-15-1024x570.png"><picture class="wp-image-191878" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-15-1024x570.png.webp 1024w, https://patchmypc.com/app/uploads/2026/08/image-15-300x167.png.webp 300w, https://patchmypc.com/app/uploads/2026/08/image-15-768x428.png.webp 768w, https://patchmypc.com/app/uploads/2026/08/image-15.png.webp 1261w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="the new sync status window" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-15-1024x570.png 1024w, https://patchmypc.com/app/uploads/2026/08/image-15-300x167.png 300w, https://patchmypc.com/app/uploads/2026/08/image-15-768x428.png 768w, https://patchmypc.com/app/uploads/2026/08/image-15.png 1261w" decoding="async" src="assets/7678f3edadb8c768/img_12.png"/><noscript><img alt="the new sync status window" decoding="async" src="assets/7678f3edadb8c768/img_13.png"/></noscript>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-what-the-new-sync-status-does-not-prove">What the new Sync Status does not prove<span class="clth-copy-icon" data-heading-id="h-what-the-new-sync-status-does-not-prove"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The pane is helpful, but it should not be treated like a perfect source of truth for every detail.</p>
+<ul class="wp-block-list">
+<li>Applications and Scripts are summarized rows. They do not replace the detailed IME logs.</li>
+<li>Knowing which applications/script/policies failed or were succesful is not possible.</li>
+<li>Where the policies number comes from… that’s the biggest question.</li>
+<li>This current UI does not show a separate Compliance row, so this article intentionally leaves compliance out of the flow…. For now…</li>
+</ul>
+<h2 class="wp-block-heading" id="h-closing-thoughts">Closing thoughts<span class="clth-copy-icon" data-heading-id="h-closing-thoughts"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The new Sync status pane is a meaningful improvement because it turns Sync into something visible. You click Sync, Intune starts monitoring, the portal opens a live pane, and the service begins returning summarized status from the Windows MDM and IME paths.</p>
+<p class="wp-block-paragraph">That does not mean the pane explains everything. But it does give admins a much better starting point. Instead of guessing whether anything happened, you can now see the action being accepted, follow the major result buckets, and then pivot into the right logs when you need deeper detail.</p>
+<p class="wp-block-paragraph">For the current UI shown here, the cleanest mental model is simple: one portal action, multiple device side clients, one summarized service view.</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
