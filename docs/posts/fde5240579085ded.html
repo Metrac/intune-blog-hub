@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intune Newsletter – 14th August 2026</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Andrew Taylor</span>
+    <span class="date">August 14, 2026</span>
+  </div>
+  <h1>Intune Newsletter – 14th August 2026</h1>
+  <div class="orig">Saved for offline reading · <a href="https://andrewstaylor.com/2026/08/14/intune-newsletter-14th-august-2026/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text">
+<p>A lot of excitement this week about the solar eclipse, I’m old enough to remember the one in 1999!  Hopefully you all managed to see it one way or another.</p>
+<p>Next weeks newsletter will probably be scheduled, I’m over at a Robopack company event planning the exciting functionality we will soon be bringing to your favourite Intune companion apps!  If I miss anything, I’ll make sure to include it in the week after.</p>
+<hr/>
+<h1>Community Content</h1>
+<p>We start this week with two posts from <a href="https://www.linkedin.com/in/nickydewestelinck/">Nicky De Westelinck</a>, the first looking at all of the exciting new features for Android Enterprise Intune users.</p>
+<blockquote class="wp-embedded-content" data-secret="Vb196ERokU"><p><a href="https://www.nickydewestelinck.be/2026/08/07/whats-new-for-android-enterprise-in-microsoft-intune-2607-july-2026-highlights/">What’s New for Android Enterprise in Microsoft Intune 2607: July 2026 Highlights</a></p></blockquote>
+<p></p>
+<p>Nicky’s second post covers end-to-end integration of Samsung Knox E-FOTA and Intune, very useful for the no doubt many of you managing Samsung devices.</p>
+<blockquote class="wp-embedded-content" data-secret="mBkyKRD8Bj"><p><a href="https://www.nickydewestelinck.be/2026/08/11/samsung-knox-e-fota-integration-with-microsoft-intune-complete-configuration-guide/">Samsung Knox E-FOTA Integration with Microsoft Intune: Complete Configuration Guide</a></p></blockquote>
+<p></p>
+<hr/>
+<p>We finally have a better overview of the black box behind the sync button with the new Device Action Status.  Find out more about it here with <a href="https://www.linkedin.com/in/craig-camacho-59364621/">Craig Camacho</a></p>
+<blockquote class="wp-embedded-content" data-secret="EqTQF5NeSS"><p><a href="https://thedeploymentguy.co.uk/microsoft-intune-device-action-status/">Intune Device Action Status: Beyond Clicking Sync </a></p></blockquote>
+<p></p>
+<hr/>
+<p>A change which happened more quietly than expected.  Microsoft are retiring the Windows 365 User Settings to move instead to Cloud PC Settings.  If you are managing Windows 365 devices, check out this guide from <a href="https://www.linkedin.com/in/dieterkempeneers/">Dieter Kempeneers</a> to migrate them</p>
+<blockquote class="wp-embedded-content" data-secret="ckdth7hqnC"><p><a href="https://kempeneers.eu/2026/08/08/windows-365-user-settings-are-being-retired-migrate-now/">Windows 365 User Settings Are Being Retired: Migrate Now</a></p></blockquote>
+<p></p>
+<hr/>
+<p>If you are still managing AVD with golden images and want to move to something more modern, learn how to use Azure Image Builder in this first part of a new series from <a href="https://www.linkedin.com/in/michael-meier-ba3b72210/">Michael Meier</a></p>
+<blockquote class="wp-embedded-content" data-secret="f8Duu5JgCJ"><p><a href="https://mikemdm.de/2026/08/09/using-azure-image-builder-to-build-your-custom-vm-images-part-1/">Using Azure Image Builder to build your custom VM Images – Part 1</a></p></blockquote>
+<p></p>
+<hr/>
+<p>For those of you deep in Graph, you’ll no doubt have noticed the new WAM option when connecting.  Learn all you will ever need to know about it here with <a href="https://www.linkedin.com/in/byteben/">Ben Whitmore</a></p>
+<blockquote class="wp-embedded-content" data-secret="i44SIZd3fY"><p><a href="https://msendpointmgr.com/2026/08/09/microsoft-graph-sdk-wam/">WAM Bam, Thank You Ma’am. What Changed in the Microsoft Graph SDK</a></p></blockquote>
+<p></p>
+<hr/>
+<p>Next, <a href="https://www.linkedin.com/in/rahul-jindal-8166a62b/">Rahul Jindal</a> looks at what the move to passwordless authentication means for your zero trust journey</p>
+<p><a href="https://rahuljindalmyit.blogspot.com/2026/08/microsoft-entra-makes-passwordless.html">https://rahuljindalmyit.blogspot.com/2026/08/microsoft-entra-makes-passwordless.html</a></p>
+<hr/>
+<p>With the removal of legacy auth methods in Entra, <a href="https://www.linkedin.com/in/jontowles/">Jon Towles</a> looks at how to transfer to passkeys in your tenant</p>
+<blockquote class="wp-embedded-content" data-secret="mzNtwt6aLc"><p><a href="https://mobile-jon.com/2026/08/11/farewell-sms-passkeys-are-the-new-standard-getting-ready-to-ditch-legacy-authentication-methods/">Farewell SMS, Passkeys ARE the New Standard: Getting Ready to Ditch Legacy Authentication Methods</a></p></blockquote>
+<p></p>
+<hr/>
+<p>Another week, another change to the start menu (bring back Windows 95 list please).  Fortunately <a href="https://www.linkedin.com/in/peterwoude/">Peter van der Woude</a> shows how to customize the new folders using Intune here</p>
+<blockquote class="wp-embedded-content" data-secret="sYhWtakt0a"><p><a href="https://petervanderwoude.nl/post/customizing-the-pinned-folders-in-start-layout/">Customizing the pinned folders in Start layout</a></p></blockquote>
+<p></p>
+<hr/>
+<p>Learn how to configure Autopatch with Windows 365 here from <a href="https://www.linkedin.com/in/jeroenburgerhout/">Jeroen Burgerhout </a></p>
+<p><a href="https://www.burgerhout.org/p/windows-365-wednesdays-windows-365-and-windows-autopatch">https://www.burgerhout.org/p/windows-365-wednesdays-windows-365-and-windows-autopatch</a></p>
+<hr/>
+<p>This post from <a href="https://www.linkedin.com/in/dustin-gullett-83607b1ba/">Dustin Gullett</a> takes a deep dive into the Intune Vulnerability agent included in your E5 SCUs</p>
+<p><a href="https://zerototrust.tech/intune-vulnerability-remediation-agent-what-it-really-does/">https://zerototrust.tech/intune-vulnerability-remediation-agent-what-it-really-does/</a></p>
+<hr/>
+<h1><a id="video"></a>Video Content</h1>
+<p>Now for the video content starting with <a href="https://www.linkedin.com/in/deanellerby/">Dean Ellerby</a> testing M365 Copilot Cowork to see how it works and more importantly what it costs here</p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/Jp1iXCCIusI?feature=oembed" title="I Tried Microsoft 365 Copilot Cowork. Want to see what it cost?">VIDEO</iframe></p>
+<hr/>
+<p><a href="https://www.linkedin.com/in/stevew25/">Steve Weiner</a> covers how to configure and use PIM in Entra here</p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/EULw10aYauo?feature=oembed" title="How to configure Privileged Identity Management in Entra ID">VIDEO</iframe></p>
+<hr/>
+<h1><a id="microsoft"></a>Microsoft Content</h1>
+<p>This weeks only Microsoft content comes from <a href="https://www.linkedin.com/in/lia-vargasb/">Lia Vargas</a> and covers how to use how to use Windows device recovery</p>
+<p><a href="https://techcommunity.microsoft.com/blog/windows-itpro-blog/windows-device-recovery-in-2026-a-guide-for-it-pros/4541207">https://techcommunity.microsoft.com/blog/windows-itpro-blog/windows-device-recovery-in-2026-a-guide-for-it-pros/4541207</a></p>
+<hr/>
+<p>That’s all for this week, have a great weekend!</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
