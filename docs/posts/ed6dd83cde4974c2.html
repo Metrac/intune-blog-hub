@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent Skills vs MCP: When to Use Which for AI Agents</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">August 18, 2026</span>
+  </div>
+  <h1>Agent Skills vs MCP: When to Use Which for AI Agents</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/agent-skills-vs-mcp/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p class="jr-title-context">Topic of this page: Skills vs MCP: The Essential 3-Question Decision Guide</p>
+<p class="wp-block-paragraph">In February I wrote about <a href="https://jannikreinhard.com/why-cli-tools-are-beating-mcp-for-ai-agents/">why CLI tools are beating MCP for AI agents</a>. It became my most read post so far, and one follow-up question came up again and again: “Okay, and where do Agent Skills fit in?” That is a fair question, because Skills vs MCP is not an either-or decision. They solve different problems, and they work well together. In this blog post I explain the difference, compare the context cost, and give you a simple decision guide for when to use which.</p>
+<span id="more-19525"></span>
+<h2 class="wp-block-heading" id="what-is-the-difference-between-skills-and-mcp">What Is the Difference Between Skills and MCP?</h2>
+<p class="wp-block-paragraph">The <a href="https://modelcontextprotocol.io" rel="noopener" target="_blank">Model Context Protocol (MCP)</a> is an open protocol that connects an agent to external systems at runtime. An MCP server exposes tools, and the agent calls them while it is working: query a database, read a ticket, control a browser. It is a live connection over one of two transports — stdio for local servers and streamable HTTP for remote ones — with an OAuth-based authorization flow for the remote case. The ecosystem has grown a lot since Anthropic published the protocol in late 2024. In December 2025 Anthropic donated MCP to the Agentic AI Foundation under the Linux Foundation, so the protocol is now vendor-neutral. There is an official registry with thousands of servers, and the next major spec revision is announced for the end of July 2026 with a focus on enterprise topics like hardened authorization, asynchronous tasks and extensions.</p>
+<p class="wp-block-paragraph"><a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview" rel="noopener" target="_blank">Agent Skills</a> go in the other direction. A skill is not a running service. It is a folder with a SKILL.md file that contains instructions, plus optional scripts and reference files. The agent loads it on demand when the task matches. Anthropic published Skills as an open standard at <a href="https://agentskills.io" rel="noopener" target="_blank">agentskills.io</a> in December 2025, and it was picked up fast: OpenAI added it to Codex, Google added it to Gemini CLI, and GitHub Copilot and Cursor support it too.</p>
+<p class="wp-block-paragraph">The short version: MCP gives the agent a capability (live access to a system). A skill gives the agent knowledge (your process, your domain rules, your scripts).</p>
+<figure class="wp-block-image"><img alt="Skills vs MCP architecture: live MCP connection compared to a skill folder loaded on demand" data-recalc-dims="1" decoding="async" src="assets/ed6dd83cde4974c2/img_0.jpg"/></figure>
+<h2 class="wp-block-heading" id="what-does-a-skill-actually-look-like">What Does a Skill Actually Look Like?</h2>
+<p class="wp-block-paragraph">Because this comparison only makes sense when you have seen both sides, here is a complete minimal skill. It is really just this — a folder with one Markdown file:</p>
+<pre class="wp-block-code"><code>release-notes/
+├── SKILL.md
+└── references/
+    └── template.md
+</code></pre>
+<p class="wp-block-paragraph">And the SKILL.md inside:</p>
+<pre class="wp-block-code"><code class="language-markdown">---
+name: release-notes
+description: Writes release notes from a list of merged pull requests.
+  Use when the user asks for release notes, a changelog, or a release
+  summary.
+---
+
+# Release Notes
+
+1. Collect the merged pull requests for the release.
+2. Group them into: Features, Fixes, Breaking Changes.
+3. Write one plain sentence per item. No marketing language.
+4. Use the format in references/template.md.
+</code></pre>
+<p class="wp-block-paragraph">The frontmatter needs only <code>name</code> (max 64 characters, lowercase letters, numbers and hyphens, must match the folder name) and <code>description</code> (max 1024 characters). That is the whole entry cost. Compare that with an MCP server, which is running software with a protocol implementation, transport and authentication.</p>
+<figure class="wp-block-image"><img alt='macOS Terminal showing "tree ~/.claude/skills/release-notes" followed by "cat' data-recalc-dims="1" decoding="async" src="assets/ed6dd83cde4974c2/img_1.jpg"/></figure>
+<h2 class="wp-block-heading" id="what-does-this-mean-for-the-context-window">What Does This Mean for the Context Window?</h2>
+<p class="wp-block-paragraph">This is where my CLI vs MCP post started, and the same logic applies here. With MCP, the tool definitions of every connected server are loaded into the context window at session start. It does not matter if the agent uses them or not. A handful of servers can easily cost thousands of tokens before the agent has done anything. In my last post I measured a 35x difference in token usage between a CLI approach and an MCP approach for the same task. To be fair: some clients now defer MCP tool loading and only pull in definitions when they are needed, so the gap is shrinking — but that is a client optimization, not part of the protocol, and the default cost is still real.</p>
+<p class="wp-block-paragraph">Skills work with progressive disclosure, and this is their biggest design win. It is built into the standard itself and has three stages:</p>
+<ol class="wp-block-list">
+<li>At startup, the agent only sees the name and the description of each skill. That is around 100 tokens per skill.</li>
+<li>When a task matches the description, the agent reads the full SKILL.md body into context.</li>
+<li>Deeper reference files or scripts are only loaded or executed when they are actually needed.</li>
+</ol>
+<p class="wp-block-paragraph">That means you can install fifty skills and pay almost nothing until one of them is used. With fifty MCP servers you would have a serious context problem.</p>
+<p class="wp-block-paragraph">Note: A skill can be large. The trick is to keep SKILL.md lean and move detail into extra files. The agent will only read them when the situation requires it. The specification recommends to keep SKILL.md under 500 lines.</p>
+<h2 class="wp-block-heading" id="what-about-maintenance-and-security">What About Maintenance and Security?</h2>
+<p class="wp-block-paragraph">Maintenance is very different between the two. A skill is Markdown plus scripts in a folder. You put it in git, you edit it with any editor, and there is nothing to host. An MCP server is running software. You have to update it, manage authentication tokens, and follow protocol changes — and with a major spec revision landing this summer, “follow protocol changes” is not a theoretical point.</p>
+<p class="wp-block-paragraph">Security is also different, and honestly neither side is “safe by default”. MCP has the more structured story: OAuth-based authorization for remote servers, per-tool permission prompts in the clients, and the upcoming spec revision hardens exactly this area. The risk sits in the supply chain (do you trust that third-party server?) and in prompt injection through tool results. Skills are simpler but sharper: a skill can contain scripts that the agent executes. That is code execution on your machine. And because a SKILL.md is just instructions the model follows, a malicious skill is a prompt injection you installed yourself.</p>
+<p class="wp-block-paragraph">Note: Treat installing a skill like installing software. Only use skills from sources you trust, and read the SKILL.md and the scripts before you install it.</p>
+<h2 class="wp-block-heading" id="how-do-skills-and-mcp-compare-at-a-glance">How Do Skills and MCP Compare at a Glance?</h2>
+<p class="wp-block-paragraph">Here is my Skills vs MCP comparison in one table:</p>
+<figure class="wp-block-table"><table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Agent Skills</th>
+<th>MCP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Context cost</td>
+<td>Very low — name and description only, rest loaded on demand</td>
+<td>High by default — tool definitions loaded at session start (some clients defer this)</td>
+</tr>
+<tr>
+<td>Live data</td>
+<td>No — static instructions and scripts</td>
+<td>Yes — live connection to external systems at runtime</td>
+</tr>
+<tr>
+<td>Maintenance</td>
+<td>Low — edit a Markdown file, version it in git</td>
+<td>Higher — a running server with auth, updates and protocol changes</td>
+</tr>
+<tr>
+<td>Security</td>
+<td>Code execution risk, trust the source</td>
+<td>Structured auth and permissions, supply chain risk</td>
+</tr>
+<tr>
+<td>Governance</td>
+<td>Open standard at agentskills.io</td>
+<td>Vendor-neutral under the Linux Foundation (Agentic AI Foundation)</td>
+</tr>
+<tr>
+<td>Best for</td>
+<td>Processes, domain knowledge, repeatable workflows</td>
+<td>Live integrations, stateful sessions, real-time data</td>
+</tr>
+</tbody>
+</table></figure>
+<h2 class="wp-block-heading" id="when-should-i-use-mcp">When Should I Use MCP?</h2>
+<p class="wp-block-paragraph">Use MCP when the agent needs a live connection to a system while it works. Good examples are controlling a browser, querying a database with an open session, or working against an API that has no good command line tool. MCP also wins when you need stateful interaction — many calls against the same session — or when your company already runs governed MCP servers with proper authentication. In that enterprise case the OAuth story and the central governance are exactly what you want, and a skill cannot give you that.</p>
+<h2 class="wp-block-heading" id="when-should-i-use-a-skill">When Should I Use a Skill?</h2>
+<p class="wp-block-paragraph">Use a skill when the problem is not access, but knowledge. Everything that starts with “this is how we do it here” is a skill: your review checklist, your brand guidelines, your release process, your naming conventions. A skill is also the right place for small scripts that the agent should run as part of a workflow.</p>
+<p class="wp-block-paragraph">A real example: this blog is managed by a skill. It is a folder with my style guide, my post template and a few Python scripts that call the WordPress REST API. There is no server running anywhere. The agent reads the skill, follows my process, and executes the scripts when needed.</p>
+<p class="wp-block-paragraph">Hint: Skills and MCP are not competitors. A skill can tell the agent how to use a CLI or which MCP tools to call in which order. The skill holds the process, MCP or the CLI holds the access.</p>
+<h2 class="wp-block-heading" id="which-pitfalls-should-i-avoid">Which Pitfalls Should I Avoid?</h2>
+<p class="wp-block-paragraph">A few honest mistakes I see (and made) in practice:</p>
+<ul class="wp-block-list">
+<li><strong>Rebuilding an integration inside a skill.</strong> If your skill’s scripts start to implement authentication, retries and paging for a big API, you are writing a bad MCP server in disguise. Take the existing CLI or MCP server instead and let the skill only describe the workflow.</li>
+<li><strong>Using MCP for static knowledge.</strong> A tool that returns your style guide as a tool result is wasted context. Static content belongs in a skill or a plain file.</li>
+<li><strong>Connecting everything “just in case”.</strong> Ten MCP servers because you might need them is the fastest way to burn your context window. Connect what the task needs.</li>
+<li><strong>Vague skill descriptions.</strong> The agent decides only from the description whether a skill is relevant. If your skill does not trigger, the description is almost always the reason.</li>
+<li><strong>Assuming the skill runs everywhere the same.</strong> The SKILL.md format is portable, but tool support differs in the details, for example the experimental <code>allowed-tools</code> field. Test the skill in the agent your team actually uses.</li>
+</ul>
+<h2 class="wp-block-heading" id="skills-vs-mcp-what-would-i-choose">Skills vs MCP: What Would I Choose?</h2>
+<p class="wp-block-paragraph">My decision guide is three simple questions:</p>
+<ul class="wp-block-list">
+<li>I need live data or actions in an external system → <strong>MCP</strong>.</li>
+<li>I need the agent to follow my process or domain knowledge → <strong>Skill</strong>.</li>
+<li>I need simple, one-shot access to a system → <strong>CLI</strong> (see <a href="https://jannikreinhard.com/why-cli-tools-are-beating-mcp-for-ai-agents/">my previous post</a> for why).</li>
+</ul>
+<figure class="wp-block-image"><img alt="Skills vs MCP vs CLI decision flow with three questions" data-recalc-dims="1" decoding="async" src="assets/ed6dd83cde4974c2/img_2.jpg"/></figure>
+<p class="wp-block-paragraph">In practice I start with a skill plus CLI tools as the default. It is cheap in context, easy to maintain and easy to version. I only add an MCP server when I really need a live, stateful connection that a CLI cannot give me. And when I do, I often wrap it in a skill anyway, so the agent knows my way of using it.</p>
+<p class="wp-block-paragraph">If you want the bigger picture of the whole tooling landscape, I mapped it in <a href="https://jannikreinhard.com/skills-mcp-cli-computer-use-mapping-the-ai-tooling-surface-in-2026/">Skills, MCP, CLI and computer use in 2026</a>.</p>
+<p class="wp-block-paragraph">The Skills vs MCP question sounds like a battle, but it is really a division of labor: knowledge in skills, live access over MCP, simple access over the CLI. I hope this is a little help.</p>
+<p class="wp-block-paragraph">Stay healthy, Cheers Jannik</p>
+<aside aria-labelledby="jr-next-agent-skills-vs-mcp" class="jr-next-journey"><span class="jr-next-eyebrow">Build the next layer</span><h2 id="jr-next-agent-skills-vs-mcp">Continue your agent architecture</h2></aside> </div>
+</div></div>
+</article>
+</body>
+</html>
