@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bulk Deprovision for Cloud PCs In Grace Period is Now Available in Intune</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">HTMD / Anoop C Nair</span>
+    <span class="date">August 19, 2026</span>
+  </div>
+  <h1>Bulk Deprovision for Cloud PCs In Grace Period is Now Available in Intune</h1>
+  <div class="orig">Saved for offline reading · <a href="https://www.anoopcnair.com/bulk-deprovision-for-cloud-pcs-in-grace-intune/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text"><p class="code-block code-block-6">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><h2 class="wp-block-heading" id="key-takeaways"><strong>Key Takeaways</strong></h2><ul class="wp-block-list"><li class="has-medium-font-size"><strong>Bulk Deprovisioning:</strong> Deprovision multiple Cloud PCs in the grace period at once.</li><li class="has-medium-font-size"><strong>Save Time:</strong> No need to wait for the 7-day grace period or process Cloud PCs individually.</li><li class="has-medium-font-size"><strong>Simplified Management:</strong> Quickly remove Cloud PCs that are no longer required.</li><li class="has-medium-font-size"><strong>Supported Platforms:</strong> Available in <strong>Public Preview</strong> for Windows 365 Enterprise and Windows 365 Flex Dedicated.<br/></li></ul><p class="wp-block-paragraph">In this article am discusing about <strong>Bulk Deprovision for Cloud PCs In Grace Period</strong> is Now Available in <strong>Microsoft Intune</strong>. Bulk deprovisioning for Cloud PCs in the grace period is now available in Public Preview for Windows 365 Enterprise and Windows 365 <a data-id="https://www.anoopcnair.com/frontline-dedicated-cloud-pcs-using-intune/" data-type="link" href="https://www.anoopcnair.com/frontline-dedicated-cloud-pcs-using-intune/" rel="noreferrer noopener" target="_blank">Flex Dedicated</a>. Administrators can now deprovision multiple Cloud PCs at once instead of waiting for the <strong>seven-day grace period</strong> to expire or processing each Cloud PC individually. This makes Cloud PC lifecycle management faster and easier, especially when removing Cloud PCs that are no longer required.</p><details class="wp-block-details has-contrast-3-background-color has-background is-layout-flow wp-block-details-is-layout-flow"><summary><strong>Table of Content</strong></summary>
+</details><h2 class="wp-block-heading" id="how-to-perform-bulk-deprovisioning-of-windows-365-cloud-p-cs-in-grace-period"><strong>How to Perform Bulk Deprovisioning of Windows 365 Cloud PCs In Grace Period</strong></h2><p class="wp-block-paragraph">To bulk deprovision Windows 365 Cloud PCs in grace period, first login to the <a href="https://intune.microsoft.com/" rel="noreferrer noopener nofollow" target="_blank"><strong>Microsoft Intune Admin Center</strong></a> using your administrator credentials. We currently have three <strong>Cloud PCs</strong> under the same provisioning policy, all of which are in the grace period. As per Microsoft’s latest update, we are now able to bulk deprovision Cloud PCs without waiting for the seven-day grace period.</p><ul class="wp-block-list"><li class="has-medium-font-size">Navigate to &gt; <strong>Devices</strong> &gt; <strong>Manage Windows 365 Cloud PCs</strong> &gt; <strong>All Cloud PCs</strong></li></ul><div class="wp-block-image"><figure class="aligncenter size-large"><img alt="Bulk Deprovision for Cloud PCs In Grace Period is Now Available in Intune. Fig. 1" class="wp-image-376212" data-lazyloaded="1" data-sizes="(max-width: 1024px) 100vw, 1024px" decoding="async" src="assets/fa001029369edc7b/img_0.webp" title="Bulk Deprovision for Cloud PCs In Grace Period is Now Available in Intune 2"/><figcaption class="wp-element-caption">Bulk Deprovision for Cloud PCs In Grace Period is Now Available in Intune. Fig. 1</figcaption></figure></div><p class="wp-block-paragraph">Navigate to <strong>Provision Cloud PCs</strong> &gt; <strong>Provisioning policies</strong> &gt; Select <strong>Windows 365 Flex Dedicated Policy – 32vCPU 128 GB 2 TB Cloud PCs</strong> (In this example)</p><div class="wp-block-image"><figure class="aligncenter size-large"><img alt="Bulk Deprovision for Cloud PCs In Grace Period is Now Available in Intune. Fig. 2" class="wp-image-376215" data-lazyloaded="1" data-sizes="(max-width: 1024px) 100vw, 1024px" decoding="async" src="assets/fa001029369edc7b/img_1.webp" title="Bulk Deprovision for Cloud PCs In Grace Period is Now Available in Intune 3"/><figcaption class="wp-element-caption">Bulk Deprovision for Cloud PCs In Grace Period is Now Available in Intune. Fig. 2</figcaption></figure></div><p class="wp-block-paragraph">After opening the policy, you will see the updated navigation options. Click on the <strong>Devices</strong> tab, select Cloud PCs under the grace period, and then click on the new <strong>Deprovision</strong> tab. In the Action Status tab, we can initiate actions and view the action status for Cloud PCs over the last <strong>90 days</strong>.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><div class="wp-block-image"><figure class="aligncenter size-large"><img alt="Bulk Deprovision for Cloud PCs In Grace Period is Now Available in Intune. Fig. 3" class="wp-image-376218" data-lazyloaded="1" data-sizes="auto, (max-width: 1024px) 100vw, 1024px" decoding="async" src="assets/fa001029369edc7b/img_2.webp" title="Bulk Deprovision for Cloud PCs In Grace Period is Now Available in Intune 4"/><figcaption class="wp-element-caption">Bulk Deprovision for Cloud PCs In Grace Period is Now Available in Intune. Fig. 3</figcaption></figure></div><p class="wp-block-paragraph">Since we selected multiple Cloud PC deprovisions, the options for <strong>OS</strong>, <strong>Device type</strong>, and <strong>Device action</strong> will be greyed out. We will need to click <strong>Next</strong> on the page. Note that Users will not be able to access Cloud PC. User data will be lost. The remaining days will pause untill device is provisioned again.</p><div class="wp-block-image"><figure class="aligncenter size-large"><img alt="Bulk Deprovision for Cloud PCs In Grace Period is Now Available in Intune. Fig. 4" class="wp-image-376221" data-lazyloaded="1" data-sizes="auto, (max-width: 1024px) 100vw, 1024px" decoding="async" src="assets/fa001029369edc7b/img_3.webp" title="Bulk Deprovision for Cloud PCs In Grace Period is Now Available in Intune 5"/><figcaption class="wp-element-caption">Bulk Deprovision for Cloud PCs In Grace Period is Now Available in Intune. Fig. 4</figcaption></figure></div><p class="wp-block-paragraph">In the <strong>Devices</strong> tab, you will see the selected <strong>Device name</strong>, the <strong>Primary user UPN</strong>, and the <strong>Action</strong>. If you need to remove any Cloud PCs from deprovisioning, do so at this step, then click <strong>Next</strong>.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><div class="wp-block-image"><figure class="aligncenter size-large"><img alt="Bulk Deprovision for Cloud PCs In Grace Period is Now Available in Intune. Fig. 5" class="wp-image-376223" data-lazyloaded="1" data-sizes="auto, (max-width: 1024px) 100vw, 1024px" decoding="async" src="assets/fa001029369edc7b/img_4.webp" title="Bulk Deprovision for Cloud PCs In Grace Period is Now Available in Intune 6"/><figcaption class="wp-element-caption">Bulk Deprovision for Cloud PCs In Grace Period is Now Available in Intune. Fig. 5</figcaption></figure></div><p class="wp-block-paragraph">In the <strong>Review + create</strong> pane, confirm your selection, then click Create to start the bulk deprovisioning process for Cloud PCs.</p><div class="wp-block-image"><figure class="aligncenter size-large"><img alt="Bulk Deprovision for Cloud PCs In Grace Period is Now Available in Intune. Fig. 6" class="wp-image-376226" data-lazyloaded="1" data-sizes="auto, (max-width: 1024px) 100vw, 1024px" decoding="async" src="assets/fa001029369edc7b/img_5.webp" title="Bulk Deprovision for Cloud PCs In Grace Period is Now Available in Intune 7"/><figcaption class="wp-element-caption">Bulk Deprovision for Cloud PCs In Grace Period is Now Available in Intune. Fig. 6</figcaption></figure></div><h2 class="wp-block-heading" id="end-result"><strong>End Result</strong></h2><p class="wp-block-paragraph">It’s time to check the status of the bulk reprovisioning. In the <a data-id="https://intune.microsoft.com/" data-type="link" href="https://intune.microsoft.com/" rel="noreferrer noopener nofollow" target="_blank">Intune Portal</a>, navigate to <strong>Devices</strong> &gt; <strong>Manage Windows 365 Cloud PCs</strong> &gt; <strong>Provision Cloud PCs</strong>. Click on <strong>Provisioning policies</strong>, and then select the “<strong>Windows 365 Flex Dedicated Policy – 32vCPU 128GB 2TB Cloud PCs</strong>” (as shown in this example). Next, click on the <strong>Devices</strong> tab. All Cloud PCs that were initially in the grace period status and added for bulk deprovisioning have been deprovisioned successfully, so we do not see any devices listed here.</p><div class="wp-block-image"><figure class="aligncenter size-large"><img alt="Bulk Deprovision for Cloud PCs In Grace Period is Now Available in Intune. Fig. 7" class="wp-image-376231" data-lazyloaded="1" data-sizes="auto, (max-width: 1024px) 100vw, 1024px" decoding="async" src="assets/fa001029369edc7b/img_6.webp" title="Bulk Deprovision for Cloud PCs In Grace Period is Now Available in Intune 8"/><figcaption class="wp-element-caption">Bulk Deprovision for Cloud PCs In Grace Period is Now Available in Intune. Fig. 7</figcaption></figure></div><h2 class="wp-block-heading" id="need-further-assistance-or-have-technical-questions"><strong>Need Further Assistance or Have Technical Questions?</strong></h2><p class="has-contrast-3-background-color has-background wp-block-paragraph">Join the <a href="https://www.linkedin.com/company/how-to-manage-devices/" rel="noreferrer noopener nofollow" target="_blank"><strong>LinkedIn Page</strong></a> and <a href="https://t.me/+Q9lE6G1_BO_bGq97" rel="noreferrer noopener nofollow" target="_blank"><strong>Telegram group</strong></a> to get the latest step-by-step guides and news updates. Join our <a href="https://www.meetup.com/htmd-community-meetup-group/" rel="noreferrer noopener nofollow" target="_blank"><strong>M</strong></a><strong><a href="https://www.meetup.com/htmd-community-meetup-group/" rel="noreferrer noopener nofollow" target="_blank">e</a></strong><a href="https://www.meetup.com/htmd-community-meetup-group/" rel="noreferrer noopener nofollow" target="_blank"><strong>etup Page</strong></a> to participate in User group meetings. Also, join the <a href="https://chat.whatsapp.com/CeMXHSD61HtDBJwe78IZwV" rel="noreferrer noopener nofollow" target="_blank"><strong>WhatsApp Community</strong></a> to get the latest news on Microsoft Technologies. We are there on <a href="https://www.reddit.com/r/ImpMSNews/" rel="noreferrer noopener nofollow" target="_blank"><strong>Reddit</strong></a> as well.</p><h2 class="wp-block-heading" id="author"><strong>Author</strong></h2><p class="wp-block-paragraph"><a href="https://www.linkedin.com/in/vaishnav-k-957b0589/" rel="noreferrer noopener nofollow" target="_blank"><strong>Vaishnav K</strong></a> has 13 years of experience in SCCM, Intune, Modern Device Management, and Automation Solutions. He writes and shares knowledge about Microsoft Intune, Windows 365, Azure, Entra, PowerShell Scripting, and Automation. Check out his profile on <a href="https://www.linkedin.com/in/vaishnav-k-957b0589/" rel="noreferrer noopener nofollow" target="_blank"><strong>LinkedIn</strong></a>.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><p class="code-block code-block-8">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="1286776600" data-full-width-responsive="true"></ins> </p><p class="code-block code-block-9">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="8125570634" data-full-width-responsive="true"></ins> </p></div></div></div>
+</article>
+</body>
+</html>

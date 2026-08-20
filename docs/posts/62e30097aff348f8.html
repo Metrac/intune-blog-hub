@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fabric Data Agents: Chat With Your Data in OneLake</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">August 20, 2026</span>
+  </div>
+  <h1>Fabric Data Agents: Chat With Your Data in OneLake</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/fabric-data-agents/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p class="wp-block-paragraph">Every company has the same gap: the data sits in lakehouses and semantic models, and the people with questions cannot write SQL or DAX. In this blog post I explain what a Fabric data agent is and how you build one. A Fabric data agent is the conversational analytics piece of Microsoft Fabric — your colleagues ask questions in plain English, and the agent generates and runs the queries against your governed data in OneLake.</p>
+<span id="more-19557"></span>
+<h2 class="wp-block-heading" id="what-is-a-fabric-data-agent">What is a Fabric data agent?</h2>
+<p class="wp-block-paragraph">A Fabric data agent is a generally available Fabric item that turns your data into a conversational Q&amp;A system. You configure it once — data sources, relevant tables, instructions, example queries — and then publish and share it, similar to how you would share a Power BI report. Under the hood it uses a Microsoft-managed Azure OpenAI Assistant to translate a question into a real query, run it read-only, and return a human-readable answer. You do not need your own Azure OpenAI key; Fabric handles the model and the authentication for you.</p>
+<p class="wp-block-paragraph">The important part for me: it is not a chatbot next to your data, it works on your governed data. The agent runs with the asking user’s Microsoft Entra identity and permissions, respects Microsoft Purview policies like DLP and sensitivity labels, and strictly enforces read-only access. It can generate SELECT-style queries, but never anything that creates, updates or deletes data.</p>
+<h2 class="wp-block-heading" id="what-do-i-need-before-i-start">What do I need before I start?</h2>
+<p class="wp-block-paragraph">The prerequisites are short but important:</p>
+<ol class="wp-block-list">
+<li>A paid Fabric capacity of <strong>F2 or higher</strong>, or a Power BI Premium per capacity (P1 or higher) with Microsoft Fabric enabled.</li>
+<li>The <strong>tenant settings</strong> from the Fabric data agent tenant settings page enabled by your Fabric admin — including cross-geo processing and cross-geo storing for AI, if your capacity region requires it.</li>
+<li>At least one data source with data, where you have read access: a lakehouse, a warehouse, a Power BI semantic model, a KQL database, a mirrored database, or an ontology.</li>
+</ol>
+<p class="wp-block-paragraph">Note: For semantic models, plain <strong>Read permission on the model is enough</strong> — the user does not need access to the workspace where the model lives, and Build permission is not required. Row-level and column-level security still apply.</p>
+<h2 class="wp-block-heading" id="how-does-the-fabric-data-agent-work">How does the Fabric data agent work?</h2>
+<p class="wp-block-paragraph">The flow behind every question has five steps. The agent parses and validates the question, picks the most relevant data source, and then invokes a query tool for exactly that source type:</p>
+<ul class="wp-block-list">
+<li><strong>NL2SQL</strong> for lakehouses and warehouses</li>
+<li><strong>NL2DAX</strong> for Power BI semantic models</li>
+<li><strong>NL2KQL</strong> for KQL databases (including Eventhouse, for live and historical time-series data — it can even use your KQL user-defined functions)</li>
+<li><strong>Microsoft Graph queries</strong> for organizational data</li>
+</ul>
+<p class="wp-block-paragraph">The generated query is validated, executed with the user’s credentials, and the result comes back as a readable answer — a table, a summary, or key numbers. The chat also shows the intermediate steps and the generated query, so you can verify how the answer was built. Nobody has to write SQL, DAX or KQL themselves.</p>
+<figure class="wp-block-image"><img alt="How a Fabric data agent answers a question: NL2SQL, NL2DAX, NL2KQL or Graph query, read-only" data-recalc-dims="1" decoding="async" src="assets/62e30097aff348f8/img_0.jpg"/></figure>
+<p class="wp-block-paragraph">Note: Because the agent always uses the asking user’s permissions, two colleagues can ask the same question and get different answers. That is not a bug — that is row-level security doing its job.</p>
+<h2 class="wp-block-heading" id="how-can-i-create-one">How can I create one?</h2>
+<p class="wp-block-paragraph">Creating a Fabric data agent feels like building a report: design, refine, publish. This is the exact click path in the Fabric portal:</p>
+<ol class="wp-block-list">
+<li>Open your Fabric workspace and click <strong>+ New item</strong>. In the All items tab, search for <span class="jr-inline-emphasis">Fabric data agent</span>, select it, and enter a name.</li>
+<li><span class="jr-inline-emphasis">Add data sources.</span> The OneLake catalog opens automatically. Select a source, click <span class="jr-inline-emphasis">Add</span>, and repeat — each source is added individually. One agent supports <span class="jr-inline-emphasis">up to five data sources</span> in any combination: lakehouses, warehouses, Power BI semantic models, KQL databases, ontologies, and Microsoft Graph.</li>
+<li><span class="jr-inline-emphasis">Select the relevant tables.</span> After adding a source, the <span class="jr-inline-emphasis">Explorer</span> pane on the left shows its tables — use the checkboxes to make only the relevant ones available to the AI. Less is more here: the agent gets more accurate when it only sees the tables that matter. For lakehouses, only tables work — raw CSV or JSON files must be ingested into tables first.</li>
+<li>Click <span class="jr-inline-emphasis">Data agent instructions</span> and write your routing logic in plain language (up to 15,000 characters): “Questions about financial metrics go to the Finance semantic model, raw data exploration goes to the lakehouse, log analysis goes to the KQL database.” You can also define your organization’s terminology here.</li>
+<li>Click <span class="jr-inline-emphasis">Example queries</span> and add sample question-query pairs — up to 100 per data source. They work like few-shot examples and teach the agent how your typical questions map to correct queries. (This is not supported for semantic model and ontology sources yet, and only syntactically valid queries that match the schema are used.)</li>
+<li>Test in the built-in chat pane, then click <span class="jr-inline-emphasis">Publish</span> and add a good description. The description is not decoration — other agents and orchestrators use it to decide when to call your data agent.</li>
+</ol>
+<p class="wp-block-paragraph">Hint: After publishing there are two versions: the published one your colleagues use, and your draft, which you keep refining. And treat the configuration like code — Fabric data agents support Git integration and deployment pipelines, so you can version everything and promote it from a test workspace to production.</p>
+<h2 class="wp-block-heading" id="where-can-my-colleagues-use-it">Where can my colleagues use it?</h2>
+<p class="wp-block-paragraph">This is where it gets interesting. The published Fabric data agent is not locked into the Fabric portal — it is a building block for the whole agent ecosystem:</p>
+<ul class="wp-block-list">
+<li><span class="jr-inline-emphasis">Microsoft 365 Copilot</span>: insights from your OneLake data directly in the apps where people work. Purview policies still apply on this path.</li>
+<li><span class="jr-inline-emphasis">Copilot Studio and Microsoft Foundry</span>: use the data agent as a sub-agent in a bigger multi-agent solution. In Microsoft Foundry (formerly Azure AI Foundry) there is a dedicated <span class="jr-inline-emphasis">Fabric data agent tool</span> (currently in preview) — you create a connection with the workspace ID and the artifact ID of your published agent, and your Foundry agent decides at runtime when to hand a question over. The query still runs with the end user’s identity, so governance travels with it. This pairs nicely with <a href="https://jannikreinhard.com/microsoft-foundry-first-agent/">a Foundry agent you built yourself</a>.</li>
+<li><span class="jr-inline-emphasis">Microsoft Teams</span>: expose it as a chat experience for a team.</li>
+</ul>
+<p class="wp-block-paragraph">In the bigger picture this plugs into the Fabric IQ layer of <a href="https://jannikreinhard.com/microsoft-build-2026-agentic-stack/">Microsoft’s agentic stack from Build 2026</a>: Fabric IQ (still in preview, unlike the GA data agents) models your business data as ontologies and semantic models, and data agents are how other agents get grounded, governed answers from it.</p>
+<figure class="wp-block-image"><img alt="Fabric data agent with up to five data sources, consumed by Microsoft 365 Copilot, Copilot" data-recalc-dims="1" decoding="async" src="assets/62e30097aff348f8/img_1.jpg"/></figure>
+<h2 class="wp-block-heading" id="what-are-the-limits">What are the limits?</h2>
+<p class="wp-block-paragraph">A few things I would want to know before rolling this out:</p>
+<figure class="wp-block-table"><table>
+<thead>
+<tr>
+<th>Limitation</th>
+<th>What it means in practice</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Read-only</td>
+<td>No writes, no triggering jobs or notebooks — questions only</td>
+</tr>
+<tr>
+<td>25 rows / 25 columns per answer</td>
+<td>Built for insights, not for exporting datasets</td>
+</tr>
+<tr>
+<td>English only</td>
+<td>Questions, instructions and examples should be English</td>
+</tr>
+<tr>
+<td>No unstructured data</td>
+<td>PDF, DOCX and TXT files are out of scope</td>
+</tr>
+<tr>
+<td>Same capacity region</td>
+<td>Data source capacity and agent capacity must be in the same region</td>
+</tr>
+<tr>
+<td>Fixed model</td>
+<td>You cannot change the LLM behind the agent</td>
+</tr>
+<tr>
+<td>Chat history not guaranteed</td>
+<td>Service updates can reset past conversations</td>
+</tr>
+</tbody>
+</table></figure>
+<p class="wp-block-paragraph">The 25-row cap surprises many users: if someone asks “show me all orders from this year”, they get a maximum of 25 rows, and follow-up questions build on that limited context — in that case, starting a new chat is the honest fix. For real exports, Power BI or a notebook stays the right tool. Also note that Purview DLP and access restriction policies can truncate or block answers on sensitive sources — that is by design.</p>
+<p class="wp-block-paragraph">All details are in the official <a href="https://learn.microsoft.com/en-us/fabric/data-science/concept-data-agent" rel="noopener" target="_blank">Fabric data agent documentation</a>.</p>
+<h2 class="wp-block-heading" id="my-thoughts">My thoughts</h2>
+<p class="wp-block-paragraph">I like Fabric data agents because they solve the demo problem of most “chat with your data” tools: governance. Permissions, Purview policies, read-only enforcement and ALM are built in, so I can hand the agent to a department without losing sleep. My recommendation: start with one semantic model, ten good example queries on a lakehouse or warehouse source, and clear instructions — then grow to more sources once the answers are reliably right.</p>
+<p class="wp-block-paragraph">I hope this is a little help.</p>
+<p class="wp-block-paragraph">Stay healthy, Cheers Jannik</p>
+<aside aria-labelledby="jr-next-fabric-data-agents" class="jr-next-journey"><span class="jr-next-eyebrow">Continue with Intune data</span><h2 id="jr-next-fabric-data-agents">Build the complete reporting path</h2></aside> </div>
+</div></div>
+</article>
+</body>
+</html>
