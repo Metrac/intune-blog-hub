@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intune Newsletter – 21st August 2026</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Andrew Taylor</span>
+    <span class="date">August 21, 2026</span>
+  </div>
+  <h1>Intune Newsletter – 21st August 2026</h1>
+  <div class="orig">Saved for offline reading · <a href="https://andrewstaylor.com/2026/08/21/intune-newsletter-21st-august-2026/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text">
+<p>Welcome everyone!  This weeks newsletter is coming to you live from Copenhagen and as you read this I will be in a very exciting company event planning all of the exciting things coming to Robopack and Tenant Manager.  This was scheduled last night so anything I’ve missed from this morning will be included next week.</p>
+<hr/>
+<h1>Community Content</h1>
+<p>We start this weeks newsletter with a useful post for those of you on E5 licensing.  Now you get Remote Help for free, just what can it do for you?  Find out here with <a href="https://www.linkedin.com/in/simonskotheimsvik/">Simon Skotheimsvik</a></p>
+<blockquote class="wp-embedded-content" data-secret="qdonMmkbrU"><p><a href="https://msendpointmgr.com/2026/08/14/intune-remote-help-the-deep-dive-now-that-its-included-in-your-e5/">Intune Remote Help – The Deep Dive Now That It’s Included In Your E5</a></p></blockquote>
+<p></p>
+<hr/>
+<p>With the upcoming retirement of SMS MFA, learn how to modernize your whole Entra auth flow in this comprehensive post from <a href="https://www.linkedin.com/in/kennethvansurksum/">Kenneth van Surksum</a></p>
+<blockquote class="wp-embedded-content" data-secret="GnY11uiXQL"><p><a href="https://www.vansurksum.com/2026/08/14/from-ist-to-soll-a-field-guide-to-modernizing-entra-id-authentication/">From IST to SOLL: A Field Guide to Modernizing Entra ID Authentication</a></p></blockquote>
+<p></p>
+<hr/>
+<p>We have part two of the excellent series on automating your AVD builds here from <a href="https://www.linkedin.com/in/michael-meier-ba3b72210/">Michael Meier</a>.  This one covers installing applications into your new base image</p>
+<blockquote class="wp-embedded-content" data-secret="oNlPfY5ps5"><p><a href="https://mikemdm.de/2026/08/16/using-azure-image-builder-to-build-your-custom-vm-images-part-2/">Using Azure Image Builder to build your custom VM Images – Part 2</a></p></blockquote>
+<p></p>
+<hr/>
+<p>On the subject of AVD, this guide from <a href="https://www.linkedin.com/in/niels-kok-79823360/">Niels Kok</a> runs through using PowerShell to automate your AVD Hybrid deployments</p>
+<blockquote class="wp-embedded-content" data-secret="FYOKtBKBAX"><p><a href="https://www.nielskok.tech/powershellautomation/automate-avd-hybrid/">Automate AVD Hybrid</a></p></blockquote>
+<p></p>
+<hr/>
+<p>If you have ever wondered how to automate Win32 app creation using Graph, it is unexpectedly complicated.  Learn exactly what is going on behind the scenes in this in-depth guide from <a href="https://www.linkedin.com/in/byteben/">Ben Whitmore</a></p>
+<blockquote class="wp-embedded-content" data-secret="3vGnoZ8QdG"><p><a href="https://msendpointmgr.com/2026/08/16/win32-app-intune-powershell-graph/">Creating a Win32 App in Intune with PowerShell and Microsoft Graph: The Ultimate Guide</a></p></blockquote>
+<p></p>
+<hr/>
+<p>Edge Extensions are rapidly becoming the browser toolbars of the early 2000s (hands up if you are old enough to remember those!).  Fortunately you can at least monitor extensions using the free Edge Management UI.  Learn how here from <a href="https://www.linkedin.com/in/ccmexec/">Jörgen Nilsson</a></p>
+<blockquote class="wp-embedded-content" data-secret="pknkEzZUWC"><p><a href="https://ccmexec.com/2026/08/edge-management-service-extension-monitoring/">Edge management service – extension monitoring</a></p></blockquote>
+<p></p>
+<hr/>
+<p>Many people excited about this one, using Properties Catalog to grab registry information from your devices remotely as covered here by <a href="https://www.linkedin.com/in/peterwoude/">Peter van der Woude</a></p>
+<blockquote class="wp-embedded-content" data-secret="PXGfxO4tdw"><p><a href="https://petervanderwoude.nl/post/collecting-windows-registry-data/">Collecting Windows registry data</a></p></blockquote>
+<p></p>
+<hr/>
+<p>Do you really know what AI agents are running in your estate?  If you’re not sure, this post from <a href="https://www.linkedin.com/in/dustin-gullett-83607b1ba/">Dustin Gullett</a> runs through how to use MDE to find out exactly what’s happening out there.</p>
+<p><a href="https://zerototrust.tech/discover-local-ai-agents-microsoft-defender-endpoint/">https://zerototrust.tech/discover-local-ai-agents-microsoft-defender-endpoint/</a></p>
+<hr/>
+<p>Using memberof is being deprecated in Azure so now is the time to check just where you are using it before your groups stop working.  Find out more in this post from <a href="https://www.linkedin.com/in/driekdesmet/">Driek Desmet </a></p>
+<blockquote class="wp-embedded-content" data-secret="CETwLudyWx"><p><a href="https://blog.interian.be/2026/08/18/microsoft-entra-memberof-retirement/">Microsoft Entra memberOf Retirement: What Admins Should Check Before Dynamic Groups Stop Updating</a></p></blockquote>
+<p></p>
+<hr/>
+<p>This post from <a href="https://www.linkedin.com/in/jeffrey-appel-nl/">Jeffrey Appel</a> looks at how to use Defender Logging and hunting to look at what has changed across your environment</p>
+<blockquote class="wp-embedded-content" data-secret="fdPtM4u3St"><p><a href="https://jeffreyappel.nl/auditing-microsoft-defender-and-intune-configuration-changes/">Auditing Microsoft Defender and Intune Configuration Changes</a></p></blockquote>
+<p></p>
+<hr/>
+<h1><a id="video"></a>Video Content</h1>
+<p>Now for the video content, starting with a method to bulk onboard your devices into MDE using Intune from <a href="https://www.linkedin.com/in/chandermanipandey/">Chander Mani Pandey</a></p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/W7JsWpP-Me0?feature=oembed" title="Bulk Onboard Windows Devices to Defender for Endpoint (MDE) via Intune">VIDEO</iframe></p>
+<hr/>
+<p>A script you should all be using for your autopilot devices to check they are ready to be deployed.  Learn all about it here from <a href="https://www.linkedin.com/in/stevew25/">Steve Weiner</a></p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/isFwmz1XajY?feature=oembed" title="The Autopilot Readiness Check Microsoft Should Have Built">VIDEO</iframe></p>
+<hr/>
+<h1><a id="microsoft"></a>Microsoft Content</h1>
+<p>Onto this weeks Microsoft content with a delivery optimization theme going on.  We start with a look at the delivery optimization troubleshooting PowerShell module from <a href="https://www.linkedin.com/in/andyrivasmsft/">Andy Rivas</a></p>
+<p><a href="https://techcommunity.microsoft.com/t5/windows-it-pro-blog/collecting-delivery-optimization-logs-the-easy-way/ba-p/4547884">https://techcommunity.microsoft.com/t5/windows-it-pro-blog/collecting-delivery-optimization-logs-the-easy-way/ba-p/4547884</a></p>
+<hr/>
+<p>If you haven’t yet configured Delivery Optimization, learn why you should in this post from <a href="https://www.linkedin.com/in/carlos-diaz-msft/">Carlos Diaz</a> and <a href="https://www.linkedin.com/in/jason-sandys-8830362/">Jason Sandys</a></p>
+<p><a href="https://techcommunity.microsoft.com/blog/IntuneCustomerSuccess/configure-delivery-optimization-for-windows-to-save-bandwidth-and-speed-up-deplo/4547592">https://techcommunity.microsoft.com/blog/IntuneCustomerSuccess/configure-delivery-optimization-for-windows-to-save-bandwidth-and-speed-up-deplo/4547592</a></p>
+<hr/>
+<p>That’s all for this week, have an amazing weekend!</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
