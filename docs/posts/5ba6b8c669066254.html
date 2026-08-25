@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Disable Randomized MAC Addresses for Wi-Fi on macOS Devices using Intune</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">HTMD / Anoop C Nair</span>
+    <span class="date">August 25, 2026</span>
+  </div>
+  <h1>Disable Randomized MAC Addresses for Wi-Fi on macOS Devices using Intune</h1>
+  <div class="orig">Saved for offline reading · <a href="https://www.anoopcnair.com/randomized-mac-addresses-for-wi-fi-on-macos/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text"><p class="code-block code-block-6">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><h2 class="wp-block-heading" id="key-takeaways"><strong>Key Takeaways</strong></h2><ul class="wp-block-list"><li class="has-medium-font-size">Disables <strong>MAC address randomization </strong>on managed macOS devices.</li><li class="has-medium-font-size">Makes the Mac use its <strong>actual/physical MAC address </strong>when connecting to Wi-Fi.</li><li class="has-medium-font-size">Helps organizations that use <strong>MAC addresses</strong> for device identification or network access control (<strong>NAC</strong>).</li><li class="has-medium-font-size">Randomized MAC addresses<strong> improve privacy</strong> by making device tracking more difficult.</li><li class="has-medium-font-size">Disabling randomization may be required when the network depends on a fixed MAC address.</li><li class="has-medium-font-size">The setting can be configured through <strong>Wi-Fi profiles</strong> in Microsoft Intune.</li></ul><p class="wp-block-paragraph">Disable Randomized MAC Addresses for Wi-Fi on <strong><a href="https://www.anoopcnair.com/update-m365-apps-on-macos-and-ios-before-july/" rel="noreferrer noopener" target="_blank">macOS</a></strong> Devices! The Disable <strong>MAC Address Randomization setting</strong> in Microsoft Intune allows administrators to configure managed macOS devices to use their actual physical MAC address when connecting to<strong> Wi-Fi. Normally</strong>, macOS may use a randomized MAC address to improve user <strong>privacy </strong>and make device tracking more difficult.</p><details class="wp-block-details has-contrast-3-background-color has-background is-layout-flow wp-block-details-is-layout-flow"><summary><strong>Table of Content</strong></summary>
+</details><h2 class="wp-block-heading" id="disable-randomized-mac-addresses-for-wi-fi-on-mac-os-devices"><strong>Disable Randomized MAC Addresses for Wi-Fi on macOS Devices</strong></h2><p class="wp-block-paragraph">This setting is useful for organisations where the<strong> network relies </strong>on a fixed MAC address for device identification, authentication, or <strong>Network Access Control (NAC)</strong>. Disabling MAC randomisation helps ensure the device consistently presents the same <strong>MAC address</strong> when connecting to the managed Wi-Fi network.</p><ul class="wp-block-list"><li class="has-medium-font-size">Sign in to the <a href="https://go.microsoft.com/fwlink/?linkid=2109431" rel="noreferrer noopener nofollow" target="_blank"><strong>Microsoft Intune admin center</strong></a>.</li><li class="has-medium-font-size">Select <strong>Devices</strong> &gt; <strong>macOS</strong> &gt; <strong>Configuration</strong> &gt; <strong>Create</strong> &gt; <strong>New policy</strong>.</li><li class="has-medium-font-size">Enter the following properties:</li><li class="has-medium-font-size"><strong>Platform</strong>: Select the platform of your devices. Your options:</li><li class="has-medium-font-size">macOS</li><li class="has-medium-font-size"><strong>Profile type</strong>: Select Wi-Fi. Or, select Templates &gt; Wi-Fi.</li></ul><div class="wp-block-image"><figure class="aligncenter size-large"><img alt="Disable Randomized MAC Addresses for Wi-Fi on macOS Devices using Intune - Fig.1" class="wp-image-377024" data-lazyloaded="1" data-sizes="(max-width: 1024px) 100vw, 1024px" decoding="async" src="assets/5ba6b8c669066254/img_0.webp" title="Disable Randomized MAC Addresses for Wi-Fi on macOS Devices using Intune 2"/><figcaption class="wp-element-caption">Disable Randomized MAC Addresses for Wi-Fi on macOS Devices using Intune – Fig.1</figcaption></figure></div><h2 class="wp-block-heading" id="configure-mac-address-randomization-for-mac-os-wi-fi"><strong>Configure MAC Address Randomization for macOS Wi-Fi</strong></h2><p class="wp-block-paragraph">In the <strong>macOS Wi-Fi configuration profile</strong> in Microsoft Intune, the Disable MAC address randomisation setting lets administrators control whether Mac devices use a randomised or <strong>physical MAC address</strong> when connecting to Wi-Fi. The available options are <strong>Not configured, No, and Yes</strong>. Select Yes when you want the managed Mac to use its physical MAC address, which can help with network identification and NAC requirements.</p><ul class="wp-block-list"><li class="has-medium-font-size">It is a <strong>unique identifier</strong> for the device’s network adapter.</li><li class="has-medium-font-size">Instead of using the device’s real <strong>MAC address</strong>, macOS may use a different/randomized address when connecting to Wi-Fi.</li><li class="has-medium-font-size">It improves <strong>privacy </strong>because Wi-Fi networks cannot easily identify or track the device using its permanent MAC address.</li><li class="has-medium-font-size">Some <strong>company networks</strong> need the real, fixed MAC address to identify and allow a specific device.</li><li class="has-medium-font-size"><strong>Network Access Control (NAC)</strong> may use the MAC address to determine whether a device is allowed to access the network.</li><li class="has-medium-font-size">A randomized <strong>MAC address</strong> can cause this identification to fail.</li><li class="has-medium-font-size">The Disable MAC Address <strong>Randomization</strong> setting allows administrators to make managed Mac devices use their <strong>physical MAC address</strong> for the Wi-Fi connection.</li></ul><div class="wp-block-image"><figure class="aligncenter size-large"><img alt="Disable Randomized MAC Addresses for Wi-Fi on macOS Devices using Intune - Fig.2" class="wp-image-377025" data-lazyloaded="1" data-sizes="(max-width: 1024px) 100vw, 1024px" decoding="async" src="assets/5ba6b8c669066254/img_1.webp" title="Disable Randomized MAC Addresses for Wi-Fi on macOS Devices using Intune 3"/><figcaption class="wp-element-caption">Disable Randomized MAC Addresses for Wi-Fi on macOS Devices using Intune – Fig.2</figcaption></figure></div><h2 class="wp-block-heading" id="r"><strong>Resources</strong></h2><p class="wp-block-paragraph"><a href="https://learn.microsoft.com/en-us/intune/whats-new/in-development#disable-mac-address-randomization-on-macos-wi-fi-profiles" rel="noreferrer noopener nofollow" target="_blank"><strong>In development – Microsoft Intune | Microsoft Learn</strong></a></p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><h2 class="wp-block-heading" id="need-further-assistance-or-have-technical-questions"><strong>Need Further Assistance or Have Technical Questions?</strong></h2><p class="has-contrast-3-background-color has-background wp-block-paragraph">Join the <a href="https://www.linkedin.com/company/how-to-manage-devices/" rel="noreferrer noopener nofollow" target="_blank"><strong>LinkedIn Page</strong></a> and <a href="https://t.me/+Q9lE6G1_BO_bGq97" rel="noreferrer noopener nofollow" target="_blank"><strong>Telegram group</strong></a> to get the latest step-by-step guides and news updates. Join our <a href="https://www.meetup.com/htmd-community-meetup-group/" rel="nofollow noopener" target="_blank"><strong>Meetup Page</strong></a> to participate in User group meetings. Also, join the <a href="https://htmd.in/WACM2" rel="nofollow noopener" target="_blank"><strong>WhatsApp Community</strong></a>  and the <a href="https://htmd.in/whatsapp_channel" rel="nofollow noopener" target="_blank"><strong>Whatsapp channel</strong></a> to get the latest news on Microsoft Technologies. We are there on <a href="https://www.reddit.com/r/ImpMSNews/" rel="nofollow noopener" target="_blank"><strong>Reddit</strong></a> as well.</p><h2 class="wp-block-heading" id="author"><strong>Author</strong></h2><p class="wp-block-paragraph"><a href="https://www.linkedin.com/in/anoopcnair/" rel="nofollow noopener" target="_blank"><strong>Anoop C Nair</strong></a>  is Workplace Technology solution architect with 25+ years of experience in global enterprise organizations such as JP Morgan, Capgemini, etc. He is Microsoft Certified Trainer. Microsoft MVP from 2015 onwards for consecutive 11 years! He also conducts Intune and modern workplace tech training for enterprise organizations. He is Blogger, Speaker, and Founder of HTMD Community and HTMD Conference. His focus is on Device Management technologies such as Intune, Windows, Cloud PC. He writes about technologies like Intune, SCCM, Windows, Cloud PC, Windows, Entra, Microsoft Security.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><p class="code-block code-block-8">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="1286776600" data-full-width-responsive="true"></ins> </p><p class="code-block code-block-9">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="8125570634" data-full-width-responsive="true"></ins> </p></div></div></div>
+</article>
+</body>
+</html>
