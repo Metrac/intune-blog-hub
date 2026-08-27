@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Work IQ API: Query Microsoft 365 Data With AI</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">August 27, 2026</span>
+  </div>
+  <h1>Work IQ API: Query Microsoft 365 Data With AI</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/work-iq-api/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p class="wp-block-paragraph">Your Microsoft 365 tenant already contains the context that many AI agents are missing: meetings, email, Teams conversations, documents, people and decisions. The hard part is not generating another answer. The hard part is giving an agent the right work context without building a second data platform or bypassing Microsoft 365 permissions.</p>
+<p class="wp-block-paragraph">This is exactly where the <strong>Work IQ API</strong> becomes interesting. Microsoft currently provides Work IQ as a public preview across CLI, MCP, A2A and REST experiences. In this guide I focus on the path that is easiest to test: install the official package, connect the MCP server and ask useful questions against your own Microsoft 365 context.</p>
+<p class="wp-block-paragraph">I also cover the part that matters in an enterprise: tenant enablement, user permissions, tool boundaries and a rollout that starts read-only.</p>
+<span id="more-19559"></span>
+<h2 class="wp-block-heading" id="what-is-the-work-iq-api">What is the Work IQ API?</h2>
+<p class="wp-block-paragraph">Work IQ is Microsoft’s work-context layer for AI solutions. It makes Microsoft 365 information available through supported interfaces while keeping the user, tenant and policy context intact.</p>
+<p class="wp-block-paragraph">The useful distinction is this:</p>
+<ul class="wp-block-list">
+<li><strong>The CLI</strong> is the quickest way to test a natural-language query.</li>
+<li><strong>MCP</strong> exposes Work IQ tools to a compatible AI client or agent.</li>
+<li><strong>A2A</strong> supports agent-to-agent scenarios.</li>
+<li><strong>REST</strong> is the lower-level option for an application that needs direct API integration.</li>
+</ul>
+<p class="wp-block-paragraph">The Work IQ MCP server does not load hundreds of narrowly defined tools into the model context. Microsoft currently documents ten generic tools. They cover Microsoft 365 entities, Microsoft 365 Copilot requests and schema discovery. The resource path tells the tool what it should work with.</p>
+<p class="wp-block-paragraph">That design matters. A smaller tool surface is easier for an agent to understand, while runtime schema discovery keeps the integration extensible.</p>
+<figure class="wp-block-image"><img alt="Microsoft Learn Work IQ MCP tool categories with entity, Copilot and schema tools" data-recalc-dims="1" decoding="async" src="assets/3557d4bbe60fa274/img_0.jpg"/></figure>
+<p class="wp-block-paragraph"><em>The current Work IQ MCP categories in the <a href="https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/work-iq/mcp/overview" rel="noopener" target="_blank">official Microsoft Learn documentation</a>. Screenshot captured in the browser on 27 July 2026.</em></p>
+<h2 class="wp-block-heading" id="what-can-an-agent-ask-work-iq">What can an agent ask Work IQ?</h2>
+<p class="wp-block-paragraph">The most useful prompts connect information that is normally spread across several applications. For example:</p>
+<ul class="wp-block-list">
+<li>“What meetings do I have tomorrow, and which documents should I read first?”</li>
+<li>“Summarize the latest email and Teams context for Project Contoso.”</li>
+<li>“Find the document I worked on yesterday and list the decisions that still need an owner.”</li>
+<li>“What did we agree about authentication for the customer portal?”</li>
+</ul>
+<p class="wp-block-paragraph">These are not database queries that a user should have to construct manually. Work IQ lets the agent reason over the Microsoft 365 context that the signed-in user is allowed to access.</p>
+<p class="wp-block-paragraph">That last sentence is important: Work IQ is not a shortcut around Microsoft 365 authorization.</p>
+<h2 class="wp-block-heading" id="what-do-i-need-before-the-first-query">What do I need before the first query?</h2>
+<p class="wp-block-paragraph">I would check these prerequisites before touching the client configuration:</p>
+<ol class="wp-block-list">
+<li><strong>A supported Microsoft 365 tenant and user.</strong> Confirm the current preview and licensing requirements for the interface you want to use.</li>
+<li><strong>Tenant enablement and admin consent.</strong> The Work IQ service principal must be enabled correctly. An end user cannot solve this with a local npm command.</li>
+<li><strong>Node.js 18 or later.</strong> The official Work IQ package is distributed through npm.</li>
+<li><span class="jr-inline-emphasis">A supported client.</span> This can be the Work IQ CLI, GitHub Copilot CLI or another MCP-compatible client.</li>
+<li><span class="jr-inline-emphasis">A test account and test scope.</span> Start with a user and data set that make it easy to verify whether the result is correct.</li>
+</ol>
+<p class="wp-block-paragraph">Microsoft labels Work IQ as a preview in the current documentation and repository. I would therefore validate the terms, supported workloads and tenant controls again before using it for a production process.</p>
+<h2 class="wp-block-heading" id="how-do-i-install-the-standalone-work-iq-cli">How do I install the standalone Work IQ CLI?</h2>
+<p class="wp-block-paragraph">Install the current package globally:</p>
+<pre class="wp-block-code"><code>npm install -g @microsoft/workiq
+
+</code></pre>
+<p class="wp-block-paragraph">Start the MCP server with:</p>
+<pre class="wp-block-code"><code>workiq mcp
+
+</code></pre>
+<p class="wp-block-paragraph">If you do not want a global installation, use <code>npx</code>:</p>
+<pre class="wp-block-code"><code>npx -y @microsoft/workiq mcp
+
+</code></pre>
+<p class="wp-block-paragraph">For the first test, follow the authentication flow shown by the client and ask a question whose answer you already know. A calendar query is a good starting point because it is easy to verify:</p>
+<pre class="wp-block-code"><code>What meetings do I have tomorrow?
+
+</code></pre>
+<p class="wp-block-paragraph">Then try a prompt that needs two sources:</p>
+<pre class="wp-block-code"><code>Summarize tomorrow's customer meetings and find the latest document for each project.
+
+</code></pre>
+<p class="wp-block-paragraph">The second prompt is a much better test. It shows whether the integration can retrieve related work context instead of only returning a single calendar list.</p>
+<h2 class="wp-block-heading" id="how-do-i-use-work-iq-with-github-copilot-cli">How do I use Work IQ with GitHub Copilot CLI?</h2>
+<p class="wp-block-paragraph">Microsoft also publishes Work IQ as a plugin marketplace for GitHub Copilot CLI. The current quick start is:</p>
+<pre class="wp-block-code"><code>copilot
+/plugin marketplace add microsoft/work-iq
+/plugin install workiq@work-iq
+
+</code></pre>
+<p class="wp-block-paragraph">Restart Copilot CLI after the installation. You can then start with prompts such as:</p>
+<pre class="wp-block-code"><code>What are my upcoming meetings this week?
+Summarize emails from Sarah about the budget.
+Find documents I worked on yesterday.
+
+</code></pre>
+<figure class="wp-block-image"><img alt="Microsoft Work IQ GitHub quick start showing Copilot CLI plugin installation and sample prompts" data-recalc-dims="1" decoding="async" src="assets/3557d4bbe60fa274/img_1.jpg"/></figure>
+<p class="wp-block-paragraph"><em>The real plugin commands and sample prompts in the <a href="https://github.com/microsoft/work-iq" rel="noopener" target="_blank">official Microsoft Work IQ repository</a>. Screenshot captured in the browser on 27 July 2026.</em></p>
+<p class="wp-block-paragraph">I like this route for an initial test because it removes most client configuration. For a reusable agent workflow, I would still document the standalone MCP configuration explicitly so the dependency is visible in the repository.</p>
+<p class="wp-block-paragraph">The current MCP surface is split into three visible groups:</p>
+<p class="wp-block-paragraph"><code>fetch</code>, <code>create_entity</code>, <code>update_entity</code>, <code>delete_entity</code>, <code>do_action</code> and <code>call_function</code> work with Microsoft 365 resources. The path identifies the resource; the tool provides the action.</p>
+<p class="wp-block-paragraph">This can cover read operations as well as changes such as creating an event or sending a message. That is why I would not enable every operation on day one.</p>
+<p class="wp-block-paragraph"><code>ask</code> invokes Microsoft 365 Copilot for natural-language reasoning, while <code>list_agents</code> discovers available agents. This is useful when the task needs a synthesized answer rather than a single entity response.</p>
+<p class="wp-block-paragraph"><code>get_schema</code> and <code>search_paths</code> let an agent discover supported paths and schemas at runtime. The agent does not need every possible Microsoft 365 type in its prompt before it starts.</p>
+<p class="wp-block-paragraph">The architecture behind these tools is also why MCP fits well with the broader agent tooling surface I described in my <a href="https://jannikreinhard.com/2026/05/15/skills-mcp-cli-computer-use-mapping-the-ai-tooling-surface-in-2026/">Skills, MCP and CLI overview</a>.</p>
+<figure class="wp-block-image"><img alt="Work IQ API architecture: AI assistant connects through MCP, A2A and REST to Microsoft 365 context" data-recalc-dims="1" decoding="async" src="assets/3557d4bbe60fa274/img_2.jpg"/></figure>
+<h2 class="wp-block-heading" id="what-is-a-sensible-first-enterprise-use-case">What is a sensible first enterprise use case?</h2>
+<p class="wp-block-paragraph">Start with a read-only workflow that has a human-verifiable answer. One example is meeting preparation:</p>
+<ol class="wp-block-list">
+<li>Retrieve the next customer meeting.</li>
+<li>Find the latest related emails and documents.</li>
+<li>Summarize decisions, open questions and owners.</li>
+<li>Return source links with the summary.</li>
+<li>Let the user decide what happens next.</li>
+</ol>
+<p class="wp-block-paragraph">This workflow creates value without immediately allowing the agent to send messages or change records. It also gives you a simple evaluation set: were the correct meeting, documents, decisions and source links returned?</p>
+<p class="wp-block-paragraph">Once retrieval is reliable, add one write action at a time. Creating a draft calendar item is a safer next step than sending an email automatically.</p>
+<h2 class="wp-block-heading" id="how-should-i-secure-work-iq">How should I secure Work IQ?</h2>
+<p class="wp-block-paragraph">I would use the same control pattern as for any agent with business data:</p>
+<ul class="wp-block-list">
+<li><span class="jr-inline-emphasis">Respect delegated access.</span> Test with real user roles, not only a global administrator.</li>
+<li><span class="jr-inline-emphasis">Separate read and write scenarios.</span> Do not expose mutation tools when the workflow only needs retrieval.</li>
+<li><span class="jr-inline-emphasis">Require confirmation for consequential actions.</span> Sending mail, changing calendar items and deleting entities should not happen silently.</li>
+<li><span class="jr-inline-emphasis">Keep source links in the answer.</span> Users need to verify where a conclusion came from.</li>
+<li><span class="jr-inline-emphasis">Log the tool path and outcome.</span> You should be able to reconstruct what the agent requested.</li>
+<li><span class="jr-inline-emphasis">Review preview changes.</span> Tool names, paths, terms and prerequisites can change while the service is in preview.</li>
+</ul>
+<p class="wp-block-paragraph">Microsoft documents broad OAuth permissions combined with more granular policy enforcement by path, method and tenant policy. That is more manageable than creating a new permission for every resource, but it makes tenant policy design even more important.</p>
+<h2 class="wp-block-heading" id="my-rollout-checklist">My rollout checklist</h2>
+<p class="wp-block-paragraph">Before I would call a Work IQ pilot successful, I would verify:</p>
+<ul class="wp-block-list">
+<li>tenant enablement and admin consent are documented;</li>
+<li>the test user only sees information they can open in Microsoft 365;</li>
+<li>at least five known questions return the expected sources;</li>
+<li>unavailable data produces a clear limitation instead of an invented answer;</li>
+<li>write tools are disabled or approval-gated;</li>
+<li>package versions and preview dependencies are recorded;</li>
+<li>an owner is assigned for reviewing changes in the official documentation.</li>
+</ul>
+<h2 class="wp-block-heading" id="my-conclusion">My conclusion</h2>
+<p class="wp-block-paragraph">The Work IQ API is interesting because it gives an agent governed work context without asking you to copy Microsoft 365 into another knowledge store first. The technical quick start is short. The real work is selecting the correct tenant controls, testing retrieval quality and deciding which actions the agent should be allowed to perform.</p>
+<p class="wp-block-paragraph">My recommendation is simple: begin with a read-only meeting-preparation scenario, use the official CLI or MCP package, and evaluate every answer against known Microsoft 365 sources. If that works reliably, expand the workflow one permission and one action at a time.</p>
+<p class="wp-block-paragraph">I hope this is a little help.</p>
+<p class="wp-block-paragraph">Stay healthy, Cheers Jannik</p>
+<aside aria-labelledby="jr-next-work-iq-api" class="jr-next-journey"><span class="jr-next-eyebrow">Continue exploring</span><h2 id="jr-next-work-iq-api">Practical guides for your next step</h2></aside> </div>
+</div></div>
+</article>
+</body>
+</html>

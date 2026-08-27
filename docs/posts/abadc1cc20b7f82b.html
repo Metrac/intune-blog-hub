@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inside Intune Client-Driven Compliance Evaluation for Windows Devices</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Call4Cloud (Rudy Ooms)</span>
+    <span class="date">August 27, 2026</span>
+  </div>
+  <h1>Inside Intune Client-Driven Compliance Evaluation for Windows Devices</h1>
+  <div class="orig">Saved for offline reading · <a href="https://patchmypc.com/blog/intune-client-driven-compliance-evaluation-for-windows-devices/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="post-content">
+<p class="wp-block-paragraph"><strong><a href="https://learn.microsoft.com/en-us/intune/whats-new/in-development">Microsoft has announced client-driven compliance evaluation for Windows devices</a></strong> to reduce delays in compliance reporting. Supported Windows devices can detect important local state changes and proactively request a new compliance evaluation. That means Intune can learn faster when a device becomes unhealthy and when it has been fixed again. The Intune Management Extension already contains the client-side component that makes this possible. Inside the code, Microsoft calls that component ComplianceMonitor.</p>
+<figure class="wp-block-image size-full"><a data-caption="Microsoft describes the feature as client driven compliance evaluation for Windows devices." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-97.png"><picture class="wp-image-189536" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-97.png.webp 643w, https://patchmypc.com/app/uploads/2026/07/image-97-300x93.png.webp 300w" sizes="(max-width: 643px) 100vw, 643px" type="image/webp"/>
+<img alt="Microsoft describes the feature as client driven compliance evaluation for Windows devices." data-lazy-sizes="(max-width: 643px) 100vw, 643px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-97.png 643w, https://patchmypc.com/app/uploads/2026/07/image-97-300x93.png 300w" decoding="async" src="assets/abadc1cc20b7f82b/img_0.png"/><noscript><img alt="Microsoft describes the feature as client driven compliance evaluation for Windows devices." decoding="async" src="assets/abadc1cc20b7f82b/img_1.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">With Microsoft also<strong><a href="https://github.com/MicrosoftDocs/memdocs/blob/main/intune/device-security/compliance/create-policy.md#client-driven-compliance-evaluation-preview"> releasing some Docs..</a></strong>. Well.. Let’s start investigating how the Client-Driver compliance evaluation works under the hood, shall we?</p>
+<h2 class="wp-block-heading" id="h-the-compliance-evaluation-delay">The Compliance Evaluation Delay<span class="clth-copy-icon" data-heading-id="h-the-compliance-evaluation-delay"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph"><strong><a href="https://patchmypc.com/blog/custom-compliance-policies-and-the-eight-hour-waiting-fix/">Windows compliance evaluation has always depended heavily on timing</a></strong>. A device can report that its firewall, TPM, Secure Boot, or Defender configuration is healthy, then drift away from that state shortly afterward. Intune continues to show the last reported compliance result until Windows performs another compliance evaluation and sends fresh information.</p>
+<p class="wp-block-paragraph">The same delay exists when the problem is fixed. A device might already be healthy again, while Intune still considers it noncompliant because the recovery has not yet been reported. Client-driven compliance evaluation is designed to reduce that gap in both directions. IME version 1.103.101.0 contains a component called ComplianceMonitor. Its purpose is to support Intune client-driven compliance evaluation by reducing the time between a local Windows state change and the next compliance evaluation.</p>
+<p class="wp-block-paragraph">The Compliance Monitor observes selected Windows security signals locally. When one changes, it automatically requests a new compliance evaluation by starting a Windows MDM device check-in. The user does not need to open Company Portal, and the administrator does not need to initiate another sync.</p>
+<h2 class="wp-block-heading" id="h-inside-the-ime-compliance-monitor">Inside the IME Compliance Monitor<span class="clth-copy-icon" data-heading-id="h-inside-the-ime-compliance-monitor"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The Compliance Monitor runs inside Microsoft.Management.Services.IntuneWindowsAgent.exe as part of the existing Intune Management Extension service. It is the client-side component that watches for changes that may require a fresh compliance evaluation.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-93.png"><picture class="wp-image-189532" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-93.png.webp 645w, https://patchmypc.com/app/uploads/2026/07/image-93-300x129.png.webp 300w" sizes="(max-width: 645px) 100vw, 645px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 645px) 100vw, 645px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-93.png 645w, https://patchmypc.com/app/uploads/2026/07/image-93-300x129.png 300w" decoding="async" src="assets/abadc1cc20b7f82b/img_2.png"/><noscript><img alt="" decoding="async" src="assets/abadc1cc20b7f82b/img_3.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">The Client-Side Compliance Evaluation implementation is divided into several classes. When the IME service is executed, the Compliance Monitor Launcher control starts up and retries. The Compliance Monitor owns the timer and executes each monitoring cycle. The Compliance Setting Helper reads the Windows signals and detects drift. From there, the <strong>DciHelper</strong> (Device Check-In Helper) decides whether to simulate, defer, or invoke a new MDM check-in. Compliance Monitor Auditing aggregates operational telemetry…. For those who prefer my paint skill… The complete <strong>client-driven compliance evaluation </strong>flow looks like this:</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-49-1024x768.png"><picture class="wp-image-193473" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-49-1024x768.png.webp 1024w, https://patchmypc.com/app/uploads/2026/08/image-49-300x225.png.webp 300w, https://patchmypc.com/app/uploads/2026/08/image-49-768x576.png.webp 768w, https://patchmypc.com/app/uploads/2026/08/image-49.png.webp 1448w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-49-1024x768.png 1024w, https://patchmypc.com/app/uploads/2026/08/image-49-300x225.png 300w, https://patchmypc.com/app/uploads/2026/08/image-49-768x576.png 768w, https://patchmypc.com/app/uploads/2026/08/image-49.png 1448w" decoding="async" src="assets/abadc1cc20b7f82b/img_4.png"/><noscript><img alt="" decoding="async" src="assets/abadc1cc20b7f82b/img_5.png"/></noscript>
+</picture>
+</a></figure>
+<h3 class="wp-block-heading" id="h-starting-the-ime-compliance-monitor">Starting the IME Compliance Monitor<span class="clth-copy-icon" data-heading-id="h-starting-the-ime-compliance-monitor"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">The monitor is started by the IME service through ComplianceMonitorLauncher. Before it begins polling, the launcher checks whether client driven compliance evaluation is enabled for the account.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-96.png"><picture class="wp-image-189534" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-96.png.webp 624w, https://patchmypc.com/app/uploads/2026/07/image-96-300x76.png.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-96.png 624w, https://patchmypc.com/app/uploads/2026/07/image-96-300x76.png 300w" decoding="async" src="assets/abadc1cc20b7f82b/img_6.png"/><noscript><img alt="" decoding="async" src="assets/abadc1cc20b7f82b/img_7.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">If the Real Time Compliance feature is unavailable, the launcher does not disappear permanently. It arms a recurring retry timer and checks again later. The launcher interval in this build is one hour.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-94.png"><picture class="wp-image-189533" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-94.png.webp 624w, https://patchmypc.com/app/uploads/2026/07/image-94-300x25.png.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-94.png 624w, https://patchmypc.com/app/uploads/2026/07/image-94-300x25.png 300w" decoding="async" src="assets/abadc1cc20b7f82b/img_8.png"/><noscript><img alt="" decoding="async" src="assets/abadc1cc20b7f82b/img_9.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">Once the feature becomes available, it attempts to launch the monitor again. The launch operation is protected against duplicate starts, so another attempt has no effect when the monitor is already running. The device must also pass several local applicability checks. The operating system build must be at least 15063, the device must have an MDM enrollment, and Microsoft Defender must be the active antivirus provider.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-112.png"><picture class="wp-image-189554" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-112.png.webp 624w, https://patchmypc.com/app/uploads/2026/07/image-112-300x125.png.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-112.png 624w, https://patchmypc.com/app/uploads/2026/07/image-112-300x125.png 300w" decoding="async" src="assets/abadc1cc20b7f82b/img_10.png"/><noscript><img alt="" decoding="async" src="assets/abadc1cc20b7f82b/img_11.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">If one of those checks fails, the monitor logs the failed precondition and does not start. The Defender requirement is particularly interesting because it limits the current implementation even when some of the other monitored signals, such as BitLocker or TPM, would still be available.</p>
+<p class="wp-block-paragraph">When all checks pass, the monitor initializes its registry store, auditing components, setting readers, DCI helper, and timer. The log then records: [ComplianceMonitor] Start entered.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-95.png"><img alt="" class="wp-image-189542" data-lazy-sizes="(max-width: 416px) 100vw, 416px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-95.png 416w, https://patchmypc.com/app/uploads/2026/07/image-95-300x24.png 300w" decoding="async" src="assets/abadc1cc20b7f82b/img_12.png"/><noscript><img alt="" class="wp-image-189542" decoding="async" src="assets/abadc1cc20b7f82b/img_13.png"/></noscript></a></figure>
+<h3 class="wp-block-heading" id="h-delivering-the-compliance-monitor-configuration">Delivering the Compliance Monitor Configuration<span class="clth-copy-icon" data-heading-id="h-delivering-the-compliance-monitor-configuration"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">The operational configuration for client driven compliance evaluation comes from the Intune service through the normal Sidecar gateway response.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-100.png"><picture class="wp-image-189538" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-100.png.webp 624w, https://patchmypc.com/app/uploads/2026/07/image-100-300x62.png.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-100.png 624w, https://patchmypc.com/app/uploads/2026/07/image-100-300x62.png 300w" decoding="async" src="assets/abadc1cc20b7f82b/img_14.png"/><noscript><img alt="" decoding="async" src="assets/abadc1cc20b7f82b/img_15.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">Once IME stores the service settings on the device, the Compliance Monitor can read them from HKLM\SOFTWARE\Microsoft\IntuneManagementExtension\SessionSettings.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-48.png"><picture class="wp-image-193471" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-48.png.webp 766w, https://patchmypc.com/app/uploads/2026/08/image-48-300x70.png.webp 300w" sizes="(max-width: 766px) 100vw, 766px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 766px) 100vw, 766px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-48.png 766w, https://patchmypc.com/app/uploads/2026/08/image-48-300x70.png 300w" decoding="async" src="assets/abadc1cc20b7f82b/img_16.png"/><noscript><img alt="" decoding="async" src="assets/abadc1cc20b7f82b/img_17.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">The Compliance Monitor reads a specific value named: ComplianceMonitorConfigJson</p>
+<p class="wp-block-paragraph">A valid configuration looks like this:</p>
+<p class="wp-block-paragraph">{<br/>  “Enabled”: true,<br/>  “PollIntervalSeconds”: 60,<br/>  “DciMaxCheckInsPerHourPerDevice”: 2,<br/>  “Settings”: [<br/>    “ActiveFirewallRequired”,<br/>    “OsBuildVersion”<br/>  ],<br/>  “PerSetting”: {<br/>    “ActiveFirewallRequired”: {<br/>      “Enabled”: true<br/>    },<br/>    “OsBuildVersion”: {<br/>      “Enabled”: true<br/>    }<br/>  }<br/>}</p>
+<p class="wp-block-paragraph">The Settings collection alone is not enough. During each cycle, the monitor checks whether every listed setting also exists in PerSetting and has Enabled set to true. A name without the corresponding per setting configuration is silently filtered out.</p>
+<figure class="wp-block-image size-full"><a href="https://patchmypc.com/app/uploads/2026/07/image-111.png"><picture class="wp-image-189550" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-111.png.webp 624w, https://patchmypc.com/app/uploads/2026/07/image-111-300x115.png.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-111.png 624w, https://patchmypc.com/app/uploads/2026/07/image-111-300x115.png 300w" decoding="async" src="assets/abadc1cc20b7f82b/img_18.png"/><noscript><img alt="" decoding="async" src="assets/abadc1cc20b7f82b/img_19.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">After parsing the JSON, the monitor saves a local copy beneath:</p>
+<p class="wp-block-paragraph">HKLM\SOFTWARE\Microsoft\IntuneManagementExtension\ComplianceMonitor\Config</p>
+<p class="wp-block-paragraph">The enabled state and numeric values are stored as DWORDs. The active setting names are stored as a semicolon-separated string, while each per setting state is persisted under Config\PerSetting.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-110.png"><picture class="wp-image-189549" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-110.png.webp 624w, https://patchmypc.com/app/uploads/2026/07/image-110-300x53.png.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-110.png 624w, https://patchmypc.com/app/uploads/2026/07/image-110-300x53.png 300w" decoding="async" src="assets/abadc1cc20b7f82b/img_20.png"/><noscript><img alt="" decoding="async" src="assets/abadc1cc20b7f82b/img_21.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">If the service configuration is absent during a later cycle, the monitor logs that it will retry. It can continue using the previously persisted local configuration.</p>
+<h3 class="wp-block-heading" id="h-polling-for-compliance-changes">Polling for Compliance Changes<span class="clth-copy-icon" data-heading-id="h-polling-for-compliance-changes"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">The default polling interval is 300 seconds. The monitor accepts values between 60 and 3,600 seconds. With the minimum interval, a supported local change can be detected within approximately 60 seconds and can then start a new compliance evaluation.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-99.png"><img alt="" class="wp-image-189537" data-lazy-sizes="(max-width: 414px) 100vw, 414px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-99.png 414w, https://patchmypc.com/app/uploads/2026/07/image-99-300x38.png 300w" decoding="async" src="assets/abadc1cc20b7f82b/img_22.png"/><noscript><img alt="" class="wp-image-189537" decoding="async" src="assets/abadc1cc20b7f82b/img_23.png"/></noscript></a></figure>
+<p class="wp-block-paragraph">When the timer is created, its initial due time is randomized within the polling interval. This prevents many devices from starting their compliance observations at exactly the same moment.</p>
+<p class="wp-block-paragraph">Only one monitoring cycle can run at a time. If a timer callback arrives while the previous cycle is still active, the new cycle is skipped. This prevents slow WMI operations from producing overlapping evaluations.</p>
+<p class="wp-block-paragraph">At the beginning of every cycle, the monitor refreshes its relevant feature state and ingests the latest server configuration.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-101.png"><img alt="" class="wp-image-189540" data-lazy-sizes="(max-width: 547px) 100vw, 547px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-101.png 547w, https://patchmypc.com/app/uploads/2026/07/image-101-300x13.png 300w" decoding="async" src="assets/abadc1cc20b7f82b/img_24.png"/><noscript><img alt="" class="wp-image-189540" decoding="async" src="assets/abadc1cc20b7f82b/img_25.png"/></noscript></a></figure>
+<p class="wp-block-paragraph">It stops itself if the master feature is disabled or if the server configuration contains Enabled=false. The active setting list is validated and deduplicated. The monitor processes no more than 14 settings in one cycle and limits concurrent observation work to eight readers.</p>
+<h3 class="wp-block-heading" id="h-reading-the-supported-compliance-signals">Reading the Supported Compliance Signals<span class="clth-copy-icon" data-heading-id="h-reading-the-supported-compliance-signals"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">The monitor contains 14 recognized setting names that can be used to detect changes that may require a new compliance evaluation. These are ActiveFirewallRequired, DefenderEnabled, RtpEnabled, DefenderVersion, SignatureOutOfDate, AntivirusRequired, AntivirusRequireCurrentSignature, AntiSpywareRequired, AntiSpywareRequireCurrentSignature, BitLockerEnabled, SecureBootEnabled, CodeIntegrityEnabled, TpmRequired, and OsBuildVersion.</p>
+<figure class="wp-block-image size-full"><a href="https://patchmypc.com/app/uploads/2026/07/image-103.png"><img alt="" class="wp-image-189539" data-lazy-sizes="(max-width: 303px) 100vw, 303px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-103.png 303w, https://patchmypc.com/app/uploads/2026/07/image-103-300x261.png 300w" decoding="async" src="assets/abadc1cc20b7f82b/img_26.png"/><noscript><img alt="" class="wp-image-189539" decoding="async" src="assets/abadc1cc20b7f82b/img_27.png"/></noscript></a></figure>
+<p class="wp-block-paragraph">Firewall, antivirus, antispyware, BitLocker, and Secure Boot are read through the MDM Bridge WMI provider in root\cimv2\mdm\dmmap. Defender status, version, security intelligence age, and real time protection use the Defender WMI providers. Code Integrity comes from Win32_DeviceGuard, while TPM state comes from Win32_Tpm.</p>
+<p class="wp-block-paragraph">The OS build reader combines two registry values:</p>
+<p class="wp-block-paragraph">HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion<br/>CurrentBuild<br/>UBR</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-104.png"><picture class="wp-image-189544" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-104.png.webp 624w, https://patchmypc.com/app/uploads/2026/07/image-104-300x39.png.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-104.png 624w, https://patchmypc.com/app/uploads/2026/07/image-104-300x39.png 300w" decoding="async" src="assets/abadc1cc20b7f82b/img_28.png"/><noscript><img alt="" decoding="async" src="assets/abadc1cc20b7f82b/img_29.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">On our test device, those values produced: 26200.8655</p>
+<p class="wp-block-paragraph">If a setting name is not recognized, the monitor logs that the setting is unknown and skips it. The setting names must also pass the allowlist expression [A-Za-z0-9_]{1,64}.</p>
+<h3 class="wp-block-heading" id="h-storing-the-compliance-baseline">Storing the Compliance Baseline<span class="clth-copy-icon" data-heading-id="h-storing-the-compliance-baseline"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">The Compliance Monitor is a change detector for client-driven compliance evaluation. It does not contain the desired policy values and does not calculate the final compliant or noncompliant result itself. Instead, it remembers the last value observed for every setting as its baseline:</p>
+<p class="wp-block-paragraph">HKLM\SOFTWARE\Microsoft\IntuneManagementExtension<br/>\ComplianceMonitor\Settings\&lt;SettingName&gt;\LastValue</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-113.png"><picture class="wp-image-189553" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-113.png.webp 624w, https://patchmypc.com/app/uploads/2026/07/image-113-300x73.png.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-113.png 624w, https://patchmypc.com/app/uploads/2026/07/image-113-300x73.png 300w" decoding="async" src="assets/abadc1cc20b7f82b/img_30.png"/><noscript><img alt="" decoding="async" src="assets/abadc1cc20b7f82b/img_31.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">During a cycle, ComplianceSettingHelper reads the current value and asks ComplianceMonitorStore for the baseline. It compares both strings using an ordinal comparison.</p>
+<p class="wp-block-paragraph">When the strings match, nothing has changed. When they differ, the helper creates a DriftRecord containing the setting name, old value, and new value.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-116.png"><picture class="wp-image-189556" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-116.png.webp 624w, https://patchmypc.com/app/uploads/2026/07/image-116-300x132.png.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-116.png 624w, https://patchmypc.com/app/uploads/2026/07/image-116-300x132.png 300w" decoding="async" src="assets/abadc1cc20b7f82b/img_32.png"/><noscript><img alt="" decoding="async" src="assets/abadc1cc20b7f82b/img_33.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">A baseline longer than 256 characters is rejected and treated as missing. This is another defensive measure intended to prevent corrupted or manipulated registry data from affecting the component. The monitor does not need to know whether the new value is good or bad. It only needs to know that it changed.</p>
+<p class="wp-block-paragraph">A firewall status changing from 0 to 1 is drift. Status 0 means the firewall is enabled and monitored, while 1 means it is disabled. When the firewall becomes healthy again, the value changes from 1 back to 0. That recovery is also drifting and deserves another compliance check.</p>
+<h3 class="wp-block-heading" id="h-deciding-when-to-request-a-compliance-evaluation">Deciding When to Request a Compliance Evaluation<span class="clth-copy-icon" data-heading-id="h-deciding-when-to-request-a-compliance-evaluation"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">The detected drift records are handed to DciHelper. The code does not explicitly expand the acronym DCI, but the implementation consistently leads to a device check-in. The helper decides whether the change should start a real MDM session and a fresh compliance evaluation, or whether the request must be simulated or deferred.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-115.png"><picture class="wp-image-189552" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-115.png.webp 652w, https://patchmypc.com/app/uploads/2026/07/image-115-300x132.png.webp 300w" sizes="(max-width: 652px) 100vw, 652px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 652px) 100vw, 652px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-115.png 652w, https://patchmypc.com/app/uploads/2026/07/image-115-300x132.png 300w" decoding="async" src="assets/abadc1cc20b7f82b/img_34.png"/><noscript><img alt="" decoding="async" src="assets/abadc1cc20b7f82b/img_35.png"/></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">When there are no drift records, the cycle ends as idle. When simulation mode is active, DciHelper records:[DciHelper] decision=Simulated drifts=[OsBuildVersion]</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-108.png"><img alt="" class="wp-image-189551" data-lazy-sizes="(max-width: 545px) 100vw, 545px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-108.png 545w, https://patchmypc.com/app/uploads/2026/07/image-108-300x19.png 300w" decoding="async" src="assets/abadc1cc20b7f82b/img_36.png"/><noscript><img alt="" class="wp-image-189551" decoding="async" src="assets/abadc1cc20b7f82b/img_37.png"/></noscript></a></figure>
+<p class="wp-block-paragraph">It then writes the new values to the baseline store. No MDM check-in or compliance evaluation is triggered. When simulation is disabled, the helper checks its hourly device limit. The default is two additional device check-ins per hour, although the configuration accepts values between zero and ten.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-98.png"><img alt="" class="wp-image-189535" decoding="async" src="assets/abadc1cc20b7f82b/img_38.png"/><noscript><img alt="" class="wp-image-189535" decoding="async" src="assets/abadc1cc20b7f82b/img_39.png"/></noscript></a></figure>
+<p class="wp-block-paragraph">The rate window information is stored beneath:</p>
+<p class="wp-block-paragraph">HKLM\SOFTWARE\Microsoft\IntuneManagementExtension<br/>\ComplianceMonitor\Config\RateWindow</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-105.png"><picture class="wp-image-189545" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-105.png.webp 624w, https://patchmypc.com/app/uploads/2026/07/image-105-300x47.png.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<noscript></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">WindowStartTicks is stored as a string containing UTC ticks, while Count is a DWORD. The helper validates the persisted state before trusting it. A window start may not be more than five minutes in the future or more than two hours old, and the count cannot be negative.</p>
+<p class="wp-block-paragraph">Invalid or missing state is handled conservatively. The helper initially assumes the configured cap has been reached, preventing corrupted rate information from creating an uncontrolled check-in loop. When the window expires or is reset, it creates a fresh one-hour window with a count of zero.</p>
+<p class="wp-block-paragraph">If the cap has already been reached, the helper records:</p>
+<p class="wp-block-paragraph">[DciHelper] decision=DeviceCapReachedDeferred</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-107.png"><picture class="wp-image-189546" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-107.png.webp 624w, https://patchmypc.com/app/uploads/2026/07/image-107-300x15.png.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<noscript></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">The changed baseline is not committed, allowing the same drift to be reconsidered during a later cycle.</p>
+<h3 class="wp-block-heading" id="h-starting-the-mdm-compliance-check-in">Starting the MDM Compliance Check In<span class="clth-copy-icon" data-heading-id="h-starting-the-mdm-compliance-check-in"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">When another check-in is allowed, DciHelper creates a DciTrigger and prepares the Windows MDM alert that requests a new compliance evaluation.</p>
+<p class="wp-block-paragraph">Source = IntuneRealTimeCompliance<br/>Type   = DriftRetry<br/>Target = LocalDevice<br/>Mark   = 4<br/>Format = 0<br/>Data   = RealTimeCompliance drift retry</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-106.png"><noscript></noscript></a></figure>
+<p class="wp-block-paragraph">A unique correlation ID is generated for the request. The local reason contains the detected setting names, such as Drift: OsBuildVersion.</p>
+<p class="wp-block-paragraph">The trigger calls MdmSessionWrapper.RunCheckInAsync(). That wrapper uses the Windows MDM API to create a session, adds the alert, and calls MdmSession.StartAsync().</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-109.png"><picture class="wp-image-189547" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-109.png.webp 518w, https://patchmypc.com/app/uploads/2026/07/image-109-300x114.png.webp 300w" sizes="(max-width: 518px) 100vw, 518px" type="image/webp"/>
+<noscript></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">Windows then contacts the MDM endpoint associated with the device’s existing enrollment. The Compliance Monitor does not contain a hardcoded Intune URL and does not send its observations directly to the Sidecar service. It relies on Windows DMClient and the existing MDM enrollment.</p>
+<p class="wp-block-paragraph">When Windows accepts and completes the trigger operation, IME records: [DciHelper] decision=Invoked drifts=[OsBuildVersion] corrId=…</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/07/image-114.png"><picture class="wp-image-189555" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/07/image-114.png.webp 653w, https://patchmypc.com/app/uploads/2026/07/image-114-300x12.png.webp 300w" sizes="(max-width: 653px) 100vw, 653px" type="image/webp"/>
+<noscript></noscript>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">A successful trigger causes two local changes. The current observed values are committed as the new baselines, and the rate window count is increased.</p>
+<p class="wp-block-paragraph">If the MDM session fails or times out, the helper records decision=TriggerFailed together with the HRESULT. It does not commit the changed baseline, which allows the drift to be retried.</p>
+<h3 class="wp-block-heading" id="h-reporting-the-compliance-evaluation-to-intune">Reporting the Compliance Evaluation to Intune<span class="clth-copy-icon" data-heading-id="h-reporting-the-compliance-evaluation-to-intune"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">The Compliance Monitor does not send a final result saying that a device is compliant or noncompliant. Windows still reports the current compliance information, and Intune still evaluates that information against the assigned compliance policy.</p>
+<p class="wp-block-paragraph">The monitor has a more focused role. It recognizes that information used during compliance evaluation has changed and starts an additional MDM session so that the device can be evaluated again.</p>
+<p class="wp-block-paragraph">During that session, Windows reevaluates and reports its current compliance information. Intune receives the updated state and applies the assigned policy requirements. When the local value changes again because the problem was fixed, the monitor starts another MDM session so that the recovery can trigger a new compliance evaluation.</p>
+<p class="wp-block-paragraph">This is how a device can move toward noncompliance and back toward compliance without waiting for the normal compliance evaluation cycle or requiring someone to press Sync.</p>
+<p class="wp-block-paragraph">With a 60 second polling configuration, the local drift should normally be detected within that interval. The initial timer randomization, MDM session duration, Intune processing, and portal summarization can add more time. The correct claim is therefore that detection can happen within approximately 60 seconds, not that the portal is guaranteed to update within exactly one minute.</p>
+<h2 class="wp-block-heading" id="h-what-client-driven-compliance-evaluation-means">What Client-Driven Compliance Evaluation Means<span class="clth-copy-icon" data-heading-id="h-what-client-driven-compliance-evaluation-means"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The Compliance Monitor is the client-side change detector behind Intune client-driven compliance evaluation. It monitors key Windows security signals, including Firewall, Defender, BitLocker, Secure Boot, TPM, and the Windows build.</p>
+<p class="wp-block-paragraph">When one of these settings changes, the monitor automatically starts a new Windows MDM device check-in. Windows reports the latest information to Intune, and Intune performs a fresh compliance evaluation against the assigned policy.</p>
+<p class="wp-block-paragraph">This works in both directions. If a setting becomes unhealthy, Intune can detect the device as noncompliant much sooner. When the problem is fixed, the monitor detects the recovery and starts another MDM check in, allowing a new compliance evaluation without waiting for the normal sync schedule.</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
