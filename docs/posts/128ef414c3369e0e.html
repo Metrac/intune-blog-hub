@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intune Newsletter – 28th August 2026</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Andrew Taylor</span>
+    <span class="date">August 28, 2026</span>
+  </div>
+  <h1>Intune Newsletter – 28th August 2026</h1>
+  <div class="orig">Saved for offline reading · <a href="https://andrewstaylor.com/2026/08/28/intune-newsletter-28th-august-2026/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text">
+<p>Another week has passed and for many of us, the return to school drop-offs and homework nagging is looming.  This week has seen the release of Unattended access in Remote Help for Windows (and some interesting pre-reqs), find out more in the Microsoft content below.</p>
+<hr/>
+<h1>Community Content</h1>
+<p>Whilst not strictly Intune related, I’m sure most of you spend a lot of your time in the security console.  If you have E5 licensing, you get the Hunting Agent now which you can learn about here from <a href="https://www.linkedin.com/in/michaelsendpoint/">Michael Frank</a></p>
+<p><a href="https://michaelsendpoint.com/security/SecurityCopilot/HuntingAgent.html">https://michaelsendpoint.com/security/SecurityCopilot/HuntingAgent.html</a></p>
+<hr/>
+<p>A new addition to Windows recovery, you can now do a point-in-time restore on your devices.  Find out how to configure it with Intune and use it in your environment in this post from <a href="https://www.linkedin.com/in/jan-mulder/">Jan Mulder</a></p>
+<blockquote class="wp-embedded-content" data-secret="Mn85JTw4MB"><p><a href="https://wolkenman.wordpress.com/2026/08/21/how-to-manage-point-in-time-restore-with-microsoft-intune/">How to Manage Point-in-Time Restore with Microsoft Intune</a></p></blockquote>
+<p></p>
+<hr/>
+<p>Did you know you can do a device-bound passkey on macOS for Edge and Chrome?  Me neither!  If this sounds interesting, <a href="https://www.linkedin.com/in/jan-bakker/">Jan Bakker</a> has you covered here</p>
+<blockquote class="wp-embedded-content" data-secret="TShaGWr6NZ"><p><a href="https://janbakker.tech/how-to-create-a-microsoft-365-device-bound-passkey-on-macos/">How to create a Microsoft 365 device-bound passkey on macOS</a></p></blockquote>
+<p></p>
+<hr/>
+<p>We have the second part of the AVD automation series from <a href="https://www.linkedin.com/in/niels-kok-79823360/">Niels Kok</a> here, this one covers (and includes scripts) on building your machines using Terraform and PowerShell!</p>
+<blockquote class="wp-embedded-content" data-secret="M3neDCxLZu"><p><a href="https://www.nielskok.tech/azure-virtual-desktop/automate-avd-hybrid-part-2/">Automate AVD Hybrid part 2</a></p></blockquote>
+<p></p>
+<hr/>
+<p>Now custom compliance is here for macOS, you can use this script from <a href="https://www.linkedin.com/in/ennnbeee/">Nick Benton</a> to check Defender is running properly as part of your compliance checks</p>
+<p><a href="https://www.oddsandendpoints.co.uk/posts/macos-custom-defender-compliance/">https://www.oddsandendpoints.co.uk/posts/macos-custom-defender-compliance/</a></p>
+<hr/>
+<p>For those of you on Business Premium licensing, you may have noticed Defender for Business is lacking some features of the full-fat MDE.  Learn what is missing and some options for you here with <a href="https://www.linkedin.com/in/rahul-jindal-8166a62b/">Rahul Jindal</a></p>
+<p><a href="https://rahuljindalmyit.blogspot.com/2026/08/defender-for-business-understanding.html">https://rahuljindalmyit.blogspot.com/2026/08/defender-for-business-understanding.html</a></p>
+<hr/>
+<p>If you manage devices in the EU, I imagine this SSO blocking pop-up has caused you many issues!  Fortunately you can now manage it with Intune as covered in this post from <a href="https://www.linkedin.com/in/mrtbone/">Mr T-Bone</a></p>
+<blockquote class="wp-embedded-content" data-secret="XOw35aL8gc"><p><a href="https://www.tbone.se/2026/08/24/central-accept-of-continue-to-sign-in-dialog-now-a-supported-way-with-intune/">Central Accept Of “Continue To Sign In” Dialog, Now A Supported Way With Intune</a></p></blockquote>
+<p></p>
+<hr/>
+<p>I imagine you want control over AI on your managed devices and no reason why this shouldn’t extend to your iOS/iPadOS devices as well.  This post from <a href="https://www.linkedin.com/in/peterwoude/">Peter van der Woude</a> shows how to manage Apple Intelligence via Intune policies</p>
+<blockquote class="wp-embedded-content" data-secret="5BKMbVnIqs"><p><a href="https://petervanderwoude.nl/post/managing-apple-intelligence-on-ios-and-ipados-devices/">Managing Apple Intelligence on iOS and iPadOS devices</a></p></blockquote>
+<p></p>
+<hr/>
+<p>There is still no easy way to control your applications on Intune.  I personally prefer AppLocker, but it isn’t native and WDAC is a nightmare.  The best native option is App Control for Business, but it’s still risky business.  Fortunately <a href="https://www.linkedin.com/in/dustin-gullett-83607b1ba/">Dustin Gullett</a> has you covered with this comprehensive post</p>
+<p><a href="https://zerototrust.tech/app-control-for-business-hope-is-not-a-deployment-strategy/">https://zerototrust.tech/app-control-for-business-hope-is-not-a-deployment-strategy/</a></p>
+<hr/>
+<p>As mentioned earlier, unattended access for Remote Help (Windows) is finally here.  <a href="https://www.linkedin.com/in/mads-johansen/">Mads Johansen</a> looks at it here</p>
+<p><a href="https://evil365.com/intune/RemoteHelp-UnattendedAccess/">https://evil365.com/intune/RemoteHelp-UnattendedAccess/</a></p>
+<hr/>
+<p>OS Compliance is great in theory, but it’s such an overhead most people just end up with a minimum OS version which went end of life 5 years ago.  What if there was a way to automate it?  You’re in luck, <a href="https://www.linkedin.com/in/jeroenburgerhout/">Jeroen Burgerhout</a> has you covered here</p>
+<p><a href="https://www.burgerhout.org/p/automating-intune-os-version-compliance-with-azure-automation">https://www.burgerhout.org/p/automating-intune-os-version-compliance-with-azure-automation</a></p>
+<hr/>
+<p>McAfee remains a nightmare on your OEM images and it feels like a constant battle to remove it.  <a href="https://www.linkedin.com/in/kevin-malinoski-a55a65185/">Kevin Malinoski</a> has an updated post on removing it with Intune here</p>
+<blockquote class="wp-embedded-content" data-secret="ZXh4RC3gzs"><p><a href="https://malinoski.me/2026/08/25/mcafee-the-shadow-it-that-ships-from-the-factory-and-how-to-remove-it-with-intune/">McAfee: The Shadow IT That Ships From the Factory (….and how to remove it with Intune)</a></p></blockquote>
+<p></p>
+<hr/>
+<p>Next, after some thorough testing, <a href="https://www.linkedin.com/in/niallcbrady/">Niall Brady</a> gives some final thoughts on Windows 365 reserve</p>
+<blockquote class="wp-embedded-content" data-secret="n7SK8QCmex"><p><a href="https://www.niallbrady.com/2026/08/27/final-thoughts-on-windows-365-reserve/">Final thoughts on Windows 365 Reserve</a></p></blockquote>
+<p></p>
+<hr/>
+<p>On the subject of Windows 365, <a href="https://www.linkedin.com/in/ccmexec/">Jörgen Nilsson</a> looks at what to do if you need to preserve a machine for an investigation here</p>
+<blockquote class="wp-embedded-content" data-secret="rFFg5sPjRr"><p><a href="https://ccmexec.com/2026/08/windows-365-placing-a-cloud-pc-under-review/">Windows 365 – Placing a Cloud PC Under Review</a></p></blockquote>
+<p></p>
+<hr/>
+<p><a href="https://www.linkedin.com/in/sanderrozemuller/">Sander Rozemuller</a> covers how to troubleshoot a device without a compliance policy assigned in this post</p>
+<p><a href="https://rozemuller.com/why-does-this-intune-device-have-no-compliance-policy-assigned/">https://rozemuller.com/why-does-this-intune-device-have-no-compliance-policy-assigned/</a></p>
+<hr/>
+<h1><a id="video"></a>Video Content</h1>
+<p>Now for the video content, starting with a look at how to review, manage and remediate your security vulnerabilities using Intune and MDE from <a href="https://www.linkedin.com/in/chandermanipandey/">Chander Mani Pandey</a></p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/NQao9MCTPKQ?feature=oembed" title="MDE + Microsoft Intune | Remediate Security Vulnerabilities Using Security Tasks">VIDEO</iframe></p>
+<hr/>
+<p>A regular thing I hear is people not wanting to use Defender and Intune because they don’t want to rely on just one vendor.  Learn why this isn’t something you should worry about here from <a href="https://www.linkedin.com/in/jonathanjedwards/">Jonathan Edwards</a></p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/nCYPmAr-k90?feature=oembed" title="99% of IT Teams STILL Get Microsoft Defender + Microsoft Intune Wrong">VIDEO</iframe></p>
+<p>Jonathan also looks at the upcoming end-of-life of the memberof attribute in Entra dynamic groups</p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/XV46rKKtk-c?feature=oembed" title="Your Entra Dynamic Groups Break in November (Silently)">VIDEO</iframe></p>
+<hr/>
+<h1><a id="microsoft"></a>Microsoft Content</h1>
+<p>As mentioned earlier, we start this weeks Microsoft news with the official announcement of Unattended Support for Remote Help on Windows from <a href="https://www.linkedin.com/in/rodolfo-bermudez-621739110/">Rodolfo Bermudez</a> and <a href="https://www.linkedin.com/in/kara-w/">Kara Wang</a></p>
+<p><a href="https://techcommunity.microsoft.com/blog/IntuneCustomerSuccess/remote-help-on-windows-unattended-support-with-remote-sign-in-is-here/4549772">https://techcommunity.microsoft.com/blog/IntuneCustomerSuccess/remote-help-on-windows-unattended-support-with-remote-sign-in-is-here/4549772</a></p>
+<hr/>
+<p>If you’re using Managed Home Screen and noticed the exit PIN has gone missing, here is the fix from the Intune Support Team</p>
+<p><a href="https://techcommunity.microsoft.com/blog/IntuneCustomerSuccess/support-tip-restore-the-managed-home-screen-exit-pin/4549102">https://techcommunity.microsoft.com/blog/IntuneCustomerSuccess/support-tip-restore-the-managed-home-screen-exit-pin/4549102</a></p>
+<hr/>
+<p>Some exciting news, device association for device prep is now here!  Learn all about it here with <a href="https://www.linkedin.com/in/mdakeva/">Maggie Dakeva</a></p>
+<p><a href="https://techcommunity.microsoft.com/blog/IntuneCustomerSuccess/introducing-device-association-for-windows-autopilot-device-preparation/4550603">https://techcommunity.microsoft.com/blog/IntuneCustomerSuccess/introducing-device-association-for-windows-autopilot-device-preparation/4550603</a></p>
+<hr/>
+<p>That’s it for this week, have a tremendous weekend!</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
