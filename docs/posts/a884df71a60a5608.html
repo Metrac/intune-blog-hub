@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fix Windows Update Connectivity Issues with Firewall and Proxy Settings</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">HTMD / Anoop C Nair</span>
+    <span class="date">September 1, 2026</span>
+  </div>
+  <h1>Fix Windows Update Connectivity Issues with Firewall and Proxy Settings</h1>
+  <div class="orig">Saved for offline reading · <a href="https://www.anoopcnair.com/fix-windows-update-connectivity-issues-firewall/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text"><p class="code-block code-block-6">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><h2 class="wp-block-heading" id="key-takeaways"><strong>Key Takeaways</strong></h2><ul class="wp-block-list"><li class="has-medium-font-size"><strong>Firewall</strong>, proxy, DNS, and VPN settings can directly affect Windows Update.</li><li class="has-medium-font-size"><strong>Windows Update</strong> verifies the server certificate to ensure it is communicating with a genuine Microsoft service.</li><li class="has-medium-font-size">Security devices that intercept and replace<strong> TLS certificates </strong>may prevent Windows Update from connecting successfully.</li><li class="has-medium-font-size">Successful connectivity to one <strong>Microsoft endpoint </strong>does not guarantee that the complete Windows Update process will work.</li><li class="has-medium-font-size">Error codes such as <strong>0x8024402c, 0x80240438, 0x80245006, and 0x80240437</strong> can indicate DNS, connectivity, or certificate-validation problems.</li></ul><p class="wp-block-paragraph"><strong>Fix Windows Update Connectivity Issues with Firewall and Proxy Settings</strong>! Windows Update needs to connect to several Microsoft services to check, download, and install updates. <a href="https://www.anoopcnair.com/intune-firewall-status-report-to-monitor-and/" rel="noreferrer noopener" target="_blank"><strong>Firewall</strong></a>, proxy, DNS, VPN, or TLS inspection can block these connections and cause Windows Update to fail. When Windows Update is not working, check the <strong>Windows Update logs </strong>and error codes to find the problem. These errors can help identify whether the issue is with DNS, network access, firewall/proxy settings, or certificate checking.</p><details class="wp-block-details has-contrast-3-background-color has-background is-layout-flow wp-block-details-is-layout-flow"><summary><strong>Table of Content</strong></summary>
+</details><h2 class="wp-block-heading" id="windows-update-not-working-check-your-firewall-and-proxy-settings"><strong>Windows Update Not Working? Check Your Firewall and Proxy Settings</strong></h2><p class="wp-block-paragraph">Windows Update connects to several Microsoft services over the <strong>internet</strong>. It also checks the server’s TLS certificate to make sure the connection is trusted and <strong>genuine</strong>. If a firewall or proxy uses TLS/SSL inspection, it may replace Microsoft’s <strong>certificate </strong>with its own. Windows Update may then reject the connection and fail to download updates.</p><div class="wp-block-image"><figure class="aligncenter size-large"><img alt="Fix Windows Update - Fig.1" class="wp-image-377509" data-lazyloaded="1" data-sizes="(max-width: 1024px) 100vw, 1024px" decoding="async" src="assets/a884df71a60a5608/img_0.webp" title="Fix Windows Update Connectivity Issues with Firewall and Proxy Settings 2"/><figcaption class="wp-element-caption">Fix Windows Update – Fig.1</figcaption></figure></div><h2 class="wp-block-heading" id="allow-windows-update-through-firewall-and-proxy"><strong>Allow Windows Update through Firewall and Proxy</strong></h2><p class="wp-block-paragraph">Make sure your firewall and <strong>proxy</strong> allow Windows Update traffic without TLS inspection. Allow the required Windows Update domains and their subdomains, such as <strong>*.update.microsoft.com</strong>. This includes domains like update.microsoft.com, sls.update.microsoft.com, and <strong>tas02.sls.update.microsoft.com</strong>. Using * helps allow Microsoft’s changing subdomains.</p><h2 class="wp-block-heading" id="generate-the-windows-update-log-using-power-shell"><strong>Generate the Windows Update log using PowerShell</strong></h2><p class="wp-block-paragraph">If Windows <strong>Update</strong> is not working, generate the Windows Update <strong>log </strong>using PowerShell. Then check the log for common network-related <strong>errors</strong>.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><pre class="wp-block-preformatted has-contrast-3-background-color has-background"><strong>$output = "$env:TEMP\WindowsUpdate.log"<br/>Get-WindowsUpdateLog -LogPath $output<br/>Write-Host "Windows Update log written to $output"</strong></pre><figure class="wp-block-table aligncenter"><table class="has-contrast-3-background-color has-background has-fixed-layout"><thead><tr><th>Error</th><th>Details</th></tr></thead><tbody><tr><td><strong>0x8024402c</strong></td><td>Windows cannot resolve the Update server’s DNS name</td></tr><tr><td><strong>0x80240438</strong></td><td>Windows cannot connect to the Update server</td></tr><tr><td><strong>0x80245006</strong></td><td>The Update service returned an invalid response or TLS validation failed</td></tr><tr><td><strong>0x80240437</strong></td><td>Windows could not verify the Update server’s certificate</td></tr></tbody></table><figcaption class="wp-element-caption">Fix Windows Update Connectivity Issues with Firewall and Proxy Settings – Table 1</figcaption></figure><div class="wp-block-image"><figure class="aligncenter size-large"><img alt="Fix Windows Update Connectivity Issues with Firewall and Proxy Settings - Fig.2" class="wp-image-377510" data-lazyloaded="1" data-sizes="(max-width: 1024px) 100vw, 1024px" decoding="async" src="assets/a884df71a60a5608/img_1.webp" title="Fix Windows Update Connectivity Issues with Firewall and Proxy Settings 3"/><figcaption class="wp-element-caption">Fix Windows Update Connectivity Issues with Firewall and Proxy Settings – Fig.2</figcaption></figure></div><h2 class="wp-block-heading" id="check-vpn-settings-for-windows-update"><strong>Check VPN Settings for Windows Update</strong></h2><p class="wp-block-paragraph">A <strong>VPN </strong>can sometimes block Windows Update by restricting update traffic, <strong>DNS lookups</strong>, or large downloads. If Windows Update works after disconnecting the VPN, check the VPN settings or contact your VPN provider to allow Windows <strong>Update</strong> connections.</p><h2 class="wp-block-heading" id="check-wsus-and-network-configuration"><strong>Check WSUS and Network Configuration</strong></h2><p class="wp-block-paragraph">If your organisation uses <strong>WSUS</strong>, Windows devices get updates from the company’s WSUS server instead of connecting directly to Microsoft Windows Update. Make sure the <strong>WSUS server</strong>, firewall, proxy, and TLS settings are correctly configured so devices can receive updates without <strong>issues</strong>.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><h2 class="wp-block-heading" id="quick-checks-for-windows-update-issues"><strong>Quick Checks for Windows Update Issues</strong></h2><p class="wp-block-paragraph">When Windows Update is <strong>not working</strong>, check the following areas to find where the connection is being blocked:</p><ul class="wp-block-list"><li class="has-medium-font-size"><strong>DNS Resolution</strong>: Make sure the device can resolve the required Microsoft Update domains.</li><li class="has-medium-font-size"><strong>Firewall</strong>: Check whether the firewall is blocking Windows Update connections.</li><li class="has-medium-font-size"><strong>Proxy</strong>: Make sure the proxy allows Windows Update traffic.</li><li class="has-medium-font-size"><strong>TLS Inspection</strong>: Check whether the proxy or firewall is replacing Microsoft’s TLS certificate.</li><li class="has-medium-font-size"><strong>VPN</strong>: Verify that the VPN is not blocking DNS or Windows Update traffic.</li><li class="has-medium-font-size"><strong>Windows Update Logs</strong>: Review the logs and error codes to identify the cause of the issue.</li></ul><div class="wp-block-image"><figure class="aligncenter size-large"><img alt="Fix Windows Update Connectivity Issues with Firewall and Proxy Settings - Fig.3" class="wp-image-377511" data-lazyloaded="1" data-sizes="auto, (max-width: 1024px) 100vw, 1024px" decoding="async" src="assets/a884df71a60a5608/img_2.webp" title="Fix Windows Update Connectivity Issues with Firewall and Proxy Settings 4"/><figcaption class="wp-element-caption">Fix Windows Update Connectivity Issues with Firewall and Proxy Settings – Fig.3</figcaption></figure></div><h2 class="wp-block-heading" id="need-further-assistance-or-have-technical-questions"><strong>Need Further Assistance or Have Technical Questions?</strong></h2><p class="has-contrast-3-background-color has-background wp-block-paragraph">Join the <a href="https://www.linkedin.com/company/how-to-manage-devices/" rel="nofollow noopener" target="_blank"><strong>LinkedIn Page</strong></a> and <a href="https://t.me/+Q9lE6G1_BO_bGq97" rel="nofollow"><strong>Telegram group</strong></a> to get the latest step-by-step guides and news updates. Join our <a href="https://www.meetup.com/htmd-community-meetup-group/" rel="nofollow noopener" target="_blank"><strong>Meetup Page</strong></a> to participate in User group meetings. Also, join the <a href="https://htmd.in/WACM2" rel="nofollow noopener" target="_blank"><strong>WhatsApp Community</strong></a>  and the <a href="https://htmd.in/whatsapp_channel" rel="nofollow noopener" target="_blank"><strong>Whatsapp channel</strong></a> to get the latest news on Microsoft Technologies. We are there on <a href="https://www.reddit.com/r/ImpMSNews/" rel="nofollow noopener" target="_blank"><strong>Reddit</strong></a> as well.</p><h2 class="wp-block-heading" id="author"><strong>Author</strong></h2><p class="wp-block-paragraph"><a href="https://www.linkedin.com/in/anoopcnair/" rel="nofollow noopener" target="_blank"><strong>Anoop C Nair</strong></a>  is Workplace Technology solution architect with 25+ years of experience in global enterprise organizations such as JP Morgan, Capgemini, etc. He is Microsoft Certified Trainer. Microsoft MVP from 2015 onwards for consecutive 11 years! He also conducts Intune and modern workplace tech training for enterprise organizations. He is Blogger, Speaker, and Founder of HTMD Community and HTMD Conference. His focus is on Device Management technologies such as Intune, Windows, Cloud PC. He writes about technologies like Intune, SCCM, Windows, Cloud PC, Windows, Entra, Microsoft Security.</p><p class="code-block code-block-8">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="1286776600" data-full-width-responsive="true"></ins> </p><p class="code-block code-block-9">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="8125570634" data-full-width-responsive="true"></ins> </p></div></div></div>
+</article>
+</body>
+</html>

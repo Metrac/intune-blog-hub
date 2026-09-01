@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Windows Autopilot Device Association</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Call4Cloud (Rudy Ooms)</span>
+    <span class="date">August 31, 2026</span>
+  </div>
+  <h1>Windows Autopilot Device Association</h1>
+  <div class="orig">Saved for offline reading · <a href="https://patchmypc.com/blog/windows-autopilot-device-association/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="post-content">
+<p class="wp-block-paragraph">Windows Autopilot Device Association gives Device Preparation something it didn’t originally have: a way to recognize the device’s organization <strong>BEFORE</strong> the user signs in. That makes it possible to retrieve settings early enough to change OOBE, the out-of-box experience. But what actually happens between exporting a CSV and seeing the organization’s setup screens?</p>
+<p class="wp-block-paragraph">There is a device that first appears as Pre-associated, a TPM-backed identity to prove, and a signed association that ends up in UEFI firmware. Windows also needs to find the right service for the tenant and download the settings. Those are separate operations, and none of them is the Intune enrollment itself.</p>
+<p class="wp-block-paragraph"><a>I wanted to follow that process end to end, from the export screen to Device Preparation. The twelve main steps below follow the overview diagram. Where a step needs a closer look, the letters in its smaller flow match the explanation underneath.</a></p>
+<h2 class="wp-block-heading" id="h-why-device-preparation-needed-an-earlier-device-identity">Why Device Preparation needed an earlier device identity<span class="clth-copy-icon" data-heading-id="h-why-device-preparation-needed-an-earlier-device-identity"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">With classic Windows Autopilot, the device is registered <strong>BEFORE</strong> deployment. During the OOBE, Windows contacts the Autopilot service, which matches the device to that registration and returns its assigned Autopilotprofile. Windows can then use the Autopilot profile to change the setup experience before asking the user to sign in. With it, you could hide the privacy screen or define the computer name.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/privacy.png"><picture class="wp-image-193792" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/privacy.png.webp 1082w, https://patchmypc.com/app/uploads/2026/08/privacy-300x200.png.webp 300w, https://patchmypc.com/app/uploads/2026/08/privacy-1024x684.png.webp 1024w, https://patchmypc.com/app/uploads/2026/08/privacy-768x513.png.webp 768w" sizes="(max-width: 1082px) 100vw, 1082px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1082px) 100vw, 1082px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/privacy.png 1082w, https://patchmypc.com/app/uploads/2026/08/privacy-300x200.png 300w, https://patchmypc.com/app/uploads/2026/08/privacy-1024x684.png 1024w, https://patchmypc.com/app/uploads/2026/08/privacy-768x513.png 768w" decoding="async" src="assets/7b2d23350aef5637/img_0.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">The original user-driven Device Preparation flow starts differently. It does not require that classic hardware-hash registration. The user signs in, Windows learns the tenant, and enrollment and provisioning continue with that organizational context.</p>
+<p class="wp-block-paragraph">That works for deploying applications and configuring Windows. It is too late for a setting that should have changed a page the user has already passed. If OOBE has already asked for a keyboard layout, receiving an instruction to skip that page after sign-in does not help.</p>
+<p class="wp-block-paragraph">Device Association moves the device-to-tenant relationship earlier. An administrator first imports the identity of the physical device the organization expects. Windows then proves its device identity and stores the issued device association tag in firmware. OOBE can use that association before a user account identifies the tenant.</p>
+<figure class="wp-block-table"><table class="has-fixed-layout"><thead><tr><td> </td><td><strong>Classic Autopilot</strong></td><td><strong>Original user-driven Device Preparation</strong></td><td><strong>Device Preparation with Device Association</strong></td></tr></thead><tbody><tr><td><strong>Before sign-in</strong></td><td>Registered hardware can be matched to its tenant.</td><td>Tenant context comes from the user signing in.</td><td>The device can establish its tenant device association before enrollment.</td></tr><tr><td><strong>What Windows receives</strong></td><td>An assigned Autopilot deployment profile.</td><td>Tenant and policy context after authentication.</td><td>OOBE settings from the device-assigned Device Preparation policy.</td></tr><tr><td><strong>Why it matters</strong></td><td>The profile can shape OOBE before sign-in.</td><td>Early setup pages have already been reached.</td><td>Device-specific OOBE settings can arrive before sign-in.</td></tr></tbody></table></figure>
+<p class="wp-block-paragraph">The policy is still a Device Preparation policy. Device Association lets Windows retrieve its device-specific OOBE configuration earlier; it does not turn it into a classic Autopilot deployment profile. Microsoft’s <a href="https://learn.microsoft.com/en-us/autopilot/device-preparation/device-association/overview">Device Association overview</a> describes the persistent relationship as a tenant affinity marker in UEFI.</p>
+<h2 class="wp-block-heading" id="h-following-the-twelve-device-association-steps">Following the twelve Device Association steps<span class="clth-copy-icon" data-heading-id="h-following-the-twelve-device-association-steps"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Device Association starts by exporting the device’s identity data from OOBE and importing it into Intune, where the device becomes <strong>Pre-associated</strong> and can be assigned a Device Preparation policy. When OOBE continues, Windows discovers which tenant expects the device and uses its TPM-backed identity and Azure Attestation to prove its identity. The service returns a signed association, which Windows stores in UEFI and then acknowledges to the service, completing the device association process. Windows then retrieves the assigned OOBE configuration, allowing the policy to control setup screens and device naming before anyone signs in. After the user signs in, the device joins Microsoft Entra ID, enrolls in Intune, and continues through Device Preparation to install the assigned apps and run the assigned scripts.</p>
+<figure class="wp-block-image size-full"><a href="https://patchmypc.com/app/uploads/2026/08/image-49.jpg"><picture class="wp-image-193693" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-49.jpg.webp 906w, https://patchmypc.com/app/uploads/2026/08/image-49-300x169.jpg.webp 300w, https://patchmypc.com/app/uploads/2026/08/image-49-768x432.jpg.webp 768w" sizes="(max-width: 906px) 100vw, 906px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 906px) 100vw, 906px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-49.jpg 906w, https://patchmypc.com/app/uploads/2026/08/image-49-300x169.jpg 300w, https://patchmypc.com/app/uploads/2026/08/image-49-768x432.jpg 768w" decoding="async" src="assets/7b2d23350aef5637/img_1.jpg"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">The twelve main steps on the successful path. Read the four phases from left to right, with each phase’s steps running from top to bottom.</p>
+<p class="wp-block-paragraph">Steps 1–9 establish the Autopilot Device association. Step 10 uses that relationship to retrieve OOBE settings. In Step 11, the user signs in, and Windows joins Microsoft Entra ID and enrolls in Intune. Step 12 covers the provisioning work. This order also helps with troubleshooting: an associated device can still have a policy-download or application-installation problem.</p>
+<p class="wp-block-paragraph">We will follow a new Autopilot Device association through the manual OOBE path. Reusing an existing association is a shorter route, which we will return to after the twelve steps.</p>
+<h3 class="wp-block-heading" id="h-step-1-export-the-device-identity">Step 1: Export the device identity<span class="clth-copy-icon" data-heading-id="h-step-1-export-the-device-identity"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">Start on the device while it is still in OOBE. Press the Windows key five times quickly, then open the device association option by clicking the “<strong>assign device association</strong>” button.</p>
+<figure class="wp-block-image size-full"><a href="https://patchmypc.com/app/uploads/2026/08/image-45.jpg"><picture class="wp-image-193684" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-45.jpg.webp 656w, https://patchmypc.com/app/uploads/2026/08/image-45-300x229.jpg.webp 300w" sizes="(max-width: 656px) 100vw, 656px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 656px) 100vw, 656px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-45.jpg 656w, https://patchmypc.com/app/uploads/2026/08/image-45-300x229.jpg 300w" decoding="async" src="assets/7b2d23350aef5637/img_2.jpg"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">The association option in the lab’s OOBE Autopilot menu. Menu labels can differ between Windows builds.</p>
+<p class="wp-block-paragraph">The next page offers a QR-code route and an Export device information link. You need supported physical Windows 11 hardware with an enabled, healthy TPM 2.0; virtual machines are not supported. Check Microsoft’s <a href="https://learn.microsoft.com/en-us/autopilot/device-preparation/device-association/requirements">current requirements</a> for the required Windows updates, network access, licensing, and permissions before testing.</p>
+<p class="wp-block-paragraph">It looks like a simple export page, but Windows does quite a few things before it lets us continue. This smaller flow follows those checks and the CSV export.</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-51-1024x624.jpg"><picture class="wp-image-193701" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-51-1024x624.jpg.webp 1024w, https://patchmypc.com/app/uploads/2026/08/image-51-300x183.jpg.webp 300w, https://patchmypc.com/app/uploads/2026/08/image-51-768x468.jpg.webp 768w, https://patchmypc.com/app/uploads/2026/08/image-51.jpg.webp 1111w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-51-1024x624.jpg 1024w, https://patchmypc.com/app/uploads/2026/08/image-51-300x183.jpg 300w, https://patchmypc.com/app/uploads/2026/08/image-51-768x468.jpg 768w, https://patchmypc.com/app/uploads/2026/08/image-51.jpg 1111w" decoding="async" src="assets/7b2d23350aef5637/img_3.jpg"/>
+</picture>
+</a></figure>
+<h4 class="wp-block-heading" id="h-a-open-the-device-association-page">A. Open the Device Association page<span class="clth-copy-icon" data-heading-id="h-a-open-the-device-association-page"><span class="clth-tooltip">Copy Link</span></span></h4>
+<p class="wp-block-paragraph">Selecting Assign device association opens the page responsible for the identity export and, later, the association attempt.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image.gif"><picture class="wp-image-193677" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image.gif.webp" type="image/webp"/>
+<img alt="" decoding="async" src="assets/7b2d23350aef5637/img_4.gif"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">Before preparing the export, Windows runs the two separate checks at B and C. Both can lead to the completion screen, but they look at different things.</p>
+<h4 class="wp-block-heading" id="h-b-check-the-current-configuration-result">B. Check the current configuration result<span class="clth-copy-icon" data-heading-id="h-b-check-the-current-configuration-result"><span class="clth-tooltip">Copy Link</span></span></h4>
+<p class="wp-block-paragraph"><a>Windows first asks the current DeviceLink manager whether it reports a successful configuration result. This is a status value held in memory by that manager. This first check does not read the registry or the association tag in UEFI.</a></p>
+<p class="wp-block-paragraph">A result of 1 means successful configuration. If the manager reports that value, OOBE moves straight to the association completion screen and skips preparing another export.</p>
+<p class="wp-block-paragraph">If it does not report success, Windows moves to C. The device may already carry an association in firmware even when the current manager does not report a successful result.</p>
+<h4 class="wp-block-heading" id="h-c-check-for-an-existing-device-association-tag">C. Check for an existing device association tag<span class="clth-copy-icon" data-heading-id="h-c-check-for-an-existing-device-association-tag"><span class="clth-tooltip">Copy Link</span></span></h4>
+<p class="wp-block-paragraph">The second check asks Windows for the existing association JWT through the setting named <strong>CloudAssignedDeviceAssociationTag</strong>. In the inspected code, Windows reads the compressed firmware data, decompresses and parses it, and returns the association token as text.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-11.gif"><picture class="wp-image-193690" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-11.gif.webp" type="image/webp"/>
+<img alt="" decoding="async" src="assets/7b2d23350aef5637/img_5.gif"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">The screenshot below shows the backing UEFI variables. The top entry, DeviceLinkJwtCompressed, is present and contains 1,409 bytes. This confirms that data is stored there; the script has not validated its signature. We will decode its contents in Step 8.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-9.gif"><img alt="" class="wp-image-193689" decoding="async" src="assets/7b2d23350aef5637/img_6.gif"/></a></figure>
+<p class="wp-block-paragraph">If Windows returns a nonempty tag, OOBE takes the same completion-screen shortcut and skips preparing a QR code or CSV export. If no tag is returned, or the lookup fails, the page continues to D.</p>
+<p class="wp-block-paragraph">The page is checking the returned tag, not downloading the current OOBE policy. Seeing this completion screen therefore does not prove that the device has already received its settings.</p>
+<h4 class="wp-block-heading" id="h-d-initialize-access-to-the-device-identity">D. Initialize access to the device identity<span class="clth-copy-icon" data-heading-id="h-d-initialize-access-to-the-device-identity"><span class="clth-tooltip">Copy Link</span></span></h4>
+<p class="wp-block-paragraph">If neither check takes the shortcut, Windows initializes the component that provides access to the device’s TPM-backed identity.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-4.gif"><picture class="wp-image-193678" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-4.gif.webp" type="image/webp"/>
+<img alt="" decoding="async" src="assets/7b2d23350aef5637/img_7.gif"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">The TPM matters because the device later needs to prove it can use the private key for that identity.</p>
+<p class="wp-block-paragraph">A missing or incompatible TPM sends the page to the unsupported-device result. Other initialization errors use the error result. If initialization succeeds, Windows starts E and F independently: one prepares the QR representation, and the other prepares the data used to continue.</p>
+<h4 class="wp-block-heading" id="h-e-create-the-qr-code">E. Create the QR code<span class="clth-copy-icon" data-heading-id="h-e-create-the-qr-code"><span class="clth-tooltip">Copy Link</span></span></h4>
+<p class="wp-block-paragraph">One task prepares a compact representation of the device identity for the QR code. Windows minimizes the JSON, compresses it, encodes it using URL-safe Base64, and wraps the result in a URI.</p>
+<p class="wp-block-paragraph">Those transformations make the data suitable for a scannable code…. If we had something we could scan the QR code  with, that would be amazing… but we haven’t… (no companion app)</p>
+<h4 class="wp-block-heading" id="h-f-prepare-the-devicelink-data">F. Prepare the DeviceLink data<span class="clth-copy-icon" data-heading-id="h-f-prepare-the-devicelink-data"><span class="clth-tooltip">Copy Link</span></span></h4>
+<p class="wp-block-paragraph">Windows also prepares the device’s identity data as Base64-encoded JSON. This information goes into the CSV’s Data column when you export it. Decoding that long string reveals the inventory details, DeviceLink identifier, public-key information, and signature.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-16.gif"><picture class="wp-image-193700" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-16.gif.webp" type="image/webp"/>
+<img alt="" decoding="async" src="assets/7b2d23350aef5637/img_8.gif"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">In the sample export, the identity key is named IDK_1. Its public portion can travel in the export. Using the corresponding private key requires the TPM-backed key on the device. That is what lets Windows later prove more than possession of a copied CSV.</p>
+<p class="wp-block-paragraph">When this preparation succeeds, Windows enables the “Next” button. That only means the identity data needed to continue is available. It does not mean Windows has saved a CSV or that Intune has imported it.</p>
+<p class="wp-block-paragraph">At this point, Windows has prepared the data but has not saved the CSV yet. This package identifies the device for pre-association; the tenant’s signed association is obtained later.</p>
+<h4 class="wp-block-heading" id="h-g-select-export-device-information">G. Select Export device information<span class="clth-copy-icon" data-heading-id="h-g-select-export-device-information"><span class="clth-tooltip">Copy Link</span></span></h4>
+<p class="wp-block-paragraph">The technician selects Export device information to start the CSV export. Windows temporarily disables this action while the export runs, preventing another export from starting at the same time.</p>
+<figure class="wp-block-image size-full"><a href="https://patchmypc.com/app/uploads/2026/08/image-14.gif"><picture class="wp-image-193698" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-14.gif.webp" type="image/webp"/>
+<img alt="" decoding="async" src="assets/7b2d23350aef5637/img_9.gif"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">Next is a separate action. It starts discovery and association, which we will use after the import in Step 4.</p>
+<h4 class="wp-block-heading" id="h-h-find-removable-storage">H. Find removable storage<span class="clth-copy-icon" data-heading-id="h-h-find-removable-storage"><span class="clth-tooltip">Copy Link</span></span></h4>
+<p class="wp-block-paragraph">Windows requests an export location on removable storage, such as a USB drive.</p>
+<p class="wp-block-paragraph">If it cannot obtain that location, the page displays an export error. The identity data may already be available, but Windows still needs somewhere to save the file.</p>
+<h4 class="wp-block-heading" id="h-i-write-the-devicelink-csv">I. Write the DeviceLink CSV<span class="clth-copy-icon" data-heading-id="h-i-write-the-devicelink-csv"><span class="clth-tooltip">Copy Link</span></span></h4>
+<p class="wp-block-paragraph">Windows writes the DeviceLink CSV to the selected location. The file contains readable inventory columns and a larger encoded data field carrying the identity package and signature.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-17.gif"><picture class="wp-image-193699" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-17.gif.webp" type="image/webp"/>
+<img alt="" decoding="async" src="assets/7b2d23350aef5637/img_10.gif"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph"><a>The export page allows up to three minutes for this operation. A failure or timeout displays an export error instead of a saved-file confirmation.</a></p>
+<h4 class="wp-block-heading" id="h-j-confirm-that-the-csv-was-saved">J. Confirm that the CSV was saved<span class="clth-copy-icon" data-heading-id="h-j-confirm-that-the-csv-was-saved"><span class="clth-tooltip">Copy Link</span></span></h4>
+<p class="wp-block-paragraph">When the write completes successfully, Windows displays the export confirmation. The CSV is now ready for the administrator to import into Intune in Step 2.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-10.gif"><picture class="wp-image-193688" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-10.gif.webp" type="image/webp"/>
+<img alt="" decoding="async" src="assets/7b2d23350aef5637/img_11.gif"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">Saving the CSV has not associated the device with the tenant. First, the administrator imports it to create the Pre-associated record. Then we return to the device and select Next in Step 4.</p>
+<h3 class="wp-block-heading" id="h-step-2-import-the-csv-and-select-a-policy">Step 2: Import the CSV and select a policy<span class="clth-copy-icon" data-heading-id="h-step-2-import-the-csv-and-select-a-policy"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">In Intune, go to Devices &gt; Enrollment &gt; Device association &gt; Devices and select Add. Upload the DeviceLink CSV. The wizard also lets you assign a Device Preparation policy directly to the device. That assignment is optional; for this walkthrough, select the policy whose OOBE settings the device should receive.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-2.gif"><picture class="wp-image-193674" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-2.gif.webp" type="image/webp"/>
+<img alt="" decoding="async" src="assets/7b2d23350aef5637/img_12.gif"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">Selecting the policy here connects the intended setup configuration to this physical device. Without a device assignment, the documented fallback is the policy assigned to the user who later signs in; that cannot supply this walkthrough’s device-targeted settings ahead of that sign-in. Microsoft’s <a href="https://learn.microsoft.com/en-us/autopilot/device-preparation/tutorial/user-driven/entra-join-device-association#pre-associate-the-device-in-intune">association tutorial</a> also specifies one device per CSV file.</p>
+<h3 class="wp-block-heading" id="h-step-3-intune-records-the-device-as-pre-associated">Step 3: Intune records the device as Pre-associated<span class="clth-copy-icon" data-heading-id="h-step-3-intune-records-the-device-as-pre-associated"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">After import, the device appears as Pre-associated. Intune has a record of the device the organization expects and, in this example, the selected policy. The device has not yet completed the hardware proof and received its final association.</p>
+<figure class="wp-block-image size-full is-resized"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/38d98e47-0ace-4566-85fc-fc519f878634.png"><picture class="wp-image-193800" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/38d98e47-0ace-4566-85fc-fc519f878634.png.webp 1672w, https://patchmypc.com/app/uploads/2026/08/38d98e47-0ace-4566-85fc-fc519f878634-300x169.png.webp 300w, https://patchmypc.com/app/uploads/2026/08/38d98e47-0ace-4566-85fc-fc519f878634-1024x576.png.webp 1024w, https://patchmypc.com/app/uploads/2026/08/38d98e47-0ace-4566-85fc-fc519f878634-768x432.png.webp 768w, https://patchmypc.com/app/uploads/2026/08/38d98e47-0ace-4566-85fc-fc519f878634-1536x864.png.webp 1536w" sizes="(max-width: 1672px) 100vw, 1672px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1672px) 100vw, 1672px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/38d98e47-0ace-4566-85fc-fc519f878634.png 1672w, https://patchmypc.com/app/uploads/2026/08/38d98e47-0ace-4566-85fc-fc519f878634-300x169.png 300w, https://patchmypc.com/app/uploads/2026/08/38d98e47-0ace-4566-85fc-fc519f878634-1024x576.png 1024w, https://patchmypc.com/app/uploads/2026/08/38d98e47-0ace-4566-85fc-fc519f878634-768x432.png 768w, https://patchmypc.com/app/uploads/2026/08/38d98e47-0ace-4566-85fc-fc519f878634-1536x864.png 1536w" decoding="async" src="assets/7b2d23350aef5637/img_13.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph"></p>
+<p class="wp-block-paragraph">If discovery cannot find the device later, this is the first checkpoint: did you import the correct device’s export, into the correct tenant, and does the record appear in the list?</p>
+<p class="wp-block-paragraph">The import gives the service an identity to match. The device still has to demonstrate the corresponding TPM-backed identity before the association sequence can finish.</p>
+<h3 class="wp-block-heading" id="h-step-4-start-the-autopilot-device-association-attempt-in-oobe">Step 4: Start the Autopilot Device Association attempt in OOBE<span class="clth-copy-icon" data-heading-id="h-step-4-start-the-autopilot-device-association-attempt-in-oobe"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">Return to the association page and select Next. The page switches to a progress view and starts discovery. This is the manual path followed here; Microsoft also documents <a href="https://learn.microsoft.com/en-us/autopilot/device-preparation/tutorial/user-driven/entra-join-device-association#complete-device-association">automatic association when a pre-associated device connects to a network in OOBE</a>. A reboot is not required just to use the manual Next action.</p>
+<p class="wp-block-paragraph">Windows first sends the DeviceLink information prepared in Step 1 to the pre-association discovery service. The reply identifies the tenant and its enrollment discovery address. Once those details are available, Windows starts the configuration operation that will discover the remaining endpoints, obtain attestation evidence, retrieve the association, write it locally, and acknowledge completion.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-8.gif"><img alt="" class="wp-image-193676" decoding="async" src="assets/7b2d23350aef5637/img_14.gif"/></a></figure>
+<h3 class="wp-block-heading" id="h-step-5-find-the-tenant-and-its-service-endpoints">Step 5: Find the tenant and its service endpoints<span class="clth-copy-icon" data-heading-id="h-step-5-find-the-tenant-and-its-service-endpoints"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">A device being associated for the first time does not yet know which tenant to contact. Windows therefore starts with a global pre-association discovery address. The inspected client contains:</p>
+<p class="wp-block-paragraph"><a href="https://aps.windowsautopilot.microsoft.com/ztd/devicelink/preassociationDiscovery">https://aps.windowsautopilot.microsoft.com/ztd/devicelink/preassociationDiscovery</a></p>
+<p class="wp-block-paragraph">Windows submits its DeviceLink information and receives the tenant identifier and an enrollment discovery URL. This first exchange answers which organization expects the device and where Windows should ask for that organization’s service endpoints.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-42.jpg"><picture class="wp-image-193683" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-42.jpg.webp 988w, https://patchmypc.com/app/uploads/2026/08/image-42-300x169.jpg.webp 300w, https://patchmypc.com/app/uploads/2026/08/image-42-768x432.jpg.webp 768w" sizes="(max-width: 988px) 100vw, 988px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 988px) 100vw, 988px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-42.jpg 988w, https://patchmypc.com/app/uploads/2026/08/image-42-300x169.jpg 300w, https://patchmypc.com/app/uploads/2026/08/image-42-768x432.jpg 768w" decoding="async" src="assets/7b2d23350aef5637/img_15.jpg"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">The registry capture shows the first exchange’s routing information under HKLM\SOFTWARE\Microsoft\Provisioning\AutopilotSettings. The value names combine a DeviceLink identifier with _DiscoveryUrl and _TenantIdHint. In this lab, those values identify https://enrollment.manage.microsoft.com/EnrollmentServer/Discovery.svc and the tenant GUID.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-1.gif"><picture class="wp-image-193672" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-1.gif.webp" type="image/webp"/>
+<img alt="" decoding="async" src="assets/7b2d23350aef5637/img_16.gif"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">The prefix on these two value names matches the linkId in the later decoded association. The values provide routing context; setting a tenant hint by hand would not replace the device’s hardware proof.</p>
+<p class="wp-block-paragraph">Windows then contacts the enrollment discovery service using that tenant context. The response provides addresses for retrieving the signed association, acknowledging it, obtaining attestation, and requesting pre-enrollment settings. Discovery.svc is the starting point for this exchange, not the final policy-download URL.</p>
+<p class="wp-block-paragraph">The two discovery stages are why a single URL does not describe the whole process. Keep the address returned for this tenant separate from a manually configured test override, and do not copy one lab’s regional gateway address into every device.</p>
+<h3 class="wp-block-heading" id="h-step-6-prove-the-tpm-backed-device-identity">Step 6: Prove the TPM-backed device identity<span class="clth-copy-icon" data-heading-id="h-step-6-prove-the-tpm-backed-device-identity"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">Discovery tells Windows where to continue. It has not yet proved that the computer making the request is the physical device represented by the imported record. Someone could copy the CSV; that does not give them the ability to use the corresponding private key in this device’s TPM.</p>
+<p class="wp-block-paragraph">Windows prepares evidence about the TPM-backed identity and submits it to Microsoft Azure Attestation, or MAA. The attestation service evaluates that evidence and, on success, returns a signed token. Windows can present this token when it asks the provisioning service for the association.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-44.jpg"><picture class="wp-image-193679" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-44.jpg.webp 655w, https://patchmypc.com/app/uploads/2026/08/image-44-300x169.jpg.webp 300w" sizes="(max-width: 655px) 100vw, 655px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 655px) 100vw, 655px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-44.jpg 655w, https://patchmypc.com/app/uploads/2026/08/image-44-300x169.jpg 300w" decoding="async" src="assets/7b2d23350aef5637/img_17.jpg"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">There are different keys involved. The endorsement key, or EK, belongs to the TPM and helps establish its authenticity. An Attestation Identity Key, or AIK, supports attestation of TPM-backed operations. The DeviceLink identity key, or IDK, is the identity used for the link data. That is why the sample export can contain separate EK_1 and IDK_1 entries without those names referring to the same key.</p>
+<p class="wp-block-paragraph">The returned token travels in a field named <strong>maaJwt.</strong> JWT means JSON Web Token: it carries claims and, in this case, a signature that the receiving service can validate. Here the claims concern attestation. This token is not the tenant association that Windows will store in firmware in Step 8.</p>
+<p class="wp-block-paragraph">Microsoft’s <a href="https://learn.microsoft.com/en-us/azure/attestation/tpm-attestation-concepts">TPM attestation documentation</a> explains these underlying key roles. The client code shows the requests and how Windows handles their results; it does not reveal every rule the Device Association service uses to accept or reject a device.</p>
+<p class="wp-block-paragraph">Windows now has the attestation material needed for the association request. No Entra join or Intune enrollment has taken place as a result of this proof alone.</p>
+<h3 class="wp-block-heading" id="h-step-7-retrieve-the-signed-device-association">Step 7: Retrieve the signed device association<span class="clth-copy-icon" data-heading-id="h-step-7-retrieve-the-signed-device-association"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">Windows asks the provisioning service for the signed DeviceLink association. The service can use the device identifiers and attestation evidence to evaluate that request against the pre-associated device. The result we want is the tenant’s signed association, not another inventory export.</p>
+<p class="wp-block-paragraph"><a>The inspected client’s default field list for this request contains</a>, contextId, linkId, tpmKeyId, maaJwt, and deviceLinkJson. The first four supply the request context, link and key identifiers, and attestation token. The fifth is an additional DeviceLink JSON field. This list comes from the client code; it is not a captured HTTP body showing the exact contents sent in this lab run.</p>
+<p class="wp-block-paragraph">The request has a different purpose from the acknowledgement in Step 9. Requesting the association asks for the signed result. Acknowledging it later reports that Windows has completed the local apply operation.</p>
+<p class="wp-block-paragraph">Windows supports receiving the association directly or retrieving it from a download location returned by the service. That gives us another useful failure boundary: discovery and attestation may have worked even when downloading the signed association fails.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-48.jpg"><picture class="wp-image-193694" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-48.jpg.webp 1004w, https://patchmypc.com/app/uploads/2026/08/image-48-300x150.jpg.webp 300w, https://patchmypc.com/app/uploads/2026/08/image-48-768x384.jpg.webp 768w" sizes="(max-width: 1004px) 100vw, 1004px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1004px) 100vw, 1004px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-48.jpg 1004w, https://patchmypc.com/app/uploads/2026/08/image-48-300x150.jpg 300w, https://patchmypc.com/app/uploads/2026/08/image-48-768x384.jpg 768w" decoding="async" src="assets/7b2d23350aef5637/img_18.jpg"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">Downloading the association finishes this step, but it does not finish the sequence. Windows must first store what it received and then acknowledge the completed local operation.</p>
+<h3 class="wp-block-heading" id="h-step-8-store-the-device-association-tag-in-uefi">Step 8: Store the device association tag in UEFI<span class="clth-copy-icon" data-heading-id="h-step-8-store-the-device-association-tag-in-uefi"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">Windows applies the signed association by writing it into UEFI firmware storage. This is outside the Windows installation, which is what makes the association useful after a reinstall.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-7.gif"><img alt="" class="wp-image-193686" decoding="async" src="assets/7b2d23350aef5637/img_19.gif"/></a></figure>
+<p class="wp-block-paragraph">The DeviceLinkJwtCompressed holds the compressed association. It is accompanied by DeviceLinkJwtLastWrite and DeviceLinkId under the UEFI namespace {B3DE75DA-819C-4FD5-9F01-C3D49E8CBBD7}. The first value contains 1,409 bytes. Reading those bytes proves that data exists at that location; it does not validate the token.</p>
+<p class="wp-block-paragraph">The decoder identifies gzip compression and UTF-8 text. After decompression, the data is a JWT with a header, payload, and signature. The header identifies RS256, and the signature in this sample is 256 bytes. The decoder explicitly reports that signature validation was not performed, so its displayed claims must be treated as unverified output.</p>
+<p class="wp-block-paragraph">The payload explains what the association carries. It includes the tenant ID, DeviceLink ID, TPM identity-key ID, device inventory, public-key information, and the enrollment discovery URL. There are also issuer, audience, and time claims. Those fields describe the association and its context; they are not instructions to hide an OOBE page.</p>
+<p class="wp-block-paragraph">A shortened selection of the decoded fields makes the structure easier to read. The identifying values below are masked; this is not the entire token:</p>
+<p class="wp-block-paragraph">{</p>
+<p class="wp-block-paragraph">  “linkId”: “&lt;device-link GUID&gt;”,</p>
+<p class="wp-block-paragraph">  “tpmKeyId”: “&lt;identity-key GUID&gt;”,</p>
+<p class="wp-block-paragraph">  “tenantId”: “&lt;tenant GUID&gt;”,</p>
+<p class="wp-block-paragraph">  “deviceModel”: “Latitude 3540”,</p>
+<p class="wp-block-paragraph">  “deviceIdKeyType”: “IdentityDeviceKey”,</p>
+<p class="wp-block-paragraph">  “discoveryUrl”: “&lt;enrollment discovery URL&gt;”</p>
+<p class="wp-block-paragraph">}</p>
+<p class="wp-block-paragraph">A link ID identifies the DeviceLink relationship. A key ID identifies the TPM-backed identity involved. The signed association JWT carries claims about that relationship. These values belong together, but they are not interchangeable.</p>
+<p class="wp-block-paragraph">When Windows exposes this association as CloudAssignedDeviceAssociationTag, it returns the token text through the Autopilot settings path. It is not returning the whole Device Preparation policy. Windows still has to retrieve the current OOBE configuration, which is where Step 10 comes in.</p>
+<h3 class="wp-block-heading" id="h-step-9-acknowledge-the-completed-association">Step 9: Acknowledge the completed association<span class="clth-copy-icon" data-heading-id="h-step-9-acknowledge-the-completed-association"><span class="clth-tooltip">Copy Link</span></span></h3>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-15.gif"><picture class="wp-image-193696" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-15.gif.webp" type="image/webp"/>
+<img alt="" decoding="async" src="assets/7b2d23350aef5637/img_20.gif"/>
+</picture>
+</a></figure>
+<h4 class="wp-block-heading" id="h-a-local-apply-completed">A. Local apply completed<span class="clth-copy-icon" data-heading-id="h-a-local-apply-completed"><span class="clth-tooltip">Copy Link</span></span></h4>
+<p class="wp-block-paragraph">The signed association has been downloaded and written to UEFI. Windows proceeds to the acknowledgement only after that local apply operation succeeds. One job remains: report the completed operation to the service.</p>
+<h4 class="wp-block-heading" id="h-b-send-the-acknowledgement">B. Send the acknowledgement<span class="clth-copy-icon" data-heading-id="h-b-send-the-acknowledgement"><span class="clth-tooltip">Copy Link</span></span></h4>
+<p class="wp-block-paragraph">Windows contacts the acknowledgement endpoint obtained during discovery. Its default field list contains contextId, linkId, tpmKeyId, and maaJwt: the request context, link identifier, TPM key identifier, and MAA attestation token. That attestation token is separate from the association JWT stored in UEFI. The default acknowledgement list does not include the deviceLinkJson field from the earlier association request.</p>
+<h4 class="wp-block-heading" id="h-c-handle-the-response">C. Handle the response<span class="clth-copy-icon" data-heading-id="h-c-handle-the-response"><span class="clth-tooltip">Copy Link</span></span></h4>
+<p class="wp-block-paragraph">Windows waits for the response and checks the outcome. This is the device reporting that it completed the local operation. The acknowledgement is not the service independently reading back the contents of the firmware.</p>
+<p class="wp-block-paragraph">If acknowledgement fails, the attempt does not return a successful configuration result, even though the local write has already succeeded. That is why finding the tag afterward does not, by itself, prove that every operation in the attempt completed.</p>
+<h4 class="wp-block-heading" id="h-d-show-association-completion">D. Show association completion<span class="clth-copy-icon" data-heading-id="h-d-show-association-completion"><span class="clth-tooltip">Copy Link</span></span></h4>
+<p class="wp-block-paragraph"><a>After successful acknowledgement, the configuration operation returns success, represented by the value 1. OOBE checks that result before displaying the completion screen for this attempt.</a></p>
+<p class="wp-block-paragraph">Back in Intune, the lab device now shows Associated. It still shows Not enrolled. We have established the device’s association with the tenant; we have not enrolled this Windows installation yet.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-53.png"><picture class="wp-image-193702" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-53.png.webp 942w, https://patchmypc.com/app/uploads/2026/08/image-53-300x136.png.webp 300w, https://patchmypc.com/app/uploads/2026/08/image-53-768x348.png.webp 768w" sizes="(max-width: 942px) 100vw, 942px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 942px) 100vw, 942px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-53.png 942w, https://patchmypc.com/app/uploads/2026/08/image-53-300x136.png 300w, https://patchmypc.com/app/uploads/2026/08/image-53-768x348.png 768w" decoding="async" src="assets/7b2d23350aef5637/img_21.png"/>
+</picture>
+</a></figure>
+<h3 class="wp-block-heading" id="h-step-10-retrieve-and-apply-the-device-s-oobe-settings">Step 10: Retrieve and apply the device’s OOBE settings<span class="clth-copy-icon" data-heading-id="h-step-10-retrieve-and-apply-the-device-s-oobe-settings"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">The association is now in place, so Windows can identify the tenant before anyone signs in. It still needs the instructions for this device’s setup. The association answers which organization the device belongs to; the downloaded policy supplies the OOBE configuration.</p>
+<p class="wp-block-paragraph">The A–E flow below follows that connection from firmware to the setup screens: load the association, request settings, receive the applicable policy, save it locally, and use the settings as OOBE continues.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-41.jpg"><picture class="wp-image-193675" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-41.jpg.webp 656w, https://patchmypc.com/app/uploads/2026/08/image-41-300x165.jpg.webp 300w" sizes="(max-width: 656px) 100vw, 656px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 656px) 100vw, 656px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-41.jpg 656w, https://patchmypc.com/app/uploads/2026/08/image-41-300x165.jpg 300w" decoding="async" src="assets/7b2d23350aef5637/img_22.jpg"/>
+</picture>
+</a></figure>
+<h4 class="wp-block-heading" id="h-a-use-the-stored-association">A. Use the stored association<span class="clth-copy-icon" data-heading-id="h-a-use-the-stored-association"><span class="clth-tooltip">Copy Link</span></span></h4>
+<p class="wp-block-paragraph">Windows starts with the association stored in UEFI. The decoded example in Step 8 contains the tenant ID, link ID, device-key information, and enrollment discovery URL. Together, these give Windows device and tenant context for finding the organization’s services.</p>
+<p class="wp-block-paragraph">That JWT is exposed through CloudAssignedDeviceAssociationTag. Its presence makes the association available to the settings path. It does not itself select a keyboard layout, hide a license page, or supply a naming template.</p>
+<h4 class="wp-block-heading" id="h-b-request-the-current-settings">B. Request the current settings<span class="clth-copy-icon" data-heading-id="h-b-request-the-current-settings"><span class="clth-tooltip">Copy Link</span></span></h4>
+<p class="wp-block-paragraph">Windows resolves the tenant’s service endpoints using its discovery context. One returned address identifies the pre-enrollment settings operation: RetrievePreEnrollmentSettingsUri. This is where the settings request goes; it is not simply a download from the Discovery.svc address shown in the registry.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-3.gif"><picture class="wp-image-193673" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-3.gif.webp" type="image/webp"/>
+<img alt="" decoding="async" src="assets/7b2d23350aef5637/img_23.gif"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">The evidence report above compares the link and tenant context exposed locally; it is not a network capture. In the inspected code, the default settings request uses these three fields:</p>
+<p class="wp-block-paragraph">{</p>
+<p class="wp-block-paragraph">  “contextId”: “&lt;request context identifier&gt;”,</p>
+<p class="wp-block-paragraph">  “tpmKeyId”: “&lt;device identity-key identifier&gt;”,</p>
+<p class="wp-block-paragraph">  “maaJwt”: “&lt;Microsoft Azure Attestation token&gt;”</p>
+<p class="wp-block-paragraph">}</p>
+<p class="wp-block-paragraph">These are illustrative values, not a captured request. The context ID identifies the request context, the key ID identifies the device key, and the MAA token supplies attestation evidence. This explains how Windows can ask for settings before a user supplies an organizational account.</p>
+<h4 class="wp-block-heading" id="h-c-return-the-applicable-policy">C. Return the applicable policy<span class="clth-copy-icon" data-heading-id="h-c-return-the-applicable-policy"><span class="clth-tooltip">Copy Link</span></span></h4>
+<p class="wp-block-paragraph"><a>The service returns the OOBE configuration for the associated device. In this lab, the administrator selected a Device Preparation policy directly for the device during import. That lets the service select the intended configuration without first waiting to learn which user will sign in.</a></p>
+<p class="wp-block-paragraph">Microsoft documents that a device-targeted policy takes precedence over a user-targeted policy. Without a device assignment, the fallback is the policy assigned to the user who signs in, if one is assigned. That is why selecting the device’s policy in Step 2 matters for this early OOBE configuration. The assignment behavior is described in the <a href="https://learn.microsoft.com/en-us/autopilot/device-preparation/tutorial/user-driven/entra-join-autopilot-policy">Device Preparation policy guidance</a>.</p>
+<h4 class="wp-block-heading" id="h-d-save-the-settings-locally">D. Save the settings locally<span class="clth-copy-icon" data-heading-id="h-d-save-the-settings-locally"><span class="clth-tooltip">Copy Link</span></span></h4>
+<p class="wp-block-paragraph"><a>Windows saves the downloaded tag-policy configuration locally so the OOBE components can read it as setup continues. The implementation uses</a> the AutopilotTagPoliciesFile.json, and the directory capture below confirms this location on the lab device:</p>
+<p class="wp-block-paragraph">C:\Windows\ServiceState\wmansvc\AutopilotTagPoliciesFile.json</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-12.gif"><picture class="wp-image-193692" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-12.gif.webp" type="image/webp"/>
+<img alt="" decoding="async" src="assets/7b2d23350aef5637/img_24.gif"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">The local policy JSON below shows the resulting settings. It contains the deployment policy name and identifiers, download information, language and region, naming values, and CloudAssignedOobeConfig. That last value combines several OOBE options into one number; it is a bitmask, not another policy identifier.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-5.gif"><picture class="wp-image-193685" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-5.gif.webp" type="image/webp"/>
+<img alt="" decoding="async" src="assets/7b2d23350aef5637/img_25.gif"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">Selected local policy JSON. The OOBE flag value is 1052, and both device-name fields still contain test-%RAND:4%, the template rather than the resolved hostname.</p>
+<p class="wp-block-paragraph">The local JSON also contains the policy and download context, which is more useful than checking only whether a file exists. In this capture, the language and region are os-default. The two name fields contain the same template. We will check the actual computer name at sign-in in Step 11.</p>
+<p class="wp-block-paragraph">Another place to inspect is the shared Autopilot registry cache at HKLM\SOFTWARE\Microsoft\Provisioning\AutopilotPolicyCache. Its PolicyJsonCache value can hold policy JSON, while ProfileAvailable is an availability flag.</p>
+<p class="wp-block-paragraph">That shared cache can also contain data from another Autopilot path or an earlier run. Compare the tenant, policy identifiers, and download information with the device and run you are investigating. A file or cache entry existing is useful evidence, but it does not establish that the current attempt downloaded a new policy successfully.</p>
+<h4 class="wp-block-heading" id="h-e-apply-the-oobe-settings">E. Apply the OOBE settings<span class="clth-copy-icon" data-heading-id="h-e-apply-the-oobe-settings"><span class="clth-tooltip">Copy Link</span></span></h4>
+<p class="wp-block-paragraph">OOBE consumes the available settings as setup reaches the relevant pages. The lab policy requests automatic keyboard configuration and hiding the EULA, privacy, and change-account options. Language and region remain at the operating system defaults, so this example does not demonstrate changing the display language.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-6.gif"><picture class="wp-image-193682" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-6.gif.webp" type="image/webp"/>
+<img alt="" decoding="async" src="assets/7b2d23350aef5637/img_26.gif"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">Receiving those settings does not guarantee that every screen disappears in every setup path. Microsoft documents that language and keyboard screens are not hidden when OOBE uses Wi-Fi. Hiding the change-account options also depends on Microsoft Entra company branding being configured. These are <a href="https://learn.microsoft.com/en-us/autopilot/device-preparation/tutorial/user-driven/entra-join-autopilot-policy#out-of-box-experience-oobe-settings">documented OOBE conditions</a>, so seeing one of those pages is not enough to diagnose an association failure.</p>
+<p class="wp-block-paragraph">The device still needs internet access to retrieve current policy. A valid firmware association can coexist with a settings-download failure caused by DNS, connectivity, or the service response. Check where the flow stopped: does Windows have the association, can it reach the resolved endpoint, and is the expected policy available locally?</p>
+<h3 class="wp-block-heading" id="h-step-11-sign-in-join-entra-id-and-enroll-in-intune">Step 11: Sign in, join Entra ID, and enroll in Intune<span class="clth-copy-icon" data-heading-id="h-step-11-sign-in-join-entra-id-and-enroll-in-intune"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">OOBE proceeds to the organization’s sign-in screen. The user authenticates, and Windows continues through Microsoft Entra join and Intune enrollment. Device Association supplied the device context early enough for the OOBE policy to be available before this point.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-40.jpg"><picture class="wp-image-193680" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-40.jpg.webp 560w, https://patchmypc.com/app/uploads/2026/08/image-40-300x164.jpg.webp 300w" sizes="(max-width: 560px) 100vw, 560px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 560px) 100vw, 560px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-40.jpg 560w, https://patchmypc.com/app/uploads/2026/08/image-40-300x164.jpg 300w" decoding="async" src="assets/7b2d23350aef5637/img_27.jpg"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">The organization’s sign-in screen, with the computer name checked locally.</p>
+<p class="wp-block-paragraph"><a>The screenshot also gives us a concrete naming checkpoint. The command prompt reports</a> test-3947 while the device is still at sign-in. The local policy contained test-%RAND:4%; Windows has already resolved the template into an actual computer name. That matches the policy’s enabled naming setting and Microsoft’s documentation that naming occurs before enrollment.</p>
+<p class="wp-block-paragraph">Entra join and Intune enrollment still have their own requirements and failure points. Association does not bypass authentication or licensing. Microsoft also documents that <a href="https://learn.microsoft.com/en-us/autopilot/device-preparation/tutorial/user-driven/entra-join-device-association#additional-information">associated devices are treated as corporate-owned</a>. Corporate recognition, OOBE customization, and completed enrollment remain separate things to check. I discussed that distinction in <a href="https://patchmypc.com/blog/the-autopilot-profile-doesnt-decide-if-a-device-is-corporate/">The Autopilot Profile Doesn’t Decide If a Device Is Corporate</a>.</p>
+<h3 class="wp-block-heading" id="h-step-12-device-preparation-performs-the-provisioning-work">Step 12: Device Preparation performs the provisioning work<span class="clth-copy-icon" data-heading-id="h-step-12-device-preparation-performs-the-provisioning-work"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">After sign-in and enrollment, the focus moves to provisioning. Device Preparation coordinates the work needed to get Windows ready, including the applications and scripts selected for the deployment. A failure here does not automatically mean that the earlier association failed.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-47.jpg"><picture class="wp-image-193691" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-47.jpg.webp 655w, https://patchmypc.com/app/uploads/2026/08/image-47-300x169.jpg.webp 300w" sizes="(max-width: 655px) 100vw, 655px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 655px) 100vw, 655px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-47.jpg 655w, https://patchmypc.com/app/uploads/2026/08/image-47-300x169.jpg 300w" decoding="async" src="assets/7b2d23350aef5637/img_28.jpg"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">During this part of setup, Windows starts management synchronization, obtains and initializes the provisioning agent, and follows its progress. The progress page reflects the provisioning result, including errors; it is not just waiting for the association flag to change. For background on the original flow, see my <a href="https://call4cloud.nl/autopilot-device-preparation-v2-apv2/">earlier Device Preparation walkthrough</a>. It predates Device Association, so its original OOBE limitations need to be read in that context.</p>
+<p class="wp-block-paragraph">Finishing the provisioning work tracked by OOBE also does not mean every background management policy has finished applying. Keep the result of this deployment stage separate from everything Intune may deliver after the user reaches the desktop.</p>
+<h1 class="wp-block-heading" id="h-what-happens-after-a-wipe-or-reinstall">What happens after a wipe or reinstall?</h1>
+<p class="wp-block-paragraph"><a>A full Windows wipe or reinstall removes the installation’s local state, but normally leaves the UEFI association in place. Fresh OOBE can use that association to find the tenant and request current settings when network access becomes available. Here I mean a full wipe or reinstall, not the separate Windows Autopilot Reset feature.</a><a href="#_msocom_10">[TR10]</a> </p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-50.jpg"><picture class="wp-image-193697" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-50.jpg.webp 891w, https://patchmypc.com/app/uploads/2026/08/image-50-300x169.jpg.webp 300w, https://patchmypc.com/app/uploads/2026/08/image-50-768x433.jpg.webp 768w" sizes="(max-width: 891px) 100vw, 891px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 891px) 100vw, 891px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-50.jpg 891w, https://patchmypc.com/app/uploads/2026/08/image-50-300x169.jpg 300w, https://patchmypc.com/app/uploads/2026/08/image-50-768x433.jpg 768w" decoding="async" src="assets/7b2d23350aef5637/img_29.jpg"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">As long as the association is still usable and the service accepts the device, this reuse path does not require exporting another CSV and repeating pre-association. The relationship is already there. What the new Windows installation needs is the current policy and its own enrollment.</p>
+<p class="wp-block-paragraph">The policy may have changed since the previous deployment. Windows is not restoring a complete old OOBE policy from firmware. It requests current settings, which may give the new installation different OOBE behavior or a different naming template.</p>
+<h2 class="wp-block-heading" id="h-remove-the-association-when-the-device-leaves">Remove the association when the device leaves<span class="clth-copy-icon" data-heading-id="h-remove-the-association-when-the-device-leaves"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Persistence is convenient for redeployment, but it matters when hardware leaves the organization. Reinstalling Windows or deleting an Intune managed-device record does not by itself clear the association stored in UEFI.</p>
+<p class="wp-block-paragraph">For a fully associated device, follow Microsoft’s <a href="https://learn.microsoft.com/en-us/autopilot/device-preparation/device-association/remove-association">removal procedure</a>. Unenroll it from active MDM management first; otherwise a later check-in can associate it again. Clear the association on the physical device, then remove the association record from Intune. Deleting the managed-device record and deleting the Device Association record are different operations.</p>
+<p class="wp-block-paragraph">A device that is only Pre-associated has not completed the association stage and can have its pending record removed in Intune. Avoid turning an old screenshot’s variable names into a universal firmware-removal script: the published examples and this lab do not use identical names. Verify the current supported procedure for the device before changing firmware data.</p>
+<h2 class="wp-block-heading" id="h-what-device-association-changes-for-device-preparation">What Device Association changes for Device Preparation<span class="clth-copy-icon" data-heading-id="h-what-device-association-changes-for-device-preparation"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The useful change is the timing. Windows can recognize the expected physical device before a user signs in, prove its TPM-backed identity, and obtain a signed association for the tenant. That association survives outside the Windows installation and gives a later OOBE session the context needed to request settings.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-13.gif"><img alt="" class="wp-image-193695" decoding="async" src="assets/7b2d23350aef5637/img_30.gif"/></a></figure>
+<p class="wp-block-paragraph">That is what connects the CSV at the beginning of this walkthrough to the customized setup screens at the end. The import creates the expected record, the device completes the association, and the policy download supplies the settings. Entra join, Intune enrollment, and Device Preparation then continue with their own work.</p>
+<p class="wp-block-paragraph">This adds early OOBE configuration to Device Preparation. It does not make classic Autopilot pre-provisioning, sometimes called White Glove, available through Device Preparation; Microsoft’s <a href="https://learn.microsoft.com/en-us/autopilot/device-preparation/compare">deployment comparison</a> still lists that mode as unsupported. The value here is already concrete: a device-specific setup experience before the first sign-in, with a clearer checkpoint for each part of the process.</p>
+<p class="wp-block-paragraph"><a id="_msocom_1"></a></p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
