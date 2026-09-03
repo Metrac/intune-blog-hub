@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Windows Autopilot Device Association: somebody has to be the OEM</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Call4Cloud (Rudy Ooms)</span>
+    <span class="date">September 3, 2026</span>
+  </div>
+  <h1>Windows Autopilot Device Association: somebody has to be the OEM</h1>
+  <div class="orig">Saved for offline reading · <a href="https://call4cloud.nl/autopilot-get-device-association/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p>Windows Autopilot Device Association lets a brand-new laptop work out which tenant it belongs to before anyone signs in, which is genuinely useful, right up to the moment you realise there is no manufacturer doing that registration for you. This post is about why that gap exists, what filling it by hand actually costs you, and <strong><a href="https://github.com/call4cloud-code/Autopilot-Device-Association-Script/tree/main/Script" rel="noopener" target="_blank">Get-AutopilotDeviceAssociation,</a></strong> the PowerShell script I wrote so you do not have to.</p><p data-inserter-version="2" data-placement-location="under_page_title" id="ezoic-pub-ad-placeholder-102"></p>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="A_new_laptop_is_not_Associated"></span>A new laptop is not Associated<span class="ez-toc-section-end"></span></h2>
+<p>Out of the box, a device has no idea who you are. It does not know your company, your naming rules, or which setup screens you would rather it skipped. With classic Autopilot you fixed that in advance: register the hardware, and the moment the machine reached the network it recognised you.</p>
+<p>
+  Autopilot device preparation removed that requirement, and honestly that was a relief. No more chasing hardware hashes before anyone could unbox anything. But it came with a catch that does not get talked about much: the device stays anonymous until somebody signs in. Everything you might want to happen early – the right name, the right screens, the right settings – waits for a user to show up.
+</p><p data-inserter-version="2" data-placement-location="under_first_paragraph" id="ezoic-pub-ad-placeholder-110"></p>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="Which_is_exactly_what_Device_Association_is_for"></span>Which is exactly what Device Association is for<span class="ez-toc-section-end"></span></h2>
+<p>Device Association gives the machine a way to prove where it belongs before anyone logs in. The device proves itself, the service hands back a signed answer, and Windows tucks that answer away in firmware. From the next boot onwards the setup screens already know whose laptop this is. If you want the long version, I walked the whole flow <a href="https://patchmypc.com/blog/windows-autopilot-device-association/" rel="noopener" target="_blank">in the previous post</a>.</p>
+<p>
+  That is the whole point, and it is a good one. Then you go and use it.
+</p>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="What_it_takes"></span>What it takes<span class="ez-toc-section-end"></span></h2>
+<figure class="wp-block-image size-large wp-lightbox-container" data-wp-context='{"imageId":"6a9947c258d3b"}' data-wp-interactive="core/image"><img alt="" class="wp-image-25897" data-wp-class--hide="state.isContentHidden" data-wp-class--show="state.isContentVisible" data-wp-init="callbacks.setButtonStyles" data-wp-on-async--click="actions.showLightbox" data-wp-on-async--load="callbacks.setButtonStyles" data-wp-on-async-window--resize="callbacks.setButtonStyles" decoding="async" src="assets/875330f3ba723272/img_0.png"/><button aria-haspopup="dialog" aria-label="Enlarge" class="lightbox-trigger" data-wp-init="callbacks.initTriggerButton" data-wp-on-async--click="actions.showLightbox" data-wp-style--right="state.imageButtonRight" data-wp-style--top="state.imageButtonTop" type="button">
+<svg fill="none" viewbox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+<path d="M2 0a2 2 0 0 0-2 2v2h1.5V2a.5.5 0 0 1 .5-.5h2V0H2Zm2 10.5H2a.5.5 0 0 1-.5-.5V8H0v2a2 2 0 0 0 2 2h2v-1.5ZM8 12v-1.5h2a.5.5 0 0 0 .5-.5V8H12v2a2 2 0 0 1-2 2H8Zm2-12a2 2 0 0 1 2 2v2h-1.5V2a.5.5 0 0 0-.5-.5H8V0h2Z" fill="#fff"></path>
+</svg>
+</button></figure>
+<p>Every step needs a person standing there. Press the Windows key five times to reach a page that is hidden on purpose. Export a file to a USB stick, with about three minutes before it gives up on you. Carry the stick to a machine with a browser, sign in, upload it, pick a policy. Walk back to the device. Press Next. Carry on. Once, that is educational. Twice is fine. On a bench of twenty machines it is your afternoon.<br/></p><p data-inserter-version="2" data-placement-location="under_second_paragraph" id="ezoic-pub-ad-placeholder-111"></p>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="So_you_are_the_OEM_now"></span>So you are the OEM now<span class="ez-toc-section-end"></span></h2>
+<p>Here is the bit that catches people out. In the classic Autopilot (APv1) there is a manufacturer quietly doing this for you (or your overpaid engineer). The hardware gets registered before the box is even sealed, and the laptop turns up already knowing where it belongs. It is such a normal part of the story that you stop noticing it is happening at all.</p>
+<p>
+  Device Association has no such manufacturer. There is no factory step. There is no pre-associated hardware to order. Nobody upstream is doing the boring part.
+</p>
+<p>
+  So you are the OEM now. Your factory is a desk, your assembly line is a USB stick, and your production run is however many laptops will fit on it. Congratulations on the new role. There is no lanyard.
+</p>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="So_we_needed_something_else"></span>So we needed something else<span class="ez-toc-section-end"></span></h2>
+<p>Autopilot v1 solved this years ago, and not with a portal. You ran <a href="https://www.powershellgallery.com/packages/Get-WindowsAutoPilotInfo" rel="noopener" target="_blank">Get-WindowsAutopilotInfo -Online</a> on the device and that was it. Nobody has hand-carried a hardware hash since. It was never the only supported route – it is just the one everybody actually used, because it turned a chore into a line in a script.</p><p data-inserter-version="2" data-placement-location="mid_content" id="ezoic-pub-ad-placeholder-112"></p>
+<p>
+  Device Association turned up without one. Same problem, no tool. And the old one is no help here: it collects a different thing and sends it somewhere different.
+</p>
+<p>
+  So I wrote the missing one. It is called Get-AutopilotDeviceAssociation, which is not the most imaginative name in the world – but that is rather the point. If you already know what Get-WindowsAutopilotInfo does for classic Autopilot, you already know what this does for Device Association.
+</p>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="Where_to_get_it"></span>Where to get it<span class="ez-toc-section-end"></span></h2>
+<p>It lives on the PowerShell Gallery (and<strong><a href="https://github.com/call4cloud-code/Autopilot-Device-Association-Script/tree/main/Script" rel="noopener" target="_blank"> github</a></strong>), so there is nothing to download by hand and nothing to unblock. From an elevated 64-bit PowerShell session: </p>
+<p><strong>Install-Script -Name Get-AutopilotDeviceAssociation </strong></p>
+<p>That puts it on your PATH, so from then on you just type the command. When I ship a new version, Update-Script Get-AutopilotDeviceAssociation picks it up. The source, the issue tracker and the full parameter reference are <a href="https://github.com/call4cloud-code/Autopilot-Device-Association-Script" rel="noopener" target="_blank">on GitHub</a>.</p><p data-inserter-version="2" data-placement-location="long_content" id="ezoic-pub-ad-placeholder-113"></p>
+<figure class="wp-block-image wp-lightbox-container" data-wp-context='{"imageId":"6a9947c25926e"}' data-wp-interactive="core/image"><img alt="How Get-AutopilotDeviceAssociation works: the device, the script and Intune, side by side" class="wp-image-25893" data-wp-class--hide="state.isContentHidden" data-wp-class--show="state.isContentVisible" data-wp-init="callbacks.setButtonStyles" data-wp-on-async--click="actions.showLightbox" data-wp-on-async--load="callbacks.setButtonStyles" data-wp-on-async-window--resize="callbacks.setButtonStyles" decoding="async" src="assets/875330f3ba723272/img_1.png"/><button aria-haspopup="dialog" aria-label="Enlarge" class="lightbox-trigger" data-wp-init="callbacks.initTriggerButton" data-wp-on-async--click="actions.showLightbox" data-wp-style--right="state.imageButtonRight" data-wp-style--top="state.imageButtonTop" type="button">
+<svg fill="none" viewbox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+<path d="M2 0a2 2 0 0 0-2 2v2h1.5V2a.5.5 0 0 1 .5-.5h2V0H2Zm2 10.5H2a.5.5 0 0 1-.5-.5V8H0v2a2 2 0 0 0 2 2h2v-1.5ZM8 12v-1.5h2a.5.5 0 0 0 .5-.5V8H12v2a2 2 0 0 1-2 2H8Zm2-12a2 2 0 0 1 2 2v2h-1.5V2a.5.5 0 0 0-.5-.5H8V0h2Z" fill="#fff"></path>
+</svg>
+</button></figure>
+<p>The same journey, in one command. If you want the details, it is all in the README. What used to be a USB stick and a round trip to the portal is now something you run on the device: from a task sequence, from a staging bench, or across twenty machines in a row without standing in front of any of them.<br/></p>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="Associate_test_remove"></span>Associate, test, remove<span class="ez-toc-section-end"></span></h2>
+<p>There are really only three things you do with <strong>Get-AutopilotDeviceAssociation. </strong></p>
+<h3 class="wp-block-heading"><span class="ez-toc-section" id="Associate_it"></span>Associate it<span class="ez-toc-section-end"></span></h3>
+<p><strong>Get-AutopilotDeviceAssociation -Action Full </strong></p>
+<p>Run that on the device. It gets the identity out of the machine, registers it in Intune against a Device Preparation policy, waits until Intune agrees the device is known, and then tells Windows to go and fetch its signed association. Everything the five manual steps did, without the five manual steps. </p>
+<figure class="wp-block-image"><img alt="" class="wp-image-25894" decoding="async" src="assets/875330f3ba723272/img_2.png"/></figure>
+<h3 class="wp-block-heading"><span class="ez-toc-section" id="Test_it"></span>Test it<span class="ez-toc-section-end"></span></h3>
+<p><strong>Get-AutopilotDeviceAssociation -Action ReadAssociation -Validate -Online </strong></p>
+<p>
+  This one surprised me. The association does not last forever – it has an expiry date. So a device can look perfectly associated and quietly not be, and nothing was telling you which. This checks whether it is really there, whether it is still in date, and whether it actually belongs to this machine, and gives you the answer in one line.
+</p><p data-inserter-version="2" data-placement-location="longer_content" id="ezoic-pub-ad-placeholder-114"></p>
+<figure class="wp-block-image"><img alt="" class="wp-image-25895" decoding="async" src="assets/875330f3ba723272/img_3.png"/></figure>
+<h3 class="wp-block-heading"><span class="ez-toc-section" id="Remove_it"></span>Remove it<span class="ez-toc-section-end"></span></h3>
+<p><strong>Get-AutopilotDeviceAssociation -Action RemoveAssociation -DeleteCloudAssociation </strong></p>
+<p>The half nobody had scripted. After a lab run you are left with something signed sitting in firmware and a record sitting in Intune, and no tidy way to clear either. This clears both, checking what is there before it touches anything, checking again afterwards, and only ever going near the things it knows about. Add  WhatIf the first time if you would rather watch it think than watch it act. </p>
+<figure class="wp-block-image"><img alt="" class="wp-image-25896" decoding="async" src="assets/875330f3ba723272/img_4.png"/></figure>
+<p>
+  Removing the association does not unenroll the device, and that is deliberate. That is a different job, and doing it by accident would be rude.
+</p>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="What_is_still_missing"></span>What is still missing<span class="ez-toc-section-end"></span></h2>
+<p><strong>The factory. </strong>Everything above is a stand-in for a manufacturer step that does not exist yet. If Microsoft and the <strong>OEMs ever build the real thing,</strong> this becomes a lab tool and I will be delighted.</p>
+<p><strong>Running it unattended. </strong>By hand it is easy – you sign in and it goes. Unattended means credentials, and credentials in scripts are how people end up having a bad week. There is a safer option built in, and it is still the part of this I like least.</p><p data-inserter-version="2" data-placement-location="longest_content" id="ezoic-pub-ad-placeholder-115"></p>
+<p><strong>It is all preview. </strong>The interfaces underneath are beta. They will change, and this will have to change with them.
+</p>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="Links"></span>Links<span class="ez-toc-section-end"></span></h2>
+</div>
+</div></div>
+</article>
+</body>
+</html>

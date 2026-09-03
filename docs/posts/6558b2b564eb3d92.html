@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Detect and Block Shadow AI with Intune: OpenClaw in Practice</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">September 3, 2026</span>
+  </div>
+  <h1>Detect and Block Shadow AI with Intune: OpenClaw in Practice</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/intune-shadow-ai-openclaw/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p class="jr-title-context">Topic of this page: Intune Shadow AI: Detect and Block OpenClaw. Focus: Detect and Block Shadow AI with Intune: OpenClaw in Practice.</p>
+<p class="wp-block-paragraph">Local AI agents are moving from developer experiments to normal Windows endpoints. They can read files, call tools and act with the permissions of the signed-in user. That makes them useful, but it also creates a new blind spot for endpoint teams. In this blog post I show how the new Intune Shadow AI controls can discover local agents such as OpenClaw, give you useful inventory data and help you decide what to control.</p>
+<p><span id="more-20230"></span>
+</p>
+<h2 class="wp-block-heading" id="why-is-shadow-ai-on-the-endpoint-different">Why is Shadow AI on the endpoint different?</h2>
+<p class="wp-block-paragraph">A browser-based AI service is normally visible through network, identity or SaaS controls. A local agent is different. It can run from a command line, a desktop app, an IDE extension, Node.js or Windows Subsystem for Linux. It can also inherit access to local files, repositories, tokens and enterprise services from the user.</p>
+<p class="wp-block-paragraph">The problem is not that every local agent is malicious. The problem is that many organizations cannot answer three simple questions:</p>
+<ol class="wp-block-list">
+<li>Which local AI agents are installed?</li>
+<li>Under which user and process context do they run?</li>
+<li>Which agents are approved, and which ones should be restricted?</li>
+</ol>
+<p class="wp-block-paragraph">Microsoft now connects three Intune capabilities for this scenario: inventory through the <a href="https://learn.microsoft.com/en-us/intune/device-configuration/collect-device-properties" rel="noopener" target="_blank">Properties catalog</a>, fleet investigation through Device Query and a <a href="https://learn.microsoft.com/en-us/intune/device-security/security-baselines/ref-openclaw-settings" rel="noopener" target="_blank">Local AI Agent Baseline for OpenClaw</a>. The feature is currently in public preview, so I would treat it as a controlled pilot and not as a finished enforcement product.</p>
+<h2 class="wp-block-heading" id="how-does-the-intune-shadow-ai-workflow-work">How does the Intune Shadow AI workflow work?</h2>
+<p class="wp-block-paragraph">I separate the workflow into three phases.</p>
+<figure class="wp-block-table"><table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Intune capability</th>
+<th>Question it answers</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Discover</td>
+<td>Properties catalog</td>
+<td>Is a local AI agent present?</td>
+</tr>
+<tr>
+<td>Investigate</td>
+<td>Device Inventory and Device Query</td>
+<td>Where does it run and in which context?</td>
+</tr>
+<tr>
+<td>Control</td>
+<td>Local AI Agent Baseline – OpenClaw</td>
+<td>Which execution paths should I restrict?</td>
+</tr>
+</tbody>
+</table></figure>
+<p class="wp-block-paragraph">This order matters. Blocking first can affect legitimate Node.js or WSL workloads. Discovery gives you the evidence to create a smaller pilot and test the impact before enforcing anything broadly.</p>
+<h2 class="wp-block-heading" id="how-do-i-collect-the-local-ai-agent-inventory">How do I collect the Local AI Agent inventory?</h2>
+<p class="wp-block-paragraph">In the Microsoft Intune admin center, go to <strong>Devices &gt; Configuration &gt; Create &gt; New Policy</strong>. Select <strong>Windows 10 and later</strong> as the platform and <strong>Properties catalog</strong> as the profile type.</p>
+<p class="wp-block-paragraph">I used the following profile name in my lab:</p>
+<p class="wp-block-paragraph"><code>WIN - Inventory - Local AI Agents</code></p>
+<p class="wp-block-paragraph">The description should explain the security outcome, not only the technical setting. I used: <code>Collect local AI agent and OpenClaw inventory for Shadow AI visibility.</code></p>
+<figure class="wp-block-image"><img alt="Create a Microsoft Intune Properties catalog profile for local AI agent inventory" data-recalc-dims="1" decoding="async" src="assets/6558b2b564eb3d92/img_0.jpg"/></figure>
+<p class="wp-block-paragraph">On <strong>Configuration properties</strong>, select <strong>Add properties</strong> and search for <code>AI agent</code>. The new <strong>Local AI Agent (Preview)</strong> category contains 11 properties in my tenant. The live picker includes values such as agent name, version, file name, host process, install location, install scope, user identifiers and execution context.</p>
+<figure class="wp-block-image"><img alt="Select Local AI Agent Preview properties in Microsoft Intune" data-recalc-dims="1" decoding="async" src="assets/6558b2b564eb3d92/img_1.jpg"/></figure>
+<p class="wp-block-paragraph">I selected the full category for the first pilot. The most important values are the agent name, install location, install scope and host process. Microsoft specifically recommends collecting the host process because OpenClaw can run through different processes such as <code>node.exe</code> or <code>wsl.exe</code>.</p>
+<p class="wp-block-paragraph"><strong>Note:</strong> The Properties catalog is for Intune-managed, corporate-owned Windows devices that are Microsoft Entra joined or hybrid joined. Initial inventory data can take up to 24 hours to appear.</p>
+<h2 class="wp-block-heading" id="how-would-i-assign-the-profile">How would I assign the profile?</h2>
+<p class="wp-block-paragraph">I would not start with all devices. My first assignment would be a small group that contains:</p>
+<ul class="wp-block-list">
+<li>developer workstations;</li>
+<li>IT admin devices;</li>
+<li>Windows devices used for AI and automation testing;</li>
+<li>one clean reference device without local AI tooling.</li>
+</ul>
+<p class="wp-block-paragraph">The clean reference device is useful. It shows whether the inventory is producing unexpected matches before you use the data for a security decision.</p>
+<p class="wp-block-paragraph">After the profile is assigned, you can open a Windows device and go to <strong>Monitor &gt; Device Inventory</strong>. For a fleet view, use <span class="jr-inline-emphasis">Devices &gt; Device Query</span> and select the Local AI Agent entity from the schema browser.</p>
+<p class="wp-block-paragraph"><span class="jr-inline-emphasis">Hint:</span> Natural-language KQL assistance does not currently support the Local AI Agent entity. I would build the first query from the property picker instead of guessing field names.</p>
+<h2 class="wp-block-heading" id="what-should-i-investigate-before-blocking">What should I investigate before blocking?</h2>
+<p class="wp-block-paragraph">An agent name is only the start. I would review the following context for every result:</p>
+<figure class="wp-block-table"><table>
+<thead>
+<tr>
+<th>Signal</th>
+<th>Why it matters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Host process</td>
+<td>Shows whether the agent is running through Node.js, WSL or another runtime</td>
+</tr>
+<tr>
+<td>Install location</td>
+<td>Helps separate a managed installation from a user-local copy</td>
+</tr>
+<tr>
+<td>Install scope</td>
+<td>Shows whether the agent is installed per user or for the device</td>
+</tr>
+<tr>
+<td>User identifier</td>
+<td>Helps identify the responsible user and business context</td>
+</tr>
+<tr>
+<td>Execution context</td>
+<td>Shows how the agent is launched and what it might inherit</td>
+</tr>
+<tr>
+<td>Version</td>
+<td>Helps find outdated or unmanaged variants</td>
+</tr>
+</tbody>
+</table></figure>
+<p class="wp-block-paragraph">I would then classify the result into one of four groups: approved, approved with conditions, unknown, or prohibited. This is more useful than one large allow-or-block list because local AI tools have very different access paths and business value.</p>
+<h2 class="wp-block-heading" id="what-does-the-openclaw-baseline-actually-block">What does the OpenClaw baseline actually block?</h2>
+<p class="wp-block-paragraph">The <span class="jr-inline-emphasis">Local AI Agent Baseline – OpenClaw (Preview)</span> is available in Intune Endpoint security. It uses Windows controls that disrupt common OpenClaw execution paths. The current Microsoft reference includes settings for WSL and outbound firewall rules for Node.js executables.</p>
+<p class="wp-block-paragraph">That is useful, but it also explains why testing is important. Node.js and WSL are not exclusive to OpenClaw. A broad restriction can also affect developers, automation tools and legitimate applications.</p>
+<p class="wp-block-paragraph">My rollout order would be:</p>
+<ol class="wp-block-list">
+<li>collect the Local AI Agent inventory;</li>
+<li>review the affected processes and users;</li>
+<li>create an exception list for approved workloads;</li>
+<li>deploy the baseline to a small pilot;</li>
+<li>monitor application and network impact;</li>
+<li>expand only after the pilot is clean.</li>
+</ol>
+<p class="wp-block-paragraph"><span class="jr-inline-emphasis">Important:</span> Microsoft states that the baseline might not block every execution path. I see it as one control in a layered design, not as a complete local-agent security product.</p>
+<h2 class="wp-block-heading" id="where-does-microsoft-defender-fit">Where does Microsoft Defender fit?</h2>
+<p class="wp-block-paragraph">Intune is a good starting point for configuration and inventory. Microsoft Defender for Endpoint goes deeper into discovery and investigation. Its <a href="https://learn.microsoft.com/en-us/defender-endpoint/local-agent-discovery-overview" rel="noopener" target="_blank">local AI agent discovery</a> can surface supported CLI agents, desktop apps, agentic IDEs and MCP configurations. The supported list includes tools such as Codex CLI, Claude Code, GitHub Copilot CLI, Codex Desktop and Cursor.</p>
+<p class="wp-block-paragraph">For me, the split is clear:</p>
+<ul class="wp-block-list">
+<li>use Intune to collect device inventory and deploy endpoint controls;</li>
+<li>use Defender to investigate agent, device, identity and MCP relationships;</li>
+<li>use your application and data governance controls to decide which tools are approved.</li>
+</ul>
+<p class="wp-block-paragraph">This is similar to the layered approach I describe in my <a href="https://jannikreinhard.com/lets-look-in-the-future-of-device-management/">AI-driven endpoint management post</a> and my <a href="https://jannikreinhard.com/intune-advanced-analytics-market-comparison/">Intune Advanced Analytics comparison</a>.</p>
+<h2 class="wp-block-heading" id="what-would-i-do-first">What would I do first?</h2>
+<p class="wp-block-paragraph">I would start with discovery, not enforcement. Create the Properties catalog profile, assign it to a representative pilot and document what you find. The most valuable result might not be OpenClaw itself. It might be the first complete picture of local AI tooling on your Windows endpoints.</p>
+<p class="wp-block-paragraph">The feature is still in preview, but the direction is important. Endpoint management is becoming part of AI governance. Local agents are no longer only a developer-tool discussion. They are identities, processes, permissions and data access running on managed devices.</p>
+<p class="wp-block-paragraph">I hope this gives you a practical starting point for testing the new Intune Shadow AI controls without breaking legitimate work.</p>
+<p class="wp-block-paragraph">Stay healthy, Cheers Jannik</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
