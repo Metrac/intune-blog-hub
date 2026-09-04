@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your Windows Compliance Report Is Lying to You</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Call4Cloud (Rudy Ooms)</span>
+    <span class="date">September 4, 2026</span>
+  </div>
+  <h1>Your Windows Compliance Report Is Lying to You</h1>
+  <div class="orig">Saved for offline reading · <a href="https://patchmypc.com/blog/your-windows-compliance-report-is-lying-to-you/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="post-content">
+<p class="wp-block-paragraph">Most enterprise patching programs were built for a different era. Ten years ago, keeping Windows current eliminated a meaningful portion of enterprise risk. Today, the operating system is just one piece of a much larger software ecosystem that includes browsers, collaboration platforms, document readers, VPNs, remote access tools, developer utilities, and hundreds of other third-party applications. Attackers adapted to that reality years ago. Many organizations haven’t. </p>
+<p class="wp-block-paragraph">According to <strong><a href="https://www.verizon.com/business/resources/reports/dbir/">Verizon’s 2026 Data Breach Investigations Report</a></strong>, vulnerability exploitation was involved in 48% of breaches, making it one of the most common initial access vectors.¹ Meanwhile, software outside the operating system shows up again and again in CISA advisories, the Known Exploited Vulnerabilities Catalog, and high-profile breach investigations involving file transfer platforms, remote access software, and other third-party technologies.²³⁴ The attack surface didn’t disappear. It shifted. </p>
+<p class="wp-block-paragraph">The problem isn’t just that there are more vulnerabilities. It’s that we’re discovering them faster than most organizations can remediate them. AI-assisted security research is accelerating vulnerability discovery, but infrastructure teams are still constrained by the same internal workflows and manual processes they’ve relied on for years. Organizations are getting better at finding exposure. Attackers are getting faster at exploiting it. Too many patching programs are still operating on timelines built for a pre-AI threat landscape. </p>
+<h2 class="wp-block-heading" id="h-the-iceberg-beneath-patch-tuesday-nbsp">The Iceberg Beneath Patch Tuesday <span class="clth-copy-icon" data-heading-id="h-the-iceberg-beneath-patch-tuesday-nbsp"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Most organizations measure patching success by looking at Windows compliance. Green dashboards. Healthy endpoints. Current cumulative updates. Those metrics matter. They just don’t tell the whole story. </p>
+<p class="wp-block-paragraph">The modern enterprise isn’t protected by Windows alone. It’s protected by hundreds of applications running on top of it: browsers, collaboration tools, PDF readers, VPN clients, password managers, developer tools, line-of-business software, and everything else employees install to do their jobs. Windows updates follow a predictable schedule with mature deployment tools and reporting. Third-party applications don’t. Every vendor ships on its own timeline, uses its own installer, requires its own testing, and often belongs to nobody in particular. </p>
+<p class="wp-block-paragraph">That’s the iceberg. A device can be fully compliant from a Windows perspective while still running multiple applications with known exploitable vulnerabilities. Your dashboard says it’s healthy. An attacker sees something very different. </p>
+<h2 class="wp-block-heading" id="h-attackers-follow-the-path-of-least-resistance-nbsp">Attackers Follow the Path of Least Resistance <span class="clth-copy-icon" data-heading-id="h-attackers-follow-the-path-of-least-resistance-nbsp"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">My black hat counterparts don’t care whether they’re exploiting Windows, Chrome, Acrobat, or your VPN client. They care about one thing: which target gives them the highest return for the least amount of effort. </p>
+<p class="wp-block-paragraph">As Windows became harder to attack, they moved on. Third-party applications are patched on different schedules, packaged differently, tested differently, and often owned by nobody in particular. Chaos is good for attackers. </p>
+<p class="wp-block-paragraph">Lack of awareness isn’t the issue. Every security team knows third-party software is risky. The problem is that discovering vulnerable software takes minutes. Packaging, testing, approvals, and deployment take days, weeks, even months. That’s where attackers make up the difference. </p>
+<h2 class="wp-block-heading" id="h-security-s-new-scaling-problem-nbsp">Security’s New Scaling Problem <span class="clth-copy-icon" data-heading-id="h-security-s-new-scaling-problem-nbsp"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Over the last two decades, the cybersecurity industry made enormous investments in visibility. Vulnerability scanners became more sophisticated, asset inventories became more accurate, threat intelligence became more accessible, and organizations gained significantly better insight into the software running across their environments. </p>
+<p class="wp-block-paragraph">By some measures, those investments paid off. </p>
+<p class="wp-block-paragraph">Most enterprise organizations can identify vulnerable software more efficiently than they could ten years ago, but detection and remediation are not the same animal. </p>
+<p class="wp-block-paragraph">Meanwhile, AI-assisted security research is accelerating vulnerability discovery. Infrastructure teams, however, still have the same staffing, maintenance windows, and deployment processes they had a few years ago. When you can discover vulnerabilities twice as fast but can’t remediate them any faster, the backlog isn’t a temporary problem. It’s your operating model. </p>
+<h2 class="wp-block-heading" id="h-the-wrong-metric-nbsp">The Wrong Metric <span class="clth-copy-icon" data-heading-id="h-the-wrong-metric-nbsp"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Windows compliance is still important. Nobody is arguing otherwise. But if your patch management strategy begins and ends with operating system updates, you’re measuring the easiest part of the problem, not the part attackers care about most. </p>
+<p class="wp-block-paragraph">Organizations don’t reduce risk by producing greener dashboards. They reduce risk by shrinking the time between discovering a vulnerability and updating the software. That means automating packaging, reducing testing friction, simplifying deployments, and treating third-party applications as a core part of the security program rather than an afterthought. </p>
+<p class="wp-block-paragraph">The iceberg isn’t getting smaller. It’s getting larger. The organizations that adapt won’t be the ones that discover the most vulnerabilities. They’ll be the ones that can remediate them before somebody else takes advantage of them. </p>
+<h2 class="wp-block-heading" id="h-closing-the-gap-nbsp">Closing the Gap <span class="clth-copy-icon" data-heading-id="h-closing-the-gap-nbsp"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">This problem doesn’t go away with another scanner to doomscroll. The solution is removing the friction between finding a vulnerability and deploying the fix. </p>
+<p class="wp-block-paragraph">That’s where automation changes the equation. </p>
+<p class="wp-block-paragraph">Patch My PC works alongside Microsoft Intune, Configuration Manager, and WSUS to automate the packaging and deployment of third-party application updates. Instead of spending hours rebuilding packages and chasing installers, endpoint teams can automate repetitive work while designing deployment rings and rollout schedules that fit their environment, getting updates into production before attackers can reverse-engineer the patch. </p>
+<p class="wp-block-paragraph">Visibility matters, too. <strong><a href="https://patchmypc.com/product/advanced-insights/">Patch My PC Advanced Insights </a></strong>provides compliance reporting for supported third-party applications, making it easy to see what’s current, what’s vulnerable, and where remediation has stalled. Better visibility leads to better deployment decisions. Less time building spreadsheets. More time reducing risk. </p>
+<p class="wp-block-paragraph">The organizations that succeed over the next decade won’t be the ones that find the most vulnerabilities. They’ll be the ones that can consistently move updates from discovery to deployment before attackers have a chance to move first. </p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
