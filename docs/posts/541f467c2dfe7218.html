@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1PhoneMirror Levels Up: Webcam, Stats, Better Screenshots, and Signed</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">MSEndpointMgr</span>
+    <span class="date">September 5, 2026</span>
+  </div>
+  <h1>1PhoneMirror Levels Up: Webcam, Stats, Better Screenshots, and Signed</h1>
+  <div class="orig">Saved for offline reading · <a href="https://msendpointmgr.com/2026/09/05/1phonemirror-levels-up-webcam-stats-better-screenshots-and-signed/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p data-block-type="core">It’s been a few months since <a data-id="https://msendpointmgr.com/2026/05/18/1phonemirror-free-screen-mirroring-tool-for-intune-admin/" data-type="link" href="https://msendpointmgr.com/2026/05/18/1phonemirror-free-screen-mirroring-tool-for-intune-admin/" rel="noreferrer noopener" target="_blank">I first wrote about my 1PhoneMirror tool</a>, and it has kept moving – mostly driven by my own needs and, honestly, a fair bit of curiosity-driven tinkering. I use it regularly myself, both for writing documentation and for live demos, and both of those use cases have quietly pushed the tool forward in directions I didn’t originally plan for, and it’s just reached a milestone I wasn’t sure I’d get to: it’s now properly code-signed!</p>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#live-demos-are-their-own-kind-of-feedback-loop" id="live-demos-are-their-own-kind-of-feedback-loop"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Live demos are their own kind of feedback loop</h2>
+<p data-block-type="core">Something I didn’t expect: doing live demos with 1PhoneMirror generates almost as much feedback as actually shipping features. People notice the framed screenshots in a guide and ask how I got them so clean. People watching a demo ask what app I’m using to mirror the phone onto the screen. Those small questions turned into a habit – every time someone asked “how do you do that”, I’d go home with a new idea for the backlog.</p>
+<p data-block-type="core">That loop is basically how most of what follows came to exist. None of it was planned in May. It all came from actually using the tool.</p>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#whats-new-in-1phonemirror-since-the-last-post" id="whats-new-in-1phonemirror-since-the-last-post"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>What’s new in 1PhoneMirror since the last post</h2>
+<p data-block-type="core">A few of the additions are worth calling out specifically for anyone using 1PhoneMirror for documentation or training work.</p>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#a-webcam-drawer-for-showing-how-not-just-what" id="a-webcam-drawer-for-showing-how-not-just-what"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>A webcam drawer, for showing <em>how</em>, not just <em>what</em></h3>
+<p data-block-type="core">Screen mirroring only tells half the story in a live demo. It shows what’s on the phone, not how someone is actually holding it, tapping it, or scanning something next to it. The new <strong>webcam drawer</strong> (<code>W</code>) slides out from the bottom bezel and shows a live camera feed right alongside the mirrored phone, styled to match the rest of the app. This is perfect when you want a webcam showing your hands handling the phone.</p>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="1PhoneMirror" class="wp-image-27031" decoding="async" src="assets/541f467c2dfe7218/img_0.png"/><figcaption class="wp-element-caption">The webcam drawer, open during a live walkthrough</figcaption></figure>
+<p data-block-type="core">The app lets you easily switch between available webcams on our computer with the buttons in the right-side bezel of the camera drawer. Screenshots and recordings capture the phone and the webcam together as a single framed image, so there’s nothing to stitch together afterward.</p>
+<video autoplay="" loop="" muted="" playsinline="">
+<source src="https://msendpointmgr.com/wp-content/uploads/2026/08/20260827_110500_recording.mp4" type="video/mp4">
+</source></video>
+<p data-block-type="core">The example above shows a recording demonstrating how to navigate the phone, including the webcam of hand motions</p>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#a-small-statistics-panel-mostly-for-me" id="a-small-statistics-panel-mostly-for-me"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>A small Statistics panel, mostly for me</h3>
+<p data-block-type="core">The newest addition is a <strong>Statistics</strong> drawer (<code>T</code>), sitting next to the log viewer. It’s a simple, private view of your own usage – sessions and minutes mirrored, screenshots, annotations, OCR copies, and recordings, split between iOS and Android. This gives you insights into your actual usage of the tool and the value it hopefully bring to your daily workflow.</p>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-27033" decoding="async" src="assets/541f467c2dfe7218/img_1.png"/><figcaption class="wp-element-caption">The statistics drawer with KPI’s and details is also available in the CSV</figcaption></figure>
+<p data-block-type="core"><br/>Everything lives in a local CSV on your own machine, with a button to open it directly for further analysis on your own. It was built for the same reason as everything else here – I wanted to know my own patterns – but it’s there for anyone who’s curious about their own usage too.</p>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#screenshots-sized-exactly-for-word-and-powerpoint" id="screenshots-sized-exactly-for-word-and-powerpoint"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Screenshots sized exactly for Word and PowerPoint</h3>
+<p data-block-type="core">This one came straight out of documentation pain. I was constantly resizing pasted screenshots by hand to fit a guide. Now you can tell 1PhoneMirror to resize screenshots to an exact height in centimeters before saving or copying them — set it once in Settings, and every screenshot comes out already sized, still sharp, ready to paste.</p>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-27034" decoding="async" src="assets/541f467c2dfe7218/img_2.png"/></figure>
+<p data-block-type="core">Now I get the resize to an exact height; no more manual resizing afterward</p>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#smaller-1phonemirror-things" id="smaller-1phonemirror-things"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Smaller 1PhoneMirror things</h3>
+<p data-block-type="core">Between the headline features, there’s a steady trickle of smaller polish that’s easy to forget happened at all:</p>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core">Bezel side buttons were reorganized for better sizing and visibility.</li>
+<li data-block-type="core">Capture files now follow a consistent `&lt;date&gt; &lt;time&gt; &lt;function&gt;` naming pattern, so they sort chronologically in Explorer without any extra effort.</li>
+<li data-block-type="core">Integration with my favorite screenshot tool, <a data-id="https://skotheimsvik.no/5-ways-to-hack-snagit-and-boost-your-productivity" data-type="link" href="https://skotheimsvik.no/5-ways-to-hack-snagit-and-boost-your-productivity" rel="noreferrer noopener" target="_blank">Snagit</a>.</li>
+<li data-block-type="core">Automatic update check upon launching the app</li>
+<li data-block-type="core">Screenshot annotations</li>
+<li data-block-type="core">OCR copy text from the phone</li>
+<li data-block-type="core">The in-app Version History scrollbar is now click-draggable, instead of scroll-only.</li>
+<li data-block-type="core">and more…</li>
+</ul>
+<p data-block-type="core">Honestly, I lose track of the smaller changes myself between releases, which is exactly what the in-app <strong>Version History</strong> panel is for. Press `V` at any time to see the full, dated list of everything that’s shipped, big or small.</p>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-27035" decoding="async" src="assets/541f467c2dfe7218/img_3.png"/></figure>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#1phonemirror-is-now-signed" id="1phonemirror-is-now-signed"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>1PhoneMirror is now signed</h2>
+<p data-block-type="core">Code signing has been on my radar since the start, and I’m happy to say that as of v0.6.0 it’s finally sorted: <strong>1PhoneMirror is now digitally signed.</strong></p>
+<p data-block-type="core">Getting here took a couple of attempts. I first looked at SignPath’s open-source signing program, which didn’t pan out, and then moved to Azure Trusted Signing. The one thing standing in my way there was the Public Trust identity validation – it simply wasn’t available for Norway, so I parked the whole idea. That has since changed: the Norwegian validation path opened up, I went through it as a registered sole proprietorship, and signing started working.</p>
+<p data-block-type="core">The result is that every <code>1PhoneMirror-*.msi</code> release, and every executable and DLL bundled inside it, is now signed and timestamped, with a real, verified publisher behind it. In practice, Windows SmartScreen and Microsoft Defender now recognize 1PhoneMirror as coming from a known publisher instead of throwing the usual “unknown publisher” warning at people trying it for the first time.</p>
+<p data-block-type="core">I still publish the SHA-256 hash on every GitHub Release for anyone who wants to verify their download, but now there’s a proper signature backing it too. For a solo side project, that’s a nicer place to land than I expected when I first started writing this section.</p>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#1phonemirror-distributed-using-intune" id="1phonemirror-distributed-using-intune"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>1PhoneMirror distributed using Intune</h3>
+<p data-block-type="core">Another nice side effect of properly signing the application is that it can now be distributed through enterprise management platforms such as Microsoft Intune without the trust and reputation concerns typically associated with unsigned software. I’ve successfully tested deployment of the MSI using Patch My PC’s Custom App feature integrated with Intune, and the installation, detection, and update experience worked exactly as expected. </p>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-27051" decoding="async" src="assets/541f467c2dfe7218/img_4.png"/></figure>
+<p data-block-type="core">For anyone looking to make 1PhoneMirror available to users at scale or for users on locked-down devices without local admin privileges (read: anyone), that opens the door to standard enterprise software deployment and lifecycle management.</p>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#what-actually-keeps-me-going" id="what-actually-keeps-me-going"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>What actually keeps me going</h2>
+<p data-block-type="core">I added a fully anonymous, opt-in usage ping a while back, mostly out of curiosity more than anything strategic. You can opt out entirely in Settings, and some of you have (no hard feelings, I promise the counter still ticks along fine without you).</p>
+<p data-block-type="core">I don’t check the numbers often. They’re not a dashboard I live in. But every time I do look, it’s the same three reactions in a row: humbled, proud, and – genuinely – surprised.</p>
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="" class="wp-image-27042" decoding="async" src="assets/541f467c2dfe7218/img_5.png"/></figure>
+<p data-block-type="core">Since the ping went live, 1PhoneMirror has logged close to <strong>3,300 launches</strong>, and the pattern suggests it’s being opened somewhere, by someone, pretty much every single day. That’s not a huge number in the grand scheme of software, but it’s a real number of real people who found this thing useful enough to keep coming back to.</p>
+<p data-block-type="core">And that raises more questions than it answers. Who are you? Where did you even find this app? How are you actually using it day to day? What features are you missing? What’s annoying you about it right now?</p>
+<p data-block-type="core">I have no way of knowing any of that from a counter alone, which is exactly why the comment field below exists. If you’re one of those ~3,300 launches, I’d genuinely love to hear from you.</p>
+<p class="post-views content-post post-27026 entry-meta load-static" data-pvc-id="27026" data-pvc-type="post">
+<span class="post-views-icon dashicons dashicons-chart-bar"></span> <span class="post-views-label">Views:</span> <span class="post-views-count">19</span>
+</p>
+<p class="entry-tags">
+<a href="https://msendpointmgr.com/tag/intune/" rel="tag">Intune</a> </p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

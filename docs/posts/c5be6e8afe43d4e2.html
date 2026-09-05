@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intune Newsletter – 4th September 2026</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Andrew Taylor</span>
+    <span class="date">September 4, 2026</span>
+  </div>
+  <h1>Intune Newsletter – 4th September 2026</h1>
+  <div class="orig">Saved for offline reading · <a href="https://andrewstaylor.com/2026/09/04/intune-newsletter-4th-september-2026/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text">
+<p>September has arrived and with it comes both the conference season and a LOT of rain.  Congratulations to the new Intune MVPs this week, especially <a href="https://www.linkedin.com/in/nickydewestelinck/">Nicky De Westelinck</a> and <a href="https://www.linkedin.com/in/mads-johansen/">Mads Johansen</a> who you will have seen in here a lot (Nicky even has a post this week)</p>
+<hr/>
+<h1>Community Content</h1>
+<p>With the end-of-life of the Dev Boxes in Azure, Microsoft announced a developer special Windows 365 image at Build 2026.  This post from <a href="https://www.linkedin.com/in/areshsarkari/">Aresh Sarkari</a> looks at what it includes and also has a useful script to quickly provision a machine!</p>
+<blockquote class="wp-embedded-content" data-secret="tgZBUtxarx"><p><a href="https://askaresh.com/2026/09/02/windows-365-cloud-pc-for-developers-developer-configuration-image-powershell-provisioning/">Windows 365 Cloud PC for Developers – Developer Configuration Image + PowerShell Provisioning</a></p></blockquote>
+<p></p>
+<hr/>
+<p><a href="https://www.linkedin.com/in/michaelsendpoint/">Michael Frank</a> continues diving into the world of security copilot, this time looking at the new vulnerability agent, what it brings and how to use it</p>
+<p><a href="https://michaelsendpoint.com/intune/SecurityCopilot/VulnerabilityAgent.html">https://michaelsendpoint.com/intune/SecurityCopilot/VulnerabilityAgent.html</a></p>
+<hr/>
+<p>We have the third part of the excellent series from <a href="https://www.linkedin.com/in/michael-meier-ba3b72210/">Michael Meier</a> looking at automating your custom VM images.  This part looks at a limitation on editing your templates after deployment and how to work around it with DevOps pipelines</p>
+<blockquote class="wp-embedded-content" data-secret="OFaBRzaeok"><p><a href="https://mikemdm.de/2026/08/30/using-azure-image-builder-to-build-your-custom-vm-images-part-3/">Using Azure Image Builder to build your custom VM Images – Part 3</a></p></blockquote>
+<p></p>
+<hr/>
+<p>On the subject of AVD, you will want a secure landing zone in place before you start building anything.  This comprehensive guide from <a href="https://www.linkedin.com/in/dieterkempeneers/">Dieter Kempeneers</a> is a great starting point</p>
+<p><a href="https://kempeneers.eu/2026/08/31/building-a-secure-azure-landing-zone-for-avd-and-windows-365/">https://kempeneers.eu/2026/08/31/building-a-secure-azure-landing-zone-for-avd-and-windows-365/</a></p>
+<hr/>
+<p>If you are also managing Entra environments, you probably know the pain of managing custom extensions.  Luckily for you, <a href="https://www.linkedin.com/in/sebastian-markdanner/">Sebastian F. Markdanner</a> has a new application to help you</p>
+<p><a href="https://www.chanceofsecurity.com/post/introducing-entra-extensions-manager">https://www.chanceofsecurity.com/post/introducing-entra-extensions-manager</a></p>
+<hr/>
+<p>Now point in time restore is GA on Windows, learn how to manage it and use it here from <a href="https://www.linkedin.com/in/peterwoude/">Peter van der Woude</a></p>
+<blockquote class="wp-embedded-content" data-secret="G71RR519wv"><p><a href="https://petervanderwoude.nl/post/configuring-point-in-time-restore-in-windows/">Configuring Point-in-time restore in Windows</a></p></blockquote>
+<p></p>
+<hr/>
+<p>Newly minted MVP <a href="https://www.linkedin.com/in/nickydewestelinck/">Nicky De Westelinck</a> looks at all of the new goodies available for Android Enterprise in the 2608 Intune release</p>
+<blockquote class="wp-embedded-content" data-secret="ddKb2GQ18Q"><p><a href="https://www.nickydewestelinck.be/2026/09/01/whats-new-for-android-enterprise-in-microsoft-intune-2608-august-2026-highlights/">What’s New for Android Enterprise in Microsoft Intune 2608: August 2026 Highlights</a></p></blockquote>
+<p></p>
+<hr/>
+<p>You have until November to remove any MemberOf rule within Entra dynamic groups before they simply stop working.  Use this script from <a href="https://www.linkedin.com/in/tobias-eriksson-713612183/">Tobias Eriksson</a> to rapidly fix them</p>
+<blockquote class="wp-embedded-content" data-secret="gS1jK5srzv"><p><a href="https://tob-it.se/how-to-find-and-bulk-replace-every-memberof-rule-in-entra-id-before-the-november-2026-retirement/">How to Find and Bulk-Replace Every MemberOf-Rule in Entra ID (Before the November 2026 retirement)</a></p></blockquote>
+<p></p>
+<hr/>
+<p>You can now use token protection to protect your key web apps (Intune, Entra etc.)  Learn how to implement these to further increase your security in this post from <a href="https://www.linkedin.com/in/jan-mulder/">Jan Mulder</a></p>
+<blockquote class="wp-embedded-content" data-secret="1CAg86QbTY"><p><a href="https://wolkenman.wordpress.com/2026/09/02/how-to-use-token-protection-for-web-apps-in-windows-11/">How to use token Protection for web apps in Windows 11</a></p></blockquote>
+<p></p>
+<hr/>
+<p>If you are switching to Device Prep with Device Association, you probably want things to run a bit quicker than the backwards and forwards with CSV files.  <a href="https://www.linkedin.com/in/rudyooms/">Rudy Ooms</a> has created a new script to run during OOBE and sort it all for you here</p>
+<blockquote class="wp-embedded-content" data-secret="ZELzTcxNen"><p><a href="https://call4cloud.nl/autopilot-get-device-association/">Windows Autopilot Device Association: somebody has to be the OEM</a></p></blockquote>
+<p></p>
+<hr/>
+<p>If you are worried about AI running on your devices, check out this guide from <a href="https://www.linkedin.com/in/jannik-r/">Jannik Reinhard</a> to get you underway</p>
+<blockquote class="wp-embedded-content" data-secret="yIfs30KaHK"><p><a href="https://jannikreinhard.com/intune-shadow-ai-openclaw/">Detect and Block Shadow AI with Intune: OpenClaw in Practice</a></p></blockquote>
+<p></p>
+<hr/>
+<p>If you have been having issues with Company Portal on your Apple devices, check out this post from <a href="https://www.linkedin.com/in/jeroenburgerhout/">Jeroen Burgerhout</a></p>
+<p><a href="https://www.burgerhout.org/p/getting-company-portal-back-after-the-new-ade-policy-quietly-drops-it">https://www.burgerhout.org/p/getting-company-portal-back-after-the-new-ade-policy-quietly-drops-it</a></p>
+<hr/>
+<p>Next, this post from <a href="https://www.linkedin.com/in/mecken-swyter/">Mecken Swyter</a> is great for taking your Windows compliance to a whole new level</p>
+<p><a href="https://meckenswyter.com/intune/custom-compliance-policies-intune">https://meckenswyter.com/intune/custom-compliance-policies-intune</a></p>
+<hr/>
+<h1><a id="video"></a>Video Content</h1>
+<p>Now for this weeks video content starting with two videos from <a href="https://www.linkedin.com/in/chandermanipandey/">Chander Mani Pandey</a> looking at the new Autopilot Device Association functionality.  The first video runs through how to bind a device to your tenant.</p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/JziVVIoEqms?feature=oembed" title="Windows Autopilot Device Association | How to Pre-Associate Intune Devices">VIDEO</iframe></p>
+<p>Chander’s second video looks at how to pre-associate devices to the tenant</p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/EpShj4beofA?feature=oembed" title="Windows Autopilot Device Association Setup In Intune (Step-by-Step)">VIDEO</iframe></p>
+<hr/>
+<p>A quick but very useful video from <a href="https://www.linkedin.com/in/markoldham365/">Mark Oldham</a> showing how to block personal devices from enrolling into your Intune tenant.</p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/ATPKSwIGd_o?feature=oembed" title="How to Block Personal Windows Devices in Microsoft Intune">VIDEO</iframe></p>
+<hr/>
+<h1><a id="microsoft"></a>Microsoft Content</h1>
+<p>Onto the Microsoft content, starting with a guide on how to plan your GPO to Intune migration from <a href="https://www.linkedin.com/in/perlarsen1975/">Per Larsen</a></p>
+<p><a href="https://techcommunity.microsoft.com/blog/IntuneCustomerSuccess/from-gpo-to-microsoft-intune-a-practical-guide-to-cloud-first-policy-management/4551946">https://techcommunity.microsoft.com/blog/IntuneCustomerSuccess/from-gpo-to-microsoft-intune-a-practical-guide-to-cloud-first-policy-management/4551946</a></p>
+<hr/>
+<p>You will soon have VBS backed kernel-level protection on your Windows devices as covered here by <a href="https://www.linkedin.com/in/peter-waxman/">Peter Waxman</a></p>
+<p><a href="https://techcommunity.microsoft.com/t5/windows-it-pro-blog/expanding-memory-integrity-protection-across-windows-devices/ba-p/4551984">https://techcommunity.microsoft.com/t5/windows-it-pro-blog/expanding-memory-integrity-protection-across-windows-devices/ba-p/4551984</a></p>
+<hr/>
+<p>The all important Windows news you can use is here for August from <a href="https://www.linkedin.com/in/chrismorrissey2009/">Chris Morrissey</a></p>
+<p><a href="https://techcommunity.microsoft.com/blog/windows-itpro-blog/windows-news-you-can-use-august-2026/4552394">https://techcommunity.microsoft.com/blog/windows-itpro-blog/windows-news-you-can-use-august-2026/4552394</a></p>
+<hr/>
+<p>That’s all for this week, have an amazing weekend</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
