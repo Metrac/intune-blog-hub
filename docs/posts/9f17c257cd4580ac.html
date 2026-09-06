@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Autopilot Device Preparation vs Device Association vs Classic Autopilot: What Is the Difference?</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Call4Cloud (Rudy Ooms)</span>
+    <span class="date">September 5, 2026</span>
+  </div>
+  <h1>Autopilot Device Preparation vs Device Association vs Classic Autopilot: What Is the Difference?</h1>
+  <div class="orig">Saved for offline reading · <a href="https://patchmypc.com/blog/autopilot-device-preparation-vs-device-association-vs-autopilot/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="post-content">
+<p class="wp-block-paragraph"><strong>Autopilot Device Preparation with Device Association</strong>… is that not basically Classic Autopilot again? That question came up on Reddit. And when you put the two admin workflows side by side, I understand why.</p>
+<p class="wp-block-paragraph"><strong>Classic Autopilot, often called APv1:</strong> collect the <strong>hardware hash</strong>, upload the <strong>CSV</strong>, register the device, assign an <strong>Autopilot deployment profile</strong>, and provision it.</p>
+<p class="wp-block-paragraph"><strong><a href="https://call4cloud.nl/autopillot-device-preparation-technical-flow-apv2/">Autopilot Device Preparation</a> in combination with <a href="https://patchmypc.com/blog/windows-autopilot-device-association/">Device Association</a>:</strong> export the <strong>device association information</strong>, upload the CSV, associate the device with the organization, and provision it.</p>
+<p class="wp-block-paragraph">So yes. From the admin desk, both can start with device information in a CSV. In Autopilot V1, that <strong>CSV carries the hardware hash</strong> used to register the device. In Device Association, the <strong>CSV carries the identity</strong> used to create the association. The important difference is what each upload unlocks <strong>before sign-in</strong>.</p>
+<p class="wp-block-paragraph"><strong>Classic Autopilot</strong> and <strong>Device Preparation</strong> are the deployment solutions. <strong>Device Association</strong> is an “optional” feature that gives Device Preparation early knowledge of the organization.</p>
+<p class="wp-block-paragraph">The OOBE is the Windows setup shown before the desktop. <strong>Autopilot V1</strong> was built around two linked steps: <strong>register the device before </strong>sign-in, then download an <strong>assigned deployment profile</strong> that configures OOBE. When a supported page is configured to be hidden, <strong>the user does not see that page</strong>.</p>
+<figure class="wp-block-image size-full is-resized"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/09/1.png"><picture class="wp-image-194132" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/1.png.webp 1356w, https://patchmypc.com/app/uploads/2026/09/1-300x119.png.webp 300w, https://patchmypc.com/app/uploads/2026/09/1-1024x407.png.webp 1024w, https://patchmypc.com/app/uploads/2026/09/1-768x305.png.webp 768w" sizes="(max-width: 1356px) 100vw, 1356px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1356px) 100vw, 1356px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/1.png 1356w, https://patchmypc.com/app/uploads/2026/09/1-300x119.png 300w, https://patchmypc.com/app/uploads/2026/09/1-1024x407.png 1024w, https://patchmypc.com/app/uploads/2026/09/1-768x305.png 768w" decoding="async" src="assets/9f17c257cd4580ac/img_0.png"/>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-autopilot-v1-uses-the-hardware-hash-csv-to-deliver-the-oobe-profile">Autopilot V1 uses the hardware hash CSV to deliver the OOBE profile<span class="clth-copy-icon" data-heading-id="h-autopilot-v1-uses-the-hardware-hash-csv-to-deliver-the-oobe-profile"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">With Classic Autopilot, the physical device is registered before deployment. For a manual registration, IT collects the <strong>4K hardware hash</strong> and uploads it in a <strong>CSV</strong>. An OEM or partner can also register the device without IT collecting that CSV.</p>
+<p class="wp-block-paragraph">That registration lets Windows <strong>recognize the device</strong> as soon as it reaches OOBE and has internet access. Windows downloads the assigned Autopilot deployment profile <strong>before the user signs in</strong>.</p>
+<p class="wp-block-paragraph">The <strong>deployment profile</strong> is what shapes the Classic <strong><a href="https://www.youtube.com/watch?v=gVKHuDEwgjA">Autopilot OOBE experience</a></strong>. It can <strong>hide</strong> the Microsoft license terms and privacy pages, hide the change account option, set the language, automatically configure the keyboard and <strong>skip the keyboard page</strong> when the requirements are met, choose the user account type, and apply a device name. The supported pages configured as hidden <strong>are not shown to the user</strong>.</p>
+<p class="wp-block-paragraph">That does not mean every Windows setup page disappears. It means the profile decides which <strong>supported OOBE pages are shown or skipped</strong>. After that, Microsoft Entra join, Intune enrollment, apps, policies, and the Enrollment Status Page continue.</p>
+<h2 class="wp-block-heading" id="h-autopilot-device-preparation-removes-the-hardware-hash-and-registration-step">Autopilot Device Preparation removes the hardware hash and registration step<span class="clth-copy-icon" data-heading-id="h-autopilot-device-preparation-removes-the-hardware-hash-and-registration-step"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Autopilot Device Preparation starts differently. There is <strong>no Classic Autopilot registration</strong>, <strong>no hardware hash CSV</strong>, and <strong>no Device Association CSV</strong> required for each device.</p>
+<p class="wp-block-paragraph">The user starts the Windows 11 device and sees the <strong>standard early OOBE pages</strong>. Windows <strong>does not yet know which organization</strong> the device belongs to. The associated device controls for language, keyboard, license terms, privacy, change account options, and device naming therefore <strong>do not apply in the base flow</strong>.</p>
+<p class="wp-block-paragraph"><strong>When the user signs in</strong> with the work account, Windows learns the organization. The <strong>Device Preparation policy</strong> can then start Microsoft Entra join, Intune enrollment, the selected apps, the selected PowerShell scripts, and the deployment progress experience.</p>
+<p class="wp-block-paragraph">That is the main operational advantage of base Device Preparation: <strong>no per device CSV and no prestaging</strong>.</p>
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr><td><strong>The Classic Autopilot chain</strong><br/>Hardware hash CSV or OEM registration makes the device known before sign in. Windows then downloads the assigned Autopilot profile. Supported OOBE pages configured as hidden are not shown to the user.</td></tr></tbody></table></figure>
+<p class="wp-block-paragraph">The tradeoff is equally simple. The organization becomes known <strong>too late to hide or change the early OOBE pages</strong> the user already completed.</p>
+<figure class="wp-block-image size-full is-resized"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/09/2.png"><picture class="wp-image-194134" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/2.png.webp 1131w, https://patchmypc.com/app/uploads/2026/09/2-300x128.png.webp 300w, https://patchmypc.com/app/uploads/2026/09/2-1024x436.png.webp 1024w, https://patchmypc.com/app/uploads/2026/09/2-768x327.png.webp 768w" sizes="(max-width: 1131px) 100vw, 1131px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1131px) 100vw, 1131px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/2.png 1131w, https://patchmypc.com/app/uploads/2026/09/2-300x128.png 300w, https://patchmypc.com/app/uploads/2026/09/2-1024x436.png 1024w, https://patchmypc.com/app/uploads/2026/09/2-768x327.png 768w" decoding="async" src="assets/9f17c257cd4580ac/img_1.png"/>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-so-what-does-autopilot-device-preperation-device-association-actually-add">So what does Autopilot Device Preperation – Device Association actually add?<span class="clth-copy-icon" data-heading-id="h-so-what-does-autopilot-device-preperation-device-association-actually-add"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Device Association adds <strong>early organization awareness</strong> to Device Preparation. It gives Windows a trusted relationship between the physical device and the organization before enrollment.</p>
+<p class="wp-block-paragraph">IT exports a small <strong>Device Association CSV</strong> from Windows and uploads it to Intune. Microsoft calls the information inside that file <strong>DeviceLink</strong>. The simple explanation is that it identifies the physical device the organization expects.</p>
+<p class="wp-block-paragraph">The upload creates a <strong>preassociation</strong>, <strong>not a Classic Autopilot registration</strong>. When the device connects during OOBE, it proves that it is the expected device by using its <strong>TPM</strong>.</p>
+<p class="wp-block-paragraph">After verification, Windows stores the organization relationship in UEFI. Windows can now know the organization <strong>before the user signs in</strong>.</p>
+<p class="wp-block-paragraph">If a Device Preparation policy is assigned to the associated device, its <strong>supported OOBE settings can now apply early</strong>. Windows can <strong>hide</strong> the license and privacy pages, hide the change account option, set the language, automatically configure the keyboard when the requirements are met, and <strong>apply a device name</strong>.</p>
+<p class="wp-block-paragraph">After that, Device Preparation still handles Microsoft Entra join, Intune enrollment, apps, scripts, and deployment progress. Device Association <strong>does not replace Device Preparation</strong>. It only moves the organization awareness earlier.</p>
+<p class="wp-block-paragraph">Association also marks the device as <strong>corporate owned</strong> and allows a Device Preparation policy to be assigned directly to the device. If both a device policy and a user policy apply, the <strong>device policy takes precedence</strong>.</p>
+<h2 class="wp-block-heading" id="h-why-the-reddit-comparison-still-feels-correct">Why the Reddit comparison still feels correct<span class="clth-copy-icon" data-heading-id="h-why-the-reddit-comparison-still-feels-correct"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Because Device Association puts a <strong>per device CSV</strong> back into the process.</p>
+<p class="wp-block-paragraph">Classic Autopilot can use a <strong>hardware hash CSV</strong> collected by IT, but an OEM or partner can also register the device. When IT imports manually through Intune, Microsoft allows <strong>up to 500 devices</strong> in one CSV.</p>
+<p class="wp-block-paragraph">Device Association is newer. The current Intune flow accepts <strong>one device per exported CSV</strong>. Microsoft also documents a QR option for custom applications that use Microsoft Graph.</p>
+<p class="wp-block-paragraph">Microsoft currently says OEM, reseller, and partner preassociation before shipment is <strong>not supported yet</strong>. Device Association uploads are currently supported through Intune, with OEM and partner support planned for the future.</p>
+<p class="wp-block-paragraph">So today, Device Association is <strong>not automatically a labor saving improvement</strong>. If IT handles every device manually, it can feel very similar to Classic Autopilot, or even like more work(<strong><a href="https://www.powershellgallery.com/packages/Get-AutopilotDeviceAssociation/1.8.0">except it they use this wonderful Script)</a></strong>. The benefit is <strong>early OOBE control</strong>, direct device targeting, corporate ownership, and a verified device relationship.</p>
+<figure class="wp-block-image size-full is-resized"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/09/3.png"><picture class="wp-image-194135" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/3.png.webp 1913w, https://patchmypc.com/app/uploads/2026/09/3-300x88.png.webp 300w, https://patchmypc.com/app/uploads/2026/09/3-1024x302.png.webp 1024w, https://patchmypc.com/app/uploads/2026/09/3-768x226.png.webp 768w, https://patchmypc.com/app/uploads/2026/09/3-1536x453.png.webp 1536w" sizes="(max-width: 1913px) 100vw, 1913px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1913px) 100vw, 1913px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/3.png 1913w, https://patchmypc.com/app/uploads/2026/09/3-300x88.png 300w, https://patchmypc.com/app/uploads/2026/09/3-1024x302.png 1024w, https://patchmypc.com/app/uploads/2026/09/3-768x226.png 768w, https://patchmypc.com/app/uploads/2026/09/3-1536x453.png 1536w" decoding="async" src="assets/9f17c257cd4580ac/img_2.png"/>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-hardware-hash-csv-vs-device-association-csv">Hardware hash CSV vs Device Association CSV<span class="clth-copy-icon" data-heading-id="h-hardware-hash-csv-vs-device-association-csv"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">This is what makes the two workflows look almost identical from the admin desk.</p>
+<p class="wp-block-paragraph">The Classic Autopilot CSV contains the <strong>hardware hash</strong>. Uploading it <strong>registers the device</strong> in the Classic Autopilot service. That registration lets Windows download the <strong>assigned deployment profile</strong> during OOBE. The profile then applies the chosen OOBE settings, and supported pages configured as hidden <strong>are not shown before sign in</strong>.</p>
+<p class="wp-block-paragraph">The <strong>Device Association CSV</strong> contains a different device identity. Uploading it records that the organization expects this physical device, but the device <strong>must still prove that identity</strong> before the association is complete. Once associated, Device Preparation can use the OOBE settings reserved for associated devices.</p>
+<p class="wp-block-paragraph"><strong>Both use a CSV</strong>. One creates a Classic Autopilot registration and retrieves a deployment profile. The other starts a Device Association that gives Device Preparation early tenant awareness. <strong>That is the real difference</strong>..</p>
+<figure class="wp-block-image size-full is-resized"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/09/4.png"><picture class="wp-image-194136" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/4.png.webp 1459w, https://patchmypc.com/app/uploads/2026/09/4-300x103.png.webp 300w, https://patchmypc.com/app/uploads/2026/09/4-1024x352.png.webp 1024w, https://patchmypc.com/app/uploads/2026/09/4-768x264.png.webp 768w" sizes="(max-width: 1459px) 100vw, 1459px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1459px) 100vw, 1459px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/4.png 1459w, https://patchmypc.com/app/uploads/2026/09/4-300x103.png 300w, https://patchmypc.com/app/uploads/2026/09/4-1024x352.png 1024w, https://patchmypc.com/app/uploads/2026/09/4-768x264.png 768w" decoding="async" src="assets/9f17c257cd4580ac/img_3.png"/>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-so-what-problem-is-device-association-solving">So what problem is Device Association solving?<span class="clth-copy-icon" data-heading-id="h-so-what-problem-is-device-association-solving"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Autopilot Device Preparation <strong>removes the hardware hash and per device CSV</strong>. Device Association is not solving that CSV problem because choosing Association deliberately <strong>adds a CSV back</strong>.</p>
+<p class="wp-block-paragraph">Device Association solves a different problem: <strong>early organization awareness and early OOBE control</strong>.</p>
+<p class="wp-block-paragraph">Device Preparation removed the requirement to register every device with Classic Autopilot. That is simpler, but Windows normally learns the organization only when the user signs in. Device Association adds that knowledge <strong>before sign in</strong> <strong>without creating a Classic Autopilot registration</strong>.</p>
+<p class="wp-block-paragraph">That is why Device Association matters when you want Device Preparation but also need <strong>supported OOBE pages hidden or skipped</strong>, a device name before enrollment, direct device policy assignment, automatic corporate ownership, or a verified device relationship before enrollment.</p>
+<h2 class="wp-block-heading" id="h-why-autopilot-device-preparation-is-a-separate-architecture">Why Autopilot Device Preparation is a separate architecture<span class="clth-copy-icon" data-heading-id="h-why-autopilot-device-preparation-is-a-separate-architecture"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Microsoft calls Device Preparation a <strong>rearchitecture of Windows Autopilot</strong>. The clearest difference is not the URL list. It is how Windows and the service identify the device and decide what can happen before sign in.</p>
+<p class="wp-block-paragraph"><strong>Classic Autopilot</strong> is built around a device registration and an assigned deployment profile. Microsoft’s current Classic Autopilot requirements list <strong>login.live.com</strong> and <strong>ztd.dds.microsoft.com</strong>. In the classic flow I traced, Windows uses <strong>login.live.com</strong> to obtain the X Device Token and then uses that token with <strong>ztd.dds.microsoft.com</strong> to retrieve the assigned profile.</p>
+<p class="wp-block-paragraph">That is the long standing Classic Autopilot contract: <strong>recognize the registered device, return its profile, and use that profile to shape OOBE.</strong></p>
+<p class="wp-block-paragraph"><strong>Device Preparation</strong> does not require a Classic Autopilot registration. In the base flow, the user’s work account identifies the organization. <strong>Device Association</strong> adds an optional relationship before sign in so Windows can identify the organization early, verify the physical device, and retrieve the OOBE settings assigned to that associated device.</p>
+<h2 class="wp-block-heading" id="h-which-path-should-you-use">Which path should you use?<span class="clth-copy-icon" data-heading-id="h-which-path-should-you-use"><span class="clth-tooltip">Copy Link</span></span></h2>
+<figure class="wp-block-image size-full is-resized"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/09/5.png"><picture class="wp-image-194137" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/5.png.webp 1729w, https://patchmypc.com/app/uploads/2026/09/5-300x128.png.webp 300w, https://patchmypc.com/app/uploads/2026/09/5-1024x438.png.webp 1024w, https://patchmypc.com/app/uploads/2026/09/5-768x328.png.webp 768w, https://patchmypc.com/app/uploads/2026/09/5-1536x657.png.webp 1536w" sizes="(max-width: 1729px) 100vw, 1729px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1729px) 100vw, 1729px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/5.png 1729w, https://patchmypc.com/app/uploads/2026/09/5-300x128.png 300w, https://patchmypc.com/app/uploads/2026/09/5-1024x438.png 1024w, https://patchmypc.com/app/uploads/2026/09/5-768x328.png 768w, https://patchmypc.com/app/uploads/2026/09/5-1536x657.png 1536w" decoding="async" src="assets/9f17c257cd4580ac/img_4.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">One coexistence rule is worth remembering. <strong><a href="https://learn.microsoft.com/en-us/autopilot/device-preparation/device-association/lifecycle-management#pre-associating-a-device-that-is-registered-for-windows-autopilot">Microsoft states</a></strong> that if a device is registered for Classic Autopilot but is not associated, the Classic Autopilot deployment takes precedence. If that same device is associated, Device Association takes precedence, and the Autopilot Device Preparation deployment runs.</p>
+<h2 class="wp-block-heading" id="h-the-real-answer">The real answer<span class="clth-copy-icon" data-heading-id="h-the-real-answer"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph"><strong>Is Autopilot Device Preparation with Device Association really different from Classic Autopilot?</strong></p>
+<p class="wp-block-paragraph">From the admin desk, not really. The workflows can look surprisingly similar because Classic Autopilot can use a <strong>hardware hash CSV</strong> and Device Association uses an <strong>association CSV</strong>.</p>
+<p class="wp-block-paragraph">Underneath, they do different jobs. <strong>Classic Autopilot</strong> uses the hardware hash registration to download an assigned deployment profile before sign in. That profile applies the configured OOBE behavior and <strong>prevents supported pages set to Hide from being shown</strong>. <strong>Autopilot Device Preparation</strong> (without device association) removes the per device CSV but shows the standard early OOBE pages until the user identifies the tenant. Autopilot  <strong>Device Association</strong> adds a per device CSV back so Device Preparation can know the tenant early and apply the OOBE settings reserved for associated devices.</p>
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr><td><strong>The simple version</strong><br/><strong>Classic Autopilot</strong> = hardware hash or partner registration, then an Autopilot profile that controls supported OOBE pages. <strong>Autopilot Device Preparation </strong>= no per device CSV, standard early OOBE, then deployment after the user signs in. <strong>Device Preparation with Device Association </strong>= association CSV, early tenant recognition, supported OOBE control, then the same Device Preparation deployment.</td></tr></tbody></table></figure>
+</div>
+</div></div>
+</article>
+</body>
+</html>
