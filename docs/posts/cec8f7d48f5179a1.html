@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Azure API Management MCP: The Control Plane for Agent Tools</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">September 10, 2026</span>
+  </div>
+  <h1>Azure API Management MCP: The Control Plane for Agent Tools</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/azure-api-management-mcp-control-plane/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p class="wp-block-paragraph">MCP makes it easy to connect an AI agent to tools. That is useful for a demo, but an enterprise needs more than a connection string. It needs identity, a controlled tool surface, rate limits, monitoring and a clear owner. In this blog post I show how I would use Azure API Management MCP as the control plane between agents and enterprise tools.</p>
+<p><span id="more-20231"></span>
+</p>
+<h2 class="wp-block-heading" id="what-problem-does-an-mcp-control-plane-solve">What problem does an MCP control plane solve?</h2>
+<p class="wp-block-paragraph">Without a gateway, every agent connects directly to every MCP server. Authentication, logging and limits are then implemented differently by each team. Over time, nobody has a complete view of which tools are exposed, who can call them and what happens when an agent starts looping.</p>
+<p class="wp-block-paragraph">Azure API Management (APIM) does not replace the MCP server. It sits in front of it and gives you one place to apply API governance. Microsoft’s <a href="https://learn.microsoft.com/en-us/azure/api-management/mcp-server-overview" rel="noopener" target="_blank">MCP server overview for APIM</a> currently describes two patterns:</p>
+<ol class="wp-block-list">
+<li>expose and govern an existing remote MCP server;</li>
+<li>expose selected operations from an existing REST API as MCP tools.</li>
+</ol>
+<p class="wp-block-paragraph">This distinction is important. The first pattern keeps the server’s MCP implementation. The second pattern helps a team reuse a managed REST API without building a separate MCP server first.</p>
+<h2 class="wp-block-heading" id="how-does-this-look-in-a-live-apim-instance">How does this look in a live APIM instance?</h2>
+<p class="wp-block-paragraph">In my lab, I opened an existing API Management service and selected <strong>APIs &gt; MCP Servers</strong>. The current portal offers both creation paths in the same menu.</p>
+<figure class="wp-block-image"><img alt="Create an MCP server in a live Azure API Management instance" data-recalc-dims="1" decoding="async" src="assets/cec8f7d48f5179a1/img_0.jpg"/></figure>
+<p class="wp-block-paragraph">For the live walkthrough I selected <strong>Expose an existing MCP server</strong> and used the Microsoft Learn MCP endpoint as a safe backend example. I entered a display name, a stable internal name and a dedicated base path. I deliberately stopped before selecting <strong>Create</strong>, so the screenshot shows the real configuration without adding a test server to the environment. The full portal flow is also documented in Microsoft’s <a href="https://learn.microsoft.com/en-us/azure/api-management/expose-existing-mcp-server" rel="noopener" target="_blank">existing MCP server guide</a>.</p>
+<figure class="wp-block-image"><img alt="Configure an existing MCP server behind Azure API Management" data-recalc-dims="1" decoding="async" src="assets/cec8f7d48f5179a1/img_1.jpg"/></figure>
+<p class="wp-block-paragraph">The portal also allows the new MCP server to be associated with an APIM product. That is not just an organizational field. Products can define subscriptions and help separate consumer groups.</p>
+<h2 class="wp-block-heading" id="which-five-controls-matter-most">Which five controls matter most?</h2>
+<h3 class="wp-block-heading" id="1-identity-before-connectivity">1. Identity before connectivity</h3>
+<p class="wp-block-paragraph">My first question is not whether the agent can reach the MCP URL. It is which identity is allowed to call which tools.</p>
+<p class="wp-block-paragraph">For a quick lab, an APIM subscription can prove the routing path. For production, I prefer Microsoft Entra ID and OAuth wherever the backend and client support it. The gateway should validate the caller and forward only the credentials the backend actually needs.</p>
+<p class="wp-block-paragraph"><strong>Note:</strong> If the external MCP server requires authorization, it must use a standards-compliant authorization flow. A custom token trick that only one client understands is difficult to govern and difficult to rotate.</p>
+<p class="wp-block-paragraph">An MCP server often contains more tools than one agent needs. A finance agent should not automatically receive administration tools because both happen to be available on the same server.</p>
+<p class="wp-block-paragraph">I would create separate gateway surfaces for clear business capabilities. Examples are <code>knowledge-read</code>, <code>ticket-create</code> or <code>device-inventory-read</code>. This makes the endpoint name meaningful and reduces the impact of a wrong tool call.</p>
+<p class="wp-block-paragraph">APIM also lets you select which operations are exposed when a REST API is exported as MCP. I would use this aggressively. A smaller tool catalogue reduces permission risk and also makes tool selection easier for the model.</p>
+<h3 class="wp-block-heading" id="3-rate-limits-for-agent-loops">3. Rate limits for agent loops</h3>
+<p class="wp-block-paragraph">Human API usage is normally bursty but understandable. Agents can retry, branch and loop. One user request can produce many tool calls in a few seconds.</p>
+<p class="wp-block-paragraph">A simple IP-based limit is useful in a lab:</p>
+<pre class="wp-block-code"><code>&lt;inbound&gt;
+  &lt;base /&gt;
+  &lt;rate-limit-by-key
+      calls="5"
+      renewal-period="30"
+      counter-key="@(context.Request.IpAddress)" /&gt;
+&lt;/inbound&gt;
+
+</code></pre>
+<p class="wp-block-paragraph">For production I would prefer a counter key based on a validated application, agent or user identity. The correct limit also depends on the tool. Five search calls might be normal. Five device-deletion calls are not.</p>
+<h3 class="wp-block-heading" id="4-preserve-mcp-streaming">4. Preserve MCP streaming</h3>
+<p class="wp-block-paragraph">This is the easiest mistake to make. MCP uses streaming behavior, and a normal-looking APIM policy or logging configuration can accidentally buffer the response.</p>
+<p class="wp-block-paragraph">Do not access <code>context.Response.Body</code> in MCP policies. Also set the global <strong>Frontend Response payload bytes</strong> logging value to <code>0</code> when diagnostics apply to all APIs. Reading or logging the response body can interfere with streaming and can also store sensitive tool output.</p>
+<p class="wp-block-paragraph">This is one reason why I would not copy an existing REST API policy set onto an MCP endpoint without review. The transport behavior is different even when both use HTTP.</p>
+<p class="wp-block-paragraph">I want enough telemetry to answer who called which gateway, which backend was used, how long it took and whether a policy blocked the request. I do not want full prompts, credentials or tool responses in general-purpose logs.</p>
+<p class="wp-block-paragraph">A small trace can add useful routing context:</p>
+<pre class="wp-block-code"><code>&lt;trace source="MCP Gateway" severity="information"&gt;
+  &lt;message&gt;MCP tool call&lt;/message&gt;
+  &lt;metadata name="agent-id"
+            value='@(context.Request.Headers.GetValueOrDefault("agent-id", "n/a"))' /&gt;
+&lt;/trace&gt;
+
+</code></pre>
+<p class="wp-block-paragraph">I would standardize a small metadata contract for every agent: agent ID, application ID, environment, correlation ID and approved data classification. These values make incidents traceable without logging the business payload.</p>
+<h2 class="wp-block-heading" id="what-architecture-would-i-use">What architecture would I use?</h2>
+<p class="wp-block-paragraph">My default production flow would be:</p>
+<p class="wp-block-paragraph"><code>Agent client -&gt; Microsoft Entra ID -&gt; APIM MCP endpoint -&gt; policy checks -&gt; MCP server -&gt; approved backend systems</code></p>
+<p class="wp-block-paragraph">The gateway is the enforcement point, but it is not the complete security model. The backend still needs its own identity and authorization. A compromised gateway credential must not turn into unrestricted access to every downstream system.</p>
+<p class="wp-block-paragraph">I would also register the MCP server and its owner in an API catalogue. Every gateway should have:</p>
+<ul class="wp-block-list">
+<li>a business owner;</li>
+<li>a technical owner;</li>
+<li>an approved consumer list;</li>
+<li>a data classification;</li>
+<li>a documented tool list;</li>
+<li>an expiry or review date.</li>
+</ul>
+<p class="wp-block-paragraph">This turns an MCP endpoint from a developer URL into a managed enterprise capability.</p>
+<h2 class="wp-block-heading" id="where-are-the-current-limitations">Where are the current limitations?</h2>
+<p class="wp-block-paragraph">APIM’s MCP support is moving quickly, but there are current limits to design around:</p>
+<ul class="wp-block-list">
+<li>an external server must support MCP version <code>2025-06-18</code> or later;</li>
+<li>Streamable HTTP and SSE are supported transports;</li>
+<li>external MCP servers can expose tools and resources, but prompts are not currently supported;</li>
+<li>REST APIs exported as MCP expose tools, not resources or prompts;</li>
+<li>MCP server capabilities are not currently supported in APIM workspaces.</li>
+</ul>
+<p class="wp-block-paragraph">I would check these points again before a production rollout because preview and platform behavior can change.</p>
+<h2 class="wp-block-heading" id="how-does-this-fit-with-microsoft-foundry">How does this fit with Microsoft Foundry?</h2>
+<p class="wp-block-paragraph">Microsoft Foundry is where I build, evaluate and operate the agent. APIM is where I govern reusable network-accessible tools. The two layers solve different problems.</p>
+<p class="wp-block-paragraph">The same principle applies to Agent Skills. A skill teaches the agent how to perform a workflow. MCP connects the agent to a live capability. APIM governs that live capability. I explain the first distinction in my <a href="https://jannikreinhard.com/?p=19525">Agent Skills vs MCP guide</a> and the surrounding security model in <a href="https://jannikreinhard.com/secure-microsoft-foundry/">Secure Microsoft Foundry</a>.</p>
+<h2 class="wp-block-heading" id="what-would-i-implement-first">What would I implement first?</h2>
+<p class="wp-block-paragraph">I would start with one read-only MCP server and one agent. Put the server behind APIM, validate the caller with Entra ID, expose only the required tools and add conservative rate limits. Then test normal calls, failed authentication, a retry loop and a streaming response.</p>
+<p class="wp-block-paragraph">Only after those four tests are clean would I add write operations. This keeps the first implementation small enough to understand and gives the platform team a reusable pattern for the next server.</p>
+<p class="wp-block-paragraph">MCP solves connectivity. Azure API Management MCP can provide the missing control plane around that connectivity. The real value is not another URL. It is one consistent place to decide who can use which tool, under which limits and with which evidence.</p>
+<p class="wp-block-paragraph">I hope this gives you a practical architecture for moving MCP from a demo into a governed enterprise environment.</p>
+<p class="wp-block-paragraph">Stay healthy, Cheers Jannik</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
