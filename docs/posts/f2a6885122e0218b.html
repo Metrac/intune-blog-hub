@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Defender is On. Intune Says Noncompliant</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Call4Cloud (Rudy Ooms)</span>
+    <span class="date">September 12, 2026</span>
+  </div>
+  <h1>Defender is On. Intune Says Noncompliant</h1>
+  <div class="orig">Saved for offline reading · <a href="https://patchmypc.com/blog/defender-is-on-intune-says-noncompliant/?utm_term=rss" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="post-content">
+<p class="wp-block-paragraph">Seeing Windows claim Defender is off while Defender is actually running is one thing. Having that same bad state flow into Intune compliance is something else entirely.</p>
+<p class="wp-block-paragraph">That is what made this issue so disruptive.It was not just a confusing message in Windows Security. For affected tenants, devices could fail the Antivirus compliance check, become noncompliant, and then get blocked by Conditional Access even though Microsoft Defender Antivirus was still active and protecting the device.</p>
+<p class="wp-block-paragraph">So the real story was not only that Windows showed the wrong status. The real story was that Windows Security Center could hold the wrong antivirus state, Intune could trust it, and access to company resources could be cut off because of it.</p>
+<h2 class="wp-block-heading" id="h-defender-turned-off">Defender Turned Off<span class="clth-copy-icon" data-heading-id="h-defender-turned-off"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Suddenly, many users started reporting the Windows Security notification was telling them to turn virus protection back on… </p>
+<figure class="wp-block-image size-full is-resized"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/09/image_01.jpg"><picture class="wp-image-194569" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/image_01.jpg.webp 1368w, https://patchmypc.com/app/uploads/2026/09/image_01-300x187.jpg.webp 300w, https://patchmypc.com/app/uploads/2026/09/image_01-1024x638.jpg.webp 1024w, https://patchmypc.com/app/uploads/2026/09/image_01-768x478.jpg.webp 768w" sizes="(max-width: 1368px) 100vw, 1368px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1368px) 100vw, 1368px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/image_01.jpg 1368w, https://patchmypc.com/app/uploads/2026/09/image_01-300x187.jpg 300w, https://patchmypc.com/app/uploads/2026/09/image_01-1024x638.jpg 1024w, https://patchmypc.com/app/uploads/2026/09/image_01-768x478.jpg 768w" decoding="async" src="assets/f2a6885122e0218b/img_0.jpg"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">Others opened Security providers and saw Microsoft Defender Antivirus listed as turned off.</p>
+<figure class="wp-block-image size-large is-resized"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/09/image_02-1024x808.jpg"><picture class="wp-image-194570" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/image_02-1024x808.jpg.webp 1024w, https://patchmypc.com/app/uploads/2026/09/image_02-300x237.jpg.webp 300w, https://patchmypc.com/app/uploads/2026/09/image_02-768x606.jpg.webp 768w, https://patchmypc.com/app/uploads/2026/09/image_02-1536x1212.jpg.webp 1536w, https://patchmypc.com/app/uploads/2026/09/image_02-2048x1615.jpg.webp 2048w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/image_02-1024x808.jpg 1024w, https://patchmypc.com/app/uploads/2026/09/image_02-300x237.jpg 300w, https://patchmypc.com/app/uploads/2026/09/image_02-768x606.jpg 768w, https://patchmypc.com/app/uploads/2026/09/image_02-1536x1212.jpg 1536w, https://patchmypc.com/app/uploads/2026/09/image_02-2048x1615.jpg 2048w" decoding="async" src="assets/f2a6885122e0218b/img_1.jpg"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">Which is weird…. because at the same time, Defender itself still reported that its service was enabled.  Let me explain what happened</p>
+<h2 class="wp-block-heading" id="h-why-this-became-an-intune-problem">Why this became an Intune problem<span class="clth-copy-icon" data-heading-id="h-why-this-became-an-intune-problem"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">When Intune checks the <strong>Antivirus</strong> requirement in a Windows compliance policy, it relies on Windows Security Center (WSC) to report whether a registered antivirus product is enabled and up to date.  If WSC reports that the antivirus is disabled or out of date, Intune can mark the device noncompliant even when Defender itself is still running and protecting it.</p>
+<figure class="wp-block-image size-full is-resized"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/09/image_03.jpg"><picture class="wp-image-194571" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/image_03.jpg.webp 2400w, https://patchmypc.com/app/uploads/2026/09/image_03-300x154.jpg.webp 300w, https://patchmypc.com/app/uploads/2026/09/image_03-1024x526.jpg.webp 1024w, https://patchmypc.com/app/uploads/2026/09/image_03-768x394.jpg.webp 768w, https://patchmypc.com/app/uploads/2026/09/image_03-1536x788.jpg.webp 1536w, https://patchmypc.com/app/uploads/2026/09/image_03-2048x1051.jpg.webp 2048w" sizes="(max-width: 2400px) 100vw, 2400px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 2400px) 100vw, 2400px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/image_03.jpg 2400w, https://patchmypc.com/app/uploads/2026/09/image_03-300x154.jpg 300w, https://patchmypc.com/app/uploads/2026/09/image_03-1024x526.jpg 1024w, https://patchmypc.com/app/uploads/2026/09/image_03-768x394.jpg 768w, https://patchmypc.com/app/uploads/2026/09/image_03-1536x788.jpg 1536w, https://patchmypc.com/app/uploads/2026/09/image_03-2048x1051.jpg 2048w" decoding="async" src="assets/f2a6885122e0218b/img_2.jpg"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">We saw a similar disconnect between the actual device state and the compliance result in <a href="https://patchmypc.com/blog/why-intune-devices-became-noncompliant-after-the-july-windows-update">Why Intune Devices Became Noncompliant After the July Update</a>. That was a different issue: a Device Health Attestation failure caused BitLocker, Secure Boot, and Code Integrity checks to report errors even when those features were enabled. The connection is not the cause, but the consequence: a problem with the information used to evaluate compliance can make a healthy device appear noncompliant.</p>
+<p class="wp-block-paragraph">That noncompliant state is then reported to Microsoft Entra. When an applicable Conditional Access policy requires the device to be marked as compliant, Entra uses that result to decide whether access is granted or blocked.</p>
+<p class="wp-block-paragraph">This is why the impact went beyond a warning in Windows Security. <strong>Defender could still be protecting the device while the wrong compliance signal prevented the user from accessing company resources.</strong> Calling it only a UI bug misses that consequence.</p>
+<h2 class="wp-block-heading" id="h-how-defender-and-wsc-normally-work">How Defender and WSC normally work<span class="clth-copy-icon" data-heading-id="h-how-defender-and-wsc-normally-work"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Defender does the real protection work. It starts the services, loads the engine, and protects the device.</p>
+<p class="wp-block-paragraph">Windows Security Center is the status layer. WSC keeps track of which antivirus provider is registered and what state that provider reports.</p>
+<p class="wp-block-paragraph">Windows Security reads that WSC state. DeviceStatus uses that state. Intune then uses DeviceStatus for the general Antivirus compliance requirement.</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/09/defenderwsc-1024x536.jpg"><picture class="wp-image-194600" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/defenderwsc-1024x536.jpg.webp 1024w, https://patchmypc.com/app/uploads/2026/09/defenderwsc-300x157.jpg.webp 300w, https://patchmypc.com/app/uploads/2026/09/defenderwsc-768x402.jpg.webp 768w, https://patchmypc.com/app/uploads/2026/09/defenderwsc-1536x803.jpg.webp 1536w, https://patchmypc.com/app/uploads/2026/09/defenderwsc.jpg.webp 1734w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/defenderwsc-1024x536.jpg 1024w, https://patchmypc.com/app/uploads/2026/09/defenderwsc-300x157.jpg 300w, https://patchmypc.com/app/uploads/2026/09/defenderwsc-768x402.jpg 768w, https://patchmypc.com/app/uploads/2026/09/defenderwsc-1536x803.jpg 1536w, https://patchmypc.com/app/uploads/2026/09/defenderwsc.jpg 1734w" decoding="async" src="assets/f2a6885122e0218b/img_3.jpg"/>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-where-the-defender-race-happened">Where the Defender race happened<span class="clth-copy-icon" data-heading-id="h-where-the-defender-race-happened"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The problem was timing… A race Condition</p>
+<p class="wp-block-paragraph">WSC could ask for the antivirus state while Defender was still finishing initialization.</p>
+<p class="wp-block-paragraph">If that happened at the wrong moment, WSC could keep an empty or stale state even though Defender became fully healthy a moment later.</p>
+<p class="wp-block-paragraph">Once WSC had the wrong answer, everything downstream could believe it too: Windows Security, DeviceStatus, Intune compliance, and then Conditional Access.</p>
+<figure class="wp-block-image size-full is-resized"><a data-caption="The race condition. WSC can read Defender while Defender is still initializing, which can leave WSC with a stale antivirus state." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/09/race.jpg"><picture class="wp-image-194588" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/race.jpg.webp 1381w, https://patchmypc.com/app/uploads/2026/09/race-300x246.jpg.webp 300w, https://patchmypc.com/app/uploads/2026/09/race-1024x840.jpg.webp 1024w, https://patchmypc.com/app/uploads/2026/09/race-768x630.jpg.webp 768w" sizes="(max-width: 1381px) 100vw, 1381px" type="image/webp"/>
+<img alt="The race condition. WSC can read Defender while Defender is still initializing, which can leave WSC with a stale antivirus state." data-lazy-sizes="(max-width: 1381px) 100vw, 1381px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/race.jpg 1381w, https://patchmypc.com/app/uploads/2026/09/race-300x246.jpg 300w, https://patchmypc.com/app/uploads/2026/09/race-1024x840.jpg 1024w, https://patchmypc.com/app/uploads/2026/09/race-768x630.jpg 768w" decoding="async" src="assets/f2a6885122e0218b/img_4.jpg"/>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-trying-to-repair-the-wsc-state-ourselves">Trying to repair the WSC state ourselves<span class="clth-copy-icon" data-heading-id="h-trying-to-repair-the-wsc-state-ourselves"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">At the time there was no official fix available, so we tried to get Defender and Windows Security Center back in sync ourselves.</p>
+<p class="wp-block-paragraph">Remember what happened during startup: Defender could finish loading, but WSC could still be holding the wrong answer. That was the part we wanted to repair, rather than immediately removing the Antivirus requirement from Intune.</p>
+<p class="wp-block-paragraph">The tool first checks whether Defender is actually running with protection enabled. It then checks what WSC is reporting. We are looking for that specific mismatch: Defender is working, but WSC says something is wrong. A Windows Security warning on its own is not enough.</p>
+<p class="wp-block-paragraph">When we run a repair, the first attempt uses Defender’s own repair command. The tool then waits a moment and checks both sides again. The goal is to give Defender another chance to update the status that WSC holds.</p>
+<p class="wp-block-paragraph">If that does not help, we can choose to return to the previous Defender platform or, as a last resort, reset it to the copy included with Windows. Those are separate options, not steps the tool runs automatically. The reset also needs extra confirmation.</p>
+<p class="wp-block-paragraph">After each attempt, the tool shows the result before and after. We want to see that Defender is still working and WSC is now reporting it correctly. Running a command without an error is not enough to call the repair successful.</p>
+<p class="wp-block-paragraph">So we were not telling Intune to ignore the failure. We were trying to correct the information it was using.</p>
+<p class="wp-block-paragraph">The catch was that this repaired the wrong status, not the startup race. Another reboot could still bring the problem back.</p>
+<p class="wp-block-paragraph"><a href="https://call4cloud.nl/FixWSCDefender.ps1">FixWSCDefender.ps1</a></p>
+<p class="wp-block-paragraph">The workaround did give us one more useful clue though. When we forced Defender to register its state again, or moved back to an earlier platform, WSC recovered. That pointed us more and more toward the Defender platform and its startup timing, rather than Intune itself.</p>
+<p class="wp-block-paragraph">So when a new Defender platform build appeared, the next test was obvious: get that build onto one of the affected devices and run the same startup test again. That is where 4.18.26080.4 became interesting.</p>
+<h2 class="wp-block-heading" id="h-what-4-18-26080-4-actually-changed">What 4.18.26080.4 actually changed<span class="clth-copy-icon" data-heading-id="h-what-4-18-26080-4-actually-changed"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The workaround showed us that refreshing or changing the Defender platform could get WSC healthy again, but it still didn’t explain why the problem happened in the first place. 4.18.26080.4 finally gave us that missing piece.</p>
+<p class="wp-block-paragraph">The workaround repaired WSC after the state had gone wrong. Version 4.18.26080.4 changed the startup conversation itself.</p>
+<p class="wp-block-paragraph">First, Defender sets up its WSC integration earlier. When the WSC callback arrives, Defender checks whether its own initialization has finished. If Defender is already ready, it simply reads the real antivirus state and publishes that state to WSC.</p>
+<p class="wp-block-paragraph">If Defender is still starting, .4 doesn’t let that moment disappear. It queues a bounded wait and gives Defender up to 50 seconds to finish. If Defender becomes ready during that window, WSC gets the real state normally.</p>
+<p class="wp-block-paragraph">If Defender is still not ready after that wait, .4 reports a temporary AV ON state to WSC and remembers that the answer was temporary. That temporary state is only there to bridge the startup gap. It does not turn Defender on, and it does not replace the real protection state.</p>
+<p class="wp-block-paragraph">Once Defender finishes initializing, it comes back and reconciles WSC. It reads the actual antivirus state again and replaces the temporary answer with the truth. If Defender is really ON, WSC gets ON. If Defender is really OFF, WSC gets OFF.</p>
+<p class="wp-block-paragraph">It also has a retry path now. If the WSC update fails, or another state change happened while the update was in progress, Defender schedules another attempt. The important difference is that the status no longer depends on one perfectly timed update during startup.</p>
+<p class="wp-block-paragraph">Old behavior: miss the timing and WSC could stay wrong. New behavior: wait if needed, use a temporary state only when necessary, then come back with the real state and retry until WSC has caught up.</p>
+<p class="wp-block-paragraph">In the flow below, MDAV means Microsoft Defender Antivirus. The temporary ON state is a WSC reporting state only. The real Defender state is still read and published as soon as initialization finishes.</p>
+<figure class="wp-block-image size-full is-resized"><a data-caption="The 4.18.26080.4 defender startup flow: early WSC setup, a bounded wait, temporary ON only if needed, and reconciliation with retry." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/09/image_06.jpg"><picture class="wp-image-194574" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/image_06.jpg.webp 1662w, https://patchmypc.com/app/uploads/2026/09/image_06-208x300.jpg.webp 208w, https://patchmypc.com/app/uploads/2026/09/image_06-709x1024.jpg.webp 709w, https://patchmypc.com/app/uploads/2026/09/image_06-768x1109.jpg.webp 768w, https://patchmypc.com/app/uploads/2026/09/image_06-1064x1536.jpg.webp 1064w, https://patchmypc.com/app/uploads/2026/09/image_06-1418x2048.jpg.webp 1418w" sizes="(max-width: 1662px) 100vw, 1662px" type="image/webp"/>
+<img alt="The 4.18.26080.4 defender startup flow: early WSC setup, a bounded wait, temporary ON only if needed, and reconciliation with retry." data-lazy-sizes="(max-width: 1662px) 100vw, 1662px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/image_06.jpg 1662w, https://patchmypc.com/app/uploads/2026/09/image_06-208x300.jpg 208w, https://patchmypc.com/app/uploads/2026/09/image_06-709x1024.jpg 709w, https://patchmypc.com/app/uploads/2026/09/image_06-768x1109.jpg 768w, https://patchmypc.com/app/uploads/2026/09/image_06-1064x1536.jpg 1064w, https://patchmypc.com/app/uploads/2026/09/image_06-1418x2048.jpg 1418w" decoding="async" src="assets/f2a6885122e0218b/img_5.jpg"/>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-one-important-publication-note">One important publication note<span class="clth-copy-icon" data-heading-id="h-one-important-publication-note"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">At the time of writing, Microsoft’s public Windows release health advisory still lists the issue as Confirmed and says a resolution will come in a future Defender update. The 4.18.26080.4 behavior described above is based on our testing and the platform changes we observed, not on a public Microsoft advisory that already names .4 as the resolved build.</p>
+<h2 class="wp-block-heading" id="h-getting-the-defender-4-18-26080-4-release-before-broad">Getting The Defender 4.18.26080.4 Release before Broad<span class="clth-copy-icon" data-heading-id="h-getting-the-defender-4-18-26080-4-release-before-broad"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Once <a href="https://call4cloud.nl/defenderupdate.zip">4.18.26080.4 became available,</a> we moved a test device to the Defender Beta platform update channel so we did not have to wait for the Broad rollout.</p>
+<p class="wp-block-paragraph">Microsoft documents the monthly rollout order as Beta first, then Preview, then the staged rollout, with Current Channel (Broad) receiving the update after the gradual rollout completes.</p>
+<p class="wp-block-paragraph">That lets us validate the fixed build on an affected device first.</p>
+<p class="wp-block-paragraph"><strong>Set-MpPreference -PlatformUpdatesChannel Beta<br/><br/>Get-MpPreference | Select-Object PlatformUpdatesChannel, EngineUpdatesChannel, DefinitionUpdatesChannel, DisableGradualRelease</strong></p>
+<p class="wp-block-paragraph">Once we validated the fix, we captured the Download itself and published it here. <a href="https://call4cloud.nl/defenderupdate.zip">Defender update here</a></p>
+<p class="wp-block-paragraph">Microsoft support quoted September 17 for Broad availability of the fix. I could not verify that exact date in Microsoft’s public documentation, so I would word it as a reported support date rather than a public Microsoft release date.</p>
+<h2 class="wp-block-heading" id="h-check-the-defender-platform-version">Check the Defender platform version<span class="clth-copy-icon" data-heading-id="h-check-the-defender-platform-version"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">After installing the update, we checked the platform version. The output below shows AMProductVersion and AMServiceVersion at 4.18.26080.4.</p>
+<p class="wp-block-paragraph">Get-MpComputerStatus | Select-Object AMProductVersion, AMServiceVersion</p>
+<figure class="wp-block-image size-full is-resized"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/09/image_07.jpg"><picture class="wp-image-194575" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/image_07.jpg.webp 1860w, https://patchmypc.com/app/uploads/2026/09/image_07-300x66.jpg.webp 300w, https://patchmypc.com/app/uploads/2026/09/image_07-1024x226.jpg.webp 1024w, https://patchmypc.com/app/uploads/2026/09/image_07-768x170.jpg.webp 768w, https://patchmypc.com/app/uploads/2026/09/image_07-1536x339.jpg.webp 1536w" sizes="(max-width: 1860px) 100vw, 1860px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1860px) 100vw, 1860px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/image_07.jpg 1860w, https://patchmypc.com/app/uploads/2026/09/image_07-300x66.jpg 300w, https://patchmypc.com/app/uploads/2026/09/image_07-1024x226.jpg 1024w, https://patchmypc.com/app/uploads/2026/09/image_07-768x170.jpg 768w, https://patchmypc.com/app/uploads/2026/09/image_07-1536x339.jpg 1536w" decoding="async" src="assets/f2a6885122e0218b/img_6.jpg"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">Figure 6. The installed Defender platform is 4.18.26080.4. This confirms the platform version, not the WSC health or Intune compliance result.</p>
+<h2 class="wp-block-heading" id="h-after-the-fix">After the fix<span class="clth-copy-icon" data-heading-id="h-after-the-fix"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Once WSC and Defender agreed again, the false antivirus failure disappeared, and Intune could evaluate the Antivirus requirement correctly again.</p>
+<figure class="wp-block-image size-full is-resized"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/09/image_08.jpg"><picture class="wp-image-194576" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/image_08.jpg.webp 2400w, https://patchmypc.com/app/uploads/2026/09/image_08-300x135.jpg.webp 300w, https://patchmypc.com/app/uploads/2026/09/image_08-1024x460.jpg.webp 1024w, https://patchmypc.com/app/uploads/2026/09/image_08-768x345.jpg.webp 768w, https://patchmypc.com/app/uploads/2026/09/image_08-1536x690.jpg.webp 1536w, https://patchmypc.com/app/uploads/2026/09/image_08-2048x920.jpg.webp 2048w" sizes="(max-width: 2400px) 100vw, 2400px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 2400px) 100vw, 2400px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/image_08.jpg 2400w, https://patchmypc.com/app/uploads/2026/09/image_08-300x135.jpg 300w, https://patchmypc.com/app/uploads/2026/09/image_08-1024x460.jpg 1024w, https://patchmypc.com/app/uploads/2026/09/image_08-768x345.jpg 768w, https://patchmypc.com/app/uploads/2026/09/image_08-1536x690.jpg 1536w, https://patchmypc.com/app/uploads/2026/09/image_08-2048x920.jpg 2048w" decoding="async" src="assets/f2a6885122e0218b/img_7.jpg"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">Figure 7. After the fix. The Antivirus-related compliance checks are back to Compliant, shown as Conform in the Dutch portal.</p>
+<h2 class="wp-block-heading" id="h-why-separating-compliance-checks-matters">Why separating compliance checks matters<span class="clth-copy-icon" data-heading-id="h-why-separating-compliance-checks-matters"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">This incident is also a good example of why I prefer not to put every security check into one giant compliance policy.</p>
+<p class="wp-block-paragraph">If Antivirus, BitLocker, Secure Boot, password rules, and everything else are bundled together, one broken detector can force you to touch the whole policy while users are being blocked.</p>
+<p class="wp-block-paragraph">Putting the Antivirus requirement in its own compliance policy gives you a much cleaner escape hatch. If this one check starts returning bad data, you can temporarily change or unassign only that policy and keep the rest of your compliance controls in place.</p>
+<p class="wp-block-paragraph">It also means you can give that one policy a different grace period. Microsoft supports actions and grace periods per compliance policy. I would describe this as an operational design recommendation, not as an official Microsoft rule that every single setting must have its own policy.</p>
+<h2 class="wp-block-heading" id="h-the-short-version">The short version<span class="clth-copy-icon" data-heading-id="h-the-short-version"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Defender itself could be healthy while WSC was wrong.</p>
+<p class="wp-block-paragraph">That wrong WSC state could make Intune mark the device noncompliant. With Conditional Access requiring a compliant device, the user could then be blocked from corporate resources.</p>
+<p class="wp-block-paragraph">The PowerShell tool checked both sides, tried to correct the wrong status, and checked the result again. That workaround also helped point us toward the Defender platform and its startup timing. Version 4.18.26080.4 then changed the startup behavior itself, and moving a test device to Beta let us validate the fix before Broad.</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
