@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Microsoft Intune MMA to Manage Multiple Work Accounts with Separate App Protection Policies</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">HTMD / Anoop C Nair</span>
+    <span class="date">September 16, 2026</span>
+  </div>
+  <h1>Microsoft Intune MMA to Manage Multiple Work Accounts with Separate App Protection Policies</h1>
+  <div class="orig">Saved for offline reading · <a href="https://www.anoopcnair.com/intune-mma-to-manage-multiple-work-accounts/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text"><p class="code-block code-block-6">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><h2 class="wp-block-heading" id="key-takeaways"><strong>Key Takeaways</strong></h2><ul class="wp-block-list"><li class="has-medium-font-size"><strong>Microsoft Intune MMA </strong>to Manage Multiple Work Accounts with Separate App Protection Policies</li><li class="has-medium-font-size"><strong>MMA (Multiple Managed Accounts) </strong>lets users add and manage multiple MAM-enabled accounts in a single app.</li><li class="has-medium-font-size">Each account can have its own <strong>App Protection Policy</strong>, allowing admins to apply different security controls to different accounts.</li><li class="has-medium-font-size"><strong>MMA </strong>helps consultants, employees involved in mergers or acquisitions, and users working with accounts across multiple organisations.</li><li class="has-medium-font-size">One account can be <strong>MDM + MAM managed</strong>, while additional accounts can be MAM-only. Multiple MDM-managed accounts aren’t supported.</li><li class="has-medium-font-size"><strong>MMA works</strong> only with apps that support multiple identities. For example, Power Apps is currently out of scope. The feature is also rolling out gradually, so it may not yet be available in every tenant.</li></ul><p class="wp-block-paragraph">Multiple Managed Accounts (<strong>MMA</strong>) is useful for people who need to use more than one <strong>work account</strong> in the same app. An IT support engineer can use <strong>multiple company accounts</strong> in the same app to support different organisations. Each account can have separate <a href="https://www.anoopcnair.com/intune-ios-privacy-by-limiting-ad-tracking/" rel="noreferrer noopener" target="_blank">app protection settings</a>.</p><details class="wp-block-details has-contrast-3-background-color has-background is-layout-flow wp-block-details-is-layout-flow"><summary><strong>Table of Content</strong></summary>
+</details><div class="rank-math-block" id="rank-math-faq"><div class="rank-math-list"><div class="rank-math-list-item" id="faq-question-1789455410262"><h2 class="rank-math-question"><strong>What is MMA?</strong></h2><div class="rank-math-answer"><p>MMA <strong>(Multiple Managed Accounts)</strong> is a feature in Microsoft Intune MAM that allows users to add and use multiple managed work accounts in the same <strong>supported app</strong>.</p></div></div><div class="rank-math-list-item" id="faq-question-1789455440142"><h2 class="rank-math-question"><strong>What Does MMA Mean for Intune Administrators?</strong></h2><div class="rank-math-answer"><p>MMA (Multiple Managed Accounts) allows users to add and use multiple managed work accounts in the same<strong> supported app</strong>. For example, a user working with<strong> two companies </strong>can use both company accounts in Outlook.</p></div></div><div class="rank-math-list-item" id="faq-question-1789455544814"><h2 class="rank-math-question"><strong>Can MMA Be Used with Every App?</strong></h2><div class="rank-math-answer"><p><strong>No</strong>. MMA works only with apps that have been integrated to support multiple managed identities. <strong>Admins </strong>should check the supported apps and required versions before <strong>troubleshooting</strong>.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p></div></div><div class="rank-math-list-item" id="faq-question-1789455636094"><h2 class="rank-math-question"><strong>Are Intune-wrapped Apps Supported?</strong></h2><div class="rank-math-answer"><p>No. <strong>MMA </strong>currently supports apps integrated with the Intune <strong>SDK</strong>. Intune-wrapped apps are not supported.</p></div></div><div class="rank-math-list-item" id="faq-question-1789455690198"><h2 class="rank-math-question"><strong>Can Users Add Multiple Work Accounts to Any App?</strong></h2><div class="rank-math-answer"><p><strong>No</strong>. Multiple managed accounts can be added only in <strong>MMA</strong>-enabled apps. Apps without MMA support may allow only one <strong>managed account</strong>.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p></div></div><div class="rank-math-list-item" id="faq-question-1789455699382"><h2 class="rank-math-question"><strong>Can the MMA Account be Different from the MDM Enrollment Account?</strong></h2><div class="rank-math-answer"><p>Yes. On an <strong>MDM</strong>-enrolled device, an MMA-supported app can allow a managed account that is different from the <strong>account </strong>used for device enrollment.</p></div></div></div></div><h2 class="wp-block-heading" id="microsoft-intune-mma-to-manage-multiple-work-accounts-with-separate-app-protection-policies"><strong>Microsoft Intune MMA to Manage Multiple Work Accounts with Separate App Protection Policies</strong></h2><p class="wp-block-paragraph">MMA is currently available on selected <strong>Microsoft apps </strong>and platforms that support multiple identities. Users need to have a <strong>supported app version</strong> to use this feature. Microsoft plans to extend MMA support to additional apps and platforms in the future.</p><figure class="wp-block-table aligncenter"><table class="has-contrast-3-background-color has-background has-fixed-layout"><thead><tr><th>App</th><th>Platform</th><th>Minimum version</th></tr></thead><tbody><tr><td>Microsoft <strong>Teams</strong></td><td>iOS/iPadOS</td><td>v8.10.0 or later</td></tr><tr><td>Microsoft <strong>Outlook</strong></td><td>iOS/iPadOS</td><td>v5.2626.0 or later</td></tr></tbody></table><figcaption class="wp-element-caption">Microsoft Intune MMA to Manage Multiple Work Accounts with Separate App Protection Policies – Table 1</figcaption></figure><figure class="wp-block-image size-large"><figcaption class="wp-element-caption">Microsoft Intune MMA to Manage Multiple Work Accounts with Separate App Protection Policies – Fig.1</figcaption></figure><h2 class="wp-block-heading" id="r"><strong>Resources</strong></h2><p class="wp-block-paragraph"><strong><a href="https://learn.microsoft.com/en-us/intune/app-management/protection/multiple-managed-accounts" rel="noreferrer noopener nofollow" target="_blank">Multiple Managed Accounts for App Protection Policies – Microsoft Intune | Microsoft Learn</a></strong></p><h2 class="wp-block-heading" id="need-further-assistance-or-have-technical-questions"><strong>Need Further Assistance or Have Technical Questions?</strong></h2><p class="has-contrast-3-background-color has-background wp-block-paragraph">Join the <a href="https://www.linkedin.com/company/how-to-manage-devices/" rel="nofollow noopener" target="_blank"><strong>LinkedIn Page</strong></a> and <a href="https://t.me/+Q9lE6G1_BO_bGq97" rel="nofollow"><strong>Telegram group</strong></a> to get the latest step-by-step guides and news updates. Join our <a href="https://www.meetup.com/htmd-community-meetup-group/" rel="nofollow noopener" target="_blank"><strong>Meetup Page</strong></a> to participate in User group meetings. Also, join the <a href="https://htmd.in/WACM2" rel="nofollow noopener" target="_blank"><strong>WhatsApp Community</strong></a>  and the <a href="https://htmd.in/whatsapp_channel" rel="nofollow noopener" target="_blank"><strong>Whatsapp channel</strong></a> to get the latest news on Microsoft Technologies. We are there on <a href="https://www.reddit.com/r/ImpMSNews/" rel="nofollow noopener" target="_blank"><strong>Reddit</strong></a> as well.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><h2 class="wp-block-heading" id="author"><strong>Author</strong></h2><p class="wp-block-paragraph"><a href="https://www.linkedin.com/in/anoopcnair/" rel="nofollow noopener" target="_blank"><strong>Anoop C Nair</strong></a>  is Workplace Technology solution architect with 25+ years of experience in global enterprise organizations such as JP Morgan, Capgemini, etc. He is Microsoft Certified Trainer. Microsoft MVP from 2015 onwards for consecutive 11 years! He also conducts Intune and modern workplace tech training for enterprise organizations. He is Blogger, Speaker, and Founder of HTMD Community and HTMD Conference. His focus is on Device Management technologies such as Intune, Windows, Cloud PC. He writes about technologies like Intune, SCCM, Windows, Cloud PC, Windows, Entra, Microsoft Security.</p><p class="code-block code-block-8">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="1286776600" data-full-width-responsive="true"></ins> </p><p class="code-block code-block-9">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="8125570634" data-full-width-responsive="true"></ins> </p></div></div></div>
+</article>
+</body>
+</html>
