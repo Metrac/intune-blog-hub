@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Five Gates Before an MCP Tool Reaches Production</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">September 17, 2026</span>
+  </div>
+  <h1>Five Gates Before an MCP Tool Reaches Production</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/five-gates-mcp-tool-production/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p class="wp-block-paragraph">Connecting a Model Context Protocol server to an agent is easy. The difficult part starts when that connection can reach a real business system. For <strong>MCP tool production</strong>, I want five gates to pass before the first user can rely on it: identity, scope, limits, approval and evidence. In this blog post I explain what I check at each gate and where Azure API Management can help.</p>
+<p class="wp-block-paragraph">This is not a generic zero-trust checklist. It is the practical review I would use for an MCP tool that reads or changes enterprise data. The goal is simple: every call should have an accountable caller, a narrow permission, a controlled impact and enough evidence to explain what happened.</p>
+<p><span id="more-20252"></span>
+</p>
+<p class="wp-block-paragraph">MCP gives agents a standard way to discover and call tools. That solves an important integration problem, but it does not decide who should be allowed to call a tool, which backend permission is appropriate or how an administrator can stop a runaway workflow.</p>
+<p class="wp-block-paragraph">The screenshot below shows the Microsoft Foundry dialog for adding a remote MCP tool. It asks for the endpoint and authentication details. This is the connection layer. A production review has to continue beyond this screen.</p>
+<figure class="wp-block-image"><img alt="Microsoft Foundry dialog for adding a remote MCP tool with endpoint and authentication settings" data-recalc-dims="1" decoding="async" src="assets/dc71bb4f88043d29/img_0.jpg"/></figure>
+<p class="wp-block-paragraph">Microsoft documents <a href="https://learn.microsoft.com/en-us/azure/api-management/mcp-server-overview" rel="noopener" target="_blank">Azure API Management as a way to expose and govern MCP servers</a>. It can validate tokens, apply policies, limit requests and send telemetry to Azure Monitor. I like this pattern because it creates one enforceable boundary between clients and enterprise tools. It is still only one part of the design.</p>
+<p class="wp-block-paragraph">Note: A gateway does not repair an unsafe tool. The MCP server and backend must still validate input and enforce authorization.</p>
+<figure class="wp-block-image"><img alt="Five gates for MCP tool production: identity, scope, limits, approval and evidence" data-recalc-dims="1" decoding="async" src="assets/dc71bb4f88043d29/img_1.jpg"/></figure>
+<h3 class="wp-block-heading" id="1-identity-who-is-really-calling">1. Identity — Who Is Really Calling?</h3>
+<p class="wp-block-paragraph">The first question is not whether authentication works. The first question is which identity is visible at every hop.</p>
+<p class="wp-block-paragraph">I separate three identities:</p>
+<ol class="wp-block-list">
+<li>The human or workload that starts the request.</li>
+<li>The agent or application that calls the MCP endpoint.</li>
+<li>The identity that reaches the backend system.</li>
+</ol>
+<p class="wp-block-paragraph">These identities may be different, but the relationship between them must be traceable. A shared API key may be useful during a small test. It is weak evidence in production because every call looks the same. Where possible, I prefer Microsoft Entra ID, short-lived tokens and an explicit audience for the MCP endpoint.</p>
+<p class="wp-block-paragraph">The outbound identity matters just as much. If API Management or the MCP server uses one powerful backend credential for every user, the gateway becomes the only authorization boundary. That can be acceptable for a narrow read-only tool, but it is risky for actions such as deleting records or changing device configuration.</p>
+<p class="wp-block-paragraph">Hint: Write the identity path down before configuring anything. If one arrow in the diagram has no owner, the design is not ready.</p>
+<p class="wp-block-paragraph">Many MCP servers expose more tools than one agent needs. A client may discover the full tool list even when its task uses only one operation. I treat the visible tool surface like an application permission set: smaller is easier to understand and easier to monitor.</p>
+<p class="wp-block-paragraph">For each agent I document:</p>
+<ul class="wp-block-list">
+<li>the allowed MCP server;</li>
+<li>the exact tools it needs;</li>
+<li>whether each tool is read-only or changes state;</li>
+<li>the data boundary behind the tool;</li>
+<li>the owner who approves a scope change.</li>
+</ul>
+<p class="wp-block-paragraph">Azure API Management products can package MCP servers and use the existing subscription and approval workflow. Microsoft also documents product-level quotas and rate limits for MCP servers in <a href="https://learn.microsoft.com/en-us/azure/api-management/govern-mcp-server-products" rel="noopener" target="_blank">Govern MCP servers with API Management products</a>. Products are useful for distribution, but the MCP server should still reject operations the caller is not authorized to perform.</p>
+<h3 class="wp-block-heading" id="3-limits-what-stops-a-loop">3. Limits — What Stops a Loop?</h3>
+<p class="wp-block-paragraph">Agents retry. Workflows branch. A small mistake can turn one user request into many tool calls. Limits therefore have to exist before usage grows.</p>
+<p class="wp-block-paragraph">I normally define two kinds of boundary:</p>
+<ul class="wp-block-list">
+<li><strong>Short-window rate limits</strong> protect the service from bursts and loops.</li>
+<li><strong>Long-window quotas</strong> keep one client or subscription from consuming the entire budget.</li>
+</ul>
+<p class="wp-block-paragraph">The counter key should represent the boundary I care about. This may be a subscription, an application identity, a tenant or a JWT claim. A global counter is simple, but one noisy consumer can block everyone else.</p>
+<p class="wp-block-paragraph">Cost limits also belong here. A tool call may trigger an expensive database query, a long-running automation or another model call. Counting only MCP requests can hide the real cost. Microsoft notes that API Management can use an LLM token limit on the backing API when token consumption is part of the path.</p>
+<h3 class="wp-block-heading" id="4-approval-which-actions-need-a-person">4. Approval — Which Actions Need a Person?</h3>
+<p class="wp-block-paragraph">Not every tool call needs approval. If every read requires a click, users will avoid the system. I reserve human approval for actions with a meaningful blast radius.</p>
+<p class="wp-block-paragraph">Typical examples are:</p>
+<ul class="wp-block-list">
+<li>sending a message outside the organization;</li>
+<li>changing security or compliance settings;</li>
+<li>deleting or overwriting data;</li>
+<li>creating a cost commitment;</li>
+<li>executing against many users or devices.</li>
+</ul>
+<p class="wp-block-paragraph">The approval decision needs context. The reviewer should see the requested action, the target, the reason and the expected impact. An approval prompt that only says “Allow tool?” is not enough.</p>
+<p class="wp-block-paragraph">I also decide what happens when approval is not available. A safe workflow stops. It should not silently switch to a more privileged credential or find another tool that reaches the same backend.</p>
+<h3 class="wp-block-heading" id="5-evidence-can-i-trace-and-revoke-every-call">5. Evidence — Can I Trace and Revoke Every Call?</h3>
+<p class="wp-block-paragraph">The final gate is evidence. I need to connect a user request to the agent run, the selected tool, the backend call and the result. Without that chain, troubleshooting becomes guesswork.</p>
+<p class="wp-block-paragraph">Azure API Management emits MCP-specific telemetry for tool discovery and tool calls when connected to Application Insights. Microsoft lists dimensions such as the MCP session, client, tool name, service and error information in <a href="https://learn.microsoft.com/en-us/azure/api-management/monitor-mcp-servers" rel="noopener" target="_blank">Monitor MCP server traffic</a>. Custom correlation data can be added with a trace policy.</p>
+<p class="wp-block-paragraph">There is an important privacy trade-off. Tool arguments and results may contain personal or confidential information. Payload logging should therefore be a deliberate choice with access control and retention, not a default checkbox.</p>
+<p class="wp-block-paragraph">Evidence also includes a tested revocation path. I want to know how to disable the client, rotate its secret, block the MCP server and revoke the backend permission. A control that has never been tested is only a plan.</p>
+<h2 class="wp-block-heading" id="where-does-azure-api-management-fit">Where Does Azure API Management Fit?</h2>
+<figure class="wp-block-image"><img alt="Controlled MCP request path from agent through Azure API Management and the MCP server to the backend" data-recalc-dims="1" decoding="async" src="assets/dc71bb4f88043d29/img_2.jpg"/></figure>
+<p class="wp-block-paragraph">API Management sits well at the shared boundary. It can enforce inbound authentication, transform or remove headers, apply rate limits, group access through products and send telemetry to Azure Monitor.</p>
+<p class="wp-block-paragraph">I would not put every responsibility into one policy file. My preferred split is:</p>
+<figure class="wp-block-table"><table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Main responsibility</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Agent or client</td>
+<td>User context, tool choice and approval experience</td>
+</tr>
+<tr>
+<td>Azure API Management</td>
+<td>Shared authentication, policy, limits and correlation</td>
+</tr>
+<tr>
+<td>MCP server</td>
+<td>Tool contract, input validation and tool-level authorization</td>
+</tr>
+<tr>
+<td>Backend</td>
+<td>Final data authorization and business rules</td>
+</tr>
+<tr>
+<td>Monitoring platform</td>
+<td>Detection, investigation, retention and alerts</td>
+</tr>
+</tbody>
+</table></figure>
+<p class="wp-block-paragraph">This separation keeps one mistake from removing every protection at once.</p>
+<h2 class="wp-block-heading" id="what-is-my-mcp-production-checklist">What Is My MCP Production Checklist?</h2>
+<p class="wp-block-paragraph">Before release I ask the owner to answer these questions:</p>
+<ul class="wp-block-list">
+<li>Can we name the human or workload behind each call?</li>
+<li>Does the agent see only the tools and data it needs?</li>
+<li>Are rate limits, quotas and cost boundaries defined per consumer?</li>
+<li>Do high-impact actions require useful human approval?</li>
+<li>Can we trace a request without logging unnecessary sensitive data?</li>
+<li>Can we block and revoke the integration in minutes?</li>
+<li>Has the failure path been tested, not only the happy path?</li>
+</ul>
+<p class="wp-block-paragraph">If one answer is unclear, I keep the tool in a pilot environment. MCP makes the connection easier. It does not reduce the responsibility that comes with connecting an agent to a production system.</p>
+<p class="wp-block-paragraph">For the technical gateway setup, see my related guide <a href="https://jannikreinhard.com/azure-api-management-mcp-control-plane/">Azure API Management MCP: The Control Plane for Agent Tools</a>.</p>
+<p class="wp-block-paragraph">I hope this is a little help when you review your next MCP integration.</p>
+<p class="wp-block-paragraph">Stay healthy, Cheers Jannik</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

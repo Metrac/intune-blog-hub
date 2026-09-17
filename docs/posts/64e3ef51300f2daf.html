@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Microsoft Intune Remote Help Client Upgrade with Enterprise App Catalog Apps</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">HTMD / Anoop C Nair</span>
+    <span class="date">September 16, 2026</span>
+  </div>
+  <h1>Microsoft Intune Remote Help Client Upgrade with Enterprise App Catalog Apps</h1>
+  <div class="orig">Saved for offline reading · <a href="https://www.anoopcnair.com/intune-remote-help-enterprise-app-catalog-apps/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text"><p class="code-block code-block-6">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><h2 class="wp-block-heading" id="key-takeaways"><strong>Key Takeaways</strong></h2><ul class="wp-block-list has-medium-font-size"><li>A new update view helps identify <strong>Enterprise App Catalog</strong> apps with newer versions.</li><li>Administrators can compare the provisioned version with the <strong>latest available version.</strong></li><li>Administrators can quickly <strong>compare </strong>the currently installed version with the latest version available in the catalog.</li><li class="has-medium-font-size">Administrators can replace the existing app with the latest version through the <strong>update experience.</strong></li></ul><p class="wp-block-paragraph">In this post we are discussing Microsoft Intune Remote Help Client Upgrade with Enterprise App Catalog Apps. Microsoft recently introduced an easier way to manage updates for applications available through the <strong><a href="https://www.anoopcnair.com/intune-enterprise-app-catalog-windows-autopilot/" rel="noreferrer noopener" target="_blank">Enterprise App Catalog</a></strong> in Intune. The new experience helps administrators identify applications that have newer versions available and start the <strong>update process </strong>directly from the <strong>Intune admin center</strong>. With this update, administrators can view the current version of an application with the latest version available in the Enterprise App Catalog.</p><details class="wp-block-details has-contrast-3-background-color has-background is-layout-flow wp-block-details-is-layout-flow"><summary><strong>Table of Contents</strong></summary>
+</details><h2 class="wp-block-heading" id="manage-windows-app-updates-using-enterprise-app-catalog-in-intune"><strong>Microsoft Intune Remote Help Client Upgrade with Enterprise App Catalog Apps</strong></h2><p class="wp-block-paragraph">Instead of manually setting up the updated application, <strong>Intune </strong>uses the application details available from the <strong>Enterprise App Catalog</strong> to simplify the process. Administrators can then review the <strong>updated </strong>application, configure the required <strong>assignments</strong>, and deploy it to the appropriate users or devices.</p><h2 class="wp-block-heading" id="whats-new"><strong>What’s New</strong></h2><p class="wp-block-paragraph"><strong>Microsoft Intune</strong> now makes it easier to find <strong>Enterprise App Catalog </strong>apps that have a newer version available. Administrators can see the current version and the latest available version in one place. Admins can select the Update option to start the update process and use the <strong>latest version </strong>to replace the existing app. This helps simplify app updates and reduces the <strong>manual work </strong>involved in managing different application versions.</p><h2 class="wp-block-heading" id="how-to-update-enterprise-app-catalog-apps-using-intune"><strong>How to Update Enterprise App Catalog Apps using Intune</strong></h2><p class="wp-block-paragraph">Sign in to the<strong> Microsoft Intune admin center</strong> and navigate to <strong>Apps </strong>&gt; <strong>All Apps.</strong> The All Apps page provides a central view of the applications available in your Intune environment and allows you to manage applications across different <strong>platforms</strong>.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><div class="wp-block-image"><figure class="aligncenter size-full"><figcaption class="wp-element-caption">Microsoft Intune Remote Help Client Upgrade with Enterprise App Catalog Apps- Fig.1</figcaption></figure></div><p class="wp-block-paragraph">From<strong> All Apps</strong>, you can search for and select the <strong>application </strong>you want to manage. For this <strong>configuration</strong>, we are working with the <strong>Remote Help application </strong>available through the <strong>Enterprise App Catalog.</strong> This view helps you identify Enterprise App Catalog applications for which a newer version is available. You can search for Remote Help and review the version information displayed for the application. Here you can see the Latest <strong>available version</strong> shows the newer version available through the catalog.</p><div class="wp-block-image"><figure class="aligncenter size-full"><figcaption class="wp-element-caption">Microsoft Intune Remote Help Client Upgrade with Enterprise App Catalog Apps- Fig.2 Creds to MS</figcaption></figure></div><p class="wp-block-paragraph">After confirming that an <strong>update </strong>is available, select Remote Help to open its application details and continue with the update process. On the Remote Help application page, select Update to open the application update experience. Intune provides the latest application information from the <strong>Enterprise App Catalog</strong> and displays the Update application section, where you can review the available update before proceeding.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><ul class="wp-block-list"><li class="has-medium-font-size">Under <strong>Supersede </strong>this app with the latest version, select Supersede app.</li><li class="has-medium-font-size">Intune creates a new application using the latest available package and establishes a relationship with the <strong>existing application</strong>.</li></ul><figure class="wp-block-table aligncenter is-style-regular"><table class="has-contrast-3-background-color has-background has-fixed-layout"><thead><tr><th>Update Info</th><th>Details</th></tr></thead><tbody><tr><td><strong>Update application</strong></td><td>You are updating <strong>Remote Help </strong>with a newer version. Intune uses information from the Enterprise App Catalog to define <strong>properties </strong>and settings. Review and define custom settings as needed. Consider <strong>downloading </strong>or exporting the properties of the app before updating.</td></tr><tr><td><strong>Supersede </strong>this app with the latest version</td><td><strong>Superseding </strong>creates a new app with the latest app package and sets up the <strong>supersedence</strong> relationship. Some settings, such as scope tags and assignments, will not be copied to the <strong>new app.</strong></td></tr></tbody></table><figcaption class="wp-element-caption">Microsoft Intune Remote Help Client Upgrade with Enterprise App Catalog Apps- Table.1</figcaption></figure><div class="wp-block-image"><figure class="aligncenter size-full"><figcaption class="wp-element-caption">Microsoft Intune Remote Help Client Upgrade with Enterprise App Catalog Apps- Fig.3 Creds to MS</figcaption></figure></div><p class="wp-block-paragraph"><strong>Need Further Assistance or Have Technical Questions?</strong></p><p class="has-contrast-3-background-color has-background wp-block-paragraph">Join the <a href="https://www.linkedin.com/company/how-to-manage-devices/" rel="nofollow noopener" target="_blank"><strong>LinkedIn Page</strong></a> and <a href="https://t.me/+Q9lE6G1_BO_bGq97" rel="nofollow"><strong>Telegram group</strong></a> to get the latest step-by-step guides and news updates. Join our <a href="https://www.meetup.com/htmd-community-meetup-group/" rel="nofollow noopener" target="_blank"><strong>Meetup Page</strong></a> to participate in User group meetings. Also, join the <a href="https://htmd.in/WACM2" rel="nofollow noopener" target="_blank"><strong>WhatsApp Community</strong></a>  and the <a href="https://htmd.in/whatsapp_channel" rel="nofollow noopener" target="_blank"><strong>Whatsapp channel</strong></a> to get the latest news on Microsoft Technologies. We are there on <a href="https://www.reddit.com/r/ImpMSNews/" rel="nofollow noopener" target="_blank"><strong>Reddit</strong></a> as well.</p><p class="wp-block-paragraph"><strong>Author</strong></p><p class="wp-block-paragraph"><a href="https://www.linkedin.com/in/anoopcnair/" rel="nofollow noopener" target="_blank"><strong>Anoop C Nair</strong></a>  is Workplace Technology solution architect with 25+ years of experience in global enterprise organizations such as JP Morgan, Capgemini, etc. He is Microsoft Certified Trainer. Microsoft MVP from 2015 onwards for consecutive 11 years! He also conducts Intune and modern workplace tech training for enterprise organizations. He is Blogger, Speaker, and Founder of HTMD Community and HTMD Conference. His focus is on Device Management technologies such as Intune, Windows, Cloud PC. He writes about technologies like Intune, SCCM, Windows, Cloud PC, Windows, Entra, Microsoft Security.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><p class="code-block code-block-8">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="1286776600" data-full-width-responsive="true"></ins> </p><p class="code-block code-block-9">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="8125570634" data-full-width-responsive="true"></ins> </p></div></div></div>
+</article>
+</body>
+</html>
