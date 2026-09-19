@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intune Newsletter – 18th September 2026</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Andrew Taylor</span>
+    <span class="date">September 18, 2026</span>
+  </div>
+  <h1>Intune Newsletter – 18th September 2026</h1>
+  <div class="orig">Saved for offline reading · <a href="https://andrewstaylor.com/2026/09/18/intune-newsletter-18th-september-2026/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text">
+<p>It’s been a busy week at Workplace Ninja Summit in Baden, was great speaking to SO many of you and a special thanks to the organisers and all of you who stopped by the booth, I’m exhausted, but it was worth it.</p>
+<p>This weeks newsletter is being written in Amsterdam airport between flights so apologies if I’ve missed anything, or it’s just a load of gibberish 🙂</p>
+<hr/>
+<h1>Community Content</h1>
+<p>We start this week with a look at what your options are when Microsoft deprecate slmgr.vbs and why this is important to you in this post from <a href="https://www.linkedin.com/in/mads-johansen/">Mads Johansen</a></p>
+<p><a href="https://evil365.com/windows/intune/VBScript-Deprecation-Replacement-for-slmgr/">https://evil365.com/windows/intune/VBScript-Deprecation-Replacement-for-slmgr/</a></p>
+<p>Mads also has a useful tip here on monitoring your EPM client versions</p>
+<p><a href="https://evil365.com/intune/Add-Microsoft-EPM-Agent-version-to-your-software-inventory/">https://evil365.com/intune/Add-Microsoft-EPM-Agent-version-to-your-software-inventory/</a></p>
+<hr/>
+<p>Autopilot Device Prep is getting better with each release and I’m sure many of you are probably starting to look at it, but the lack of a naming template is often a blocker.  <a href="https://www.linkedin.com/in/johannes-geir-kristjansson/">Jóhannes Geir Kristjánsson</a> has a script here to solve this issue for you</p>
+<blockquote class="wp-embedded-content" data-secret="EeQ5LD9RNN"><p><a href="https://johannesblog.com/2026/09/12/applying-a-specific-hostname/">Applying a Specific Hostname In Device Preparation</a></p></blockquote>
+<p></p>
+<hr/>
+<p>On the subject of Device Prep, <a href="https://www.linkedin.com/in/niklas-tinner/">Niklas Tinner</a> looks at if now is the time to switch here</p>
+<p><a href="https://www.oceanleaf.ch/is-autopilot-device-preparation-it/">https://www.oceanleaf.ch/is-autopilot-device-preparation-it/</a></p>
+<hr/>
+<p>Edge extensions, the modern day browser toolbars!  But how can you tell if anyone is actually using them?  Leaving unused extensions seems a huge security risk.  Fortunately <a href="https://www.linkedin.com/in/sebastian-markdanner/">Sebastian F. Markdanner</a> runs through how to monitor them here</p>
+<p><a href="https://www.chanceofsecurity.com/post/are-your-microsoft-entra-extensions-actually-being-used">https://www.chanceofsecurity.com/post/are-your-microsoft-entra-extensions-actually-being-used</a></p>
+<hr/>
+<p>iOS (and iPadOS) finally support token protection to add an extra layer of security to your admin portals.  Learn how to implement in this post from <a href="https://www.linkedin.com/in/jan-mulder/">Jan Mulder</a></p>
+<blockquote class="wp-embedded-content" data-secret="jJeZ06tpqL"><p><a href="https://wolkenman.wordpress.com/2026/09/16/token-protection-for-apple-devices/">Token protection for Apple devices</a></p></blockquote>
+<p></p>
+<hr/>
+<p>If you are looking at zero trust across your connectivity layer as well, Entra Internet Access is probably on your list.  This post from <a href="https://www.linkedin.com/in/michaelsendpoint/">Michael Frank</a> runs through what it is and how it works</p>
+<p><a href="https://michaelsendpoint.com/entra/InternetAccess.html">https://michaelsendpoint.com/entra/InternetAccess.html</a></p>
+<hr/>
+<h1><a id="video"></a>Video Content</h1>
+<p>Now for this weeks video content and it’s been a popular week for Autopilot Device Prep.  This video from <a href="https://www.linkedin.com/in/deanellerby/">Dean Ellerby</a> looks at how it works with Device Assosication</p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/QocFe1qFOKU?feature=oembed" title="How Does Windows Autopilot Device Preparation + Device Association Work?">VIDEO</iframe></p>
+<hr/>
+<p>If you are running E5 licenses, you may be looking at Remote Help to replace any existing remote support solutions now you are receiving it for free.  Learn how to set it up from scratch in this full walkthrough from <a href="https://www.linkedin.com/in/stevew25/">Steve Weiner</a></p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/gxmZoblHW24?feature=oembed" title="How to Set Up Unattended Remote Help in Intune (Full Walkthrough)">VIDEO</iframe></p>
+<hr/>
+<h1><a id="microsoft"></a>Microsoft Content</h1>
+<p>Onto this weeks Microsoft content and we start with the sad news that Unpacking Endpoint Management has concluded, but all episodes are available on catch-up at the link below</p>
+<p><a href="https://techcommunity.microsoft.com/blog/IntuneCustomerSuccess/unpacking-endpoint-management-episodes-available-on-demand/4514599">https://techcommunity.microsoft.com/blog/IntuneCustomerSuccess/unpacking-endpoint-management-episodes-available-on-demand/4514599</a></p>
+<hr/>
+<p>If you have looked at all of the content on device prep and decided now is the time to switch, this in-depth post from <a href="https://www.linkedin.com/in/mdakeva/">Maggie Dakeva</a> is definitely worth reading, it covers how to migrate from Autopilot to Device Prep</p>
+<p><a href="https://techcommunity.microsoft.com/blog/IntuneCustomerSuccess/moving-from-windows-autopilot-to-windows-autopilot-device-preparation/4557269">https://techcommunity.microsoft.com/blog/IntuneCustomerSuccess/moving-from-windows-autopilot-to-windows-autopilot-device-preparation/4557269</a></p>
+<hr/>
+<p>That’s all for this week, have a fantastic weekend!</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
