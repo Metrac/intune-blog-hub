@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Making sure the multi-app kiosk configuration is applied after the installation of the applications</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Peter van der Woude</span>
+    <span class="date">September 21, 2026</span>
+  </div>
+  <h1>Making sure the multi-app kiosk configuration is applied after the installation of the applications</h1>
+  <div class="orig">Saved for offline reading · <a href="https://petervanderwoude.nl/post/making-sure-the-multi-app-kiosk-configuration-is-applied-after-the-installation-of-the-applications/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text">
+<p class="wp-block-paragraph">This week is all about making sure that the multi-app kiosk configuration is actually applied after the required applications are installed. The ordering is important because the multi-app kiosk configuration will not be correctly configured when the required applications where not installed when the configuration was applied. That was also an important subject during <a href="https://github.com/pvanderwoude/blog/blob/main/WPNS26_Mastering-shared-Windows-devices-in-your-environment.pdf">the session on the Workplace Ninja Summit about Mastering shared Windows devices in your environment</a>. The basics around creating the multi-app kiosk configuration, using assigned access, has been described <a href="https://petervanderwoude.nl/post/configuring-multi-app-kiosk-mode-on-windows-11/">on this blog</a>. Often, however, it refers to using a custom device configuration file. And, even though it technically works, it does not provide full control over the end-result. Given the fact that this was also subject of many questions during the session, it is about time to show an alternative. This post will go through an alternative configuration using a Win32 application that has a dependency on required applications.</p>
+<h2 class="wp-block-heading">Creating the alternative configuration for multi-app kiosk</h2>
+<p class="wp-block-paragraph">The alternative configuration for multi-app kiosk, is actually pretty straightforward. The idea is to rely on configuration options that provide more control over the end-result and that is exactly what Win32 applications bring to the table. Win32 applications provide the ability to create dependencies between Win32 applications, which helps with making sure that specific applications are already installed. That can be also really useful in this specific scenario, because it is also possible to configure multi-app kiosk by using PowerShell scripting and the MDM Bridge WMI Provider. That PowerShell script can then be wrapped in a Win32 application, which can be used for creating the dependencies with the required apps.</p>
+<h3 class="wp-block-heading">Creating the PowerShell script to configure multi-app kiosk</h3>
+<p class="wp-block-paragraph">As mentioned earlier, the configuration can be done by using the same assigned access XML configuration that is required for any other method for configuring multi-app kiosk. Let’s start by going through the key components of the PowerShell script. Of course that starts with setting variables. The most important variables are shown below and represent the actual assigned access XML configuration, and the assigned access namespace and class name in WMI. </p>
+<pre class="wp-block-code"><code class="language-powershell" lang="powershell">$assignedAccessConfiguration = @"&lt;!-- Paste the Assigned Access XML configuration here\. --&gt;"@
+$assignedAccessNamespace = 'root\cimv2\mdm\dmmap'
+$assignedAccessClassName = 'MDM_AssignedAccess'</code></pre>
+<p class="wp-block-paragraph">Besides that, there are some additional variables that are pretty useful for eventually detecting that the multi-app kiosk was configured. For that, the easiest is to write information to the registry. The variables shown below represent that.</p>
+<pre class="wp-block-code"><code class="language-powershell" lang="powershell">$assignedAccessRegistryPath = 'HKLM:\SOFTWARE\PVDWCloud\AssignedAccessConfiguration'
+$assignedAccessRegistryValueName = 'LastConfigured'</code></pre>
+<p class="wp-block-paragraph">Those variables can be used for applying the configuration of the multi-app kiosk using the MDM WMI Bridge Provider. That is a pretty straightforward method to apply the configuration via PowerShell. Below is an example of that using the earlier described variables. The most important thing here is the encoding of the assigned access XML configuration.</p>
+<pre class="wp-block-code"><code class="language-powershell" lang="powershell">$assignedAccessInstance = Get-CimInstance -Namespace $assignedAccessNamespace -ClassName $assignedAccessClassName -ErrorAction Stop
+$assignedAccessInstance.Configuration = [System.Net.WebUtility]::HtmlEncode($assignedAccessConfiguration)
+Set-CimInstance -CimInstance $assignedAccessInstance -ErrorAction Stop</code></pre>
+<p class="wp-block-paragraph">When the multi-app kiosk configuration was applied, it is the easiest to write something to the registry that can be used to easily detect the applied configuration. That is very important for the Win32 application. Below is a pretty straightforward example of that using the earlier described variables. The most important thing here is the creation of the registry value.</p>
+<pre class="wp-block-code"><code class="language-powershell" lang="powershell">New-Item -Path $registryPath -Force -ErrorAction Stop
+New-ItemProperty -Path $registryPath -Name $registryValueName -Value (Get-Date).ToUniversalTime().ToString('o') -PropertyType String -Force -ErrorAction Stop</code></pre>
+<p class="wp-block-paragraph">With these core elements, it is basically already possible to configure multi-app kiosk via PowerShell. It is, however, smart to add some more logic to verify the assigned access XML, and to do some additional checks when the script fails. The latter is especially useful for the initial testing. A script that does that can be found here on Github Gist: <a href="https://gist.github.com/pvanderwoude/19d580aacbea6696602b57b6d98b39ca">Set-AssignedAccessConfiguration.ps1</a></p>
+<p class="has-background wp-block-paragraph"><strong>Note</strong>: Keep in mind that the script should be tested in SYSTEM context to verify the behavior via Microsoft Intune.</p>
+<h3 class="wp-block-heading">Wrapping the PowerShell script that includes the multi-app kiosk configuration</h3>
+<p class="wp-block-paragraph">Before being able to deploy the multi-app kiosk configuration as a Win32 application, it is required to wrap the PowerShell script. For that specific purpose Microsoft provides the <a href="https://github.com/Microsoft/Microsoft-Win32-Content-Prep-Tool" rel="noopener" target="_blank">Microsoft Win32 Content Prep Tool</a>. The script will be wrapped into a file of the <em>.intunewin</em> format. Like with any other Win32 application, that<em> </em>file can be used in Microsoft Intune. The following five steps walk through downloading and using the Win32 Content Prep Tool, to actually wrap the created script file.</p>
+<ol class="wp-block-list">
+<li>Download the <a href="https://github.com/Microsoft/Microsoft-Win32-Content-Prep-Tool" rel="noopener" target="_blank">Microsoft Win32 Content Prep Tool</a> to C:\Temp</li>
+<li>Add the created PowerShell script to C:\Temp\AAC</li>
+<li>Open a Terminal using <em>Run as administrator</em> and navigate to the location of <em>IntuneWinAppUtil .exe</em> using <strong>cd \Temp</strong></li>
+<li>Run <em>IntuneWinAppUtil.exe</em> to start the wrapping process and provide the following information, when requested:</li>
+</ol>
+<ul class="wp-block-list">
+<li>Please specify the source folder: <strong>C:\Temp\AAC</strong></li>
+<li>Please specify the setup file: <strong>Set-AssignedAccessConfiguration.ps1</strong></li>
+<li>Please specify the output folder: <strong>C:\Temp</strong></li>
+<li>Do you want you want to specify catalog folder (Y/N): <strong>N</strong></li>
+</ul>
+<ol class="wp-block-list" start="5">
+<li class="advgb-dyn-fd0207b2">Once the wrapping is done the message <em>Done!!!</em> will be shown and a file named <em>Set-AssignedAccessConfiguration.intunewin</em> will be created in <em>C:\Temp</em></li>
+</ol>
+<h3 class="wp-block-heading">Creating the Win32 application that includes the multi-app kiosk configuration</h3>
+<p class="wp-block-paragraph">The wrapped PowerShell script can now be added as a Win32 application. That is a pretty straightforward process that is similar to adding any other Win32 application and can be achieved by adding an application of the <em>Windows app (Win32)</em> type. The following 12 steps walk through the steps to create the Win32 application by adding the created <em>.intunewin </em>file. As part of those steps 7-Zip is used as an example in the multi-app kiosk configuration and must be installed before the configuration is applied. </p>
+<ol class="wp-block-list">
+<li>Open the <a href="https://intune.microsoft.com/" rel="noopener" target="_blank">Microsoft Intune admin center</a> portal and navigate <strong>Apps</strong> &gt; <strong>Windows</strong></li>
+<li>On the <strong>Windows | Windows apps</strong> page, click <strong>Create</strong></li>
+<li>On the <strong>Select app type</strong> pane, select <strong>Windows app (Win32)</strong> and click <strong>Select</strong></li>
+<li>On the <strong>App information</strong> page, select the created <em>Set-AssignedAccessConfiguration.intunewin</em> and click <strong>OK</strong></li>
+<li>Back on the <strong>App information</strong> page, specify the basic information about the PowerShell script and click <strong>Next</strong></li>
+<li>On the <strong>Program</strong> page, as shown below in Figure 1, specify at least the following information about the PowerShell script and click <strong>Next</strong></li>
+</ol>
+<ul class="wp-block-list">
+<li><strong>Install command</strong>: Specify <em>PowerShell.exe -NoProfile -ExecutionPolicy ByPass -File .\Set-AssignedAccessConfiguration.ps1</em> as the installation command to make sure that the PowerShell script will be run</li>
+<li><strong>Install behavior</strong>: Select <strong>System </strong>to make sure that the PowerShell script will run in the right context</li>
+</ul>
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-1 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><a href="https://petervanderwoude.nl/wordpress/wp-content/uploads/AAC-AppConfiguration.png"><img alt="" class="wp-image-23411" data-id="23411" decoding="async" src="assets/38a84944af816037/img_0.png"/></a><figcaption class="wp-element-caption">Figure 1: Overview of the important program information</figcaption></figure>
+</figure>
+<ol class="wp-block-list" start="7">
+<li>On the <strong>Requirements</strong> page, specify at least the operating system details and click <strong>Next</strong></li>
+<li>On the <strong>Detection rules</strong> page, as shown below in Figure 2, specify at least the following information about the detection of a successful configuration and click <strong>Next</strong></li>
+</ol>
+<ul class="wp-block-list">
+<li><strong>Rule type</strong>: Select <strong>Registry </strong>to be able to verify the created registry value</li>
+<li><strong>Key path</strong>: Specify <em>HKEY_LOCAL_MACHINE\SOFTWARE\PVDWCloud\AssignedAccessConfiguration</em> as that should be the registry path that is created by the PowerShell script</li>
+<li><strong>Value name</strong>: Specify <em>LastConfigured</em> as that should be the value that is created by the PowerShell script</li>
+<li><strong>Detection method</strong>: Select <strong>Value exists</strong> to simply check for the existence of the registry key</li>
+<li><strong>Associated with a 32-bit app on 64-bit clients</strong>: Select <strong>Yes </strong>as that is the default behavior for standard PowerShell execution</li>
+</ul>
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-2 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><a href="https://petervanderwoude.nl/wordpress/wp-content/uploads/AAC-AppDetection.png"><img alt="" class="wp-image-23410" data-id="23410" decoding="async" src="assets/38a84944af816037/img_1.png"/></a><figcaption class="wp-element-caption">Figure 2: Overview of the important detection information</figcaption></figure>
+</figure>
+<ol class="wp-block-list" start="9">
+<li>On the <strong>Dependencies</strong> page, as shown below in Figure 3, specify the dependencies of the Win32 applications that are required for the multi-app kiosk configuration and click <strong>Next</strong></li>
+</ol>
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-3 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><a href="https://petervanderwoude.nl/wordpress/wp-content/uploads/AAC-AppDependency.png"><img alt="" class="wp-image-23409" data-id="23409" decoding="async" src="assets/38a84944af816037/img_2.png"/></a><figcaption class="wp-element-caption">Figure 3: Overview of the important dependencies</figcaption></figure>
+</figure>
+<ol class="wp-block-list" start="10">
+<li>On the <strong>Supersedence</strong> page, no configuration is required and click <strong>Next</strong></li>
+<li>On the <strong>Assignments</strong> page, configure the assignment for the multi-app kiosk configuration and click <strong>Next</strong></li>
+<li>On the <strong>Review + create</strong> page, verify the configuration and click <strong>Create</strong></li>
+</ol>
+<p class="has-background wp-block-paragraph"><strong>Note</strong>: At the moment of writing, it is not possible to create a dependency on a <em>Windows catalog app (Win32)</em>.</p>
+<h2 class="wp-block-heading">Verifying the alternative configuration for multi-app kiosk </h2>
+<p class="wp-block-paragraph">When the alternative configuration for multi-app kiosk is actually applied, it is luckily also pretty straightforward to verify the configuration. Of course, the device should immediately show the expected configuration. That is especially easy to verify with an autologon multi-app kiosk configuration. For a bit more technical verification, simply check the event log, the registry and the installed apps (as shown below in Figure 4). The AssignedAccess-Admin log should not show any events, as that indicates that there where no issues during the configuration of the multi-app kiosk. On top of that installed apps should show the application that the multi-app kiosk configuration was depending on, and the registry should show the created registry key and value. </p>
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-4 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><a href="https://petervanderwoude.nl/wordpress/wp-content/uploads/AAC-VerifyingConfiguration.png"><img alt="" class="wp-image-23415" data-id="23415" decoding="async" src="assets/38a84944af816037/img_3.png"/></a><figcaption class="wp-element-caption">Figure 4: Overview of verifying the alternative configuration</figcaption></figure>
+</figure>
+<div class="wp-block-group has-border-color"><div class="wp-block-group__inner-container is-layout-flow wp-block-group-is-layout-flow">
+<hr class="wp-block-separator has-alpha-channel-opacity is-style-wide"/>
+<h3 class="wp-block-heading has-text-align-center">Discover more from All about Microsoft Intune</h3>
+<p class="has-text-align-center wp-block-paragraph">Subscribe to get the latest posts sent to your email.</p>
+</div></div>
+</div>
+</div></div>
+</article>
+</body>
+</html>

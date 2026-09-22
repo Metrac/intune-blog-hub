@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intune App Inventory From Four Hours to About Five Minutes</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Call4Cloud (Rudy Ooms)</span>
+    <span class="date">September 21, 2026</span>
+  </div>
+  <h1>Intune App Inventory From Four Hours to About Five Minutes</h1>
+  <div class="orig">Saved for offline reading · <a href="https://patchmypc.com/blog/intune-app-inventory-from-four-hours-to-about-five-minutes/?utm_term=rss" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="post-content">
+<p class="wp-block-paragraph">This blog will show how the Device App Inventory Agent now reacts to application changes instead of waiting for the normal collection 4-hour harvest cycle</p>
+<h2 class="wp-block-heading" id="h-introduction-to-app-inventory">Introduction to App Inventory<span class="clth-copy-icon" data-heading-id="h-introduction-to-app-inventory"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">App Inventory was already one of the more important recent changes to Intune inventory. It replaced a very limited application view (Discovered Apps) with richer data collected by the Microsoft Device Inventory Agent. What interested me most, though, wasn’t just the extra columns. It was the architecture behind it.</p>
+<p class="wp-block-paragraph">Device Inventory is turning into an extensible framework. Device Hardware properties were first. Application inventory came next. Registry inventory followed. Each new workload can reuse the same policy model, local storage, harvesting pipeline and upload foundation instead of Microsoft building another standalone Windows agent for every new inventory type.</p>
+<p class="wp-block-paragraph">That architecture now matters for another reason. In the current Device Inventory Agent build I tested, App Inventory no longer has to wait for the normal four-hour collection before it notices a new application. The agent can detect an application change, queue it, validate that something really changed, and start a targeted App Inventory collection on the next five-minute scheduler pass.</p>
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr><td><strong>In this lab capture, Firefox was detected at 02:14:48 and the App Inventory upload completed at 02:19:48. That is five minutes from change detection to successful upload.</strong></td></tr></tbody></table></figure>
+<h2 class="wp-block-heading" id="h-device-inventory-is-becoming-an-extensible-platform">Device Inventory is becoming an extensible platform<span class="clth-copy-icon" data-heading-id="h-device-inventory-is-becoming-an-extensible-platform"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">When Device Inventory first appeared, it was easy to think of it as Resource Explorer with a newer backend. You selected hardware properties such as BIOS, CPU, storage, TPM, battery or operating system information, and the Device Inventory Agent collected those values.</p>
+<p class="wp-block-paragraph">The newer additions make the bigger design much easier to see. App Inventory added a completely different data source without introducing a separate inventory service. Registry Inventory then did the same thing again. As we described in the Patch My PC registry inventory deep dive, the useful pattern is one extensible agent, multiple collection providers, and one shared transformation and upload foundation.</p>
+<p class="wp-block-paragraph"><strong>Related:</strong> <a href="https://patchmypc.com/blog/windows-registry-data-is-coming-to-intune-device-inventory/">Windows Registry Data Is Coming to Intune Device Inventory</a>.</p>
+<p class="wp-block-paragraph">This is why adding application data or registry data is much simpler than it would be in a collection model where every feature owns its own agent. The policy tells the Device Inventory Agent which category to collect. The agent selects the right source, turns the result into inventory entities, stores it locally, and hands it to the same uploader.</p>
+<h2 class="wp-block-heading" id="h-app-inventory-was-the-first-big-proof-of-that-model">App Inventory was the first big proof of that model<span class="clth-copy-icon" data-heading-id="h-app-inventory-was-the-first-big-proof-of-that-model"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Microsoft App Inventory expands the existing Device Inventory Agent to collect installed application data. Microsoft documents two main sources on Windows. Traditional Win32 applications come from the Windows uninstall registry locations, including per-user installs. Store and MSIX applications come from the Windows package manager.</p>
+<p class="wp-block-paragraph">It collects and merges those two sources into one application inventory. The result is much richer than Discovered Apps. Depending on the properties you select in the Properties Catalog, App Inventory can include architecture, install scope, install location, install date, size, uninstall information, user information, and the platform-specific application identifier.</p>
+<p class="wp-block-paragraph">The other important part is the upload model. The first sync can establish the full state, but later uploads are delta-based. A fresh local collection can contain hundreds of applications while the device only sends the application records that are new, changed, or removed.</p>
+<p class="wp-block-paragraph">For the full deep dive … check <a href="https://www.youtube.com/watch?v=7E1AfcQkH3Q">Microsoft Intune App Inventory Deep Dive Webinar | Better Than Discover Apps?</a></p>
+<h2 class="wp-block-heading" id="h-the-remaining-problem-was-freshness">The remaining problem was freshness<span class="clth-copy-icon" data-heading-id="h-the-remaining-problem-was-freshness"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The original App Inventory experience was already dramatically better than waiting days for Discovered Apps, but it was still fundamentally periodic. On the tested agent, the normal refresh is 240 minutes. The log confirms the same cadence after a scheduled run: a collection finishing at 02:25 schedules the next normal collection for 06:25.</p>
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr><td>02:25:33  Next collection occurs at 06:25:33<br/><br/>Normal collection cadence: 4 hours</td></tr></tbody></table></figure>
+<p class="wp-block-paragraph">That means timing mattered. If an application appeared just after a normal inventory run, the device could know nothing about it until the next periodic refresh. Microsoft public documentation currently describes App Inventory as running multiple times per day with the MMP C check-in cycle. That still describes the normal path, but the current client now has another path for application changes.</p>
+<h2 class="wp-block-heading" id="h-what-changed-the-agent-can-react-to-an-application-install">What changed: the agent can react to an application install<span class="clth-copy-icon" data-heading-id="h-what-changed-the-agent-can-react-to-an-application-install"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The new behavior is event-driven. The agent continuously monitors Windows locations that change when traditional or packaged applications are installed or removed. When Windows signals a change, the agent records an application event and puts it into a pending queue.</p>
+<p class="wp-block-paragraph">It does not immediately trust that signal. Installers are noisy, and one installation can cause several registry changes. The agent first filters rapid duplicate notifications, then waits for the next scheduler pass. On this build, that scheduler checks pending work every five minutes.</p>
+<figure class="wp-block-image size-full is-resized"><a data-caption="Figure 1. Simplified flow from application change to delta upload." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/09/1-1.png"><picture class="wp-image-195174" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/1-1.png.webp 1672w, https://patchmypc.com/app/uploads/2026/09/1-1-300x169.png.webp 300w, https://patchmypc.com/app/uploads/2026/09/1-1-1024x576.png.webp 1024w, https://patchmypc.com/app/uploads/2026/09/1-1-768x432.png.webp 768w, https://patchmypc.com/app/uploads/2026/09/1-1-1536x864.png.webp 1536w" sizes="(max-width: 1672px) 100vw, 1672px" type="image/webp"/>
+<img alt="Figure 1. Simplified flow from application change to delta upload." data-lazy-sizes="(max-width: 1672px) 100vw, 1672px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/1-1.png 1672w, https://patchmypc.com/app/uploads/2026/09/1-1-300x169.png 300w, https://patchmypc.com/app/uploads/2026/09/1-1-1024x576.png 1024w, https://patchmypc.com/app/uploads/2026/09/1-1-768x432.png 768w, https://patchmypc.com/app/uploads/2026/09/1-1-1536x864.png 1536w" decoding="async" src="assets/6a2fc1044fbcaa97/img_0.png"/>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-firefox-at-02-14-the-log-tells-the-whole-story">Firefox at 02:14: the log tells the whole story<span class="clth-copy-icon" data-heading-id="h-firefox-at-02-14-the-log-tells-the-whole-story"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">For the test, Firefox was installed at around 02:14. This was the packaged Firefox build, so Windows updated the per user AppX/MSIX package repository. The Device Inventory Agent noticed that change almost immediately.</p>
+<figure class="wp-block-table"><table class="has-fixed-layout"><thead><tr><td><strong>Time</strong></td><td><strong>What happened</strong></td><td><strong>Why it matters</strong></td></tr></thead><tbody><tr><td><strong>02:14:48</strong></td><td>Application change detected and queued.</td><td>Detection is immediate. The agent does not wait four hours before noticing the change.</td></tr><tr><td><strong>02:19:11</strong></td><td>Firefox is validated as a real addition.</td><td>The next scheduler pass compares the old and current application state before collecting.</td></tr><tr><td><strong>02:19:11</strong></td><td>Application Inventory collection starts.</td><td>Only the App Inventory workload is targeted and its cached inventory is invalidated.</td></tr><tr><td><strong>02:19:46</strong></td><td>A fresh merged application inventory is ready.</td><td>The device rebuilds the local inventory from registry and package sources.</td></tr><tr><td><strong>02:19:47</strong></td><td>One App Inventory upload request is built.</td><td>The full local harvest is reduced to the delta that actually needs to be sent.</td></tr><tr><td><strong>02:19:48</strong></td><td>App Inventory upload succeeds.</td><td>Five minutes after detection, the changed application state is uploaded.</td></tr></tbody></table></figure>
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr><td>02:14:48  Application change detected via AppX/MSIX<br/>02:14:48  Enqueued collection event: ApplicationEvent<br/>02:19:11  Validated changes for AppX/MSIX: Added: Mozilla Firefox<br/>02:19:11  Starting collection run due to trigger event(s): ApplicationEvent<br/>02:19:47  Returning 1 upload data requests<br/>02:19:48  Data successfully uploaded for App Inventory</td></tr></tbody></table></figure>
+<h3 class="wp-block-heading" id="h-step-1-detect-first-collect-later">Step 1: detect first, collect later<span class="clth-copy-icon" data-heading-id="h-step-1-detect-first-collect-later"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">The first part of the design is deliberately cheap. The agent watches the application registration locations instead of repeatedly rebuilding the entire app inventory just to see whether something changed. For Win32 applications, that means the uninstall locations. For AppX and MSIX it means the package registration locations.</p>
+<p class="wp-block-paragraph">When Windows reports a change, the agent logs it and queues an application event. Rapid follow-up changes are suppressed for a short period, so one noisy installer does not create a storm of collection runs. The important point is that detection and collection are separate. Detecting a registry or package change only says something might have happened.</p>
+<figure class="wp-block-image size-full is-resized"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/09/2-1.png"><picture class="wp-image-195175" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/2-1.png.webp 1672w, https://patchmypc.com/app/uploads/2026/09/2-1-300x169.png.webp 300w, https://patchmypc.com/app/uploads/2026/09/2-1-1024x576.png.webp 1024w, https://patchmypc.com/app/uploads/2026/09/2-1-768x432.png.webp 768w, https://patchmypc.com/app/uploads/2026/09/2-1-1536x864.png.webp 1536w" sizes="(max-width: 1672px) 100vw, 1672px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1672px) 100vw, 1672px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/2-1.png 1672w, https://patchmypc.com/app/uploads/2026/09/2-1-300x169.png 300w, https://patchmypc.com/app/uploads/2026/09/2-1-1024x576.png 1024w, https://patchmypc.com/app/uploads/2026/09/2-1-768x432.png 768w, https://patchmypc.com/app/uploads/2026/09/2-1-1536x864.png 1536w" decoding="async" src="assets/6a2fc1044fbcaa97/img_1.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph"><em>Figure 2. Application changes are detected quickly, but the event is queued for later validation.</em></p>
+<h3 class="wp-block-heading" id="h-step-2-validate-that-an-application-really-changed">Step 2: validate that an application really changed<span class="clth-copy-icon" data-heading-id="h-step-2-validate-that-an-application-really-changed"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">On the next scheduler pass, the pending event is validated against the application state the agent previously stored. This prevents a registry notification from automatically becoming an inventory upload. The device compares the previous snapshot with what is present now and continues only if it can prove that an application was added or removed.</p>
+<p class="wp-block-paragraph">That is exactly what happened with Firefox. At 02:19:11, the log moves from a generic AppX/MSIX change to a concrete result: Mozilla Firefox was added. Only then does the agent allow the App Inventory collection to proceed.</p>
+<p class="wp-block-paragraph">There is also a cooldown around triggered collections. In the same log, another application change was validated five minutes later, but the agent reported that only five minutes had elapsed and ten minutes were required at the current cooldown level. The event was not thrown away. It remained pending for retry.</p>
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr><td>02:24:48  Trigger … validated changes, collection will proceed<br/>02:24:48  Cooldown active: 5.0 min elapsed, need 10 min<br/>02:24:48  Events remain pending for retry</td></tr></tbody></table></figure>
+<figure class="wp-block-image size-full is-resized"><a data-caption="Figure 3. The pending event is validated before the agent starts another application inventory collection. The numeric counts shown are from this lab run, not fixed product limits." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/09/3-1.png"><picture class="wp-image-195176" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/3-1.png.webp 1672w, https://patchmypc.com/app/uploads/2026/09/3-1-300x169.png.webp 300w, https://patchmypc.com/app/uploads/2026/09/3-1-1024x576.png.webp 1024w, https://patchmypc.com/app/uploads/2026/09/3-1-768x432.png.webp 768w, https://patchmypc.com/app/uploads/2026/09/3-1-1536x864.png.webp 1536w" sizes="(max-width: 1672px) 100vw, 1672px" type="image/webp"/>
+<img alt="Figure 3. The pending event is validated before the agent starts another application inventory collection. The numeric counts shown are from this lab run, not fixed product limits." data-lazy-sizes="(max-width: 1672px) 100vw, 1672px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/3-1.png 1672w, https://patchmypc.com/app/uploads/2026/09/3-1-300x169.png 300w, https://patchmypc.com/app/uploads/2026/09/3-1-1024x576.png 1024w, https://patchmypc.com/app/uploads/2026/09/3-1-768x432.png 768w, https://patchmypc.com/app/uploads/2026/09/3-1-1536x864.png 1536w" decoding="async" src="assets/6a2fc1044fbcaa97/img_2.png"/>
+</picture>
+</a></figure>
+<h3 class="wp-block-heading" id="h-step-3-refresh-app-inventory-without-moving-the-normal-timer">Step 3: refresh App Inventory without moving the normal timer<span class="clth-copy-icon" data-heading-id="h-step-3-refresh-app-inventory-without-moving-the-normal-timer"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">Once the trigger is accepted, the agent no longer runs for every Device Inventory category. The collection is filtered to Application Inventory. It also invalidates the existing merged application cache first, which is the key to freshness. The next App Inventory pass must rebuild the local application state instead of reusing the older cached result.</p>
+<p class="wp-block-paragraph">The normal scheduled inventory timer is left alone. After the Firefox-triggered run, the log explicitly says the timer was not reset, and the already scheduled collection remained in place. This gives the agent two paths at the same time: the normal periodic collection and a targeted application change path.</p>
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr><td>02:19:11  Starting collection run due to trigger event(s): ApplicationEvent (filtered=True)<br/>02:19:11  Invalidated app inventory cache for pending ApplicationEvent trigger<br/>02:19:48  Trigger collection recorded: 1/30 today, backoff level 0<br/>02:19:48  Timer NOT reset – next scheduled collection remains at 02:24:10</td></tr></tbody></table></figure>
+<p class="wp-block-paragraph">The fresh App Inventory pass then does what App Inventory already did before this trigger existed. It collects Win32 application data from registry-based sources, collects packaged applications through the Windows Package Manager, merges the results, and writes the current state to the shared inventory database.</p>
+<h3 class="wp-block-heading" id="h-step-4-a-full-local-harvest-can-still-become-a-tiny-upload">Step 4: a full local harvest can still become a tiny upload<span class="clth-copy-icon" data-heading-id="h-step-4-a-full-local-harvest-can-still-become-a-tiny-upload"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">The best part of the design is what happens after the fresh collection. Triggered collection does not mean the device uploads its entire application list every five minutes. The uploader compares the current application entities with the state it already knows about and builds only the requests needed for the delta.</p>
+<p class="wp-block-paragraph">In this Firefox test, the fresh local harvest contained 502 application entities while the uploader had 501 existing application states. The result was one App Inventory upload request. The log never prints the application name in that request, so I wouldn’t claim the request payload line alone proves the entity is Firefox. But the sequence is very strong: Firefox is the validated addition, the local application count increases by one, and one changed entity is uploaded immediately afterward.</p>
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr><td>02:19:47  Known application states: 501<br/>02:19:47  Current application entities: 502<br/>02:19:47  Returning 1 upload data requests<br/>02:19:47  Sending 1 app inventory requests to service<br/>02:19:48  Data successfully uploaded for App Inventory</td></tr></tbody></table></figure>
+<figure class="wp-block-image size-full is-resized"><a data-caption="Figure 4. The local collection can be large while the network upload contains only the changed application data. Counts in the diagram are from this specific lab capture." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/09/4-1.png"><picture class="wp-image-195177" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/4-1.png.webp 1672w, https://patchmypc.com/app/uploads/2026/09/4-1-300x169.png.webp 300w, https://patchmypc.com/app/uploads/2026/09/4-1-1024x576.png.webp 1024w, https://patchmypc.com/app/uploads/2026/09/4-1-768x432.png.webp 768w, https://patchmypc.com/app/uploads/2026/09/4-1-1536x864.png.webp 1536w" sizes="(max-width: 1672px) 100vw, 1672px" type="image/webp"/>
+<img alt="Figure 4. The local collection can be large while the network upload contains only the changed application data. Counts in the diagram are from this specific lab capture." data-lazy-sizes="(max-width: 1672px) 100vw, 1672px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/4-1.png 1672w, https://patchmypc.com/app/uploads/2026/09/4-1-300x169.png 300w, https://patchmypc.com/app/uploads/2026/09/4-1-1024x576.png 1024w, https://patchmypc.com/app/uploads/2026/09/4-1-768x432.png 768w, https://patchmypc.com/app/uploads/2026/09/4-1-1536x864.png 1536w" decoding="async" src="assets/6a2fc1044fbcaa97/img_3.png"/>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-this-is-not-simply-a-five-minute-full-app-inventory-poll">This is not simply a five-minute full App inventory poll<span class="clth-copy-icon" data-heading-id="h-this-is-not-simply-a-five-minute-full-app-inventory-poll"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">That distinction matters. A five-minute full application scan and upload loop would be wasteful. What we are seeing is much more controlled. Change detection is lightweight. Validation happens before collection. Triggered collections are throttled. The collection is limited to App Inventory. The cache is refreshed only when necessary. The uploader then sends a delta instead of the whole local state.</p>
+<p class="wp-block-paragraph">The agent also keeps safety rails around the trigger. Rapid duplicate events are suppressed. Triggered collections have a cooldown. The log shows a daily trigger counter and backoff level, and a triggered run does not reset the normal scheduled collection. Those controls are what make an event-driven inventory path practical on a managed Windows fleet.</p>
+<h2 class="wp-block-heading" id="h-what-this-means-for-app-inventory">What this means for App Inventory<span class="clth-copy-icon" data-heading-id="h-what-this-means-for-app-inventory"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The change solves one of the most visible gaps in App Inventory: data freshness after an application install or removal. The normal four-hour path can remain as the safety net, but an application change no longer has to wait for that timer. In the lab capture, the application was detected immediately, validated on the next five-minute scheduler pass, and uploaded a few seconds later.</p>
+<p class="wp-block-paragraph">It also reinforces the larger Device Inventory story. Application inventory, hardware inventory, and registry inventory are not isolated features. They run as workloads on the same extensible client foundation. Once that foundation can react to events, Microsoft can improve freshness for a specific workload without redesigning the complete inventory stack.</p>
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr><td><strong>The important wording is “about five minutes”, not “exactly five minutes”. The event is processed on the next scheduler pass, so the actual delay depends on when the application change occurs relative to that cycle.</strong></td></tr></tbody></table></figure>
+<h2 class="wp-block-heading" id="h-one-important-caveat-this-is-ahead-of-the-public-documentation">One important caveat: this is ahead of the public documentation<span class="clth-copy-icon" data-heading-id="h-one-important-caveat-this-is-ahead-of-the-public-documentation"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Microsoft documentation currently says App Inventory collection runs multiple times per day and is triggered with the MMP C sync and check-in cycle. It does not currently document this application change trigger or the five-minute scheduler behavior.</p>
+<p class="wp-block-paragraph">The behavior described here comes from the current Device Inventory Agent package and the matching Harvester log captured during a real Firefox install. The client also uses flighting, so I would treat this as current client behavior that Microsoft can still control or roll out, rather than assume every tenant and every device already behaves identically.</p>
+<p class="wp-block-paragraph">That is also why I would not replace “multiple times per day” in operational documentation with a hard five-minute SLA. What we can say from this test is more useful anyway: the agent now has an event-driven application change path that can get new App Inventory data uploaded on the next five-minute scheduler pass instead of relying only on the normal four-hour collection.</p>
+<h2 class="wp-block-heading" id="h-the-log-lines-that-tell-you-where-the-flow-stopped">The log lines that tell you where the flow stopped<span class="clth-copy-icon" data-heading-id="h-the-log-lines-that-tell-you-where-the-flow-stopped"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">If you want to validate the same behavior on a device, the Harvester log gives you a clean set of breadcrumbs. Start with the application change line. Then look for the queued event, validation, the triggered Application Inventory run, cache invalidation, and finally the App Inventory upload result.</p>
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr><td>Application change detected via …<br/>Enqueued collection event: ApplicationEvent …<br/>Validated changes … Added / Removed …<br/>Starting collection run due to trigger event(s): ApplicationEvent<br/>Invalidated app inventory cache …<br/>Returning … upload data requests<br/>Data successfully uploaded for App Inventory</td></tr></tbody></table></figure>
+<p class="wp-block-paragraph">If validation succeeds but the collection does not start, check for the cooldown message. If the collection runs but nothing is uploaded, that can simply mean the fresh inventory matches the state already known to the uploader.</p>
+<h2 class="wp-block-heading" id="h-final-thoughts">Final thoughts<span class="clth-copy-icon" data-heading-id="h-final-thoughts"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">App Inventory already showed why the Device Inventory Agent is more interesting than its name suggests. Registry Inventory made the extensibility even clearer. This application change trigger is the next logical step: keep the shared inventory foundation, but stop making every data source depend only on a periodic timer.</p>
+<p class="wp-block-paragraph">For application inventory, that turns a four-hour freshness window into something that can react in minutes without turning every five-minute cycle into a full upload. Detect the change, prove it is real, refresh only what is needed and send only the delta. That is a much better fit for the kind of application visibility Intune is trying to become.</p>
+<p class="wp-block-paragraph">Please Note: This behavior is currently controlled through service flighting <strong><a href="https://patchmypc.com/blog/how-controlled-feature-rollout-actually-works/">(Controlled Feature Rollout)</a></strong>, so it may not yet be enabled for every tenant.</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
