@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Microsoft Foundry Landing Zone: Governance in the Portal</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">August 19, 2026</span>
+  </div>
+  <h1>Microsoft Foundry Landing Zone: Governance in the Portal</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/microsoft-foundry-landing-zone-video/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p class="jr-youtube-embed"></p>
+<p class="wp-block-paragraph">A Microsoft Foundry landing zone starts with a question that the playground cannot answer: who owns the services around the agent? Someone needs to decide how identities, networks, shared connections, monitoring and deployment policies fit together.</p>
+<p class="wp-block-paragraph">In this episode, I move between the Foundry and Azure portals to look at those decisions. It is an architecture and configuration walkthrough, not an end-to-end deployment of a new landing zone. Watch the episode first, then use the notes as a review guide for your own environment.</p>
+<p class="wp-block-paragraph"><em>Video language: German · Duration: 11:48. Video originally published 19 August 2026; this written companion was added on 22 September 2026.</em></p>
+<p><span id="more-20751"></span>
+</p>
+<h2 class="wp-block-heading" id="a-project-is-not-the-whole-architecture">A project is not the whole architecture</h2>
+<p class="wp-block-paragraph">I start with the relationship between a Foundry project and its parent resource. The project is where a developer works, but some decisions sit above it or in connected Azure services. Those decisions still affect the application even when they are not the focus of the Build experience.</p>
+<p class="wp-block-paragraph">The recording reviews connected resources and the configuration around the project. Application Insights is connected in the demonstrated environment. Other services and connection options are discussed as architectural choices; their presence in a menu does not mean that every integration has been deployed.</p>
+<p class="wp-block-paragraph">If you are still at the first-project stage, my <a href="https://jannikreinhard.com/microsoft-foundry-setup-project-model-deployment/">Foundry setup guide</a> covers the initial structure. This episode asks what has to surround that structure when several teams or applications start using it.</p>
+<figure class="wp-block-image"><img alt="Microsoft Foundry landing zone: shared platform responsibilities and application-specific resources" data-recalc-dims="1" decoding="async" src="assets/f4db18a0a95bb350/img_0.jpg"/></figure>
+<p class="wp-block-paragraph"><em>A conceptual separation of platform and workload responsibilities, not a claim that this complete topology was deployed in the video.</em></p>
+<h2 class="wp-block-heading" id="decide-what-should-be-shared">Decide what should be shared</h2>
+<p class="wp-block-paragraph">A shared capability can reduce repeated setup, but it also creates a dependency. If several applications use the same gateway, connection or monitoring destination, a change there can affect more than one team.</p>
+<p class="wp-block-paragraph">I would document three things for each shared component: who owns it, which workloads depend on it, and how a change is tested before it reaches those workloads. “The platform team manages it” is not enough if nobody knows where to report a failure or request a change.</p>
+<p class="wp-block-paragraph">This is also why I would not copy a diagram into production without reviewing it. A small internal assistant and a customer-facing service may need different availability, isolation and operational arrangements, even if both use Foundry.</p>
+<p class="wp-block-paragraph">Microsoft’s <a href="https://learn.microsoft.com/azure/architecture/ai-ml/architecture/baseline-microsoft-foundry-landing-zone" rel="noopener" target="_blank">Foundry landing-zone baseline architecture</a> is a useful design reference. Use it to identify the decisions you need to make, rather than treating every component as mandatory for every experiment.</p>
+<h2 class="wp-block-heading" id="an-ai-gateway-needs-an-actual-request-path">An AI gateway needs an actual request path</h2>
+<p class="wp-block-paragraph">The recording opens the AI gateway configuration experience and discusses API Management as a central capability. <strong>It does not provision and verify a working gateway.</strong> That distinction matters when someone asks whether all model traffic is already controlled centrally.</p>
+<p class="wp-block-paragraph">Before making that claim, I would follow a real application request: which endpoint does the application call, how does the gateway authenticate the caller, which backend receives the request, and which logs show the result? I would then check whether a direct path to the backend is still possible.</p>
+<p class="wp-block-paragraph">A gateway can only govern traffic that actually passes through it. A diagram showing a gateway between two boxes is not evidence that an application’s configured endpoint uses that route.</p>
+<p class="wp-block-paragraph">For a pilot, I would start with one application and one documented path. That makes it easier to inspect authentication failures, limits and downstream errors before several teams depend on the same gateway configuration.</p>
+<h2 class="wp-block-heading" id="review-identity-and-network-settings-together">Review identity and network settings together</h2>
+<p class="wp-block-paragraph">In Azure, I look at resource-level options such as identity, networking, encryption and diagnostics. These are related, but they solve different problems. Authentication answers who is calling; network configuration determines which paths are available; diagnostics help establish what happened.</p>
+<p class="wp-block-paragraph">Turning on an identity does not automatically grant it access to every connected service. Likewise, a private endpoint does not solve name resolution or prove that a client can reach the correct address. Each dependency needs its own access and connectivity checks.</p>
+<p class="wp-block-paragraph">I would record the intended caller and the target service for every connection. That is more useful than a generic statement that the environment “uses managed identities.” It also gives the operations team a starting point when a request works in the portal but fails in the application.</p>
+<p class="wp-block-paragraph">For more detail on the surrounding controls, see my <a href="https://jannikreinhard.com/secure-microsoft-foundry/">secure Microsoft Foundry guide</a>. The video here focuses on where the architecture decisions appear and how they fit together.</p>
+<h2 class="wp-block-heading" id="govern-model-deployments-with-explicit-scope">Govern model deployments with explicit scope</h2>
+<p class="wp-block-paragraph">Toward the end of the episode, I review Azure Policy options for permitted model deployments and show where the model asset identifier can be found. An allowed-model policy should use the identifier expected by that policy, not a friendly display name copied from a slide.</p>
+<p class="wp-block-paragraph">Scope is equally important. A policy assigned to a subscription, resource group or management group can affect very different workloads. I would begin in an isolated test scope and review the policy definition’s effect, parameters and existing resources before expanding it.</p>
+<p class="wp-block-paragraph">The walkthrough demonstrates the assignment choices; it does not include a complete allow-and-deny deployment test. For that follow-up, try one permitted deployment and one intentionally disallowed deployment in the test scope. Check the policy evidence for both results.</p>
+<figure class="wp-block-image"><img alt="Landing-zone validation: deployment policy, runtime identity, network path, and operational evidence" data-recalc-dims="1" decoding="async" src="assets/f4db18a0a95bb350/img_1.jpg"/></figure>
+<p class="wp-block-paragraph"><em>Four separate tests that turn an architecture discussion into evidence.</em></p>
+<h2 class="wp-block-heading" id="monitoring-quota-and-cost-need-an-owner">Monitoring, quota and cost need an owner</h2>
+<p class="wp-block-paragraph">The episode also looks at quota and monitoring. Treat quota as a capacity constraint to investigate for the specific service, region and deployment type, not as one generic number for the whole architecture.</p>
+<p class="wp-block-paragraph">I would agree on a few operational questions before a pilot grows: who notices throttling, who can approve more capacity, where failures are investigated, and which workload owns the resulting spend? Connecting Application Insights is a useful step, but the next step is producing an identifiable request and finding its telemetry.</p>
+<p class="wp-block-paragraph">My next episode on <a href="https://jannikreinhard.com/microsoft-foundry-tracing-evaluation-video/">tracing and evaluation</a> follows that operational thread. It shows why a plausible answer and a healthy-looking dashboard can still hide a problem in the agent’s tool path.</p>
+<p class="wp-block-paragraph">The landing zone is useful when it makes these responsibilities clear. Start with the smallest architecture you can explain, test the actual paths, and add shared services deliberately. That is a stronger foundation than collecting every available Azure component before the first workload exists.</p>
+<p class="wp-block-paragraph">Stay healthy, Cheers Jannik</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

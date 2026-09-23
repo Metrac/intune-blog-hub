@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Microsoft Foundry Python Agents: Build a Policy Assistant</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">September 22, 2026</span>
+  </div>
+  <h1>Microsoft Foundry Python Agents: Build a Policy Assistant</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/microsoft-foundry-python-agents-video/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p class="jr-youtube-embed"></p>
+<p class="wp-block-paragraph">Microsoft Foundry Python agents become easier to understand when you separate three steps: call a model, create an agent, and run that agent against a real question. In this episode, I walk through those steps in VS Code using an IT policy assistant as the example.</p>
+<p class="wp-block-paragraph">The useful part is not getting another chatbot to answer “What is MFA?” It is moving from that simple connectivity check to an agent that can look up company policy and return sources. Watch the complete walkthrough below; the written notes explain the boundaries between the scripts and the checks I would make before using the same pattern in an application.</p>
+<p class="wp-block-paragraph"><strong>Related Python examples:</strong> You can find model calls, agents and Azure AI Search examples in my <a href="https://github.com/JayRHa/foundry-examples" rel="noopener" target="_blank">Microsoft Foundry examples repository on GitHub</a>. This is a broader collection, not an exact copy of the three scripts in this video. Some agent examples use the classic Agent Service API, so follow the repository README for the matching SDK and setup.</p>
+<p class="wp-block-paragraph"><em>Video language: German · Duration: 10:05 · Released 22 September 2026.</em></p>
+<p><span id="more-20759"></span>
+</p>
+<h2 class="wp-block-heading" id="what-i-build-in-this-episode">What I build in this episode</h2>
+<p class="wp-block-paragraph">The example is a small helpdesk agent. It answers questions about fictitious Contoso IT policies, including whether a company laptop can be used privately. The source documents are already in an Azure AI Search index before the recording starts. This is not a search-service provisioning or document-ingestion tutorial.</p>
+<p class="wp-block-paragraph">I use three small scripts so each stage has one job. The first proves that the local application can authenticate and call the selected deployment. The second defines the agent and its search capability. The third invokes the saved agent and prints its response. If something breaks, that separation gives me a much smaller place to start looking.</p>
+<figure class="wp-block-image"><img alt="Microsoft Foundry Python agents: authenticate, test the model, create an agent version, and invoke it" data-recalc-dims="1" decoding="async" src="assets/85261e77596a203f/img_0.jpg"/></figure>
+<p class="wp-block-paragraph"><em>Conceptual flow of the three-script example. The search index exists before the agent is created.</em></p>
+<h2 class="wp-block-heading" id="start-with-one-authenticated-model-call">Start with one authenticated model call</h2>
+<p class="wp-block-paragraph">At approximately <a href="https://www.youtube.com/watch?v=Bmz7LGVJNxA&amp;t=72s" rel="noopener" target="_blank">1:12 in the video</a>, I start with the model call. In the portal, the deployment’s sample code helps locate the right endpoint. In VS Code, the example uses the OpenAI SDK with Azure Identity rather than embedding an API key in the script.</p>
+<p class="wp-block-paragraph">My first question is deliberately simple: explain MFA in no more than three sentences. There is no search tool and no company knowledge involved yet. I want to know whether the endpoint, deployment name and authentication work before I add another service.</p>
+<p class="wp-block-paragraph">Local authentication and application authentication are separate decisions. An interactive developer identity can be useful while learning. It is not a reason to run a production application with a developer’s account. For an Azure-hosted workload, I would review managed identity and the minimum required permissions for each service.</p>
+<p class="wp-block-paragraph">There are also timeouts and retry limits in the example. Keep retries bounded. A permission error will not become a successful request because the application repeats it twenty times, and repeated model calls can consume both time and money.</p>
+<p class="wp-block-paragraph">If the deployment itself is new to you, start with my <a href="https://jannikreinhard.com/microsoft-foundry-model-deployment-guide/">Microsoft Foundry model deployment guide</a>. A catalog model name, a deployment name and a project endpoint are related, but they are not interchangeable configuration values.</p>
+<h2 class="wp-block-heading" id="add-company-knowledge-through-an-agent">Add company knowledge through an agent</h2>
+<p class="wp-block-paragraph">Around <a href="https://www.youtube.com/watch?v=Bmz7LGVJNxA&amp;t=242s" rel="noopener" target="_blank">4:02</a>, the example moves to the project client and the agent definition. The agent receives a clear helpdesk role, instructions for short German answers, and access to the existing policy index through a configured search connection.</p>
+<p class="wp-block-paragraph">The recording uses a simple query configuration and retrieves three results. That is a starting point for this small example, not a universal recommendation for every retrieval workload. More results do not automatically mean better answers. Relevant passages, document structure and the question itself matter more than filling the context window.</p>
+<p class="wp-block-paragraph">A connection visible in the portal is only one piece of this setup. The identity that actually reaches Search must have the required data access. If retrieval fails, check the connection, index name and permissions before rewriting the agent’s entire instruction set.</p>
+<p class="wp-block-paragraph">I would also test one policy question directly against the index. If the right document cannot be found there, an agent cannot reliably repair that missing evidence with a clever prompt. Separate a retrieval problem from an answer-generation problem.</p>
+<h2 class="wp-block-heading" id="save-an-agent-version-then-invoke-that-version">Save an agent version, then invoke that version</h2>
+<p class="wp-block-paragraph">Changing the instructions and saving the agent creates a versioned configuration in the demonstrated workflow. That makes the next question important: which version does the calling script actually use?</p>
+<p class="wp-block-paragraph">At approximately <a href="https://www.youtube.com/watch?v=Bmz7LGVJNxA&amp;t=439s" rel="noopener" target="_blank">7:19</a>, I invoke the agent and ask about private use of a company laptop. The terminal shows the answer and its sources. The example waits for the complete response; it does not demonstrate a streaming user interface.</p>
+<p class="wp-block-paragraph">For your own test, record the agent name, version, deployment, question and returned sources together. Otherwise it is surprisingly easy to compare two answers without noticing that different instructions or different knowledge were used.</p>
+<p class="wp-block-paragraph">A source reference is useful, but still needs checking. Open the cited passage. Does it support the answer, including exceptions and conditions? “The agent returned a citation” and “the answer is correct” are different checks.</p>
+<figure class="wp-block-image"><img alt="Four checks for a policy agent: identity, retrieval, answer support, and version" data-recalc-dims="1" decoding="async" src="assets/85261e77596a203f/img_1.jpg"/></figure>
+<p class="wp-block-paragraph"><em>The four checks I would complete before putting this example behind an application.</em></p>
+<h2 class="wp-block-heading" id="a-small-test-set-before-adding-more-features">A small test set before adding more features</h2>
+<p class="wp-block-paragraph">I would start with these four cases. They are suggested follow-up tests, not additional results claimed from the recording.</p>
+<figure class="wp-block-table"><table>
+<thead>
+<tr>
+<th>Test question</th>
+<th>What I would check</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A question answered directly in a policy</td>
+<td>The response cites the correct passage and preserves its conditions.</td>
+</tr>
+<tr>
+<td>A question that is not covered</td>
+<td>The agent admits the gap instead of inventing company policy.</td>
+</tr>
+<tr>
+<td>An ambiguous request</td>
+<td>It asks for the missing context or explains its assumption.</td>
+</tr>
+<tr>
+<td>A question whose answer changed in a document</td>
+<td>Retrieval uses the updated source rather than an old copy.</td>
+</tr>
+</tbody>
+</table></figure>
+<p class="wp-block-paragraph">Keep the first test set in the repository alongside the scripts. It does not have to be large to be useful. The important part is running the same questions after a change, instead of judging every version with a different friendly example.</p>
+<h2 class="wp-block-heading" id="what-comes-after-the-demo">What comes after the demo</h2>
+<p class="wp-block-paragraph">This episode establishes the basic code path. It does not demonstrate document-level authorization, production deployment, a complete evaluation suite or an end-user application. Those are separate pieces of work.</p>
+<p class="wp-block-paragraph">Before a wider rollout, I would add explicit access boundaries for knowledge, review what gets recorded in traces, and measure failures as well as successful answers. A model that answers correctly once can still choose the wrong tool or miss the relevant passage on the next question.</p>
+<p class="wp-block-paragraph">For the current SDK pattern, use Microsoft’s <a href="https://learn.microsoft.com/en-us/azure/foundry/agents/quickstarts/responses-api" rel="noopener" target="_blank">Responses API agent quickstart</a>. SDK versions and portal labels can change; compare the current documentation with the version installed in your environment rather than mixing examples from different API generations.</p>
+<p class="wp-block-paragraph">The next practical step is <a href="https://jannikreinhard.com/microsoft-foundry-tracing-evaluation-video/">debugging an agent with tracing and evaluation</a>. My takeaway from this episode is simple: get one small path working, make its sources visible, and keep the agent version identifiable. You can add complexity once you can explain that path.</p>
+<p class="wp-block-paragraph">Stay healthy, Cheers Jannik</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

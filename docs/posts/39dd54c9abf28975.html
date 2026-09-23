@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Microsoft Foundry Tracing and Evaluation: Debug an Agent</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">August 26, 2026</span>
+  </div>
+  <h1>Microsoft Foundry Tracing and Evaluation: Debug an Agent</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/microsoft-foundry-tracing-evaluation-video/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p class="jr-youtube-embed"></p>
+<p class="wp-block-paragraph">Microsoft Foundry tracing and evaluation become much more useful when something goes wrong. In this episode, my agent has a web-search tool configured, but the first requests do not use it. That gives us a real debugging case instead of a perfectly rehearsed answer.</p>
+<p class="wp-block-paragraph">I inspect the trace, run an evaluation, compare optimization candidates and then look at the telemetry in Application Insights. The important lesson is that an attractive overall score can still hide failure in the part of the task that matters most.</p>
+<p class="wp-block-paragraph"><em>Video language: German · Duration: 20:04. Video originally published 26 August 2026; this written companion was added on 22 September 2026.</em></p>
+<p><span id="more-20755"></span>
+</p>
+<h2 class="wp-block-heading" id="start-with-the-request-that-did-not-work">Start with the request that did not work</h2>
+<p class="wp-block-paragraph">The demonstration uses an incident-investigation agent with tools configured in Foundry. When I ask it to look for current information, it does not perform the expected web search. I open the trace rather than immediately adding stronger wording to the instructions.</p>
+<p class="wp-block-paragraph">At approximately <a href="https://www.youtube.com/watch?v=KsiUO-VHfJ4&amp;t=147s" rel="noopener" target="_blank">2:27</a>, the trace shows the request, response and associated metadata. I can inspect the instructions and input, then look for evidence of a tool call. In the problematic interaction, that evidence is missing.</p>
+<p class="wp-block-paragraph">I record negative feedback with a short reason: the tools were not used. That is more actionable than simply marking the answer as bad. It states which expected behavior was absent and gives the next investigation a concrete starting point.</p>
+<figure class="wp-block-image"><img alt="Microsoft Foundry tracing and evaluation: inspect a failure, evaluate a dataset, compare candidates, and verify the changed version" data-recalc-dims="1" decoding="async" src="assets/39dd54c9abf28975/img_0.jpg"/></figure>
+<p class="wp-block-paragraph"><em>The investigation loop demonstrated in the episode. A successful optimization run is only one step in it.</em></p>
+<h2 class="wp-block-heading" id="keep-configuration-and-runtime-evidence-separate">Keep configuration and runtime evidence separate</h2>
+<p class="wp-block-paragraph">The tool appears in the agent configuration. That alone does not prove that it reached a particular model request or was selected during that run. Later in the episode, I compare raw telemetry and find tool-definition differences between requests.</p>
+<p class="wp-block-paragraph">After removing and re-adding the web-search tool, a subsequent request works. <strong>That is an observation, not a proven root cause.</strong> The recording does not establish whether the earlier behavior came from an unsaved state, version mismatch, a portal issue or something else.</p>
+<p class="wp-block-paragraph">This is an important limit to keep in the written notes. “It worked after I changed this” is useful evidence, but it is not enough to label the product bug or turn that action into a universal fix.</p>
+<p class="wp-block-paragraph">In your own investigation, capture the agent version, request time and relevant trace before making changes. Otherwise a working retry can erase the context needed to understand the original failure.</p>
+<h2 class="wp-block-heading" id="evaluate-the-behavior-you-actually-need">Evaluate the behavior you actually need</h2>
+<p class="wp-block-paragraph">Around <a href="https://www.youtube.com/watch?v=KsiUO-VHfJ4&amp;t=322s" rel="noopener" target="_blank">5:22</a>, I move into evaluation. The demonstrated workflow includes connecting Application Insights and checking the required identity access. I then create a one-time evaluation using a small synthetic dataset of 15 prompts.</p>
+<p class="wp-block-paragraph">The selected criteria cover response quality, safety and agent behavior, including tool selection. The dataset is deliberately small for the demonstration. It is not a representative benchmark of the model or a production acceptance test.</p>
+<p class="wp-block-paragraph">The run takes time. Some traces become visible before the entire evaluation is complete, so I inspect progress without treating partial results as the final verdict. One analysis attempt fails while the run is still in progress; the episode does not establish that timing was its definitive cause.</p>
+<p class="wp-block-paragraph">For current prerequisites and supported evaluation options, use Microsoft’s <a href="https://learn.microsoft.com/en-us/azure/foundry/observability/how-to/evaluate-agent" rel="noopener" target="_blank">agent evaluation guidance</a>. The exact portal experience and available evaluation modes can differ as features roll out.</p>
+<h2 class="wp-block-heading" id="an-overall-score-of-86-is-not-the-whole-result">An overall score of 86 is not the whole result</h2>
+<p class="wp-block-paragraph">At approximately <a href="https://www.youtube.com/watch?v=KsiUO-VHfJ4&amp;t=529s" rel="noopener" target="_blank">8:49</a>, the completed demonstration shows an overall score of 86, while tool selection is 0% and task completion is about 33%. Those are results from this one demo run, not general performance numbers for Microsoft Foundry or the underlying model.</p>
+<p class="wp-block-paragraph">That contrast is the most useful moment in the video. The agent can produce fluent, apparently reasonable text while failing the workflow it was meant to complete. If the task needs current information, not calling the search tool is a material failure even when other criteria score well.</p>
+<p class="wp-block-paragraph">I would therefore define acceptance criteria before running the test. For a retrieval task, a supported answer and correct source use matter. For an action-taking task, the correct tool, arguments and resulting state matter. The combined score helps summarize results; it should not replace those checks.</p>
+<figure class="wp-block-image"><img alt="A demo evaluation can have a high overall score while tool selection and task completion fail" data-recalc-dims="1" decoding="async" src="assets/39dd54c9abf28975/img_1.jpg"/></figure>
+<p class="wp-block-paragraph"><em>Values from the recorded demo only. Different metrics describe different aspects of the run and must not be treated as interchangeable percentages.</em></p>
+<p class="wp-block-paragraph">At roughly <a href="https://www.youtube.com/watch?v=KsiUO-VHfJ4&amp;t=683s" rel="noopener" target="_blank">11:23</a>, I explore optimization. The originally selected model does not support that workflow in the shown configuration, so I move to a supported option and review the evaluation setup and estimated cost.</p>
+<p class="wp-block-paragraph">The run creates a baseline and candidate instruction changes. I inspect the differences rather than assuming a longer prompt is automatically better. The portal shows candidate results and lets me examine the underlying evaluation evidence before promoting a candidate to a new agent version.</p>
+<p class="wp-block-paragraph">Promotion is a configuration change, not proof that every real-world case improved. My next step would be to rerun a separate set of held-out questions, including cases the optimization process did not use. I would also check response time and token use so a quality improvement is understood alongside its operational cost.</p>
+<p class="wp-block-paragraph">Keep the previous version available. If a candidate improves one task but breaks another, a known baseline makes the comparison and rollback much easier to explain.</p>
+<h2 class="wp-block-heading" id="follow-the-trace-into-application-insights">Follow the trace into Application Insights</h2>
+<p class="wp-block-paragraph">From approximately <a href="https://www.youtube.com/watch?v=KsiUO-VHfJ4&amp;t=1027s" rel="noopener" target="_blank">17:07</a>, I move into the connected Application Insights resource. The video reviews agent runs, model usage, timing and raw log content. Telemetry can arrive with a delay, so the immediately visible count is not necessarily the final count for a just-completed run.</p>
+<p class="wp-block-paragraph">The raw records are helpful when the high-level portal view leaves questions unanswered. They also deserve access and retention controls: prompts, responses and tool definitions can contain information you do not want every dashboard reader to see.</p>
+<p class="wp-block-paragraph">Microsoft’s <a href="https://learn.microsoft.com/en-us/azure/foundry/observability/how-to/trace-agent-setup" rel="noopener" target="_blank">tracing setup documentation</a> covers current instrumentation options. For the broader operating model, see my <a href="https://jannikreinhard.com/microsoft-foundry-observability/">Foundry observability article</a>. My <a href="https://jannikreinhard.com/microsoft-foundry-agent-evaluations/">agent evaluations guide</a> goes deeper into evaluation design.</p>
+<p class="wp-block-paragraph">The takeaway from this recording is straightforward: start with one failed interaction, follow the evidence, and judge improvements against the task you actually need completed. A high score is useful only when you know what it measures.</p>
+<p class="wp-block-paragraph">Stay healthy, Cheers Jannik</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

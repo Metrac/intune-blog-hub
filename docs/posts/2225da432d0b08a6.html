@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Microsoft Foundry Playground: Build and Test Your First Agent</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">August 3, 2026</span>
+  </div>
+  <h1>Microsoft Foundry Playground: Build and Test Your First Agent</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/microsoft-foundry-playground-first-agent/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p class="jr-youtube-embed"></p>
+<p class="wp-block-paragraph">The Microsoft Foundry Playground is a useful place to build your first AI agent because you can see the instructions, send a question and inspect the answer without building a complete application first. The important part is choosing a small task that you can judge.</p>
+<p class="wp-block-paragraph">This episode introduces that first-agent workflow in the portal. The written companion adds a simple test method: define the task, check a normal answer, then try a question that the agent cannot safely answer from the information it has.</p>
+<p class="wp-block-paragraph"><em>Video language: German · Duration: 14:21. Video originally published 3 August 2026; this written companion was added on 22 September 2026. The examples below are suggested follow-up tests, not a claim that every test is demonstrated in the recording.</em></p>
+<p><span id="more-20425"></span>
+</p>
+<h2 class="wp-block-heading" id="before-you-open-the-playground">Before you open the playground</h2>
+<p class="wp-block-paragraph">Start with a Foundry project you are allowed to use and a model deployment available to that project. If those pieces are missing, follow my <a href="https://jannikreinhard.com/microsoft-foundry-setup-project-model-deployment/">Foundry setup walkthrough</a> and <a href="https://jannikreinhard.com/microsoft-foundry-model-deployment-guide/">model deployment guide</a> first.</p>
+<p class="wp-block-paragraph">A model generates a response. An agent adds instructions and, where needed, tools around that model. A tool provides a specific capability, such as searching a knowledge source or calling an external service. You do not need to add every capability to understand your first agent.</p>
+<p class="wp-block-paragraph">Use non-sensitive example data in a learning environment. Before adding company documents, review where they will be stored, which identities can access them and what the surrounding logging configuration records. It is easier to keep a first experiment simple than to clean up a collection of unnecessary permissions afterwards.</p>
+<h2 class="wp-block-heading" id="give-the-agent-one-job">Give the agent one job</h2>
+<p class="wp-block-paragraph">“Help with IT” is too broad for a first test. A narrower example would be: explain one supplied IT policy in plain language and say when the policy does not contain the answer. That gives you something concrete to inspect.</p>
+<p class="wp-block-paragraph">Write down who the answer is for, what source the agent may use and what it should do when information is missing. Keep those instructions short enough that you can read and explain them without another tool.</p>
+<p class="wp-block-paragraph">Here is an illustrative instruction, not an exact transcript of the recorded agent:</p>
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p>Explain the supplied IT policy for an employee. Use only information present in that policy. Keep the answer short. If the policy does not cover the question, say so and suggest contacting the responsible IT team.</p>
+</blockquote>
+<p class="wp-block-paragraph">That instruction is a behavioral request, not an access-control boundary. If you later connect a tool, its permissions still need to be limited outside the prompt.</p>
+<figure class="wp-block-image"><img alt="Microsoft Foundry Playground test loop: define one task, ask a question, inspect the answer, and change one thing" data-recalc-dims="1" decoding="async" src="assets/2225da432d0b08a6/img_0.jpg"/></figure>
+<p class="wp-block-paragraph"><em>A small repeatable loop for the first agent, before adding application complexity.</em></p>
+<h2 class="wp-block-heading" id="test-the-ordinary-question-first">Test the ordinary question first</h2>
+<p class="wp-block-paragraph">Start with a question whose answer you already know. For the policy example, that could be a question answered explicitly in the supplied text. Compare the response with the source instead of judging only whether it sounds confident.</p>
+<p class="wp-block-paragraph">Does the answer preserve conditions and exceptions? Does it turn a recommendation into a mandatory rule? Does it invent a contact person, deadline or approval step? Small additions can change the meaning of a policy even when the rest of the answer looks correct.</p>
+<p class="wp-block-paragraph">Keep the original question and answer. When you change the instructions later, rerun the same question. Otherwise you have no stable comparison and can end up improving the latest example while losing behavior that previously worked.</p>
+<h2 class="wp-block-heading" id="add-two-questions-that-expose-the-limits">Add two questions that expose the limits</h2>
+<p class="wp-block-paragraph">A first test set does not have to be large. I would add an ambiguous question and a question that the source does not answer. These often reveal more about the agent than another friendly example.</p>
+<figure class="wp-block-table"><table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Example</th>
+<th>What a useful response does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Normal</td>
+<td>Ask about a rule explicitly present in the supplied policy.</td>
+<td>Explains that rule without adding unsupported details.</td>
+</tr>
+<tr>
+<td>Ambiguous</td>
+<td>Ask whether an unspecified device is allowed.</td>
+<td>Requests the missing context or states the limitation.</td>
+</tr>
+<tr>
+<td>Unsupported</td>
+<td>Ask about a benefit that the policy never mentions.</td>
+<td>Admits that the source does not provide the answer.</td>
+</tr>
+</tbody>
+</table></figure>
+<p class="wp-block-paragraph">The goal is not to trick the model for entertainment. It is to find out how the agent behaves when ordinary users ask incomplete questions or assume the assistant knows more than it does.</p>
+<h2 class="wp-block-heading" id="change-one-thing-at-a-time">Change one thing at a time</h2>
+<p class="wp-block-paragraph">If the answer is too long, adjust the response instructions and repeat the same tests. If the right information is missing, decide whether the agent needs a suitable knowledge source. If it needs to perform an action, identify the smallest tool capability that can perform it.</p>
+<p class="wp-block-paragraph">Changing the model, instructions and tools together makes it hard to know which change mattered. A small experiment is much easier to learn from when there is one clear difference between two runs.</p>
+<p class="wp-block-paragraph">Also check the conversation context. A follow-up question can inherit information from previous messages. Use a fresh conversation when you want to compare standalone behavior, and a multi-turn conversation when you specifically want to test how context is carried forward.</p>
+<h2 class="wp-block-heading" id="a-playground-answer-is-not-production-readiness">A playground answer is not production readiness</h2>
+<p class="wp-block-paragraph">The playground is an interactive development surface. It does not, by itself, establish how your application authenticates users, restricts data access, handles failures or records evidence. Those responsibilities remain when you move beyond the first test.</p>
+<figure class="wp-block-image"><img alt="Four separate production checks after a playground test: access, quality, operations, and release control" data-recalc-dims="1" decoding="async" src="assets/2225da432d0b08a6/img_1.jpg"/></figure>
+<p class="wp-block-paragraph"><em>A useful first answer is the start of the work, not evidence that these four areas are finished.</em></p>
+<p class="wp-block-paragraph">Before sharing the agent more widely, I would review who can invoke it, which data and tools it can reach, and what should happen when a dependency is unavailable. I would also keep a small set of repeatable tests and identify the version being tested.</p>
+<p class="wp-block-paragraph">For the next layer of controls, watch the <a href="https://jannikreinhard.com/microsoft-foundry-guardrails-video/">Foundry guardrails episode</a>. For a request that behaves unexpectedly, the <a href="https://jannikreinhard.com/microsoft-foundry-tracing-evaluation-video/">tracing and evaluation walkthrough</a> shows how to move beyond judging the final answer alone.</p>
+<h2 class="wp-block-heading" id="where-to-go-next">Where to go next</h2>
+<p class="wp-block-paragraph">If the first workflow makes sense, move it into code only when you have a reason to automate or integrate it. The <a href="https://jannikreinhard.com/microsoft-foundry-python-agents-video/">Python agent episode</a> separates the model call, agent definition and invocation so each step remains understandable.</p>
+<p class="wp-block-paragraph">Microsoft’s <a href="https://learn.microsoft.com/en-us/azure/foundry/agents/quickstarts/responses-api" rel="noopener" target="_blank">agent quickstart</a> is a useful reference for the current development path. Match the documentation to the API generation and SDK version you are actually using; the portal and code samples evolve.</p>
+<p class="wp-block-paragraph">My main advice is to keep the first agent small. One clear task and three thoughtful test questions teach you more than a long instruction block that nobody can reliably evaluate.</p>
+<p class="wp-block-paragraph">Stay healthy, Cheers Jannik</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

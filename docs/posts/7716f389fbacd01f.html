@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Microsoft Foundry Guardrails: Portal Walkthrough and Tests</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">August 11, 2026</span>
+  </div>
+  <h1>Microsoft Foundry Guardrails: Portal Walkthrough and Tests</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/microsoft-foundry-guardrails-video/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p class="jr-youtube-embed"></p>
+<p class="wp-block-paragraph">Microsoft Foundry guardrails are worth testing before an agent reaches real users. But a configuration screen is not proof that a request will be blocked. In this episode, I walk through the available controls and explain where I would verify their effect.</p>
+<p class="wp-block-paragraph">The video covers guardrail settings, deployment assignments, blocklists and the wider compliance area in Foundry. It is a configuration walkthrough, not a demonstration of every protection working end to end. The notes below make that distinction explicit so you can use the episode as a starting point for your own tests.</p>
+<p class="wp-block-paragraph"><em>Video language: German · Duration: 8:39. Video originally published 11 August 2026; this written companion was added on 22 September 2026. Portal labels and feature availability can change.</em></p>
+<p><span id="more-20747"></span>
+</p>
+<h2 class="wp-block-heading" id="start-with-the-deployment-you-actually-use">Start with the deployment you actually use</h2>
+<p class="wp-block-paragraph">The first thing I inspect is the guardrail configuration associated with a model deployment. A policy elsewhere in the project does not tell me what this particular call is using. I want to connect the application’s deployment to the relevant configuration before discussing individual settings.</p>
+<p class="wp-block-paragraph">That is especially important when a project has several deployments. A successful test against one endpoint does not establish how another endpoint behaves. Write down the deployment name, guardrail configuration and test identity together so the result can be reproduced.</p>
+<p class="wp-block-paragraph">In the recording, I review the model’s guardrail setting and then open the area for creating a configuration. The goal is to understand the choices, not to recommend moving every control to its strictest setting without checking the workload.</p>
+<h2 class="wp-block-heading" id="annotation-and-blocking-answer-different-questions">Annotation and blocking answer different questions</h2>
+<p class="wp-block-paragraph">One practical choice is whether a control annotates a result or blocks it. An annotation gives information that the surrounding system may need to inspect. Blocking changes what gets through. Do not treat the two as equivalent because the same risk category appears on both screens.</p>
+<p class="wp-block-paragraph">For example, a security assistant may need to discuss harmful techniques defensively. A useful test set must include legitimate questions that resemble risky content, as well as requests that should be stopped. Otherwise you may reduce one risk while making the assistant unusable for its intended job.</p>
+<figure class="wp-block-image"><img alt="Microsoft Foundry guardrails: request, applicable checks, model or tool, and response checks" data-recalc-dims="1" decoding="async" src="assets/7716f389fbacd01f/img_0.jpg"/></figure>
+<p class="wp-block-paragraph"><em>Conceptual intervention points. Which checks are available depends on the deployment, agent type and feature support.</em></p>
+<h2 class="wp-block-heading" id="separate-model-controls-from-agent-controls">Separate model controls from agent controls</h2>
+<p class="wp-block-paragraph">A model response is only part of an agent’s activity. An agent may select a tool, supply arguments, read the result and produce a final answer. Controls for those stages should not be confused with filtering the final text alone.</p>
+<p class="wp-block-paragraph">The portal walkthrough includes input and output settings and options associated with agent activity. Some agent guardrail features are preview features or apply only to particular agent types. For instance, an option shown for a hosted agent should not be assumed to govern every prompt agent or external application.</p>
+<p class="wp-block-paragraph">Microsoft’s <a href="https://learn.microsoft.com/en-us/azure/ai-foundry/guardrails/how-to-create-guardrails?view=foundry" rel="noopener" target="_blank">guardrails documentation</a> is the place to confirm current support and assignment requirements. The practical question remains: which part of my actual request path does this setting control?</p>
+<p class="wp-block-paragraph">I would draw that path before making broad claims about coverage. User input, retrieved documents, tool arguments, tool responses and final output can carry different risks. An unchecked stage does not become protected simply because the final response passed a filter.</p>
+<p class="wp-block-paragraph">The recording also reviews blocklists and matching options. These can be useful for specific patterns, but a list of strings is not a substitute for access control or a complete data-classification strategy.</p>
+<p class="wp-block-paragraph">If you use a custom pattern, test it against a small set of expected matches and near matches. Include harmless content that must remain allowed. A broad expression may catch the obvious example and also block perfectly legitimate support requests.</p>
+<p class="wp-block-paragraph">The same caution applies to protected-material and personal-information options. Review what the selected feature detects, where it runs and what action follows. A checked box is not a blanket compliance guarantee, and a control’s name is not a complete description of its limitations.</p>
+<h2 class="wp-block-heading" id="assignment-is-part-of-the-configuration">Assignment is part of the configuration</h2>
+<p class="wp-block-paragraph">Creating a guardrail definition and applying it are separate steps. I review how a configuration can be assigned to the relevant model deployment or agent. After assignment, I would return to the target and verify the effective configuration, rather than relying only on the creation dialog.</p>
+<p class="wp-block-paragraph">For an application test, keep the endpoint and identity constant while changing one policy setting. Then repeat both a permitted request and a request expected to trigger the control. Save the resulting behavior and relevant diagnostic evidence. If the application silently switches deployments, the comparison is no longer meaningful.</p>
+<figure class="wp-block-image"><img alt="Guardrail verification: confirm assignment, test allowed input, test expected blocking, and inspect evidence" data-recalc-dims="1" decoding="async" src="assets/7716f389fbacd01f/img_1.jpg"/></figure>
+<p class="wp-block-paragraph"><em>Suggested verification sequence after configuration. This sequence is not presented as an enforcement result from the video.</em></p>
+<h2 class="wp-block-heading" id="compliance-settings-need-their-own-rollout">Compliance settings need their own rollout</h2>
+<p class="wp-block-paragraph">Later in the episode, I open the compliance policy wizard and review scope and exceptions. <strong>That wizard is cancelled in the recording.</strong> It should not be read as proof that a new subscription or resource-group policy was deployed.</p>
+<p class="wp-block-paragraph">I also show integration options around Defender and Purview. Seeing those options is useful for planning, but it is different from enabling them, assigning the required permissions, producing test activity and confirming that the expected evidence arrives.</p>
+<p class="wp-block-paragraph">For those integrations, Microsoft’s <a href="https://learn.microsoft.com/en-us/azure/foundry/control-plane/how-to-manage-compliance-security" rel="noopener" target="_blank">Foundry compliance and security guidance</a> provides the current prerequisites. I would handle each integration as a separate change with a named owner, an agreed scope and a verification step.</p>
+<h2 class="wp-block-heading" id="my-follow-up-checklist">My follow-up checklist</h2>
+<p class="wp-block-paragraph">Before I call a guardrail ready for a pilot, I want clear answers to these questions:</p>
+<ul class="wp-block-list">
+<li>Which deployment or agent has the configuration assigned?</li>
+<li>Is the control annotating, blocking, or relying on an application action?</li>
+<li>Which legitimate requests still work?</li>
+<li>Which unwanted requests were actually stopped?</li>
+<li>Can I find evidence for those results without exposing sensitive prompts unnecessarily?</li>
+<li>Who reviews false positives and decides when the policy should change?</li>
+</ul>
+<p class="wp-block-paragraph">This is where guardrails connect to the wider architecture. My <a href="https://jannikreinhard.com/secure-microsoft-foundry/">secure Microsoft Foundry guide</a> discusses the surrounding identity and network boundaries. The <a href="https://jannikreinhard.com/microsoft-foundry-landing-zone-video/">Foundry landing-zone walkthrough</a> puts those decisions into the Azure resource structure.</p>
+<p class="wp-block-paragraph">The takeaway is not “turn every option on.” It is to choose controls for a defined risk, assign them to the right request path and test both sides of the boundary. That gives you something much more useful than a reassuring screenshot of a settings page.</p>
+<p class="wp-block-paragraph">Stay healthy, Cheers Jannik</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

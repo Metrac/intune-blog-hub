@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>New Apple Business verification methods</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">MSEndpointMgr</span>
+    <span class="date">September 23, 2026</span>
+  </div>
+  <h1>New Apple Business verification methods</h1>
+  <div class="orig">Saved for offline reading · <a href="https://msendpointmgr.com/2026/09/23/new-apple-business-verification-methods/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="" class="wp-image-27096" decoding="async" src="assets/2c1fcb633ac65161/img_0.png"/></figure>
+<p data-block-type="core">If you needed to stand up an Apple Business Manager from scratch before, you probably already heard of dun and bradstreet (aka D-U-N-S number) and know the world of pain that was to get it working.</p>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#applying-for-a-d-u-n-s-number" id="applying-for-a-d-u-n-s-number"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Applying for a D-U-N-S Number</h2>
+<p data-block-type="core">If you, like me, had no idea what that was, you could apply from within the ABM portal.</p>
+<figure class="wp-block-image size-full is-resized" data-block-type="core"><img alt="" class="wp-image-27088" decoding="async" src="assets/2c1fcb633ac65161/img_1.png"/></figure>
+<p data-block-type="core">The catch is that the person applying under contact information could not be the same one (phone or e-mail) as the one who applied for ABM itself, overcomplicating things. On top of that, that person would receive a call and had to be a director or someone high enough to “validate” the business. Once the application was done, you would have 60 days to get your D-U-N-S issued so you could click on “Add Number”, and provide your number.</p>
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="" class="wp-image-27074" decoding="async" src="assets/2c1fcb633ac65161/img_2.png"/></figure>
+<p data-block-type="core">Up to a point, this was the process. Or at least I thought. That is when I found out about <a href="https://express.illion.com.au">https://express.illion.com.au</a>, which was a website that would allow you to search a company (any company) by the name, and would tell you its D-U-N-S number. </p>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-27085" decoding="async" src="assets/2c1fcb633ac65161/img_3.png"/></figure>
+<p data-block-type="core">Note that at the time of this reading it seems that company was sold into another company and the search is deactivated.</p>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#exploiting-the-process" id="exploiting-the-process"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Exploiting the process</h2>
+<p data-block-type="core">Now, something really interesting would happen when you clicked that ‘Add Number” button and provided another company D-U-N-S number. It would pull the contact information linked to that company, including:</p>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core">duns</li>
+<li data-block-type="core">name </li>
+<li data-block-type="core">address1 </li>
+<li data-block-type="core">address2 </li>
+<li data-block-type="core">address3 </li>
+<li data-block-type="core">city </li>
+<li data-block-type="core">region </li>
+<li data-block-type="core">postalCode </li>
+<li data-block-type="core">country </li>
+<li data-block-type="core">website </li>
+<li data-block-type="core">phone </li>
+<li data-block-type="core">isMailDeliverable</li>
+</ul>
+<p data-block-type="core">Now we have something that allows us to list any company d-u-n-s and a call via ABM which allows us to enumerate contact details of any company which ever applied to D-U-N-S.</p>
+<p data-block-type="core">As soon as I found our about this vulnerability (20/01/26), I submitted a report at <a href="https://security.apple.com/" rel="noopener" target="_blank">https://security.apple.com/</a>, and ~5 months later (25/06/26) I got a confirmation the vulnerability has been addressed.</p>
+<p data-block-type="core">Took a little while, but the credits have been issued on the August 2026 list (<a href="https://support.apple.com/en-us/102774" rel="noopener" target="_blank">https://support.apple.com/en-us/102774</a>)</p>
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="" class="wp-image-27090" decoding="async" src="assets/2c1fcb633ac65161/img_4.png"/></figure>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#the-new-abm-experience" id="the-new-abm-experience"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>The new ABM experience</h2>
+<p data-block-type="core">Under the new process, when you click “Verify Now”, you get redirected to another page, where you can pick 2 distinct verification methods.</p>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-27080" decoding="async" src="assets/2c1fcb633ac65161/img_5.png"/></figure>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-27081" decoding="async" src="assets/2c1fcb633ac65161/img_6.png"/></figure>
+<p data-block-type="core">Whithin those, you can choose:<br/></p>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core">Business ID – Add a D-U-N-S Number or Employer Identification Number (EIN)</li>
+<li data-block-type="core">Business License – Upload an official document</li>
+<li data-block-type="core">Domain Validation – Add a TXT record to your DNS server</li>
+<li data-block-type="core">Energy Bill – Upload an official document</li>
+<li data-block-type="core">*GST Registration – Upload an official document</li>
+<li data-block-type="core">Lease of Property Agreement – Upload an official document</li>
+<li data-block-type="core">Organisation Document – Upload an official document</li>
+<li data-block-type="core">Other – Upload an official document</li>
+<li data-block-type="core">Utility Bill – Upload an official document</li>
+</ul>
+<p data-block-type="core">* I believe the GST (Australian Tax) should show an equivalent on your country.</p>
+<p data-block-type="core">In my case, I chose D-U-N-S and Domain Validation</p>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-27082" decoding="async" src="assets/2c1fcb633ac65161/img_7.png"/></figure>
+<p data-block-type="core">Notice that now entering a D-U-N-S number doesn’t query any information about the company.</p>
+<figure class="wp-block-image size-full is-resized" data-block-type="core"><img alt="" class="wp-image-27083" decoding="async" src="assets/2c1fcb633ac65161/img_8.png"/></figure>
+<p data-block-type="core">Once sent, your “Business ID” will change to sent and you should receive an email in up to 5 business days with an answer.</p>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-27092" decoding="async" src="assets/2c1fcb633ac65161/img_9.png"/></figure>
+<p data-block-type="core"></p>
+<p class="post-views content-post post-27073 entry-meta load-static" data-pvc-id="27073" data-pvc-type="post">
+<span class="post-views-icon dashicons dashicons-chart-bar"></span> <span class="post-views-label">Views:</span> <span class="post-views-count">43</span>
+</p>
+<p class="entry-tags">
+<a href="https://msendpointmgr.com/tag/apple/" rel="tag">apple</a> <a href="https://msendpointmgr.com/tag/apple-abm/" rel="tag">apple abm</a> </p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
