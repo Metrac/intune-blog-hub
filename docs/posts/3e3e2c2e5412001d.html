@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Enterprise Agent Control Plane I Want</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">September 24, 2026</span>
+  </div>
+  <h1>The Enterprise Agent Control Plane I Want</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/enterprise-agent-control-plane/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p class="wp-block-paragraph">I do not want another dashboard for enterprise AI agents. I want an <strong>enterprise agent control plane</strong> that can answer who owns an agent, what it can call, how it behaves and how to stop it. In this blog post I explain the five layers I would connect: identity, catalog, policy, telemetry and lifecycle.</p>
+<p class="wp-block-paragraph">Microsoft Foundry now has a Control Plane experience for visibility and lifecycle operations across agents. That is an important platform building block. My broader point is that an enterprise control plane is also an operating model. It has to connect the AI platform with Microsoft Entra ID, Azure API Management, monitoring, data governance and the teams that own the affected systems.</p>
+<p><span id="more-20254"></span>
+</p>
+<h2 class="wp-block-heading" id="what-is-an-enterprise-agent-control-plane">What Is an Enterprise Agent Control Plane?</h2>
+<p class="wp-block-paragraph">An enterprise agent control plane is the place where technical controls and operational ownership meet. It is not the runtime that executes every agent. It is the layer that lets administrators discover, govern, observe and retire agents across runtimes.</p>
+<p class="wp-block-paragraph">In the Microsoft Foundry Operate experience below, the overview already brings together alerts, running agents, cost, success rate, token usage and run volume. This is the right direction because operating agents requires more than a list of deployments.</p>
+<figure class="wp-block-image"><img alt="Microsoft Foundry Control Plane overview showing alerts, running agents, cost, success rate, token usage and run volume" data-recalc-dims="1" decoding="async" src="assets/3e3e2c2e5412001d/img_0.jpg"/></figure>
+<p class="wp-block-paragraph">Microsoft describes <a href="https://learn.microsoft.com/en-us/azure/foundry/control-plane/overview" rel="noopener" target="_blank">Foundry Control Plane</a> as a unified management interface for agents, models and tools. It provides fleet visibility, governance and control across Foundry resources. I see this as the Microsoft Foundry layer of a larger enterprise design.</p>
+<h2 class="wp-block-heading" id="which-five-layers-does-the-control-plane-need">Which Five Layers Does the Control Plane Need?</h2>
+<figure class="wp-block-image"><img alt="Five layers of an enterprise agent control plane: identity, catalog, policy, telemetry and lifecycle" data-recalc-dims="1" decoding="async" src="assets/3e3e2c2e5412001d/img_1.jpg"/></figure>
+<h3 class="wp-block-heading" id="1-identity-one-accountable-caller">1. Identity — One Accountable Caller</h3>
+<p class="wp-block-paragraph">Every agent needs an owner and an identity. These are related, but they are not the same.</p>
+<p class="wp-block-paragraph">The owner is the person or team accountable for the use case. The identity is the workload that receives permissions and appears in technical logs. I want both to be visible in the inventory, together with the business purpose, environment and expiry or review date.</p>
+<p class="wp-block-paragraph">Microsoft Foundry uses Azure role-based access control for the management plane. The assets visible to a user depend on that user’s access to the underlying resources. This is a good security property, but it also means that a central operations team needs intentional read access if it is expected to maintain a complete inventory.</p>
+<p class="wp-block-paragraph">For agent actions, I prefer dedicated workload identities and narrow permissions. A shared application registration for many unrelated agents makes ownership and revocation harder.</p>
+<h3 class="wp-block-heading" id="2-catalog-know-what-exists">2. Catalog — Know What Exists</h3>
+<p class="wp-block-paragraph">An enterprise cannot govern an agent it cannot find. The catalog therefore needs more than the agent name.</p>
+<p class="wp-block-paragraph">For each agent I would store:</p>
+<ul class="wp-block-list">
+<li>owner and business purpose;</li>
+<li>platform, project and environment;</li>
+<li>model and deployment;</li>
+<li>tools, MCP servers and data sources;</li>
+<li>identity and permission scope;</li>
+<li>current version and lifecycle state;</li>
+<li>linked evaluations, traces and incidents.</li>
+</ul>
+<p class="wp-block-paragraph">Microsoft Foundry Control Plane can discover and list supported agent assets across projects. Other platforms may need registration or connectors. I would not wait for one product to discover everything automatically. A lightweight manual registration is better than an invisible production agent.</p>
+<p class="wp-block-paragraph">Hint: Make the catalog part of deployment. Do not ask a central team to rebuild it later from billing data and audit logs.</p>
+<h3 class="wp-block-heading" id="3-policy-turn-rules-into-boundaries">3. Policy — Turn Rules Into Boundaries</h3>
+<p class="wp-block-paragraph">A policy document is useful, but it does not stop a tool call. The control plane should connect written rules to enforceable boundaries.</p>
+<p class="wp-block-paragraph">I group policy into four areas:</p>
+<ol class="wp-block-list">
+<li><strong>Access policy:</strong> who can build, publish, operate and call the agent.</li>
+<li><strong>Tool policy:</strong> which tools and data sources the agent can use.</li>
+<li><strong>Runtime policy:</strong> content controls, network boundaries, quotas and approvals.</li>
+<li><strong>Release policy:</strong> required evaluations and evidence before a version reaches production.</li>
+</ol>
+<p class="wp-block-paragraph">No single Microsoft service owns all four. Microsoft Entra ID and Azure RBAC handle identity and management access. Microsoft Foundry provides project, model, agent and evaluation controls. Azure API Management can govern shared API and MCP boundaries. Data and compliance services protect the information the agent reads and writes.</p>
+<p class="wp-block-paragraph">The important part is the connection between them. If the catalog says an agent is read-only but its backend identity can delete data, the label is meaningless.</p>
+<h3 class="wp-block-heading" id="4-telemetry-connect-the-whole-run">4. Telemetry — Connect the Whole Run</h3>
+<p class="wp-block-paragraph">Agent telemetry has to connect the user request with every model, tool and backend action. A green health tile alone cannot explain why a workflow produced the wrong result.</p>
+<p class="wp-block-paragraph">I want three views:</p>
+<ul class="wp-block-list">
+<li><strong>Operational:</strong> availability, latency, errors, token usage and cost.</li>
+<li><strong>Behavioral:</strong> tool selection, refusal, loop detection and evaluation results.</li>
+<li><strong>Security:</strong> identities, permission failures, unusual destinations and high-impact actions.</li>
+</ul>
+<p class="wp-block-paragraph">Microsoft Foundry tracing can capture prompts, responses and agent workflow details. Microsoft also makes clear that traces can contain customer and personal data. Access, redaction and retention therefore belong in the design. The official <a href="https://learn.microsoft.com/en-us/azure/foundry/observability/concepts/trace-data" rel="noopener" target="_blank">Foundry tracing and data handling guidance</a> recommends avoiding secrets and restricting access to trace data.</p>
+<p class="wp-block-paragraph">I also use correlation IDs across the gateway and backend. This keeps the investigation path intact when an agent uses an MCP server or REST API outside Foundry.</p>
+<h3 class="wp-block-heading" id="5-lifecycle-start-stop-block-and-retire">5. Lifecycle — Start, Stop, Block and Retire</h3>
+<p class="wp-block-paragraph">Agents need a lifecycle, not just a deployment date. A useful control plane should support registration, evaluation, pilot, operation and retirement.</p>
+<figure class="wp-block-image"><img alt="Agent lifecycle from registration and evaluation through pilot, operation and retirement" data-recalc-dims="1" decoding="async" src="assets/3e3e2c2e5412001d/img_2.jpg"/></figure>
+<p class="wp-block-paragraph">Microsoft documents lifecycle operations such as start, stop and block for supported agents in <a href="https://learn.microsoft.com/en-us/azure/foundry/control-plane/how-to-manage-agents" rel="noopener" target="_blank">Manage agents at scale in Microsoft Foundry Control Plane</a>. The available action depends on the agent platform, type and publishing state.</p>
+<p class="wp-block-paragraph">Stopping runtime compute is only one part of retirement. I also want to revoke identities, remove secrets, close network paths, archive required evidence and mark the catalog entry as retired. Otherwise the old agent may disappear from the dashboard while its permissions stay active.</p>
+<h2 class="wp-block-heading" id="how-would-i-divide-responsibility">How Would I Divide Responsibility?</h2>
+<p class="wp-block-paragraph">The control plane needs clear ownership. I would use a model like this:</p>
+<figure class="wp-block-table"><table>
+<thead>
+<tr>
+<th>Team</th>
+<th>Main responsibility</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AI platform team</td>
+<td>Foundry resources, models, agent platform and shared evaluation services</td>
+</tr>
+<tr>
+<td>Identity and security team</td>
+<td>workload identity, privileged access, detection and incident response</td>
+</tr>
+<tr>
+<td>API platform team</td>
+<td>governed API and MCP entry points, quotas and shared telemetry</td>
+</tr>
+<tr>
+<td>Data owners</td>
+<td>approval for data access, classification and retention requirements</td>
+</tr>
+<tr>
+<td>Product team</td>
+<td>business outcome, agent behavior, user experience and day-to-day ownership</td>
+</tr>
+</tbody>
+</table></figure>
+<p class="wp-block-paragraph">The central AI team should provide the paved road. The product team remains accountable for the agent it releases.</p>
+<h2 class="wp-block-heading" id="what-would-i-build-first">What Would I Build First?</h2>
+<p class="wp-block-paragraph">I would not start with a perfect enterprise dashboard. I would start with four enforceable basics:</p>
+<ol class="wp-block-list">
+<li>A required owner and purpose for every production agent.</li>
+<li>A searchable catalog with identities, tools and data sources.</li>
+<li>A release gate that stores evaluation and approval evidence.</li>
+<li>A tested block and retirement procedure.</li>
+</ol>
+<p class="wp-block-paragraph">Telemetry and cost views can grow from there. These four controls already answer the questions that matter during an incident: what is this, who owns it, what can it reach and how do we stop it?</p>
+<p class="wp-block-paragraph">For tool-level controls, my related guide <a href="https://jannikreinhard.com/azure-api-management-mcp-control-plane/">Azure API Management MCP: The Control Plane for Agent Tools</a> shows how a gateway can create a shared policy and telemetry boundary. The article <a href="https://jannikreinhard.com/five-gates-mcp-tool-production/">Five Gates Before an MCP Tool Reaches Production</a> goes deeper into identity, scope, limits, approval and evidence.</p>
+<p class="wp-block-paragraph">An enterprise agent control plane is not one product. It is the operating model that connects ownership with enforceable controls. Microsoft Foundry gives us a strong place to start, but the design becomes real only when identity, tools, data and lifecycle are connected.</p>
+<p class="wp-block-paragraph">I hope this is a little help when you plan the operating model for your agent estate.</p>
+<p class="wp-block-paragraph">Stay healthy, Cheers Jannik</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
