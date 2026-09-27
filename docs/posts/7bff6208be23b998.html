@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Faster Required App Delivery After Autopilot</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Call4Cloud (Rudy Ooms)</span>
+    <span class="date">September 26, 2026</span>
+  </div>
+  <h1>Faster Required App Delivery After Autopilot</h1>
+  <div class="orig">Saved for offline reading · <a href="https://patchmypc.com/blog/autopilot-required-apps-no-longer-need-to-wait-60-minutes/?utm_term=rss" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="post-content">
+<p class="wp-block-paragraph">Windows Autopilot can finish while required Win32 apps are still waiting to be installed. This blog explains which apps ESP waits for, why the remaining apps could face a 60-minute delay, and how the IME now picks them up sooner.</p>
+<h1 class="wp-block-heading" id="h-the-desktop-is-ready-but-the-required-apps-are-missing">The desktop is ready, but the required apps are missing</h1>
+<p class="wp-block-paragraph">Autopilot finishes. The Enrollment Status Page (ESP) completes. The user reaches the desktop, but some required Win32 apps haven’t even started installing. Then, about an hour later, those applications suddenly begin to arrive.</p>
+<p class="wp-block-paragraph">That was the frustrating behavior we described in <strong><a href="https://patchmypc.com/blog/why-do-required-apps-wait-60-minutes-after-autopilot-enrollment/">the earlier blog. </a></strong>The blocking apps that you configured in the ESP  profile had completed, so Windows let the user continue. The remaining required apps still needed the Microsoft Intune Management Extension, or the IME, to pick them up through normal app processing.</p>
+<p class="wp-block-paragraph">For the user, that distinction does not help much. They have just finished setting up a new device, the desktop looks ready, and the application they need is missing. From their side, setup is done. In the affected deployments, the remaining required apps could sit idle until the next scheduled check (which was up to 60 minutes)</p>
+<h2 class="wp-block-heading" id="h-microsoft-has-now-officially-announced-the-improvement">Microsoft has now officially announced the improvement<span class="clth-copy-icon" data-heading-id="h-microsoft-has-now-officially-announced-the-improvement"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Microsoft now lists <strong>Faster Win32 app delivery after Windows enrollment</strong> in <a href="https://learn.microsoft.com/en-us/intune/whats-new/#faster-win32-app-delivery-after-windows-enrollment">What’s new in Microsoft Intune</a>, under service release 2609, week of 28 September 2026. The announcement describes an immediate app assignment check after ESP completes, reducing the delay before remaining required Win32 apps begin installing.</p>
+<figure class="wp-block-image size-full is-resized"><a data-caption="Faster Win32 App Delivery After Windows Enrollment." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/09/1-2.png"><img alt="Faster Win32 App Delivery After Windows Enrollment." class="wp-image-195574" data-lazy-sizes="(max-width: 836px) 100vw, 836px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/1-2.png 836w, https://patchmypc.com/app/uploads/2026/09/1-2-300x98.png 300w, https://patchmypc.com/app/uploads/2026/09/1-2-768x251.png 768w" decoding="async" src="assets/7bff6208be23b998/img_0.png"/></a></figure>
+<p class="wp-block-paragraph">The <a href="https://learn.microsoft.com/en-us/intune/device-management/tools/management-extension-windows">documentation for the Intune Management Extension</a> describes the improved handover too. To understand why it matters, we first need to return to the timing problem in the original flow. Then we can follow what the IME now does when enrollment finishes.</p>
+<h2 class="wp-block-heading" id="h-a-recap-of-the-original-required-app-delay">A recap of the original required app delay<span class="clth-copy-icon" data-heading-id="h-a-recap-of-the-original-required-app-delay"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">In our <a href="https://patchmypc.com/blog/why-do-required-apps-wait-60-minutes-after-autopilot-enrollment/">earlier blog about the required app delay</a>, we described a specific timing problem. At sign-in, the IME could check for apps while ESP was still active or before the real user session was ready. The available-app pass ran first. When that pass exited early, the required-app check didn’t run immediately.</p>
+<p class="wp-block-paragraph">ESP could then finish and the desktop could appear, while the remaining required apps waited roughly 60 minutes for another check. Restarting the device or the IME retried app processing once enrollment and the user session were ready. The new behavior addresses that missed transition.</p>
+<figure class="wp-block-image size-full is-resized"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/09/image-1.png"></a></figure>
+<h2 class="wp-block-heading" id="h-required-apps-and-esp-blocking-apps">Required apps and ESP blocking apps<span class="clth-copy-icon" data-heading-id="h-required-apps-and-esp-blocking-apps"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Adding an app to the <strong>ESP blocking list</strong> tells ESP to wait until that app has installed successfully before letting the user continue. The app must also be assigned as <strong>Required</strong> to the user or device.</p>
+<p class="wp-block-paragraph">What happens to the other required apps depends on the Autopilot scenario. During <strong>user-driven and self-deploying Autopilot</strong>, nonblocking Win32 apps wait until ESP completes, as described in <a href="https://learn.microsoft.com/en-us/intune/device-enrollment/windows/setup-status-page#block-access-to-a-device-until-a-specific-application-is-installed">Microsoft’s ESP documentation</a>.</p>
+<p class="wp-block-paragraph">During <strong>pre-provisioning</strong>, additional required apps can also install in the technician phase. With <strong>Only fail selected blocking apps in technician phase</strong> set to <strong>Yes</strong>, Intune attempts all required apps eligible for that phase, but a nonblocking app failure allows provisioning to continue. Setting it to <strong>No</strong> limits installation attempts during that phase to the blocking apps.</p>
+<p class="wp-block-paragraph">When this blog refers to <strong>remaining required apps</strong>, it means the apps still awaiting installation when ESP finishes. The new IME behavior triggers an earlier app check, reducing the wait before those apps can begin installing.</p>
+<h2 class="wp-block-heading" id="h-what-changed-in-the-required-apps-handover">What changed in the required apps handover<span class="clth-copy-icon" data-heading-id="h-what-changed-in-the-required-apps-handover"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The change gives the IME a way to react as enrollment progresses. While ESP is still active, the IME can monitor the enrollment state stored beneath FirstSync in the Windows registry. That gives it a signal when the state changes, including the transition we were missing in the earlier flow.</p>
+<p class="wp-block-paragraph">As that state changes, the IME receives a notification and checks the ESP phase again. A registry change is a reason to recheck; it doesn’t automatically mean enrollment has finished. Once the IME confirms that the device has left ESP, it queues another app workload check.</p>
+<figure class="wp-block-image size-full is-resized"><a href="https://patchmypc.com/app/uploads/2026/09/3-2-scaled.png"><picture class="wp-image-195576" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/3-2-scaled.png.webp 2560w, https://patchmypc.com/app/uploads/2026/09/3-2-300x206.png.webp 300w, https://patchmypc.com/app/uploads/2026/09/3-2-1024x704.png.webp 1024w, https://patchmypc.com/app/uploads/2026/09/3-2-768x528.png.webp 768w, https://patchmypc.com/app/uploads/2026/09/3-2-1536x1056.png.webp 1536w, https://patchmypc.com/app/uploads/2026/09/3-2-2048x1408.png.webp 2048w" sizes="(max-width: 2560px) 100vw, 2560px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 2560px) 100vw, 2560px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/3-2-scaled.png 2560w, https://patchmypc.com/app/uploads/2026/09/3-2-300x206.png 300w, https://patchmypc.com/app/uploads/2026/09/3-2-1024x704.png 1024w, https://patchmypc.com/app/uploads/2026/09/3-2-768x528.png 768w, https://patchmypc.com/app/uploads/2026/09/3-2-1536x1056.png 1536w, https://patchmypc.com/app/uploads/2026/09/3-2-2048x1408.png 2048w" decoding="async" src="assets/7bff6208be23b998/img_1.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">This supplies the missing connection between enrollment finishing and the next app evaluation. Scheduled checks continue to exist, but the end of ESP now provides an additional reason to run the app workload sooner.</p>
+<p class="wp-block-paragraph">The detailed sequence below describes the IME 1.106.102.0 build. Its timing includes a <strong>60-second delay</strong> before the queued app workload is invoked. Microsoft’s “immediate” description therefore means an early completion-triggered check here; it is not a promise that every app starts or finishes installing at the instant the desktop appears.</p>
+<h2 class="wp-block-heading" id="h-how-the-ime-follows-enrollment-step-by-step">How the IME follows enrollment step by step<span class="clth-copy-icon" data-heading-id="h-how-the-ime-follows-enrollment-step-by-step"><span class="clth-tooltip">Copy Link</span></span></h2>
+<figure class="wp-block-image size-full is-resized"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/09/esp-required-apps-scaled.png"><picture class="wp-image-195589" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/esp-required-apps-scaled.png.webp 2560w, https://patchmypc.com/app/uploads/2026/09/esp-required-apps-300x298.png.webp 300w, https://patchmypc.com/app/uploads/2026/09/esp-required-apps-1024x1017.png.webp 1024w, https://patchmypc.com/app/uploads/2026/09/esp-required-apps-150x150.png.webp 150w, https://patchmypc.com/app/uploads/2026/09/esp-required-apps-768x763.png.webp 768w, https://patchmypc.com/app/uploads/2026/09/esp-required-apps-1536x1525.png.webp 1536w, https://patchmypc.com/app/uploads/2026/09/esp-required-apps-2048x2034.png.webp 2048w" sizes="(max-width: 2560px) 100vw, 2560px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 2560px) 100vw, 2560px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/esp-required-apps-scaled.png 2560w, https://patchmypc.com/app/uploads/2026/09/esp-required-apps-300x298.png 300w, https://patchmypc.com/app/uploads/2026/09/esp-required-apps-1024x1017.png 1024w, https://patchmypc.com/app/uploads/2026/09/esp-required-apps-150x150.png 150w, https://patchmypc.com/app/uploads/2026/09/esp-required-apps-768x763.png 768w, https://patchmypc.com/app/uploads/2026/09/esp-required-apps-1536x1525.png 1536w, https://patchmypc.com/app/uploads/2026/09/esp-required-apps-2048x2034.png 2048w" decoding="async" src="assets/7bff6208be23b998/img_2.png"/>
+</picture>
+</a></figure>
+<h3 class="wp-block-heading" id="h-step-1-watch-the-state-that-changes-during-enrollment">Step 1: Watch the state that changes during enrollment<span class="clth-copy-icon" data-heading-id="h-step-1-watch-the-state-that-changes-during-enrollment"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">The first part starts while the IME still sees the device in ESP. If the feature is enabled through its service-delivered configuration, the IME looks below the local machine enrollment registry location for an entry containing a FirstSync subtree. It then watches for value changes beneath that location, including its child keys.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/09/7.png"><img alt="" class="wp-image-195581" data-lazy-sizes="(max-width: 688px) 100vw, 688px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/7.png 688w, https://patchmypc.com/app/uploads/2026/09/7-300x93.png 300w" decoding="async" src="assets/7bff6208be23b998/img_3.png"/></a></figure>
+<p class="wp-block-paragraph">Windows updates those values as enrollment progresses. The watcher gives the IME a notification when something changes, so it has a reason to look at the ESP phase again. If monitoring is already active, the existing watcher stays in place. Another app workload run does not create a second watcher.</p>
+<h3 class="wp-block-heading" id="h-step-2-cover-the-moment-when-monitoring-starts">Step 2: Cover the moment when monitoring starts<span class="clth-copy-icon" data-heading-id="h-step-2-cover-the-moment-when-monitoring-starts"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">The IME also accounts for a small timing gap when monitoring starts. The IME can check the ESP, find that it is active, and then start its watcher just as Windows finishes enrollment. If it simply waited for the next registry change, that final transition might already have happened.</p>
+<p class="wp-block-paragraph">To cover that gap, the IME checks the ESP phase once more immediately after monitoring starts. If the ESP has already finished, it proceeds through the completion path without needing a later notification. Otherwise, the watcher remains ready for the next change. That closes the gap between deciding to monitor enrollment and actually receiving its updates.</p>
+<h3 class="wp-block-heading" id="h-step-3-confirm-what-the-registry-change-means">Step 3: Confirm what the registry change means<span class="clth-copy-icon" data-heading-id="h-step-3-confirm-what-the-registry-change-means"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">A FirstSync notification only tells the IME that something changed. Enrollment can update several values while setup is still in progress, so treating every notification as completion would start the handover too early again. The IME therefore checks the ESP phase after receiving the notification.</p>
+<p class="wp-block-paragraph">If the device is still in ESP, monitoring continues. When the phase check says the device is no longer in ESP, the IME can move forward. This separates the signal from the decision: the registry change gets its attention, and the ESP check determines whether enrollment has actually ended.</p>
+<h2 class="wp-block-heading" id="h-how-completion-becomes-another-app-check">How completion becomes another app check<span class="clth-copy-icon" data-heading-id="h-how-completion-becomes-another-app-check"><span class="clth-tooltip">Copy Link</span></span></h2>
+<h3 class="wp-block-heading" id="h-step-4-queue-the-handover-and-remove-the-watcher">Step 4: Queue the handover and remove the watcher<span class="clth-copy-icon" data-heading-id="h-step-4-queue-the-handover-and-remove-the-watcher"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">Once completion is confirmed, the IME queues a background app check with a reason identifying it as after Autopilot. This gives the app workload another attempt after enrollment. The completion path invokes the normal workload directly; it does not first launch a separate available-app check and wait for that pass to succeed.</p>
+<p class="wp-block-paragraph">The IME then stops the temporary watcher and removes its safety timer. Its job was to catch the transition out of ESP, and that handover has now been queued. A watcher left running also has a 24-hour cleanup timeout. That timeout removes the watcher; it does not hold apps for a day or schedule an installation.</p>
+<h3 class="wp-block-heading" id="h-step-5-run-the-queued-check-after-a-short-delay">Step 5: Run the queued check after a short delay<span class="clth-copy-icon" data-heading-id="h-step-5-run-the-queued-check-after-a-short-delay"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">A useful timing detail: In the IME 1.106.102.0 build, the queued task waits 60 seconds before invoking the app workload. The completion message describes an immediate check-in, but the workload invocation follows that delay. The watcher can therefore stop before the next app check appears in the logs.</p>
+<p class="wp-block-paragraph">In practice, this attempt is tied to ESP completion. The device can process its apps early without depending on the old one-hour wait. Sixty seconds is the delay before the attempt in this build, not a guarantee that an app will be installed one minute after setup.</p>
+<h3 class="wp-block-heading" id="h-step-6-continue-through-the-normal-app-delivery-process">Step 6: Continue through the normal app delivery process<span class="clth-copy-icon" data-heading-id="h-step-6-continue-through-the-normal-app-delivery-process"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">From this point, the IME still has its usual work to do. It obtains the user and device context, retrieves assignments, checks detection and applicability, and processes the required apps that are eligible and due. Dependencies, content download, and the installer still take time. Existing workload coordination and throttling also still apply.</p>
+<p class="wp-block-paragraph">That is the user-visible benefit of the change: remaining apps get a useful evaluation sooner. It does not make an inapplicable app applicable or turn a failed installer into a success. If the check runs promptly but an app is still missing, the next question is where that particular app stopped.</p>
+<h2 class="wp-block-heading" id="h-following-the-same-sequence-in-the-logs">Following the same sequence in the logs<span class="clth-copy-icon" data-heading-id="h-following-the-same-sequence-in-the-logs"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The <a href="https://learn.microsoft.com/en-us/intune/device-management/tools/management-extension-windows#intune-management-extension-logs">IME logs</a> let you connect the monitoring start, ESP reassessment, completion trigger, and later app workload. Follow the same app ID into evaluation and installation, and use Windows enrollment events for context. A nearby installation timestamp alone does not prove which action triggered the check, especially if someone also restarted the service or initiated a sync.</p>
+<h2 class="wp-block-heading" id="h-putting-the-old-and-new-flows-together">Putting the old and new flows together<span class="clth-copy-icon" data-heading-id="h-putting-the-old-and-new-flows-together"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Previously, an app check could run before enrollment, and the user session was ready. If that attempt exited early, the desktop could appear while the remaining required apps waited for the later scheduled check. The updated flow gives the IME another attempt tied to confirmed ESP completion.</p>
+<figure class="wp-block-image size-full is-resized"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/09/image-3.png"></a></figure>
+<h2 class="wp-block-heading" id="faster-win32-app-delivery-does-not-stop-at-autopilot">Faster Win32 app delivery does not stop at Autopilot<span class="clth-copy-icon" data-heading-id="faster-win32-app-delivery-does-not-stop-at-autopilot"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">This ESP completion change solves one specific timing gap after Autopilot. Microsoft has also announced a broader Faster Win32 app delivery improvement for normal Win32 app changes. Intune can now use push notifications when an administrator or the service changes a Win32 app, giving the IME a reason to check for app work sooner instead of waiting for its normal polling interval. In my testing, that push reached the IME through IC3, with intent 2 selecting Win32AppWorkload, after which the normal app check retrieved the current assignments. So these are two different triggers solving a similar problem: after Autopilot, ESP completion can start another app check; outside that flow, an app change can push the IME to check sooner. </p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/09/11-1024x711.png"><picture class="wp-image-195633" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/11-1024x711.png.webp 1024w, https://patchmypc.com/app/uploads/2026/09/11-300x208.png.webp 300w, https://patchmypc.com/app/uploads/2026/09/11-768x533.png.webp 768w, https://patchmypc.com/app/uploads/2026/09/11-1536x1067.png.webp 1536w, https://patchmypc.com/app/uploads/2026/09/11-2048x1422.png.webp 2048w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/11-1024x711.png 1024w, https://patchmypc.com/app/uploads/2026/09/11-300x208.png 300w, https://patchmypc.com/app/uploads/2026/09/11-768x533.png 768w, https://patchmypc.com/app/uploads/2026/09/11-1536x1067.png 1536w, https://patchmypc.com/app/uploads/2026/09/11-2048x1422.png 2048w" decoding="async" src="assets/7bff6208be23b998/img_4.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph"><strong>Read the full deep dive:</strong><a href="https://patchmypc.com/blog/faster-win32-app-delivery-in-intune/">Faster Win32 app delivery in Intune: from pull to push</a></p>
+<h2 class="wp-block-heading" id="h-a-better-first-experience-for-the-user">A better first experience for the user<span class="clth-copy-icon" data-heading-id="h-a-better-first-experience-for-the-user"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">That can make a substantial difference on a newly enrolled device. The user reaches the desktop, and the remaining eligible apps can start moving through installation much sooner, reducing the unexplained idle period and the need to restart the IME or sign out simply to prompt another attempt.</p>
+<p class="wp-block-paragraph">Apps still need time to download and install. Anything that must be present before desktop access should remain part of the ESP blocking requirements. For the remaining required apps, this change connects the end of setup to the next useful app check and makes the handover much smoother.</p>
+<p class="wp-block-paragraph">Microsoft <a href="https://learn.microsoft.com/en-us/intune/fundamentals/servicing-information">rolls out Intune updates in phases</a>. Verify the completion-triggered check on representative devices before retiring an existing workaround. For affected users, the benefit is clear: less waiting after setup, fewer interruptions, and earlier access to the applications they need.</p>
+<p class="wp-block-paragraph"></p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

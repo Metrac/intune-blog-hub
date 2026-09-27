@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What’s in the Microsoft Enterprise App Catalog? Finding Out with PowerShell and Microsoft Graph</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">MSEndpointMgr</span>
+    <span class="date">September 27, 2026</span>
+  </div>
+  <h1>What’s in the Microsoft Enterprise App Catalog? Finding Out with PowerShell and Microsoft Graph</h1>
+  <div class="orig">Saved for offline reading · <a href="https://msendpointmgr.com/2026/09/27/whats-in-the-enterprise-app-catalog/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p data-block-type="core">If you’ve clicked <strong>Apps &gt; Windows &gt; Create &gt; Enterprise App Catalog app</strong> in Intune, you’ve seen the catalog picker. Search, pick an app, pick a variant, next, next, done.</p>
+<p data-block-type="core">What the picker doesn’t give you is the big picture. Which vendors are in there? How many variants of Firefox are there (spoiler…a lot)? Which apps are MSI and which are EXE? What version is the catalog currently offering? How is detection configured for this variant?</p>
+<p data-block-type="core">I wanted those answers, and I wanted them without clicking through the portal one app at a time. So, I went looking at what Microsoft Graph could tell me. This post walks through the Graph calls behind the catalog, what the data actually means, and shares a script, <strong>Get-EAMCatalog.ps1</strong>, that pulls the lot back into PowerShell or a nice little HTML report.</p>
+<h2 class="wp-block-heading" id="0-tldr"><a aria-hidden="true" class="aal_anchor" href="#tldr" id="tldr"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>TL;DR</h2>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core">The catalog is available in Microsoft Graph on the <code>beta</code> endpoint at <code>deviceAppManagement/mobileAppCatalogPackages</code>.</li>
+<li data-block-type="core">Each package gives you the publisher, product, variant (branch), version, architecture, locales and whether it is auto-update capable.</li>
+<li data-block-type="core">For the good stuff (installer type, install commands, MSI codes, detection rules) you ask Graph to convert a package into a preview Win32 app using <code>convertFromMobileAppCatalogPackage</code>.</li>
+<li data-block-type="core">There is no “last updated” date anywhere. If you want to track catalog updates, save the output and compare it over time using the <code>BranchId</code>. I didnt get that far with this post, maybe another day.</li>
+<li data-block-type="core">The script is on GitHub: <strong><a data-id="https://github.com/byteben/MEM/blob/main/Intune/Get-EAMCatalog.ps1" data-type="link" href="https://github.com/byteben/MEM/blob/main/Intune/Get-EAMCatalog.ps1" rel="noopener" target="_blank">Get-EAMCatalog.ps1</a></strong></li>
+<li data-block-type="core">Make the script output look pretty by using the <code>-HTMLReport</code> switch</li>
+</ul>
+<nav class="wp-block-stackable-table-of-contents stk-block-table-of-contents stk-block stk-0518120" data-block-id="0518120"><p class="stk-table-of-contents__title">Table of Contents</p></nav>
+<h2 class="wp-block-heading" id="1-before-we-begin"><a aria-hidden="true" class="aal_anchor" href="#before-we-begin" id="before-we-begin"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Before We Begin</h2>
+<p data-block-type="core">Enterprise App Management (EAM) is available in E5/G5 and as a standalone add-on licence. The intent here from Microsoft is instead of packaging your own Win32 apps, or pulling from the Microsoft Store, you pick an app from Microsoft’s curated catalog and Intune creates a Win32 app for you, content and all. Microsoft looks after the packaging and updates the catalog with new versions.</p>
+<p data-block-type="core">That last part is what got me interested. If Microsoft is updating the catalog for me, I’d like to see what is in it and what variants and versions are supported.</p>
+<h2 class="wp-block-heading" id="2-prerequisites"><a aria-hidden="true" class="aal_anchor" href="#prerequisites" id="prerequisites"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Prerequisites</h2>
+<h3 class="wp-block-heading" id="3-licence"><a aria-hidden="true" class="aal_anchor" href="#license" id="license"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>License</h3>
+<p data-block-type="core">You need an Enterprise App Management licence (E5/G5 or the standalone add-on) for the tenant:</p>
+<h3 class="wp-block-heading" id="4-permissions"><a aria-hidden="true" class="aal_anchor" href="#permissions" id="permissions"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Permissions</h3>
+<p data-block-type="core">Everything in this post (and script) is read-only. The only scope you need is:</p>
+<p data-block-type="core"><code>DeviceManagementApps.Read.All</code></p>
+<p data-block-type="core">The script supports delegated sign-in, or an app registration with a certificate or client secret if you want to run it unattended.</p>
+<h3 class="wp-block-heading" id="5-modules"><a aria-hidden="true" class="aal_anchor" href="#modules" id="modules"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Modules</h3>
+<p data-block-type="core">Just the one…<code>Microsoft.Graph.Authentication</code>. It gives us <code>Invoke-MgGraphRequest</code>, which is all we need. The script won’t install it for you so if it’s missing, it stops and tells you how to install it.</p>
+<div class="wp-block-codemirror-blocks-code-block code-block"><pre class="CodeMirror" data-setting='{"showPanel":false,"languageLabel":false,"fullScreenButton":true,"copyButton":true,"mode":"powershell","mime":"application/x-powershell","theme":"elegant","lineNumbers":true,"styleActiveLine":false,"lineWrapping":false,"readOnly":true,"fileName":"","language":"PowerShell","maxHeight":"400px","modeName":"powershell"}'>Install-Module Microsoft.Graph.Authentication -Scope CurrentUser</pre></div>
+<h2 class="wp-block-heading" id="6-step-1-get-the-catalog-packages"><a aria-hidden="true" class="aal_anchor" href="#how-the-script-works" id="how-the-script-works"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>How the script works</h2>
+<p data-block-type="core">There are only two Graph calls behind the script, both on the <code>beta</code> endpoint:</p>
+<ol class="wp-block-list" data-block-type="core">
+<li data-block-type="core"><strong><code><strong>deviceAppManagement/mobileAppCatalogPackages</strong></code></strong> returns every entry in the catalog. This is the basic info for the catalog entry.</li>
+<li data-block-type="core"><strong><code><strong>deviceAppManagement/mobileApps/convertFromMobileAppCatalogPackage(mobileAppCatalogPackageId='{id}')</strong></code></strong> returns the Win32 app Intune <em>would</em> create from a catalog entry. This is the more detailed info for the catalog entry.</li>
+</ol>
+<p data-block-type="core">A normal run of the script does this:</p>
+<ol class="wp-block-list" data-block-type="core">
+<li data-block-type="core">Connects to Graph.</li>
+<li data-block-type="core">Pages through the catalog (following <code>@odata.nextLink</code>, 100 entries per page).</li>
+<li data-block-type="core">Filters on <code>-ProductName</code> and <code>-Publisher</code>, if you used them.</li>
+<li data-block-type="core">If you used <code>-DetailedInfo</code>, gets the template for each entry, 20 at a time using <code>$batch</code>.</li>
+<li data-block-type="core">Returns the records, or writes the HTML report if you used <code>-HtmlReport</code>.</li>
+</ol>
+<h2 class="wp-block-heading" id="basic-info"><a aria-hidden="true" class="aal_anchor" href="#basic-info" id="basic-info"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Basic info</h2>
+<p data-block-type="core">With no parameters, you get one record per catalog entry, which is one variant of an app:</p>
+<pre class="wp-block-preformatted" data-block-type="core">.\Get-EAMCatalog.ps1 -ProductName firefox | Select-Object -First 1</pre>
+<pre class="wp-block-preformatted" data-block-type="core">Publisher         : Mozilla<br/>Product           : Mozilla Firefox<br/>CatalogVersion    : 156.0.1<br/>Branch            : Firefox (African) (x64)<br/>Architecture      : x64<br/>Locales           : af<br/>AutoUpdateCapable : True<br/>ProductId         : 8b831845-d4e8-2b28-1564-35e15589d3b1<br/>BranchId          : c772f548-290f-21bc-e402-3694a738b5ac<br/>CatalogPackageId  : fd52ae7d-54b9-2e81-10ea-859faa864d43</pre>
+<figure class="wp-block-image size-full" data-block-type="core"><img alt="" class="wp-image-27102" decoding="async" src="assets/8b364a32b2ad68e4/img_0.png"/></figure>
+<p data-block-type="core">Each property comes straight from the catalog entry:</p>
+<figure class="wp-block-table" data-block-type="core"><table class="has-fixed-layout"><tbody><tr><th>Script property</th><th>Graph property</th><th>What it is</th></tr><tr><td><code>Publisher</code></td><td><code>publisherDisplayName</code></td><td>The vendor</td></tr><tr><td><code>Product</code></td><td><code>productDisplayName</code></td><td>The app name</td></tr><tr><td><code>CatalogVersion</code></td><td><code>versionDisplayName</code></td><td>The version the catalog is offering now</td></tr><tr><td><code>Branch</code></td><td><code>branchDisplayName</code></td><td>The variant name, usually with language, architecture or installer type in it</td></tr><tr><td><code>Architecture</code></td><td><code>applicableArchitectures</code></td><td><code>x64</code>, or <code>x86,x64</code> when the variant supports both</td></tr><tr><td><code>Locales</code></td><td><code>locales</code></td><td>Joined into one string, e.g. af or <code>mu</code>i</td></tr><tr><td><code>AutoUpdateCapable</code></td><td><code>packageAutoUpdateCapable</code></td><td>Whether the app can update itself</td></tr><tr><td><code>ProductId</code></td><td><code>productId</code></td><td>Shared by every variant of a product</td></tr><tr><td><code>BranchId</code></td><td><code>branchId</code></td><td>One per variant</td></tr><tr><td><code>CatalogPackageId</code></td><td><code>id</code></td><td>That variant at its current version</td></tr></tbody></table></figure>
+<p data-block-type="core">At the time of writing, paging through the full catalog takes about 3 to 4 seconds for 1,589 entries.</p>
+<h2 class="wp-block-heading" id="products-and-variants"><a aria-hidden="true" class="aal_anchor" href="#products-and-variants" id="products-and-variants"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Products and variants</h2>
+<p data-block-type="core">Looking at what the catalog endpoint returns and you’ll see each entry has three IDs:</p>
+<pre class="wp-block-preformatted" data-block-type="core">"id": "1ca1f38f-79c3-1267-a3cb-a529fb9555d8",<br/>"productId": "14d22241-3009-3e61-aab9-371adb91a74b",<br/>"branchId": "0faabe51-1002-e4a2-8984-371adbaf9b20"</pre>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core"><strong>productId</strong> is the app. Every product variant entry has the same one.</li>
+<li data-block-type="core"><strong>branchId</strong> is the variant of that app. Graph calls them branches, I’m calling them variants (you say potato I say potatoe) because that’s what they are. Firefox has one for pretty much every language, and Chrome has separate MSI and EXE variants.</li>
+<li data-block-type="core"><strong>id</strong> identifies that variant at its current version. When a new version is added to the catalog, the branchId stays the same, but the id and versionDisplayName change.</li>
+</ul>
+<p data-block-type="core">So each entry is simply one variant of an app, at the version the catalog is offering today. Apps with a single variant, like Gephi, have one entry. Firefox has dozens. That’s why, at the time of writing, there are <strong>932 products</strong> but <strong>1,589 entries</strong>.</p>
+<p data-block-type="core">The script uses them like this:</p>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core">The HTML report counts <strong>Products</strong> by unique ProductId and <strong>Variants</strong> by unique BranchId.</li>
+<li data-block-type="core"><code>-DetailedInfo</code> requests the detail for each entry using its CatalogPackageId.</li>
+<li data-block-type="core">BranchId is the one to compare on if you want to track updates.</li>
+</ul>
+<figure class="wp-block-image size-large" data-block-type="core"></figure>
+<h2 class="wp-block-heading" id="detailed-info"><a aria-hidden="true" class="aal_anchor" href="#detailed-info" id="detailed-info"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Detailed info</h2>
+<p data-block-type="core">Add <code>-DetailedInfo</code> and the script asks Graph to convert each entry into a Win32 app template, then adds these properties to the record:</p>
+<figure class="wp-block-table" data-block-type="core"><table class="has-fixed-layout"><tbody><tr><th>Property</th><th>What it is</th></tr><tr><td><code>Description</code></td><td>The app description (<code>productDescription</code> is always empty on the catalog entry)</td></tr><tr><td><code>InstallerType</code></td><td><code>MSI</code> or <code>EXE</code>, worked out by the script</td></tr><tr><td><code>AllowedArchitectures</code></td><td>Architectures the Win32 app would allow</td></tr><tr><td><code>FileName</code>, <code>SetupFilePath</code>, <code>Size</code></td><td>The installer file</td></tr><tr><td><code>InstallCommandLine</code>, <code>UninstallCommandLine</code></td><td>What Intune would run</td></tr><tr><td><code>DisplayVersion</code></td><td>The version on the Win32 app</td></tr><tr><td><code>MsiProductVersion</code>, <code>MsiProductCode</code>, <code>MsiUpgradeCode</code></td><td>For MSI installers</td></tr><tr><td><code>DetectionVersions</code></td><td>Any versions used in the detection rules</td></tr><tr><td><code>DetectionRules</code>, <code>RequirementRules</code></td><td>Each rule as a readable line of text</td></tr><tr><td><code>MinimumWindowsRelease</code></td><td>Minimum Windows version, e.g. <code>1607</code></td></tr><tr><td><code>RunAsAccount</code>, <code>MaxRunTimeInMinutes</code>, <code>RestartBehavior</code></td><td>Install behaviour</td></tr><tr><td><code>TemplateError</code></td><td>Only set if Graph couldn’t return a template for that entry</td></tr></tbody></table></figure>
+<figure class="wp-block-image size-large" data-block-type="core"></figure>
+<figure class="wp-block-image size-large" data-block-type="core"></figure>
+<h3 class="wp-block-heading" id="msi-or-exe"><a aria-hidden="true" class="aal_anchor" href="#msi-or-exe" id="msi-or-exe"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>MSI or EXE?</h3>
+<p data-block-type="core">Neither the catalog entry nor the template has an installer type property, so the script works it out. If the template has <code>msiInformation</code>, or the setup file ends in <code>.msi</code>, it’s an MSI. If it ends in <code>.exe</code>, it’s an EXE. At the time of writing, that’s <strong>749 MSI</strong> and <strong>840 EXE</strong>.</p>
+<p data-block-type="core">This is also why filtering on MSI needs <code>-DetailedInfo</code>, and takes longer. The installer type only exists once the templates have been retrieved.</p>
+<p data-block-type="core">And who would have thought… you need to know the variant you are deploying because deploying an EXE variant to a device with the MSI can result in a side-by-side install. We could write a whole blog on variant behavior and how to update apps relaiably – but thats not for this blog.</p>
+<h3 class="wp-block-heading" id="rules-as-text"><a aria-hidden="true" class="aal_anchor" href="#rules-as-text" id="rules-as-text"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Rules as text</h3>
+<p data-block-type="core">The template returns rules as objects in a <code>rules</code> array, each with a <code>ruleType</code> of <code>detection</code> or <code>requirement</code>. (Ignore <code>detectionRules</code> and <code>requirementRules</code> on the template. They are always empty.) The script turns each rule into one line, so you can read them in the console or the report:</p>
+<pre class="wp-block-preformatted" data-block-type="core">File: %ProgramFiles%\Google\Chrome Remote Desktop\154.0.8037.40\remoting_desktop.exe version equal 154.0.8037.40 (32-bit)<br/>Registry: HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{9CCBB3AA-219D-4A90-841E-DD59AE8A46C6}\DisplayVersion string equal 154.0.8037.40 (32-bit)</pre>
+<h3 class="wp-block-heading" id="using-batch"><a aria-hidden="true" class="aal_anchor" href="#using-batch" id="using-batch"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Using $batch</h3>
+<p data-block-type="core">One template per entry means 1,589 calls for the full catalog. One at a time, I had time to make a coffee. So the script groups them into Graph <code>$batch</code> requests of 20, which is 80 batches for the whole catalog. Anything that comes back throttled (429) or with a 5xx error is retried, respecting <code>Retry-After</code>. The full detailed run for the whole catalog takes around 20 seconds.</p>
+<h2 class="wp-block-heading" id="filtering-first"><a aria-hidden="true" class="aal_anchor" href="#filtering-first" id="filtering-first"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Filtering first</h2>
+<p data-block-type="core"><code>-ProductName</code> and <code>-Publisher</code> are applied to the basic info <strong>before</strong> any templates are requested. Both match anywhere in the name, so <code>chrome</code> finds Google Chrome and Chrome Remote Desktop, and <code>google</code> finds both Google and Google LLC.</p>
+<pre class="wp-block-preformatted" data-block-type="core">.\Get-EAMCatalog.ps1 -DetailedInfo -ProductName chrome</pre>
+<p data-block-type="core">Anything else you need to filter on, like architecture or auto-update, is just a property on the record, so use <code>Where-Object</code>:</p>
+<pre class="wp-block-preformatted" data-block-type="core">.\Get-EAMCatalog.ps1 | Where-Object { $_.AutoUpdateCapable }</pre>
+<h2 class="wp-block-heading" id="the-html-report"><a aria-hidden="true" class="aal_anchor" href="#the-html-report" id="the-html-report"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>The HTML report</h2>
+<p data-block-type="core">PowerShell output is great, but sometimes you just want to have a look around. Add <code>-HtmlReport</code> and the script saves <code>EAM-Catalog.html</code> to your temp folder and opens it in your browser. It doesn’t return records to the pipeline when you do this.</p>
+<pre class="wp-block-preformatted" data-block-type="core">.\Get-EAMCatalog.ps1 -HtmlReport</pre>
+<figure class="wp-block-image size-large" data-block-type="core"></figure>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core">Summary counts at the top for publishers, products, variants, auto-update capable and architectures (plus MSI and EXE with <code>-DetailedInfo</code>).</li>
+<li data-block-type="core">A search box, and filters for architecture, auto-update and installer type. The filters are built from the data, so you only see options that exist.</li>
+<li data-block-type="core">Apps grouped by publisher, then product, collapsed by default.</li>
+<li data-block-type="core">Click a variant to see its IDs, and with <code>-DetailedInfo</code>, its commands, MSI codes, detection rules and install behaviour.</li>
+</ul>
+<figure class="wp-block-image size-large" data-block-type="core"></figure>
+<p data-block-type="core">It’s a single file with no external dependencies, so you can open it offline or send it to someone. It follows your light or dark mode too, because we all know dark mode is the only mode.</p>
+<p data-block-type="core">Without <code>-DetailedInfo</code> the report is quick to generate and still shows everything from the basic info. You can also filter it:</p>
+<pre class="wp-block-preformatted" data-block-type="core">.\Get-EAMCatalog.ps1 -HtmlReport -DetailedInfo -Publisher mozilla</pre>
+<h2 class="wp-block-heading" id="examples"><a aria-hidden="true" class="aal_anchor" href="#examples" id="examples"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Examples</h2>
+<pre class="wp-block-preformatted" data-block-type="core"># Everything, basic info<br/>.\Get-EAMCatalog.ps1<br/><br/># Detailed info for Chrome only<br/>.\Get-EAMCatalog.ps1 -DetailedInfo -ProductName chrome<br/><br/># How many variants per architecture<br/>.\Get-EAMCatalog.ps1 | Group-Object Architecture | Select-Object Count, Name<br/><br/># arm64 variants (none at the time of writing)<br/>.\Get-EAMCatalog.ps1 | Where-Object { ($_.Architecture -split ',') -contains 'arm64' }<br/><br/># All MSI variants<br/>.\Get-EAMCatalog.ps1 -DetailedInfo | Where-Object { $_.InstallerType -eq 'MSI' }</pre>
+<p data-block-type="core">If you’re going to run a few queries, get the catalog once and query the variable:</p>
+<pre class="wp-block-preformatted" data-block-type="core">$catalog = .\Get-EAMCatalog.ps1 -DetailedInfo<br/>$catalog | Where-Object { $_.InstallerType -eq 'EXE' -and $_.AutoUpdateCapable }</pre>
+<p data-block-type="core">Run <code>Get-Help .\Get-EAMCatalog.ps1 -Examples</code> for the full list.</p>
+<h2 class="wp-block-heading" id="a-few-things-i-noticed"><a aria-hidden="true" class="aal_anchor" href="#a-few-things-i-noticed" id="a-few-things-i-noticed"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>A few things I noticed</h2>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core"><strong>No arm64 variants.</strong> At the time of writing, every variant is x64 (1,280) or x86 and x64 (309).</li>
+<li data-block-type="core"><strong>Publisher names aren’t consistent.</strong> “Google” and “Google LLC” are separate publishers. The partial match on <code>-Publisher</code> helps here.</li>
+<li data-block-type="core"><strong>No requirement rules.</strong> <code>RequirementRules</code> is empty for every variant. Requirements come from <code>AllowedArchitectures</code> and <code>MinimumWindowsRelease</code> instead.</li>
+<li data-block-type="core"><strong>Detection is file and registry only.</strong> No scripted detection methods.</li>
+<li data-block-type="core"><strong>Detection doesn’t always match the app version.</strong> BCF Manager for Tekla 6.2.16 detects on a DLL at version 5.4.6.855. It’s worth checking <code>DetectionRules</code> for anything important before you deploy it.</li>
+</ul>
+<h2 class="wp-block-heading" id="summary"><a aria-hidden="true" class="aal_anchor" href="#summary" id="summary"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Summary</h2>
+<p data-block-type="core">The script gives you the whole Enterprise App Management catalog in one place. A plain run gets you the basic info in a few seconds. <code>-DetailedInfo</code> adds how each app would be deployed. <code>-HtmlReport</code> makes it easy to browse. Filter on product or publisher first and the detailed run is quick too.</p>
+<p data-block-type="core">Grab the script, run it against your own tenant and have a look around. Happy automating friend!</p>
+<p class="post-views content-post post-27099 entry-meta load-static" data-pvc-id="27099" data-pvc-type="post">
+<span class="post-views-icon dashicons dashicons-chart-bar"></span> <span class="post-views-label">Views:</span> <span class="post-views-count">11</span>
+</p>
+<p class="entry-tags">
+<a href="https://msendpointmgr.com/tag/eam/" rel="tag">EAM</a> <a href="https://msendpointmgr.com/tag/graph/" rel="tag">Graph</a> </p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
