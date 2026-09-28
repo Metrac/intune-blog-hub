@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Faster Win32 App Delivery in Intune with Push Notifications</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Call4Cloud (Rudy Ooms)</span>
+    <span class="date">September 27, 2026</span>
+  </div>
+  <h1>Faster Win32 App Delivery in Intune with Push Notifications</h1>
+  <div class="orig">Saved for offline reading · <a href="https://patchmypc.com/blog/faster-win32-app-delivery-in-intune/?utm_term=rss" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="post-content">
+<p class="wp-block-paragraph">You assign a new Win32 app as Required in Intune. The device is online and ready, but the app doesn’t appear immediately. Nothing has necessarily failed. The Intune Management Extension (IME), may simply not have checked for the new assignment yet. Microsoft is addressing that wait time with faster Win32 app delivery. Intune now uses push notifications to prompt devices to check sooner after app changes, reducing the wait without requiring a new admin workflow.</p>
+<p class="wp-block-paragraph">I wanted to see that in action. I assigned a new app as Required, and within a couple of minutes, a push arrived for Win32AppWorkload. When I repeated the test, the capture showed exactly how it arrived: over IC3, with intent 2 selecting the Win32 app workload. The app assignments are still pulled from Intune. The push simply brings that check forward.</p>
+<h2 class="wp-block-heading" id="h-microsoft-has-announced-faster-win32-app-delivery">Microsoft has announced faster Win32 app delivery<span class="clth-copy-icon" data-heading-id="h-microsoft-has-announced-faster-win32-app-delivery"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The <a href="https://learn.microsoft.com/en-us/intune/whats-new/#faster-delivery-of-win32-apps">What’s new announcement</a>, listed under service release 2609 for the week of 28 September 2026, says:</p>
+<p class="wp-block-paragraph"><strong>“Microsoft Intune now uses push notifications for admin-initiated and service-side changes to Win32 apps.”</strong></p>
+<p class="wp-block-paragraph">This gives managed devices a way to check sooner after an app change, without a new admin workflow. It is broader than the separate ESP improvement post. The announcement describes reducing the wait before the device checks again, not installing instantly. It leaves the transport unnamed; the client capture in this article shows IC3.</p>
+<h2 class="wp-block-heading" id="h-why-a-required-app-could-be-left-waiting">Why a required app could be left waiting<span class="clth-copy-icon" data-heading-id="h-why-a-required-app-could-be-left-waiting"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">An app check only sees the assignments available at that moment. An assignment made just afterward needs another check. In the IME 1.106.102.0 build investigated here, the required-app timer defaults to 60 minutes. Other triggers can run sooner, and the service can adjust that interval.</p>
+<figure class="wp-block-image size-full is-resized"><a data-caption="Without an earlier trigger, the IME discovers the changed assignment on its next scheduled app check." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/09/1-3-scaled.png"><picture class="wp-image-195623" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/1-3-scaled.png.webp 2560w, https://patchmypc.com/app/uploads/2026/09/1-3-300x128.png.webp 300w, https://patchmypc.com/app/uploads/2026/09/1-3-1024x437.png.webp 1024w, https://patchmypc.com/app/uploads/2026/09/1-3-768x328.png.webp 768w, https://patchmypc.com/app/uploads/2026/09/1-3-1536x656.png.webp 1536w, https://patchmypc.com/app/uploads/2026/09/1-3-2048x875.png.webp 2048w" sizes="(max-width: 2560px) 100vw, 2560px" type="image/webp"/>
+<img alt="Without an earlier trigger, the IME discovers the changed assignment on its next scheduled app check." data-lazy-sizes="(max-width: 2560px) 100vw, 2560px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/1-3-scaled.png 2560w, https://patchmypc.com/app/uploads/2026/09/1-3-300x128.png 300w, https://patchmypc.com/app/uploads/2026/09/1-3-1024x437.png 1024w, https://patchmypc.com/app/uploads/2026/09/1-3-768x328.png 768w, https://patchmypc.com/app/uploads/2026/09/1-3-1536x656.png 1536w, https://patchmypc.com/app/uploads/2026/09/1-3-2048x875.png 2048w" decoding="async" src="assets/00740484609b8803/img_0.png"/>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-the-ic3-push-tells-the-ime-what-to-check">The IC3 push tells the IME what to check<span class="clth-copy-icon" data-heading-id="h-the-ic3-push-tells-the-ime-what-to-check"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The push arrives through IC3. Its NotificationIntent is 2, which selects <strong>Win32AppWorkload.</strong> It does not deliver the installer. The IME still contacts Intune, retrieves the current assignments, and works out which apps need to be installed.</p>
+<p class="wp-block-paragraph">That is the flow shown below: a required app assignment changes, an IC3 notification reaches the IME, and intent 2 selects the Win32 app check. The notification brings the check forward; it does not replace normal app processing.</p>
+<figure class="wp-block-image size-full is-resized"><a data-caption="The observed required app flow uses IC3 / Trouter. Intent 2 selects Win32AppWorkload before the normal assignment retrieval and app evaluation." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/09/2-3-scaled.png"><picture class="wp-image-195624" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/2-3-scaled.png.webp 2560w, https://patchmypc.com/app/uploads/2026/09/2-3-300x200.png.webp 300w, https://patchmypc.com/app/uploads/2026/09/2-3-1024x683.png.webp 1024w, https://patchmypc.com/app/uploads/2026/09/2-3-768x512.png.webp 768w, https://patchmypc.com/app/uploads/2026/09/2-3-1536x1024.png.webp 1536w, https://patchmypc.com/app/uploads/2026/09/2-3-2048x1365.png.webp 2048w" sizes="(max-width: 2560px) 100vw, 2560px" type="image/webp"/>
+<img alt="The observed required app flow uses IC3 / Trouter. Intent 2 selects Win32AppWorkload before the normal assignment retrieval and app evaluation." data-lazy-sizes="(max-width: 2560px) 100vw, 2560px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/2-3-scaled.png 2560w, https://patchmypc.com/app/uploads/2026/09/2-3-300x200.png 300w, https://patchmypc.com/app/uploads/2026/09/2-3-1024x683.png 1024w, https://patchmypc.com/app/uploads/2026/09/2-3-768x512.png 768w, https://patchmypc.com/app/uploads/2026/09/2-3-1536x1024.png 1536w, https://patchmypc.com/app/uploads/2026/09/2-3-2048x1365.png 2048w" decoding="async" src="assets/00740484609b8803/img_1.png"/>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-the-push-brings-faster-win32-app-delivery">The push brings faster Win32 app delivery<span class="clth-copy-icon" data-heading-id="h-the-push-brings-faster-win32-app-delivery"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">With a scheduled pull, the IME starts the conversation when its app check becomes due. In the tested flow, Intune sends the signal over IC3 first. The IME then asks for the app work that applies now. The assignments are still pulled; the notification changes when that pull starts.</p>
+<p class="wp-block-paragraph">The IME already had notification handlers. The announced improvement connects administrator and service-side Win32 app changes to that more responsive behavior. It does not replace the app engine or remove its scheduled checks.</p>
+<h2 class="wp-block-heading" id="h-background-ic3-and-device-sync">Background: IC3 and Device Sync<span class="clth-copy-icon" data-heading-id="h-background-ic3-and-device-sync"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">In <a href="https://patchmypc.com/blog/ic3-from-wns-to-real-time-device-and-ime-actions/#h-what-that-means-for-win32-apps-and-scripts">the Win32 apps and scripts section of my earlier IC3 article</a>, I pointed to Win32AppWorkload as a practical use for the notification channel: start an app check before the next timer. The repeat test now shows it happening: IC3 delivered intent 2 and the Win32 workload ran. For background, the <a href="https://patchmypc.com/blog/intune-on-demand-device-sync-now-uses-ic3-for-ime-workloads/">later Device Sync capture</a> separately showed IC3 reaching the IME, while WNS still reached Windows MDM.</p>
+<figure class="wp-block-image size-full is-resized"><a data-caption="Background only: the two client paths in the later Device Sync investigation. WNS reaches Windows MDM; IC3 reaches the IME. This is not the required app assignment flow." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/09/3-3-scaled.png"><picture class="wp-image-195625" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/3-3-scaled.png.webp 2560w, https://patchmypc.com/app/uploads/2026/09/3-3-300x206.png.webp 300w, https://patchmypc.com/app/uploads/2026/09/3-3-1024x704.png.webp 1024w, https://patchmypc.com/app/uploads/2026/09/3-3-768x528.png.webp 768w, https://patchmypc.com/app/uploads/2026/09/3-3-1536x1056.png.webp 1536w, https://patchmypc.com/app/uploads/2026/09/3-3-2048x1408.png.webp 2048w" sizes="(max-width: 2560px) 100vw, 2560px" type="image/webp"/>
+<img alt="Background only: the two client paths in the later Device Sync investigation. WNS reaches Windows MDM; IC3 reaches the IME. This is not the required app assignment flow." data-lazy-sizes="(max-width: 2560px) 100vw, 2560px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/3-3-scaled.png 2560w, https://patchmypc.com/app/uploads/2026/09/3-3-300x206.png 300w, https://patchmypc.com/app/uploads/2026/09/3-3-1024x704.png 1024w, https://patchmypc.com/app/uploads/2026/09/3-3-768x528.png 768w, https://patchmypc.com/app/uploads/2026/09/3-3-1536x1056.png 1536w, https://patchmypc.com/app/uploads/2026/09/3-3-2048x1408.png 2048w" decoding="async" src="assets/00740484609b8803/img_2.png"/>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-the-transport-and-the-workload-are-different-parts">The transport and the workload are different parts<span class="clth-copy-icon" data-heading-id="h-the-transport-and-the-workload-are-different-parts"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">As background, the <a href="https://patchmypc.com/blog/inside-the-improved-on-demand-sync-for-windows-devices/">first improved Sync capture</a> used WNS for both clients. In the later capture, the IME request used IC3 and Trouter. The workload selection could remain the same even though the delivery route changed. That comparison is separate from the IC3 app assignment flow tested here.</p>
+<p class="wp-block-paragraph">NotificationIntent selects the primary workload; SyncType can carry the DirectSync context, and AdditionalWorkloads can request other work. A Win32 app notification does not need to be a full Device Sync or also request scripts and remediations.</p>
+<p class="wp-block-paragraph">The original “PushNotification workload thread start” line identified the workload, not the transport. The repeat test supplies that missing detail: IC3 delivery with intent 2. The captures below show the notification arriving and the Win32 workload completing.</p>
+<h2 class="wp-block-heading" id="h-the-assignment-to-app-check-flow">The assignment-to-app-check flow<span class="clth-copy-icon" data-heading-id="h-the-assignment-to-app-check-flow"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The six steps below connect the changed assignment to the normal app engine. IC3 delivers the push at step 2, and intent 2 selects Win32AppWorkload at step 3. The original log and the monitor captures show these stages before the normal app check.</p>
+<figure class="wp-block-image size-full is-resized"><a data-caption="IC3 delivers the push at step 2. The IME reads intent 2, Win32AppWorkload, at step 3 before starting the normal app check." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/09/4-3-scaled.png"><picture class="wp-image-195626" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/4-3-scaled.png.webp 2560w, https://patchmypc.com/app/uploads/2026/09/4-3-300x298.png.webp 300w, https://patchmypc.com/app/uploads/2026/09/4-3-1024x1017.png.webp 1024w, https://patchmypc.com/app/uploads/2026/09/4-3-150x150.png.webp 150w, https://patchmypc.com/app/uploads/2026/09/4-3-768x763.png.webp 768w, https://patchmypc.com/app/uploads/2026/09/4-3-1536x1525.png.webp 1536w, https://patchmypc.com/app/uploads/2026/09/4-3-2048x2034.png.webp 2048w" sizes="(max-width: 2560px) 100vw, 2560px" type="image/webp"/>
+<img alt="IC3 delivers the push at step 2. The IME reads intent 2, Win32AppWorkload, at step 3 before starting the normal app check." data-lazy-sizes="(max-width: 2560px) 100vw, 2560px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/4-3-scaled.png 2560w, https://patchmypc.com/app/uploads/2026/09/4-3-300x298.png 300w, https://patchmypc.com/app/uploads/2026/09/4-3-1024x1017.png 1024w, https://patchmypc.com/app/uploads/2026/09/4-3-150x150.png 150w, https://patchmypc.com/app/uploads/2026/09/4-3-768x763.png 768w, https://patchmypc.com/app/uploads/2026/09/4-3-1536x1525.png 1536w, https://patchmypc.com/app/uploads/2026/09/4-3-2048x2034.png 2048w" decoding="async" src="assets/00740484609b8803/img_3.png"/>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-following-the-notification-into-the-faster-win32-app-delivery">Following the notification into the faster Win32 app delivery<span class="clth-copy-icon" data-heading-id="h-following-the-notification-into-the-faster-win32-app-delivery"><span class="clth-tooltip">Copy Link</span></span></h2>
+<h3 class="wp-block-heading" id="h-step-1-assign-the-win32-app-as-required">Step 1: Assign the Win32 app as Required<span class="clth-copy-icon" data-heading-id="h-step-1-assign-the-win32-app-as-required"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">My test started with a new required-app assignment. That change exists in Intune, but the device still needs to retrieve it. The app-change notification gives the service a way to prompt that check.</p>
+<p class="wp-block-paragraph">This is the assignment-change scenario. The earlier Device Sync investigations started with a different action: an administrator pressing Sync.</p>
+<h3 class="wp-block-heading" id="h-step-2-deliver-the-push-through-ic3">Step 2: Deliver the push through IC3<span class="clth-copy-icon" data-heading-id="h-step-2-deliver-the-push-through-ic3"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">IC3 delivers the notification over the IME’s <a href="https://patchmypc.com/blog/intune-ime-ic3-teams-protocol/">configured Trouter connection</a>. The listener passes its content into the existing device action handling. This is the receiving path captured in the required app retest.</p>
+<p class="wp-block-paragraph">The message identifies the requested workload. It does not need to include the installer, detection rules, or the full assignment. The normal Win32 app process retrieves those afterward.</p>
+<h3 class="wp-block-heading" id="h-step-3-read-intent-2-and-prepare-the-win32-workload">Step 3: Read intent 2 and prepare the Win32 workload<span class="clth-copy-icon" data-heading-id="h-step-3-read-intent-2-and-prepare-the-win32-workload"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">Within a couple of minutes of the assignment, the push reached the IME. At 08:19:45 on 26 September, the log recorded the notification workload thread starting with intent: Win32AppWorkload.</p>
+<figure class="wp-block-image size-full is-resized"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/09/5-2-scaled.png"><picture class="wp-image-195627" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/5-2-scaled.png.webp 2560w, https://patchmypc.com/app/uploads/2026/09/5-2-300x8.png.webp 300w, https://patchmypc.com/app/uploads/2026/09/5-2-1024x26.png.webp 1024w, https://patchmypc.com/app/uploads/2026/09/5-2-768x19.png.webp 768w, https://patchmypc.com/app/uploads/2026/09/5-2-1536x39.png.webp 1536w, https://patchmypc.com/app/uploads/2026/09/5-2-2048x51.png.webp 2048w" sizes="(max-width: 2560px) 100vw, 2560px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 2560px) 100vw, 2560px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/5-2-scaled.png 2560w, https://patchmypc.com/app/uploads/2026/09/5-2-300x8.png 300w, https://patchmypc.com/app/uploads/2026/09/5-2-1024x26.png 1024w, https://patchmypc.com/app/uploads/2026/09/5-2-768x19.png 768w, https://patchmypc.com/app/uploads/2026/09/5-2-1536x39.png 1536w, https://patchmypc.com/app/uploads/2026/09/5-2-2048x51.png 2048w" decoding="async" src="assets/00740484609b8803/img_4.png"/>
+</picture>
+</a></figure>
+<figure class="wp-block-image size-full is-resized"><a data-caption="The required-app test reaches the IME dispatcher. Original screenshot above; the workload intent is enlarged underneath." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/09/6-1.png"><picture class="wp-image-195628" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/6-1.png.webp 1860w, https://patchmypc.com/app/uploads/2026/09/6-1-300x16.png.webp 300w, https://patchmypc.com/app/uploads/2026/09/6-1-1024x56.png.webp 1024w, https://patchmypc.com/app/uploads/2026/09/6-1-768x42.png.webp 768w, https://patchmypc.com/app/uploads/2026/09/6-1-1536x84.png.webp 1536w" sizes="(max-width: 1860px) 100vw, 1860px" type="image/webp"/>
+<img alt="The required-app test reaches the IME dispatcher. Original screenshot above; the workload intent is enlarged underneath." data-lazy-sizes="(max-width: 1860px) 100vw, 1860px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/6-1.png 1860w, https://patchmypc.com/app/uploads/2026/09/6-1-300x16.png 300w, https://patchmypc.com/app/uploads/2026/09/6-1-1024x56.png 1024w, https://patchmypc.com/app/uploads/2026/09/6-1-768x42.png 768w, https://patchmypc.com/app/uploads/2026/09/6-1-1536x84.png 1536w" decoding="async" src="assets/00740484609b8803/img_5.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">That intent is the workload selector. In the notification payload, <a href="https://patchmypc.com/blog/intune-on-demand-device-sync-now-uses-ic3-for-ime-workloads/">NotificationIntent value 2 maps to Win32AppWorkload</a>; this log prints the readable name. The GUID is the notification identifier, not the ID of the newly assigned app.</p>
+<p class="wp-block-paragraph">The screenshot captures the dispatch stage, not an installation result. “A couple of minutes” is the observed assignment-to-notification interval in this test; the screenshot itself records the local dispatch time.</p>
+<p class="wp-block-paragraph">In the IME 1.106.102.0 code path, notification processing checks configuration and throttling, prepares the client context, and refreshes certificate, user-session, and service-location information as needed. Duplicate notification IDs can also be filtered when that capability is enabled.</p>
+<h2 class="wp-block-heading" id="h-ic3-delivers-intent-2-to-the-ime">IC3 delivers intent 2 to the IME<span class="clth-copy-icon" data-heading-id="h-ic3-delivers-intent-2-to-the-ime"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">I repeated the required app test with the live monitor running. At 09:31:14.469, it recorded the incoming IC3 notification, displayed as DirectSync in the monitor, with intent 2. This is a separate capture from the 08:19:45 log above.</p>
+<figure class="wp-block-image size-full is-resized"><a data-caption="The decoded notification selects intent 2, Win32AppWorkload. The notification ID connects this delivery to the workload shown below." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/09/7-1.png"><picture class="wp-image-195629" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/7-1.png.webp 2196w, https://patchmypc.com/app/uploads/2026/09/7-1-300x119.png.webp 300w, https://patchmypc.com/app/uploads/2026/09/7-1-1024x407.png.webp 1024w, https://patchmypc.com/app/uploads/2026/09/7-1-768x305.png.webp 768w, https://patchmypc.com/app/uploads/2026/09/7-1-1536x610.png.webp 1536w, https://patchmypc.com/app/uploads/2026/09/7-1-2048x813.png.webp 2048w" sizes="(max-width: 2196px) 100vw, 2196px" type="image/webp"/>
+<img alt="The decoded notification selects intent 2, Win32AppWorkload. The notification ID connects this delivery to the workload shown below." data-lazy-sizes="(max-width: 2196px) 100vw, 2196px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/7-1.png 2196w, https://patchmypc.com/app/uploads/2026/09/7-1-300x119.png 300w, https://patchmypc.com/app/uploads/2026/09/7-1-1024x407.png 1024w, https://patchmypc.com/app/uploads/2026/09/7-1-768x305.png 768w, https://patchmypc.com/app/uploads/2026/09/7-1-1536x610.png 1536w, https://patchmypc.com/app/uploads/2026/09/7-1-2048x813.png 2048w" decoding="async" src="assets/00740484609b8803/img_6.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">The timeline follows that notification into the IC3 / IME branch. Win32 apps completed, while the Windows MDM and MMP C branches have no recorded activity for this action. This view is about the Win32 workload, not a complete Device Sync.</p>
+<figure class="wp-block-image size-full is-resized"><a href="https://youtu.be/oNx8_dJEub0"><picture class="wp-image-195630" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/8.png.webp 2512w, https://patchmypc.com/app/uploads/2026/09/8-300x145.png.webp 300w, https://patchmypc.com/app/uploads/2026/09/8-1024x493.png.webp 1024w, https://patchmypc.com/app/uploads/2026/09/8-768x370.png.webp 768w, https://patchmypc.com/app/uploads/2026/09/8-1536x740.png.webp 1536w, https://patchmypc.com/app/uploads/2026/09/8-2048x986.png.webp 2048w" sizes="(max-width: 2512px) 100vw, 2512px" type="image/webp"/>
+<img alt="The IC3 / IME branch completes the Win32 workload. The other management branches remain waiting in this capture." data-lazy-sizes="(max-width: 2512px) 100vw, 2512px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/8.png 2512w, https://patchmypc.com/app/uploads/2026/09/8-300x145.png 300w, https://patchmypc.com/app/uploads/2026/09/8-1024x493.png 1024w, https://patchmypc.com/app/uploads/2026/09/8-768x370.png 768w, https://patchmypc.com/app/uploads/2026/09/8-1536x740.png 1536w, https://patchmypc.com/app/uploads/2026/09/8-2048x986.png 2048w" decoding="async" src="assets/00740484609b8803/img_7.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">Please note: The picture above shows the live, uncut view of what happens when you add a new App as required in Intune</p>
+<h2 class="wp-block-heading" id="h-from-the-notification-to-the-faster-win32-app-delivery">From the notification to the faster Win32 app delivery<span class="clth-copy-icon" data-heading-id="h-from-the-notification-to-the-faster-win32-app-delivery"><span class="clth-tooltip">Copy Link</span></span></h2>
+<h3 class="wp-block-heading" id="h-step-4-start-the-win32-app-check-path">Step 4: Start the Win32 app-check path<span class="clth-copy-icon" data-heading-id="h-step-4-start-the-win32-app-check-path"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">With the message checked and the context ready, the Win32 intent can hand over to the normal app-check path. This notification handover does not need to wait for the required-app timer to become due.</p>
+<p class="wp-block-paragraph">To follow that handover in the logs, look for these subsequent entries. They are search markers for the next stage, not additional lines from the screenshot:</p>
+<p class="wp-block-paragraph">[Win32App] Win32AppWorkload will now call Win32AppAsync<br/>Starting app check in</p>
+<p class="wp-block-paragraph">The app-check entry is written before the busy check. If app processing is already running, this attempt can stop; a notification does not guarantee a separate queued run. The normal workload coordination and throttling still apply.</p>
+<h3 class="wp-block-heading" id="h-step-5-retrieve-the-current-app-assignments">Step 5: Retrieve the current app assignments<span class="clth-copy-icon" data-heading-id="h-step-5-retrieve-the-current-app-assignments"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">The app workload contacts Intune for the policies that apply to the relevant user and device. Outside ESP, this primary Win32 notification path reaches the normal required-app request. The notification starts the check; the response tells the app engine what work is available.</p>
+<p class="wp-block-paragraph">This is separate from the <a href="https://patchmypc.com/uncategorized/autopilot-required-apps-no-longer-need-to-wait-60-minutes/">post-ESP app-check improvement</a>. In the examined build, that ESP-completion path has its own 60-second delay and addresses the older available-app/required-app ordering. That fixed delay is not part of this notification handover.</p>
+<h3 class="wp-block-heading" id="h-step-6-evaluate-and-install-eligible-apps">Step 6: Evaluate and install eligible apps<span class="clth-copy-icon" data-heading-id="h-step-6-evaluate-and-install-eligible-apps"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">The IME now follows its usual app processing. Detection can show that an app is already installed. Requirements, dependencies, and deadlines still apply. Required apps that qualify continue through content download, installation, and reporting. The check is not limited to one app named in the notification.</p>
+<p class="wp-block-paragraph">The scheduled route remains available too. Its required-app interval starts with a one-hour default in this build, and app responses can supply a different interval. The notification avoids waiting for that timer; it does not delete the timer or bypass the normal installation rules.</p>
+<figure class="wp-block-image size-full is-resized"><a data-caption="The same IC3 notification completes Win32 processing at 09:32:40.588 with 27 subgraphs. ALLPlayer shows a successful app evaluation, not evidence of 27 app installations." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/09/9.png"><picture class="wp-image-195631" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/9.png.webp 2498w, https://patchmypc.com/app/uploads/2026/09/9-300x130.png.webp 300w, https://patchmypc.com/app/uploads/2026/09/9-1024x445.png.webp 1024w, https://patchmypc.com/app/uploads/2026/09/9-768x334.png.webp 768w, https://patchmypc.com/app/uploads/2026/09/9-1536x668.png.webp 1536w, https://patchmypc.com/app/uploads/2026/09/9-2048x890.png.webp 2048w" sizes="(max-width: 2498px) 100vw, 2498px" type="image/webp"/>
+<img alt="The same IC3 notification completes Win32 processing at 09:32:40.588 with 27 subgraphs. ALLPlayer shows a successful app evaluation, not evidence of 27 app installations." data-lazy-sizes="(max-width: 2498px) 100vw, 2498px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/9.png 2498w, https://patchmypc.com/app/uploads/2026/09/9-300x130.png 300w, https://patchmypc.com/app/uploads/2026/09/9-1024x445.png 1024w, https://patchmypc.com/app/uploads/2026/09/9-768x334.png 768w, https://patchmypc.com/app/uploads/2026/09/9-1536x668.png 1536w, https://patchmypc.com/app/uploads/2026/09/9-2048x890.png 2048w" decoding="async" src="assets/00740484609b8803/img_8.png"/>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-following-the-faster-win32-app-delivery-in-the-device-logs">Following the faster Win32 app delivery in the device logs<span class="clth-copy-icon" data-heading-id="h-following-the-faster-win32-app-delivery-in-the-device-logs"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">A separate IC3 / Trouter capture from 26 September shows the same receiving path reaching the Win32 app check. The timestamps below belong to that additional log example, not to either required app test shown earlier.</p>
+<figure class="wp-block-image size-full is-resized"><a data-caption="A separate IC3 / Trouter log capture follows the message into the Win32 app check. These are local log milestones, not assignment or installation times." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/09/10-scaled.png"><picture class="wp-image-195632" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/10-scaled.png.webp 2560w, https://patchmypc.com/app/uploads/2026/09/10-300x196.png.webp 300w, https://patchmypc.com/app/uploads/2026/09/10-1024x668.png.webp 1024w, https://patchmypc.com/app/uploads/2026/09/10-768x501.png.webp 768w, https://patchmypc.com/app/uploads/2026/09/10-1536x1003.png.webp 1536w, https://patchmypc.com/app/uploads/2026/09/10-2048x1337.png.webp 2048w" sizes="(max-width: 2560px) 100vw, 2560px" type="image/webp"/>
+<img alt="A separate IC3 / Trouter log capture follows the message into the Win32 app check. These are local log milestones, not assignment or installation times." data-lazy-sizes="(max-width: 2560px) 100vw, 2560px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/10-scaled.png 2560w, https://patchmypc.com/app/uploads/2026/09/10-300x196.png 300w, https://patchmypc.com/app/uploads/2026/09/10-1024x668.png 1024w, https://patchmypc.com/app/uploads/2026/09/10-768x501.png 768w, https://patchmypc.com/app/uploads/2026/09/10-1536x1003.png 1536w, https://patchmypc.com/app/uploads/2026/09/10-2048x1337.png 2048w" decoding="async" src="assets/00740484609b8803/img_9.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">This separate IC3 message does not carry the DirectSync marker or additional workload selections. It shows why delivery and workload selection are different parts: IC3 can deliver a Win32 workload request without also requesting scripts and remediations.</p>
+<p class="wp-block-paragraph">Keep the stages separate when reading the logs. A message reaching the dispatcher, an app check being entered, and an app finishing installation are different events. This capture shows the handover to the app check entry point, not an installation result.</p>
+<h2 class="wp-block-heading" id="h-the-ime-still-pulls-it-just-does-not-have-to-wait">The IME still pulls. It just does not have to wait.<span class="clth-copy-icon" data-heading-id="h-the-ime-still-pulls-it-just-does-not-have-to-wait"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The required app test puts the change into a familiar scenario. I assigned an app, and a notification arrived within a couple of minutes. The repeat test adds the missing link: IC3 delivered intent 2, Win32AppWorkload, and the existing app workload ran without waiting for its next scheduled pass.</p>
+<figure class="wp-block-image size-full is-resized"><a data-caption="The IC3 push brings the pull forward. Both the scheduled check and the IC3 triggered check retrieve assignments and use normal app processing" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/09/11-scaled.png"><picture class="wp-image-195633" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/11-scaled.png.webp 2560w, https://patchmypc.com/app/uploads/2026/09/11-300x208.png.webp 300w, https://patchmypc.com/app/uploads/2026/09/11-1024x711.png.webp 1024w, https://patchmypc.com/app/uploads/2026/09/11-768x533.png.webp 768w, https://patchmypc.com/app/uploads/2026/09/11-1536x1067.png.webp 1536w, https://patchmypc.com/app/uploads/2026/09/11-2048x1422.png.webp 2048w" sizes="(max-width: 2560px) 100vw, 2560px" type="image/webp"/>
+<img alt="The IC3 push brings the pull forward. Both the scheduled check and the IC3 triggered check retrieve assignments and use normal app processing" data-lazy-sizes="(max-width: 2560px) 100vw, 2560px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/11-scaled.png 2560w, https://patchmypc.com/app/uploads/2026/09/11-300x208.png 300w, https://patchmypc.com/app/uploads/2026/09/11-1024x711.png 1024w, https://patchmypc.com/app/uploads/2026/09/11-768x533.png 768w, https://patchmypc.com/app/uploads/2026/09/11-1536x1067.png 1536w, https://patchmypc.com/app/uploads/2026/09/11-2048x1422.png 2048w" decoding="async" src="assets/00740484609b8803/img_10.png"/>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-less-waiting-before-the-faster-win32-app-delivery-begins">Less waiting before the faster Win32 app delivery begins<span class="clth-copy-icon" data-heading-id="h-less-waiting-before-the-faster-win32-app-delivery-begins"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The benefit is not a different installer or a shortcut around app requirements. It is less waiting before the IME asks Intune what changed. That can make a newly required app feel much more responsive, while leaving the familiar detection, download, installation, and reporting stages in place.</p>
+<p class="wp-block-paragraph">Connectivity, workload activity, requirements, deadlines, and installer results still affect delivery. The few-minute interval in this test is an observation, not a promised installation time for every device or assignment.</p>
+<p class="wp-block-paragraph">Microsoft <a href="https://learn.microsoft.com/en-us/intune/fundamentals/servicing-information">rolls out Intune changes in phases</a>, so validate the behavior in your environment. The useful change is simple: a new app assignment no longer has to rely only on the next scheduled check. <strong>The push brings the pull forward.</strong></p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Copilot Chat vs Cowork vs Autopilot: What to Use When</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">September 28, 2026</span>
+  </div>
+  <h1>Copilot Chat vs Cowork vs Autopilot: What to Use When</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/copilot-chat-vs-cowork-vs-autopilot/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p class="wp-block-paragraph">You need to prepare Friday’s service review. Do you want help understanding the numbers, a finished review pack, or someone to keep following up during the week?</p>
+<p class="wp-block-paragraph">That is how I would approach <strong>Copilot Chat vs Cowork vs Autopilot</strong>. Start with the responsibility you want to hand over. The product name comes second.</p>
+<p class="wp-block-paragraph">In this guide, I compare the three options using the same practical example. I also cover licenses, consumption costs and the controls to check before a rollout.</p>
+<p class="wp-block-paragraph"><strong>Status checked: 27 September 2026.</strong> This article covers commercial Microsoft 365. Autopilot is the new name for Scout and remains in private preview. Its section is based on Microsoft’s announcement, not a claim that I have tested it in my tenant. <a href="https://blogs.microsoft.com/blog/2026/09/25/introducing-the-new-copilot-with-home-code-and-autopilot/" rel="noopener" target="_blank">Microsoft’s announcement</a></p>
+<p class="wp-block-paragraph">This comparison is about <strong>three ways of working inside Microsoft 365 Copilot</strong>: asking, delegating a task and ongoing follow-up. If your question is whether to use a ready-made experience or build a reusable business agent, start with my <a href="https://jannikreinhard.com/copilot-vs-cowork-vs-agents/">Copilot, Copilot Studio and custom agents guide</a>.</p>
+<p><span id="more-20825"></span>
+</p>
+<h2 class="wp-block-heading" id="copilot-chat-vs-cowork-vs-autopilot-the-short-answer">Copilot Chat vs Cowork vs Autopilot: the short answer<a aria-hidden="true" class="jr-anchor" href="#copilot-chat-vs-cowork-vs-autopilot-the-short-answer" tabindex="-1">#</a></h2>
+<p class="wp-block-paragraph">My starting point is simple: ask for an answer, delegate a deliverable, or assign an ongoing responsibility.</p>
+<figure class="wp-block-table"><table>
+<thead>
+<tr>
+<th>Option</th>
+<th>My starting use case</th>
+<th>Check first</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Copilot Chat</strong></td>
+<td>Understanding information, discussing options and improving a draft while I steer the work</td>
+<td>Available grounding, license and whether an agent or tool introduces an extra charge</td>
+</tr>
+<tr>
+<td><strong>Copilot Cowork</strong></td>
+<td>A multi-step assignment with an outcome I can review, such as a meeting pack and follow-up drafts</td>
+<td>Spending policy, connected tools, action approvals and the definition of done</td>
+</tr>
+<tr>
+<td><strong>Copilot Autopilot</strong></td>
+<td>Ongoing work that needs continuity and follow-up between my interactions</td>
+<td>Private-preview access, agent identity, scope, escalation rules and how to stop it</td>
+</tr>
+</tbody>
+</table></figure>
+<p class="wp-block-paragraph">These are useful starting points, not hard capability boundaries. Chat can use agents. Cowork can run scheduled and event-driven tasks. Autopilot is not simply the first option with a timer. <a href="https://learn.microsoft.com/en-us/copilot/overview" rel="noopener" target="_blank">Copilot overview</a>, <a href="https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/" rel="noopener" target="_blank">Cowork capabilities</a></p>
+<figure class="wp-block-image"><img alt="Copilot Chat vs Cowork vs Autopilot decision guide: answer, deliverable or ongoing responsibility" data-recalc-dims="1" decoding="async" src="assets/74d93cfa960b5323/img_0.jpg"/></figure>
+<p class="wp-block-paragraph"><em>Choose the smallest scope that can complete the job. This diagram is my decision framework, not a Microsoft product screen.</em></p>
+<h3 class="wp-block-heading" id="copilot-chat-keep-the-conversation-close-to-the-work">Copilot Chat: keep the conversation close to the work<a aria-hidden="true" class="jr-anchor" href="#copilot-chat-keep-the-conversation-close-to-the-work" tabindex="-1">#</a></h3>
+<p class="wp-block-paragraph">Chat is where I would start when I am still deciding what matters. I can ask questions, challenge an interpretation and refine an answer before moving on.</p>
+<p class="wp-block-paragraph">There is an important licensing distinction. Eligible Microsoft 365 users receive Copilot Chat without an additional Copilot seat. The paid Microsoft 365 Copilot license adds broader work grounding through Work IQ. Basic Chat is not accurately described as “web only”: uploaded information and supported application context can also matter. Outlook has additional contextual capabilities. <a href="https://learn.microsoft.com/en-us/copilot/overview" rel="noopener" target="_blank">Microsoft’s Copilot overview</a></p>
+<p class="wp-block-paragraph">The useful question is: “Which work information can this user access here?” Having a Chat icon does not answer that.</p>
+<h3 class="wp-block-heading" id="cowork-delegate-a-result-then-review-it">Cowork: delegate a result, then review it<a aria-hidden="true" class="jr-anchor" href="#cowork-delegate-a-result-then-review-it" tabindex="-1">#</a></h3>
+<p class="wp-block-paragraph">Cowork is generally available for commercial work and school accounts. It is designed to work through multiple steps rather than stop at a conversational answer. Microsoft documents tasks involving documents, files, meetings, email and Teams. It also supports scheduled prompts and event-driven work. <a href="https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/" rel="noopener" target="_blank">Cowork documentation</a></p>
+<p class="wp-block-paragraph">The expected output needs to be explicit. “Help with the review” is vague. “Create a three-page review pack, identify missing evidence and draft the follow-up email without sending it” gives me something I can assess.</p>
+<p class="wp-block-paragraph">Completion should mean more than the agent saying it has finished. I want the right file, the right audience and a clear list of unresolved questions.</p>
+<h2 class="wp-block-heading" id="is-scout-gone-what-changed-with-autopilot">Is Scout gone? What changed with Autopilot<a aria-hidden="true" class="jr-anchor" href="#is-scout-gone-what-changed-with-autopilot" tabindex="-1">#</a></h2>
+<p class="wp-block-paragraph">Microsoft renamed Scout to <strong>Autopilot</strong> in its 25 September announcement. The earlier Scout announcement now points readers to the new name. <a href="https://www.microsoft.com/en-us/copilot/blog/2026/06/02/introducing-microsoft-scout-your-always-on-personal-agent/" rel="noopener" target="_blank">Microsoft’s Scout update</a></p>
+<p class="wp-block-paragraph">The new positioning is a persistent, cloud-hosted personal agent with its own identity, memory and workspace. It can continue work while the user is away. Microsoft describes continuity across projects and follow-up through channels such as Teams and Outlook. <span class="jr-inline-emphasis">Access remains private preview; the announcement does not mean every tenant can enable it today.</span> <a href="https://blogs.microsoft.com/blog/2026/09/25/introducing-the-new-copilot-with-home-code-and-autopilot/" rel="noopener" target="_blank">Introducing the new Copilot</a></p>
+<figure class="wp-block-image"><img alt="Microsoft official preview image showing Copilot Autopilot and its work overview" data-recalc-dims="1" decoding="async" src="assets/74d93cfa960b5323/img_1.jpg"/></figure>
+<p class="wp-block-paragraph"><em>Product image: Microsoft, 25 September 2026 announcement. This is an official preview image, not a screenshot from my environment.</em></p>
+<p class="wp-block-paragraph">For me, the interesting distinction is continuity. A completed document ends one assignment. A responsibility such as “keep this review ready every week and tell me when something needs attention” continues after that document exists.</p>
+<p class="wp-block-paragraph">That raises a different set of questions. Who owns the responsibility next month? What happens when a source changes? When should the agent wait instead of continuing?</p>
+<p class="wp-block-paragraph"><span class="jr-inline-emphasis">Note:</span> This is not Windows Autopilot for device provisioning. I would also avoid building a deployment checklist from older Scout articles without checking whether they describe the current cloud preview.</p>
+<h2 class="wp-block-heading" id="one-service-review-example-three-different-jobs">One service-review example, three different jobs<a aria-hidden="true" class="jr-anchor" href="#one-service-review-example-three-different-jobs" tabindex="-1">#</a></h2>
+<p class="wp-block-paragraph">The following is an illustrative workflow, not a customer case or a benchmark. Imagine a team reviewing support trends, open actions and upcoming changes every Friday.</p>
+<h3 class="wp-block-heading" id="1-use-chat-to-understand-the-evidence">1. Use Chat to understand the evidence<a aria-hidden="true" class="jr-anchor" href="#1-use-chat-to-understand-the-evidence" tabindex="-1">#</a></h3>
+<p class="wp-block-paragraph">I would start with a bounded request:</p>
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p>Compare these two weekly support exports. Identify the three largest changes and show which rows support each finding. Separate observations from possible explanations. Do not invent a cause when the data does not establish one.</p>
+</blockquote>
+<p class="wp-block-paragraph">The useful result is an explanation I can challenge. Did a category grow, or did the team rename it? Are we comparing the same number of working days? Were duplicate tickets removed?</p>
+<p class="wp-block-paragraph">I would not delegate a larger workflow until those questions are clear. An automated review pack is not useful if its starting assumptions are wrong.</p>
+<h3 class="wp-block-heading" id="2-use-cowork-to-prepare-the-deliverable">2. Use Cowork to prepare the deliverable<a aria-hidden="true" class="jr-anchor" href="#2-use-cowork-to-prepare-the-deliverable" tabindex="-1">#</a></h3>
+<p class="wp-block-paragraph">Once the inputs and output are clear, the assignment becomes more suitable for delegation:</p>
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p>Prepare Friday’s service-review pack using the approved exports and action log. Include an executive summary, unresolved actions and a list of missing information. Save the pack in the review folder. Draft a follow-up email, but do not send it or change action owners.</p>
+</blockquote>
+<p class="wp-block-paragraph">Before accepting the pack, check source links, dates, owners and totals. If one input is missing, the correct result is a visible gap, not a confident replacement.</p>
+<p class="wp-block-paragraph">A scheduled Cowork task could also suit a predictable weekly pack. I would not move to Autopilot just because the assignment repeats.</p>
+<h3 class="wp-block-heading" id="3-consider-autopilot-for-continuing-follow-up">3. Consider Autopilot for continuing follow-up<a aria-hidden="true" class="jr-anchor" href="#3-consider-autopilot-for-continuing-follow-up" tabindex="-1">#</a></h3>
+<p class="wp-block-paragraph">What if the job includes watching for updates between reviews? That is where I would evaluate the private preview against a narrow responsibility:</p>
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p>Keep the service-review action list current from the approved project sources. Flag overdue actions and conflicting information. Prepare proposed updates for review. Ask before contacting anyone outside the project group or changing an agreed deadline.</p>
+</blockquote>
+<p class="wp-block-paragraph">This is a proposed evaluation scenario, not a promise that every integration or action is available in the preview.</p>
+<p class="wp-block-paragraph">The test is no longer just whether Friday’s pack is good. Include Monday’s follow-up, an absent owner, a revoked permission and a conflicting update. Can I understand what changed and why?</p>
+<h2 class="wp-block-heading" id="licenses-copilot-credits-and-what-actually-costs-money">Licenses, Copilot Credits and what actually costs money<a aria-hidden="true" class="jr-anchor" href="#licenses-copilot-credits-and-what-actually-costs-money" tabindex="-1">#</a></h2>
+<p class="wp-block-paragraph">A user license and a consumption budget answer different questions. The license enables an experience. Metering charges for supported usage within it. One does not automatically remove the other.</p>
+<figure class="wp-block-table"><table>
+<thead>
+<tr>
+<th>Cost layer</th>
+<th>What it means for this comparison</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="jr-inline-emphasis">Eligible Microsoft 365 subscription</span></td>
+<td>Can include Copilot Chat without an additional Copilot license; this is not unlimited access to every agent or service</td>
+</tr>
+<tr>
+<td><span class="jr-inline-emphasis">Microsoft 365 Copilot user license</span></td>
+<td>The US enterprise reference price is <span class="jr-inline-emphasis">$30 per user/month, paid yearly</span>; a qualifying Microsoft 365 base plan is separate</td>
+</tr>
+<tr>
+<td><span class="jr-inline-emphasis">Copilot Credits</span></td>
+<td>A consumption unit for supported services, with pay-as-you-go and commitment options</td>
+</tr>
+<tr>
+<td><span class="jr-inline-emphasis">Preview access and rollout</span></td>
+<td>A billing description does not guarantee that Autopilot is available in your tenant</td>
+</tr>
+</tbody>
+</table></figure>
+<p class="wp-block-paragraph">The $30 figure is a dated US enterprise list reference, not a German quote or the price of every Business offer. Region, taxes, contract and promotions can change your actual price. <a href="https://www.microsoft.com/en-us/copilot/pricing/enterprise" rel="noopener" target="_blank">Microsoft enterprise pricing</a></p>
+<p class="wp-block-paragraph">Microsoft describes Cowork as requiring a Microsoft 365 Copilot license plus usage-based billing. Its consumption depends on the models used, context processed, tool calls and runtime. A longer task can therefore cost more than a short one, even if both started with one prompt. <a href="https://www.microsoft.com/en-us/copilot/blog/2026/06/16/copilot-cowork-is-now-generally-available/" rel="noopener" target="_blank">Cowork availability and pricing explanation</a></p>
+<p class="wp-block-paragraph">Microsoft’s published pay-as-you-go rate is <span class="jr-inline-emphasis">$0.01 per Copilot Credit</span>. That converts credits into money; it does not tell you how many credits your task will use. Prepurchase options have separate commitment and expiry conditions. <a href="https://www.microsoft.com/licensing/guidance/Copilot-Credits" rel="noopener" target="_blank">Copilot Credits licensing guidance</a></p>
+<p class="wp-block-paragraph">The updated billing guidance also places advanced experiences such as Code and Autopilot in the usage-based model alongside the user subscription. For Autopilot, I would confirm the actual preview terms and controls before budgeting a rollout. I would not invent a fixed “Autopilot price per user.” <a href="https://learn.microsoft.com/en-us/microsoft-365/copilot/user-subscription-license-usage-based-billing" rel="noopener" target="_blank">User subscription and usage-based billing</a></p>
+<h3 class="wp-block-heading" id="check-the-agents-execution-path-not-only-its-name">Check the agent’s execution path, not only its name<a aria-hidden="true" class="jr-anchor" href="#check-the-agents-execution-path-not-only-its-name" tabindex="-1">#</a></h3>
+<p class="wp-block-paragraph">“Agents are included” is too broad to be a budget rule. Microsoft’s Copilot Credits guidance distinguishes the standard Copilot Chat/Studio execution path from the newer GitHub Copilot-based path. Included usage has conditions. <a href="https://www.microsoft.com/licensing/guidance/Copilot-Credits" rel="noopener" target="_blank">Licensing guidance</a></p>
+<p class="wp-block-paragraph">For example, the new Copilot Studio experience documents credit consumption during building, testing and evaluation as well as execution. A maker’s experimentation can be part of the bill. <a href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/billing-credit-overview" rel="noopener" target="_blank">Copilot Studio billing overview</a></p>
+<p class="wp-block-paragraph">For custom agent architecture and the wider Studio comparison, I cover more in <a href="https://jannikreinhard.com/copilot-vs-cowork-vs-agents/">Copilot vs Cowork vs Agents: Licenses, Costs and Governance</a>.</p>
+<h2 class="wp-block-heading" id="governance-what-i-would-check-before-enabling-more-autonomy">Governance: what I would check before enabling more autonomy<a aria-hidden="true" class="jr-anchor" href="#governance-what-i-would-check-before-enabling-more-autonomy" tabindex="-1">#</a></h2>
+<p class="wp-block-paragraph">I would use the same six questions across the comparison, then verify the actual controls for each experience. A familiar Copilot label is not evidence that every control behaves identically.</p>
+<figure class="wp-block-image"><img alt="Governance checklist for delegated AI work: owner, scope, approval, cost, evidence and stop" data-recalc-dims="1" decoding="async" src="assets/74d93cfa960b5323/img_2.jpg"/></figure>
+<p class="wp-block-paragraph"><em>My rollout checklist. Product support and policy behavior must be verified for the specific experience.</em></p>
+<h3 class="wp-block-heading" id="1-whose-identity-performs-the-work">1. Whose identity performs the work?<a aria-hidden="true" class="jr-anchor" href="#1-whose-identity-performs-the-work" tabindex="-1">#</a></h3>
+<p class="wp-block-paragraph">Record the user or agent identity, the resources it can reach and who owns the assignment. Then test a real permission change. A screenshot of a configured policy is less useful than evidence that access actually stops when expected.</p>
+<p class="wp-block-paragraph">For ongoing work, define what happens when the owner changes roles or leaves the project.</p>
+<h3 class="wp-block-heading" id="2-which-actions-require-approval">2. Which actions require approval?<a aria-hidden="true" class="jr-anchor" href="#2-which-actions-require-approval" tabindex="-1">#</a></h3>
+<p class="wp-block-paragraph">Reading an action log is different from sending a customer email or changing a deadline. Write those boundaries down before testing.</p>
+<p class="wp-block-paragraph">Cowork’s governance documentation describes automated tasks running with the creator’s permissions. Important actions have approval behavior, with pre-authorization available in supported scenarios. Do not assume that “human approval” means every action always pauses. <a href="https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-admin-governance" rel="noopener" target="_blank">Cowork governance</a></p>
+<h3 class="wp-block-heading" id="3-which-data-and-execution-paths-are-involved">3. Which data and execution paths are involved?<a aria-hidden="true" class="jr-anchor" href="#3-which-data-and-execution-paths-are-involved" tabindex="-1">#</a></h3>
+<p class="wp-block-paragraph">Check approved sources, connectors, model availability and data-processing requirements for the exact workload. If browser actions are involved, include endpoint policies in the review: Cowork documents browser use through Edge on the user’s device. <a href="https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-admin-governance" rel="noopener" target="_blank">Cowork governance</a></p>
+<p class="wp-block-paragraph">One useful test is a document containing an instruction the agent must not follow. Content found in a file must not become permission to send information somewhere else.</p>
+<h3 class="wp-block-heading" id="4-who-can-spend-and-under-which-policy">4. Who can spend, and under which policy?<a aria-hidden="true" class="jr-anchor" href="#4-who-can-spend-and-under-which-policy" tabindex="-1">#</a></h3>
+<p class="wp-block-paragraph">Spending policies deserve the same care as access policies. Microsoft’s documentation warns that additional policies have independent limits. Overlapping assignments can select the highest per-user limit, not the most restrictive one. Check group membership and effective policy before a pilot. <a href="https://learn.microsoft.com/en-us/microsoft-365/copilot/usage-based-billing-manage-copilot-credits" rel="noopener" target="_blank">Manage Copilot Credits</a></p>
+<p class="wp-block-paragraph">Also review the <span class="jr-inline-emphasis">Auto-apply new services</span> setting, which Microsoft documents as enabled by default. Decide whether future services should inherit a policy automatically. <a href="https://learn.microsoft.com/en-us/microsoft-365/copilot/usage-based-billing-overview-copilot-credits" rel="noopener" target="_blank">Copilot Credits overview</a></p>
+<h3 class="wp-block-heading" id="5-can-i-reconstruct-what-happened">5. Can I reconstruct what happened?<a aria-hidden="true" class="jr-anchor" href="#5-can-i-reconstruct-what-happened" tabindex="-1">#</a></h3>
+<p class="wp-block-paragraph">My acceptance criteria would include source references, resulting files, approvals and enough activity detail to explain a mistake. Test the audit coverage in the tenant; do not assume the same evidence exists for every feature.</p>
+<p class="wp-block-paragraph">Keep business output and operational evidence separate. The service-review pack should be readable; it should not become a dump of internal traces.</p>
+<h3 class="wp-block-heading" id="6-can-i-stop-it-cleanly">6. Can I stop it cleanly?<a aria-hidden="true" class="jr-anchor" href="#6-can-i-stop-it-cleanly" tabindex="-1">#</a></h3>
+<p class="wp-block-paragraph">Test pause, cancellation, permission revocation and ownership changes. For recurring work, confirm what happens to the next run. For a running task, confirm what has already happened and what can still be prevented.</p>
+<p class="wp-block-paragraph">Do not use a tiny spending limit as your access-control strategy. Cowork’s documentation treats spending-policy assignment as an access gate; model restrictions and service access are separate concerns. <a href="https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-admin-governance" rel="noopener" target="_blank">Cowork governance</a></p>
+<h2 class="wp-block-heading" id="how-i-would-choose-and-run-a-useful-pilot">How I would choose and run a useful pilot<a aria-hidden="true" class="jr-anchor" href="#how-i-would-choose-and-run-a-useful-pilot" tabindex="-1">#</a></h2>
+<p class="wp-block-paragraph">My recommendation is to start with the least delegation the workflow needs:</p>
+<ul class="wp-block-list">
+<li><span class="jr-inline-emphasis">Choose Chat</span> while a person is exploring the problem and evaluating each next step.</li>
+<li><span class="jr-inline-emphasis">Choose Cowork</span> when the deliverable and acceptance criteria are clear. Include scheduled Cowork in that evaluation when the task repeats.</li>
+<li><span class="jr-inline-emphasis">Evaluate Autopilot</span> when continuity between interactions is the actual requirement, and private-preview access is appropriate for the intended data and risk.</li>
+<li><span class="jr-inline-emphasis">Evaluate Copilot Studio or another custom agent approach</span> when you need a reusable organizational process with its own development and release lifecycle.</li>
+</ul>
+<p class="wp-block-paragraph">I would run a small pilot with the same approved inputs and compare outcomes, not just impressive-looking responses. Record review time, correction effort, observed credits and whether the result was accepted.</p>
+<p class="wp-block-paragraph">My minimum test set would include a normal task, a missing source, conflicting information, a permission failure and an action that needs approval. An agent that stops and explains the problem can be more useful than one that completes the wrong task quickly.</p>
+<p class="wp-block-paragraph">The metric I care about is <span class="jr-inline-emphasis">cost per accepted outcome</span>, including human review. A cheap run that needs thirty minutes of repair is not automatically the cheaper way to finish the work. That is a measurement to make in your workflow, not a benchmark result I am claiming here.</p>
+<h2 class="wp-block-heading" id="frequently-asked-questions">Frequently asked questions<a aria-hidden="true" class="jr-anchor" href="#frequently-asked-questions" tabindex="-1">#</a></h2>
+<h3 class="wp-block-heading" id="does-autopilot-replace-copilot-chat-or-cowork">Does Autopilot replace Copilot Chat or Cowork?<a aria-hidden="true" class="jr-anchor" href="#does-autopilot-replace-copilot-chat-or-cowork" tabindex="-1">#</a></h3>
+<p class="wp-block-paragraph">Microsoft presents them as complementary experiences. I would choose by responsibility: help me think, complete this assignment, or keep this area moving. More autonomy is not automatically the right choice. <a href="https://blogs.microsoft.com/blog/2026/09/25/introducing-the-new-copilot-with-home-code-and-autopilot/" rel="noopener" target="_blank">Microsoft’s announcement</a></p>
+<h3 class="wp-block-heading" id="can-cowork-run-without-me-starting-every-task-manually">Can Cowork run without me starting every task manually?<a aria-hidden="true" class="jr-anchor" href="#can-cowork-run-without-me-starting-every-task-manually" tabindex="-1">#</a></h3>
+<p class="wp-block-paragraph">Yes. Microsoft documents scheduled prompts and event-driven tasks. Recurrence alone is therefore not a reason to select Autopilot. <a href="https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/" rel="noopener" target="_blank">Cowork documentation</a></p>
+<h3 class="wp-block-heading" id="can-i-enable-autopilot-in-any-microsoft-365-tenant-today">Can I enable Autopilot in any Microsoft 365 tenant today?<a aria-hidden="true" class="jr-anchor" href="#can-i-enable-autopilot-in-any-microsoft-365-tenant-today" tabindex="-1">#</a></h3>
+<p class="wp-block-paragraph">No. As of 27 September 2026, it is in private preview. Treat access, functionality and rollout timing as items to confirm, not assumptions in a production plan. <a href="https://blogs.microsoft.com/blog/2026/09/25/introducing-the-new-copilot-with-home-code-and-autopilot/" rel="noopener" target="_blank">Autopilot announcement</a></p>
+<h3 class="wp-block-heading" id="is-a-copilot-license-enough-to-cover-every-task">Is a Copilot license enough to cover every task?<a aria-hidden="true" class="jr-anchor" href="#is-a-copilot-license-enough-to-cover-every-task" tabindex="-1">#</a></h3>
+<p class="wp-block-paragraph">No. Check the user subscription, the service’s metering rules and any configured Copilot Credits policy. A license entitlement and a consumption allowance are different things. <a href="https://www.microsoft.com/licensing/guidance/Copilot-Credits" rel="noopener" target="_blank">Copilot licensing guidance</a></p>
+<p class="wp-block-paragraph">My conclusion: start with a clear job and a clear boundary. I would rather delegate one well-defined responsibility safely than enable every new experience without knowing who owns the result.</p>
+<p class="wp-block-paragraph">Which part of your work would benefit most: understanding the information, preparing the deliverable, or keeping the follow-up moving?</p>
+<p class="wp-block-paragraph">Stay healthy, Cheers Jannik</p>
+<div class="jr-nl jr-nl--article"><div class="jr-nl__copy"><p><span class="jr-nl__kicker">Newsletter</span></p><p class="jr-nl__title">New posts, straight to your inbox.</p><p class="jr-nl__promise">Hands-on guides on Intune, AI and Azure.</p></div><div class="jr-nl__form">
+<p aria-live="polite" class="jr-nl__msg" role="status"></p><p class="jr-nl__trust">190+ guides · 5x Microsoft MVP · No spam, unsubscribe anytime · <a href="https://jannikreinhard.com/datenschutz/">Privacy</a></p></div></div> </div>
+</div></div>
+</article>
+</body>
+</html>
