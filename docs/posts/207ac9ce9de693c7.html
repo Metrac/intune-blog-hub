@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Autopilot Device Preparation BitLocker 256 Bit Issue: The 128 Bit Race Is Finally Fixed</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Call4Cloud (Rudy Ooms)</span>
+    <span class="date">September 28, 2026</span>
+  </div>
+  <h1>Autopilot Device Preparation BitLocker 256 Bit Issue: The 128 Bit Race Is Finally Fixed</h1>
+  <div class="orig">Saved for offline reading · <a href="https://patchmypc.com/blog/autopilot-device-preparation-bitlocker-256-bit-issue/?utm_term=rss" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="post-content">
+<p class="wp-block-paragraph">For a long time, <strong><a href="https://patchmypc.com/blog/autopilot-device-preparation-vs-device-association-vs-autopilot/">Autopilot Device Preparation</a></strong> could start BitLocker too early, causing a device configured for XTS AES 256 to begin encrypting with the default XTS AES 128 instead. Microsoft has now changed that timing: BitLocker is held back during Device Preparation and only starts once the configured policy is ready, allowing the drive to begin directly with XTS AES 256.</p>
+<p class="wp-block-paragraph">For a long time, Autopilot Device Preparation could let BitLocker start too early, so a device configured for XTS AES 256 could begin encrypting with the default XTS AES 128 instead. Microsoft has now changed that timing: BitLocker stays deferred during Device Preparation and starts only after the configured policy is ready, allowing the drive to begin directly with XTS AES 256.</p>
+<h2 class="wp-block-heading" id="h-the-bitlocker-256-bit-race-that-stayed-on-the-known-issues-list">The BitLocker 256 bit race that stayed on the known issues list<span class="clth-copy-icon" data-heading-id="h-the-bitlocker-256-bit-race-that-stayed-on-the-known-issues-list"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">For more than two years, one<strong><a href="https://patchmypc.com/blog/autopilot-device-preparation-vs-device-association-vs-autopilot/"> Autopilot Device Preparation</a></strong> problem kept hanging around: you could configure the XTS AES 256 BitLocker encryption in Intune and still end up with a newly provisioned Windows device encrypting its operating system drive with XTS AES 128.</p>
+<p class="wp-block-paragraph">Microsoft added this problem to the Windows Autopilot Device Preparation known issues page on July 8, 2024. The description was simple: some AP DP deployments could fall back to 128-bit even when the administrator configured 256-bit because of a race condition. That entry stayed there until September 14, 2026, when Microsoft updated it and marked the issue as resolved.</p>
+<p class="wp-block-paragraph">That history is visible on <a href="https://learn.microsoft.com/en-us/autopilot/device-preparation/known-issues">Microsoft’s AP DP known issues page</a>.</p>
+<figure class="wp-block-image size-full is-resized"><a data-caption="The known bitlocker encryption issue with ap-dp was added in July 2024 and marked resolved in September 2026." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/09/1-4.png"><picture class="wp-image-195705" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/1-4.png.webp 1600w, https://patchmypc.com/app/uploads/2026/09/1-4-300x113.png.webp 300w, https://patchmypc.com/app/uploads/2026/09/1-4-1024x384.png.webp 1024w, https://patchmypc.com/app/uploads/2026/09/1-4-768x288.png.webp 768w, https://patchmypc.com/app/uploads/2026/09/1-4-1536x576.png.webp 1536w" sizes="(max-width: 1600px) 100vw, 1600px" type="image/webp"/>
+<img alt="The known bitlocker encryption issue with ap-dp was added in July 2024 and marked resolved in September 2026." data-lazy-sizes="(max-width: 1600px) 100vw, 1600px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/1-4.png 1600w, https://patchmypc.com/app/uploads/2026/09/1-4-300x113.png 300w, https://patchmypc.com/app/uploads/2026/09/1-4-1024x384.png 1024w, https://patchmypc.com/app/uploads/2026/09/1-4-768x288.png 768w, https://patchmypc.com/app/uploads/2026/09/1-4-1536x576.png 1536w" decoding="async" src="assets/207ac9ce9de693c7/img_0.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">That is a big change from the original version of this article. Back in 2025 there was no supported fix to point at. The only useful way to understand the problem was to reproduce it, inspect the timing, and test what happened when encryption was delayed. Now Microsoft has documented the intended behavior, so this rewrite can focus on the supported flow instead of hidden feature IDs, internal function names, or modified OOBE files.</p>
+<h2 class="wp-block-heading" id="h-why-bitlocker-256-bit-could-lose-even-when-the-policy-was-correct">Why Bitlocker 256 bit could lose even when the policy was correct<span class="clth-copy-icon" data-heading-id="h-why-bitlocker-256-bit-could-lose-even-when-the-policy-was-correct"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The problem was not that Intune could not configure XTS AES 256. The problem was “when” the setting arrived.</p>
+<p class="wp-block-paragraph">Windows supports automatic BitLocker encryption during OOBE. Microsoft documents XTS AES 128 as the default method for automatic encryption. It also documents an important rule: BitLocker uses the configured encryption algorithm when BitLocker is first enabled. If a different policy arrives after automatic encryption has already started, the drive has to be decrypted before the algorithm can be changed. <a href="https://learn.microsoft.com/en-us/autopilot/bitlocker">Microsoft explains that behavior here</a>.</p>
+<p class="wp-block-paragraph">That rule turns a small timing difference into a real deployment problem. If automatic encryption wins the race, XTS AES 128 is already in motion. Intune can deliver XTS AES 256 seconds later, and the policy itself can be completely valid, but it cannot switch the active encryption run from 128 to 256 halfway through.</p>
+<figure class="wp-block-image size-full is-resized"><a data-caption="The original race: automatic encryption could choose XTS AES 128 before the configured 256 bit policy arrived." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/09/2-4.png"><picture class="wp-image-195706" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/2-4.png.webp 1513w, https://patchmypc.com/app/uploads/2026/09/2-4-300x206.png.webp 300w, https://patchmypc.com/app/uploads/2026/09/2-4-1024x703.png.webp 1024w, https://patchmypc.com/app/uploads/2026/09/2-4-768x527.png.webp 768w" sizes="(max-width: 1513px) 100vw, 1513px" type="image/webp"/>
+<img alt="The original race: automatic encryption could choose XTS AES 128 before the configured 256 bit policy arrived." data-lazy-sizes="(max-width: 1513px) 100vw, 1513px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/2-4.png 1513w, https://patchmypc.com/app/uploads/2026/09/2-4-300x206.png 300w, https://patchmypc.com/app/uploads/2026/09/2-4-1024x703.png 1024w, https://patchmypc.com/app/uploads/2026/09/2-4-768x527.png 768w" decoding="async" src="assets/207ac9ce9de693c7/img_1.png"/>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-why-the-old-bitlocker-256-bit-workaround-was-so-ugly">Why the old Bitlocker 256 bit workaround was so ugly<span class="clth-copy-icon" data-heading-id="h-why-the-old-bitlocker-256-bit-workaround-was-so-ugly"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Once the drive had started with XTS AES 128, there was no clean in-place change to XTS AES 256. The practical workaround was to decrypt the operating system drive and then start BitLocker again with the required method. That eventually produced the right result, but it meant encrypting a new device twice simply because the first encryption decision happened too early.</p>
+<p class="wp-block-paragraph">For environments that required 256-bit encryption for compliance or security policy, this was not just cosmetic. A freshly provisioned device could finish setup in a state that did not match the policy you had intentionally configured.</p>
+<h2 class="wp-block-heading" id="h-microsoft-now-says-the-race-is-resolved">Microsoft now says the race is resolved<span class="clth-copy-icon" data-heading-id="h-microsoft-now-says-the-race-is-resolved"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">On September 14, 2026, Microsoft changed two pieces of documentation at the same time. The <a href="https://learn.microsoft.com/en-us/autopilot/device-preparation/known-issues">AP DP known issues page</a> changed the BitLocker race from an active issue to resolved. The <a href="https://learn.microsoft.com/en-us/autopilot/device-preparation/whats-new">AP DP What’s new page</a> added a performance and reliability improvement explaining the new behavior.</p>
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr><td><strong>What Microsoft now documents:</strong> The default 128-bit BitLocker encryption policy is no longer applied during OOBE. Administrator-configured BitLocker policies are prioritized so the device can use the configured encryption method.</td></tr></tbody></table></figure>
+<p class="wp-block-paragraph">That wording matters because it addresses the actual race instead of trying to repair the drive afterward. Windows is no longer supposed to let the default 128-bit path get a head start during AP DP OOBE. The configured policy gets the opportunity to define the encryption method before BitLocker commits to it.</p>
+<h2 class="wp-block-heading" id="h-how-the-new-bitlocker-256-bit-handoff-works">How the new BitLocker 256 bit handoff works<span class="clth-copy-icon" data-heading-id="h-how-the-new-bitlocker-256-bit-handoff-works"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Microsoft does not document every internal implementation detail, and we do not need those details to understand the supported behavior. From an administrator’s point of view, the clear explanation is simple: BitLocker no longer gets the old 128-bit head start during AP DP; the configured policy gets a chance to apply first, and encryption starts only after Windows is ready to release it.</p>
+<figure class="wp-block-image size-full is-resized"><a data-caption="The supported behavior in practical terms: Device Preparation finishes, Windows releases the deferral, and BitLocker starts once with XTS AES 256." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/09/3-4.png"><picture class="wp-image-195707" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/3-4.png.webp 1536w, https://patchmypc.com/app/uploads/2026/09/3-4-300x200.png.webp 300w, https://patchmypc.com/app/uploads/2026/09/3-4-1024x683.png.webp 1024w, https://patchmypc.com/app/uploads/2026/09/3-4-768x512.png.webp 768w" sizes="(max-width: 1536px) 100vw, 1536px" type="image/webp"/>
+<img alt="The supported behavior in practical terms: Device Preparation finishes, Windows releases the deferral, and BitLocker starts once with XTS AES 256." data-lazy-sizes="(max-width: 1536px) 100vw, 1536px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/3-4.png 1536w, https://patchmypc.com/app/uploads/2026/09/3-4-300x200.png 300w, https://patchmypc.com/app/uploads/2026/09/3-4-1024x683.png 1024w, https://patchmypc.com/app/uploads/2026/09/3-4-768x512.png 768w" decoding="async" src="assets/207ac9ce9de693c7/img_2.png"/>
+</picture>
+</a></figure>
+<h3 class="wp-block-heading" id="h-step-1-ap-dp-reaches-the-encryption-decision">Step 1: AP DP reaches the encryption decision<span class="clth-copy-icon" data-heading-id="h-step-1-ap-dp-reaches-the-encryption-decision"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">The device is still moving through Windows OOBE and Autopilot Device Preparation. On capable hardware, Windows would normally be able to start automatic device encryption around this stage.</p>
+<h3 class="wp-block-heading" id="h-step-2-the-default-128-bit-path-no-longer-wins-automatically">Step 2: The default 128 bit path no longer wins automatically<span class="clth-copy-icon" data-heading-id="h-step-2-the-default-128-bit-path-no-longer-wins-automatically"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">This is the important change. During AP DP OOBE, Microsoft now says the default 128 bit BitLocker policy is not applied. That removes the behavior that previously allowed XTS AES 128 to be selected simply because the administrator policy had not arrived yet.</p>
+<h3 class="wp-block-heading" id="h-step-3-the-configured-bitlocker-256-bit-policy-gets-priority">Step 3: The configured BitLocker 256 bit policy gets priority<span class="clth-copy-icon" data-heading-id="h-step-3-the-configured-bitlocker-256-bit-policy-gets-priority"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">The BitLocker settings assigned by the administrator can now take precedence. If your operating system drive policy specifies XTS AES 256, Windows has a chance to receive and apply that setting before automatic encryption commits to an algorithm.</p>
+<h3 class="wp-block-heading" id="h-step-4-the-encryption-method-is-already-known-before-bitlocker-starts">Step 4: The encryption method is already known before BitLocker starts<span class="clth-copy-icon" data-heading-id="h-step-4-the-encryption-method-is-already-known-before-bitlocker-starts"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">This is the part that fixes the race. BitLocker does not need a special conversion later. The correct method is available at the moment the drive starts encrypting.</p>
+<h3 class="wp-block-heading" id="h-step-5-bitlocker-starts-once">Step 5: BitLocker starts once<span class="clth-copy-icon" data-heading-id="h-step-5-bitlocker-starts-once"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">When encryption begins, it can begin directly with the method from policy. For a tenant that requires XTS AES 256, the expected result is that the new device starts with XTS AES 256 from the beginning instead of starting at 128 and being repaired later.</p>
+<h3 class="wp-block-heading" id="h-step-6-normal-management-continues">Step 6: Normal management continues<span class="clth-copy-icon" data-heading-id="h-step-6-normal-management-continues"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">After that, the device continues through the normal Intune and BitLocker lifecycle. Recovery key escrow, compliance, reporting, and other BitLocker policy settings are still separate parts of the configuration. This change is about which encryption method wins at the moment automatic encryption starts.</p>
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr><td><strong>What changed</strong> The default 128 bit policy no longer gets the automatic OOBE head start. Administrator configured BitLocker policy is prioritized before the encryption method is chosen.</td><td><strong>What did not change</strong> You still need the BitLocker policy. Existing encrypted drives keep their current method. Recovery key escrow, compliance, and the rest of BitLocker management continue normally.</td></tr></tbody></table></figure>
+<h2 class="wp-block-heading" id="h-watching-the-supported-flow-happen-on-windows-11-25h2">Watching the supported flow happen on Windows 11 25H2<span class="clth-copy-icon" data-heading-id="h-watching-the-supported-flow-happen-on-windows-11-25h2"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The flow diagram above explains the supported handoff. I also wanted to see it happen on a real device. On Windows 11 25H2 build 26200.9550, I watched the policy state, normal Windows event logs, and the BitLocker volume state during a fresh Autopilot Device Preparation run.</p>
+<figure class="wp-block-image size-large"><a data-caption="This runtime timeline shows the practical order: policy present while the drive is still decrypted, Device Preparation completes, Windows releases the deferral, and BitLocker starts with XTS AES 256." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/09/5-4-1024x683.png"><picture class="wp-image-195717" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/5-4-1024x683.png.webp 1024w, https://patchmypc.com/app/uploads/2026/09/5-4-300x200.png.webp 300w, https://patchmypc.com/app/uploads/2026/09/5-4-768x512.png.webp 768w, https://patchmypc.com/app/uploads/2026/09/5-4.png.webp 1084w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="This runtime timeline shows the practical order: policy present while the drive is still decrypted, Device Preparation completes, Windows releases the deferral, and BitLocker starts with XTS AES 256." data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/5-4-1024x683.png 1024w, https://patchmypc.com/app/uploads/2026/09/5-4-300x200.png 300w, https://patchmypc.com/app/uploads/2026/09/5-4-768x512.png 768w, https://patchmypc.com/app/uploads/2026/09/5-4.png 1084w" decoding="async" src="assets/207ac9ce9de693c7/img_3.png"/>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-how-the-observed-flow-lines-up-with-the-supported-flow">How the observed flow lines up with the supported flow<span class="clth-copy-icon" data-heading-id="h-how-the-observed-flow-lines-up-with-the-supported-flow"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">First, the configured BitLocker policy was already present before encryption started. The device reported EncryptionMethodWithXtsOs = 7, which maps to XTS AES 256, while the OS volume was still FullyDecrypted with 0 percent encrypted, no active encryption method, and protection still off.</p>
+<p class="wp-block-paragraph">Second, Device Preparation completed before BitLocker began encrypting. That matters because it means Windows did not need to fall back to the default 128 bit path to keep OOBE moving. The drive stayed in a safe waiting state until the handoff was ready.</p>
+<p class="wp-block-paragraph">Third, Windows made the BitLocker release visible in the normal event log. Shell-Core logged one event when the deferral release started and a second event when the release succeeded. Those two events give you a clean point-in-time marker for when OOBE allows BitLocker to continue.</p>
+<figure class="wp-block-image size-full is-resized"><a data-caption="Event Viewer: Shell-Core logs CommercialOOBE_BitlockerDeferral_Started when the Autopilot BitLocker deferral release begins." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/09/6-3.png"><picture class="wp-image-195716" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/6-3.png.webp 1545w, https://patchmypc.com/app/uploads/2026/09/6-3-300x76.png.webp 300w, https://patchmypc.com/app/uploads/2026/09/6-3-1024x260.png.webp 1024w, https://patchmypc.com/app/uploads/2026/09/6-3-768x195.png.webp 768w, https://patchmypc.com/app/uploads/2026/09/6-3-1536x390.png.webp 1536w" sizes="(max-width: 1545px) 100vw, 1545px" type="image/webp"/>
+<img alt="Event Viewer: Shell-Core logs CommercialOOBE_BitlockerDeferral_Started when the Autopilot BitLocker deferral release begins." data-lazy-sizes="(max-width: 1545px) 100vw, 1545px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/6-3.png 1545w, https://patchmypc.com/app/uploads/2026/09/6-3-300x76.png 300w, https://patchmypc.com/app/uploads/2026/09/6-3-1024x260.png 1024w, https://patchmypc.com/app/uploads/2026/09/6-3-768x195.png 768w, https://patchmypc.com/app/uploads/2026/09/6-3-1536x390.png 1536w" decoding="async" src="assets/207ac9ce9de693c7/img_4.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph"></p>
+<figure class="wp-block-image size-full is-resized"><a data-caption="Event Viewer: Shell-Core then logs CommercialOOBE_BitlockerDeferral_Success when the release signaling succeeds." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/09/7-3.png"><picture class="wp-image-195715" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/7-3.png.webp 1601w, https://patchmypc.com/app/uploads/2026/09/7-3-300x87.png.webp 300w, https://patchmypc.com/app/uploads/2026/09/7-3-1024x297.png.webp 1024w, https://patchmypc.com/app/uploads/2026/09/7-3-768x223.png.webp 768w, https://patchmypc.com/app/uploads/2026/09/7-3-1536x445.png.webp 1536w" sizes="(max-width: 1601px) 100vw, 1601px" type="image/webp"/>
+<img alt="Event Viewer: Shell-Core then logs CommercialOOBE_BitlockerDeferral_Success when the release signaling succeeds." data-lazy-sizes="(max-width: 1601px) 100vw, 1601px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/7-3.png 1601w, https://patchmypc.com/app/uploads/2026/09/7-3-300x87.png 300w, https://patchmypc.com/app/uploads/2026/09/7-3-1024x297.png 1024w, https://patchmypc.com/app/uploads/2026/09/7-3-768x223.png 768w, https://patchmypc.com/app/uploads/2026/09/7-3-1536x445.png 1536w" decoding="async" src="assets/207ac9ce9de693c7/img_5.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">Finally, BitLocker started only after that release, and it started with the configured method. In the same capture, BitLocker moved into EncryptionInProgress and reported XTS AES 256 on the first run. That is the practical difference between the old race and the new behavior: no early 128-bit run, no cleanup cycle, and no decrypt/re-encrypt detour on a fresh device.</p>
+<h2 class="wp-block-heading" id="h-what-changed-compared-with-the-old-workaround">What changed compared with the old workaround<span class="clth-copy-icon" data-heading-id="h-what-changed-compared-with-the-old-workaround"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The easiest way to see the value of the fix is to compare the number of encryption cycles. The old race could force the device to encrypt with 128, decrypt, and then encrypt again with 256. The new behavior is designed to let the configured 256 bit policy win before the first encryption run starts.</p>
+<figure class="wp-block-image size-full is-resized"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/09/7-2.png"><picture class="wp-image-195711" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/7-2.png.webp 1774w, https://patchmypc.com/app/uploads/2026/09/7-2-300x150.png.webp 300w, https://patchmypc.com/app/uploads/2026/09/7-2-1024x512.png.webp 1024w, https://patchmypc.com/app/uploads/2026/09/7-2-768x384.png.webp 768w, https://patchmypc.com/app/uploads/2026/09/7-2-1536x768.png.webp 1536w" sizes="(max-width: 1774px) 100vw, 1774px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1774px) 100vw, 1774px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/7-2.png 1774w, https://patchmypc.com/app/uploads/2026/09/7-2-300x150.png 300w, https://patchmypc.com/app/uploads/2026/09/7-2-1024x512.png 1024w, https://patchmypc.com/app/uploads/2026/09/7-2-768x384.png 768w, https://patchmypc.com/app/uploads/2026/09/7-2-1536x768.png 1536w" decoding="async" src="assets/207ac9ce9de693c7/img_6.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph"><em>Old behavior: encrypt, decrypt, encrypt again. New behavior: wait, release the deferral, and encrypt once.</em></p>
+<h2 class="wp-block-heading" id="h-what-happened-to-the-hidden-feature-and-the-old-code-investigation">What happened to the hidden feature and the old code investigation?<span class="clth-copy-icon" data-heading-id="h-what-happened-to-the-hidden-feature-and-the-old-code-investigation"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The original 2025 article went much deeper because there was no supported answer yet. We found evidence that Windows was being changed to defer automatic BitLocker encryption until the AP DP provisioning state was ready. That investigation helped explain where Microsoft was heading, but the experimental implementation also had side effects and was not something I would recommend deploying.</p>
+<p class="wp-block-paragraph">Now that Microsoft documents the supported outcome, there is no reason to carry the reverse engineering steps into the deployment guidance. Do not enable old hidden feature IDs, patch OOBE JavaScript, or build a production process around those experiments. They are useful history, not the fix you should deploy in 2026.</p>
+<h2 class="wp-block-heading" id="h-the-fix-does-not-change-drives-that-are-already-on-128-bit">The fix does not change drives that are already on 128 bit<span class="clth-copy-icon" data-heading-id="h-the-fix-does-not-change-drives-that-are-already-on-128-bit"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The new behavior changes what happens when BitLocker starts on a fresh deployment. It does not rewrite the encryption algorithm on a drive that is already encrypted.</p>
+<p class="wp-block-paragraph">So there are two different problems to keep separate. A fresh AP DP device should be prevented from choosing the wrong method in the first place. An existing device that already chose XTS AES 128 remains an existing remediation problem. If that device really must move to XTS AES 256, the decrypt and encrypt again requirement still applies.</p>
+<figure class="wp-block-image size-full is-resized"><a data-caption="The new behavior prevents the race on fresh deployments. It does not convert an existing XTS AES 128 drive." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/09/8-1.png"><picture class="wp-image-195712" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/8-1.png.webp 1600w, https://patchmypc.com/app/uploads/2026/09/8-1-300x206.png.webp 300w, https://patchmypc.com/app/uploads/2026/09/8-1-1024x704.png.webp 1024w, https://patchmypc.com/app/uploads/2026/09/8-1-768x528.png.webp 768w, https://patchmypc.com/app/uploads/2026/09/8-1-1536x1056.png.webp 1536w" sizes="(max-width: 1600px) 100vw, 1600px" type="image/webp"/>
+<img alt="The new behavior prevents the race on fresh deployments. It does not convert an existing XTS AES 128 drive." data-lazy-sizes="(max-width: 1600px) 100vw, 1600px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/09/8-1.png 1600w, https://patchmypc.com/app/uploads/2026/09/8-1-300x206.png 300w, https://patchmypc.com/app/uploads/2026/09/8-1-1024x704.png 1024w, https://patchmypc.com/app/uploads/2026/09/8-1-768x528.png 768w, https://patchmypc.com/app/uploads/2026/09/8-1-1536x1056.png 1536w" decoding="async" src="assets/207ac9ce9de693c7/img_7.png"/>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-there-is-one-windows-version-detail-i-would-not-hide">There is one Windows version detail I would not hide<span class="clth-copy-icon" data-heading-id="h-there-is-one-windows-version-detail-i-would-not-hide"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Microsoft’s known issues page says the problem is resolved in KB5124012 and later Windows updates. That tells us the target behavior, but it still does not map every supported implementation to every 24H2 or 25H2 build, so lab validation still matters.</p>
+<p class="wp-block-paragraph">In my lab, Windows 11 25H2 build 26200.9457 did not yet show the expected new BitLocker behavior. Windows 11 25H2 build 26200.9550 did: the configured XTS AES 256 policy was already present while the drive was still decrypted, Device Preparation completed, Windows logged the deferral release, and BitLocker then started directly with XTS AES 256.</p>
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr><td><strong>What that means</strong> Microsoft has documented the target behavior and marked the known issue resolved. I would still validate the exact Windows build and update ring you deploy before removing an existing workaround.</td></tr></tbody></table></figure>
+<h2 class="wp-block-heading" id="h-a-much-cleaner-bitlocker-256-bit-handoff">A much cleaner BitLocker 256 bit handoff<span class="clth-copy-icon" data-heading-id="h-a-much-cleaner-bitlocker-256-bit-handoff"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">This issue was on the AP DP known issues list from July 2024 until September 2026. The original problem was simple but painful: automatic encryption could make the 128 bit decision before Intune delivered the 256 bit policy. Because BitLocker chooses its algorithm when encryption starts, being late by a small amount meant decrypting and encrypting the drive again.</p>
+<p class="wp-block-paragraph">Microsoft now says that race is resolved, and on Windows 11 25H2 build 26200.9550 I could watch the corrected order happen in practice. The configured XTS AES 256 policy was present while the drive was still decrypted, Windows released the BitLocker deferral after Device Preparation completed, and BitLocker started directly with XTS AES 256.</p>
+<p class="wp-block-paragraph">That is the change I wanted from the beginning. The remaining caution is not about the design of the fix, but about rollout validation: test the exact build and update ring you deploy, then retire the old remediation deliberately once your own fresh AP DP runs behave the same way.</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
