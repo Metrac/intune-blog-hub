@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Microsoft Intune Adds New Device Naming Options to Windows Autopilot Device Preparation</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">HTMD / Anoop C Nair</span>
+    <span class="date">September 30, 2026</span>
+  </div>
+  <h1>Microsoft Intune Adds New Device Naming Options to Windows Autopilot Device Preparation</h1>
+  <div class="orig">Saved for offline reading · <a href="https://www.anoopcnair.com/intune-windows-autopilot-device-preparation/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text"><p class="code-block code-block-6">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><h2 class="wp-block-heading" id="key-takeaways"><strong>Key Takeaways</strong></h2><ul class="wp-block-list"><li class="has-medium-font-size">New<strong> OOBE controls </strong>allow administrators to customize different parts of the Windows setup experience.</li><li class="has-medium-font-size">Device naming templates allow administrators to create a standard naming pattern for devices during <strong>enrollment</strong>.</li><li class="has-medium-font-size">These <strong>configuration options</strong> help organizations maintain a more consistent Windows device setup process.</li><li class="has-medium-font-size">The new <strong>naming </strong>option helps organizations reduce the need to manually rename devices after the <strong>enrollment</strong> process.</li></ul><p class="wp-block-paragraph">In this post, we are discussing Microsoft Intune Adds New Device Naming Options to Windows Autopilot Device Preparation. Microsoft Intune now provides additional configuration options in<strong> Windows Autopilot</strong> <strong>device preparation</strong>. These options give administrators more control over how <strong>Windows devices </strong>are configured during the setup process. One of the new options is Apply device name template. This allows administrators to create a naming pattern for Windows devices during <strong><a href="https://www.anoopcnair.com/intune-now-supports-visionos-and-tvos-with/" rel="noreferrer noopener" target="_blank">enrollment</a></strong>.</p><details class="wp-block-details has-contrast-3-background-color has-background is-layout-flow wp-block-details-is-layout-flow"><summary><strong>Table of Contents</strong></summary>
+</details><h2 class="wp-block-heading" id="microsoft-intune-adds-new-device-naming-options-to-windows-autopilot-device-preparation"><strong>Microsoft Intune Adds New Device Naming Options to Windows Autopilot Device Preparation</strong></h2><p class="wp-block-paragraph">Device naming is also an important part of managing a large number of <strong>Windows devices</strong>. With the latest configuration update,<strong> Windows Autopilot</strong> device preparation now includes the Apply device name template option. When enabled, administrators can use the Enter a name field to define a naming pattern that can be applied to devices during the <strong>setup </strong>process.</p><h2 class="wp-block-heading" id="whats-new"><strong>What’s New</strong></h2><p class="wp-block-paragraph">Intune Recently add some configuration settings under the <strong>Windows Out of Box Experience (OOBE).</strong> Microsoft has added the<strong> </strong>Apply <strong>device name template </strong>setting to<strong> Windows Autopilot </strong>device preparation in Intune. This setting allows administrators to configure a device naming template as part of the<strong> device preparation process</strong>.</p><h2 class="wp-block-heading" id="configure-the-device-name-template-using-intune"><strong>Configure the Device Name Template using Intune</strong></h2><p class="wp-block-paragraph">To configure the device name template, sign in to the<strong><a href="https://intune.microsoft.com/" rel="noreferrer noopener nofollow" target="_blank"> Microsoft Intune admin center</a></strong> and navigate to Devices &gt; Windows &gt; <strong>Windows enrollment</strong> &gt;<strong> Windows Autopilot device preparation</strong>. From here, you can create a new device preparation policy or edit an existing policy to configure the device naming option.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><div class="wp-block-image"><figure class="aligncenter size-large"><img alt="Microsoft Intune Adds New Device Naming Options to Windows Autopilot Device Preparation -Fig.1" class="wp-image-381368" data-lazyloaded="1" data-sizes="(max-width: 1024px) 100vw, 1024px" decoding="async" src="assets/3e1c571abe597dc9/img_0.avif" title="Microsoft Intune Adds New Device Naming Options to Windows Autopilot Device Preparation 2"/><figcaption class="wp-element-caption">Microsoft Intune Adds New Device Naming Options to Windows Autopilot Device Preparation -Fig.1</figcaption></figure></div><p class="wp-block-paragraph">Under <strong>Device preparation policies,</strong> select <strong>+Create </strong>to create a new policy. You will then see 2 options such as <strong>Automatic </strong>and <strong>User-driven</strong>. Select User-driven to continue with the device preparation policy configuration.</p><div class="wp-block-image"><figure class="aligncenter size-full"><img alt="Microsoft Intune Adds New Device Naming Options to Windows Autopilot Device Preparation -Fig.2" class="wp-image-381376" data-lazyloaded="1" data-sizes="(max-width: 896px) 100vw, 896px" decoding="async" src="assets/3e1c571abe597dc9/img_1.avif" title="Microsoft Intune Adds New Device Naming Options to Windows Autopilot Device Preparation 3"/><figcaption class="wp-element-caption">Microsoft Intune Adds New Device Naming Options to Windows Autopilot Device Preparation -Fig.2</figcaption></figure></div><h2 class="wp-block-heading" id="configure-the-device-preparation-settings"><strong>Configure the Device Preparation Settings </strong></h2><p class="wp-block-paragraph">After selecting <strong>User-driven,</strong> you will be taken to the <strong>Autopilot device preparation </strong>settings page. Go through the available sections, including <strong>Introduction</strong>, Basics, and<strong> Device group,</strong> and enter the required <strong>details </strong>in each section. Next, you will reach the<strong> Configuration settings page</strong>. Here, expand the <strong>Out-of-box experience settings </strong>section by clicking the drop-down arrow to view the available configuration options.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><ul class="wp-block-list"><li class="has-medium-font-size">By default, the <strong>Apply device name template</strong> option is set to <strong>No</strong>.</li><li class="has-medium-font-size">To configure a custom naming pattern for the devices, this option needs to be <strong>enabled</strong>.</li></ul><div class="wp-block-image"><figure class="aligncenter size-full"><img alt="Microsoft Intune Adds New Device Naming Options to Windows Autopilot Device Preparation -Fig.3" class="wp-image-381381" data-lazyloaded="1" data-sizes="auto, (max-width: 745px) 100vw, 745px" decoding="async" src="assets/3e1c571abe597dc9/img_2.avif" title="Microsoft Intune Adds New Device Naming Options to Windows Autopilot Device Preparation 4"/><figcaption class="wp-element-caption">Microsoft Intune Adds New Device Naming Options to Windows Autopilot Device Preparation -Fig.3</figcaption></figure></div><p class="wp-block-paragraph">The <strong>Apply device name template</strong> setting allows administrators to create a naming template that can be used to assign names to devices during <strong>enrollment</strong>. This helps organizations maintain a consistent name for enrolled devices. To enable this setting, change Apply device name template from <strong>No to Yes.</strong> Once enabled, the<strong> Enter a Name </strong>field appears below the setting.</p><ul class="wp-block-list"><li>In the Enter a name field, enter the desired device naming pattern. Here, it showing <strong>MyCompany-%RAND:4%</strong></li></ul><figure class="wp-block-table aligncenter"><table class="has-contrast-3-background-color has-background has-fixed-layout"><thead><tr><th>Out-of-box Experience Settings</th><th>Info</th></tr></thead><tbody><tr><td><strong>Automatically configure keyboard</strong></td><td>If true, skip the <strong>keyboard</strong> selection page if Language is set.</td></tr><tr><td><strong>Hide Microsoft Software License Terms</strong></td><td>Specify whether to show the <strong>end-user license </strong>agreement to users.</td></tr><tr><td><strong>Hide privacy settings</strong></td><td>Specify whether to <strong>show privacy settings </strong>to users.</td></tr><tr><td><strong>Hide change account options</strong></td><td>Options to change account and start over with a different account appear, <strong>respectively</strong>, during initial device setup on the company sign-in page, and on the domain error page. To hide these options, you must configure company <strong>branding </strong>in Microsoft Entra ID</td></tr><tr><td><strong>Apply device name template</strong></td><td>Create a naming template to <strong>add names </strong>to your devices during enrollment.</td></tr><tr><td><strong>Enter a name<br/></strong><br/></td><td>Create a <strong>unique name</strong> for your devices. Names must be<strong> 63 characters </strong>or less once macros are expanded, and can contain letters (a-z, A-Z), numbers (0-9), and hyphens. Names must not contain only numbers. Names cannot include a blank space. Use the %SERIAL% macro to add a hardware-<strong>specific serial number</strong>. Alternatively, use the %RAND:x% macro to add a random string of numbers, where x equals the number of digits to add.</td></tr></tbody></table><figcaption class="wp-element-caption">Microsoft Intune Adds New Device Naming Options to Windows Autopilot Device Preparation -Table.1</figcaption></figure><div class="wp-block-image"><figure class="aligncenter size-full"><img alt="Microsoft Intune Adds New Device Naming Options to Windows Autopilot Device Preparation -Fig.4" class="wp-image-381383" data-lazyloaded="1" data-sizes="auto, (max-width: 835px) 100vw, 835px" decoding="async" src="assets/3e1c571abe597dc9/img_3.avif" title="Microsoft Intune Adds New Device Naming Options to Windows Autopilot Device Preparation 5"/><figcaption class="wp-element-caption">Microsoft Intune Adds New Device Naming Options to Windows Autopilot Device Preparation -Fig.4</figcaption></figure></div><h2 class="wp-block-heading" id="need-further-assistance-or-have-technical-questions"><strong>Need Further Assistance or Have Technical Questions?</strong></h2><p class="has-contrast-3-background-color has-background wp-block-paragraph">Join the <a href="https://www.linkedin.com/company/how-to-manage-devices/" rel="nofollow noopener" target="_blank"><strong>LinkedIn Page</strong></a> and <a href="https://t.me/+Q9lE6G1_BO_bGq97" rel="nofollow"><strong>Telegram group</strong></a> to get the latest step-by-step guides and news updates. Join our <a href="https://www.meetup.com/htmd-community-meetup-group/" rel="nofollow noopener" target="_blank"><strong>Meetup Page</strong></a> to participate in User group meetings. Also, join the <a href="https://htmd.in/WACM2" rel="nofollow noopener" target="_blank"><strong>WhatsApp Community</strong></a>  and the <a href="https://htmd.in/whatsapp_channel" rel="nofollow noopener" target="_blank"><strong>Whatsapp channel</strong></a> to get the latest news on Microsoft Technologies. We are there on <a href="https://www.reddit.com/r/ImpMSNews/" rel="nofollow noopener" target="_blank"><strong>Reddit</strong></a> as well.</p><p class="wp-block-paragraph"><strong>Author</strong></p><p class="wp-block-paragraph"><a href="https://www.linkedin.com/in/anoopcnair/" rel="nofollow noopener" target="_blank"><strong>Anoop C Nair</strong></a>  is Workplace Technology solution architect with 25+ years of experience in global enterprise organizations such as JP Morgan, Capgemini, etc. He is Microsoft Certified Trainer. Microsoft MVP from 2015 onwards for consecutive 11 years! He also conducts Intune and modern workplace tech training for enterprise organizations. He is Blogger, Speaker, and Founder of HTMD Community and HTMD Conference. His focus is on Device Management technologies such as Intune, Windows, Cloud PC. He writes about technologies like Intune, SCCM, Windows, Cloud PC, Windows, Entra, Microsoft Security.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><p class="code-block code-block-8">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="1286776600" data-full-width-responsive="true"></ins> </p><p class="code-block code-block-9">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="8125570634" data-full-width-responsive="true"></ins> </p></div></div></div>
+</article>
+</body>
+</html>

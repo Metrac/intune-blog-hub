@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Microsoft Agent 365: A Live Portal Overview</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">September 30, 2026</span>
+  </div>
+  <h1>Microsoft Agent 365: A Live Portal Overview</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/microsoft-agent-365-portal-overview-video/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p class="jr-youtube-embed"></p>
+<p class="wp-block-paragraph">Microsoft Agent 365 gives administrators a place to inspect the agents around their organization: which agents exist, who owns them and where their identities and management settings can be found. In this episode, I explore that experience in my demo tenant.</p>
+<p class="wp-block-paragraph">This is a portal overview with a few administrative actions, not a claim that the tenant has a complete, production-tested governance setup. Some agents are still drafts, activity is limited, and one policy-template flow does not accept the license state as expected. Those details are part of the walkthrough.</p>
+<p class="wp-block-paragraph"><em>Video language: German · Duration: 15:38 · Released 30 September 2026. The recording reflects the portal and demo-tenant state at the time it was made; availability depends on licensing and rollout.</em></p>
+<p><span id="more-20767"></span>
+</p>
+<h2 class="wp-block-heading" id="start-with-the-agent-inventory">Start with the agent inventory<a aria-hidden="true" class="jr-anchor" href="#start-with-the-agent-inventory" tabindex="-1">#</a></h2>
+<p class="wp-block-paragraph">In the Microsoft 365 admin center, I open the Agents area and its overview. It brings together inventory and management information, including agents associated with Foundry and Copilot Studio and catalog entries from other publishers.</p>
+<p class="wp-block-paragraph">That last distinction matters. A large registry count does not mean that every listed agent is actively used in the organization. In the video, many entries come from the available catalog, while my own test agents have little or no recorded usage.</p>
+<p class="wp-block-paragraph">I would separate three questions when reviewing this page: what is available, what has been approved or assigned, and what is actually being used? Combining those into one number can make a demo tenant look much busier than it is.</p>
+<figure class="wp-block-image"><img alt="Microsoft Agent 365 connects agent inventory, accountable ownership, identity, and operational evidence" data-recalc-dims="1" decoding="async" src="assets/7b39c79ac87285ee/img_0.jpg"/></figure>
+<p class="wp-block-paragraph"><em>A conceptual map of the review path. Each connection still needs configuration and evidence in your own environment.</em></p>
+<h2 class="wp-block-heading" id="open-an-agent-card-and-find-the-accountable-person">Open an agent card and find the accountable person<a aria-hidden="true" class="jr-anchor" href="#open-an-agent-card-and-find-the-accountable-person" tabindex="-1">#</a></h2>
+<p class="wp-block-paragraph">The agent card is a useful place to begin a review. I look at its description, creation details, owner and available identity information. The demonstrated agent is still a draft and has not been used as a production service.</p>
+<p class="wp-block-paragraph">A description is not cosmetic metadata. A reviewer should be able to tell what the agent is supposed to do without finding its creator and asking for a private explanation. The same is true of ownership: there should be a person or team able to explain a change, investigate a failure and retire the agent when it is no longer needed.</p>
+<p class="wp-block-paragraph">Around <a href="https://www.youtube.com/watch?v=jMJfzB6ztBo&amp;t=132s" rel="noopener" target="_blank">2:12</a>, I follow the identity link into Microsoft Entra. The recording shows the identity object and ownership context. It does not demonstrate every possible access policy against that identity.</p>
+<p class="wp-block-paragraph">For background on how the products fit together, my <a href="https://jannikreinhard.com/microsoft-365-agents-explained-what-agents-365-means/">Microsoft 365 agents overview</a> explains the wider terminology. This episode focuses on what the administrator can inspect in the portal.</p>
+<p class="wp-block-paragraph">An agent’s useful capabilities often come from its tools and data access. The agent card and related areas help reveal that context, but the exact information available depends on the agent and its integration.</p>
+<p class="wp-block-paragraph">The example card does not show an active, tool-heavy production workflow. I therefore do not treat an empty activity view or a simple relationship map as evidence that the environment has no risk. It may simply mean that the relevant activity has not occurred or is not represented there yet.</p>
+<p class="wp-block-paragraph">In a real review, I would ask which identity calls each tool, which permissions that identity has, and what happens if the request is denied. The answer should describe the actual execution path, not only the agent’s intended purpose.</p>
+<h2 class="wp-block-heading" id="blocking-is-visible-enforcement-still-needs-a-test">Blocking is visible; enforcement still needs a test<a aria-hidden="true" class="jr-anchor" href="#blocking-is-visible-enforcement-still-needs-a-test" tabindex="-1">#</a></h2>
+<p class="wp-block-paragraph">In the recording, I block a catalog agent with a reason and later block a tool. After refreshing the tool view, the changed state is visible. That demonstrates an administrative state change in the portal.</p>
+<p class="wp-block-paragraph">It is not the same as demonstrating a denied end-user request through every possible client. To establish the effect for your environment, repeat a controlled request through the relevant supported application and confirm the expected outcome and audit evidence.</p>
+<p class="wp-block-paragraph">This is the same distinction I make in my <a href="https://jannikreinhard.com/microsoft-foundry-guardrails-video/">Foundry guardrails walkthrough</a>: configuration, assignment and observed enforcement are separate stages. Keeping them separate makes a governance demonstration much more credible.</p>
+<figure class="wp-block-image"><img alt="Agent 365 verification levels: visible setting, saved state, denied test request, and retained evidence" data-recalc-dims="1" decoding="async" src="assets/7b39c79ac87285ee/img_1.jpg"/></figure>
+<p class="wp-block-paragraph"><em>A suggested proof sequence. The episode shows portal states, not a complete end-to-end enforcement test for every control.</em></p>
+<h2 class="wp-block-heading" id="connected-platforms-and-requests">Connected platforms and requests<a aria-hidden="true" class="jr-anchor" href="#connected-platforms-and-requests" tabindex="-1">#</a></h2>
+<p class="wp-block-paragraph">At approximately <a href="https://www.youtube.com/watch?v=jMJfzB6ztBo&amp;t=356s" rel="noopener" target="_blank">5:56</a>, I open the connected-platforms area and review options for bringing in information beyond the immediate Microsoft environment. I do not complete a third-party platform connection in this episode.</p>
+<p class="wp-block-paragraph">For a real connection, I would first check the supported integration, requested permissions and scope of the information it brings into the registry. “The platform is listed” and “our agents from that platform are connected and current” are different statements.</p>
+<p class="wp-block-paragraph">The tools area also exposes categories such as plugins, skills, MCP servers and connectors in the demonstrated interface. Requests provide an administrative route for reviewing what users want to make available. That route needs an owner and a response process; a growing pending queue is not a governance outcome by itself.</p>
+<h2 class="wp-block-heading" id="settings-policies-and-the-license-warning">Settings, policies and the license warning<a aria-hidden="true" class="jr-anchor" href="#settings-policies-and-the-license-warning" tabindex="-1">#</a></h2>
+<p class="wp-block-paragraph">The later part of the video reviews feedback, management rules, publisher choices, sharing, access and tags. These settings can affect a broad audience, so I would decide the intended scope before applying a convenient default to everyone.</p>
+<p class="wp-block-paragraph">The policy-template flow also produces a licensing warning even though the demo account has been assigned a trial license. The video does not resolve that inconsistency or establish its root cause. I would verify license assignment, required roles and current prerequisites before assuming that the control is ready.</p>
+<p class="wp-block-paragraph">Microsoft’s <a href="https://learn.microsoft.com/en-us/microsoft-agent-365/overview" rel="noopener" target="_blank">Agent 365 overview</a> is the current starting point for product scope and requirements. Do not infer exact entitlement from a menu appearing in your tenant, and do not use this recording as a fixed licensing or pricing guide.</p>
+<h2 class="wp-block-heading" id="what-i-would-prove-next">What I would prove next<a aria-hidden="true" class="jr-anchor" href="#what-i-would-prove-next" tabindex="-1">#</a></h2>
+<p class="wp-block-paragraph">My follow-up would focus on one agent with a clear owner, a known identity and one meaningful tool action. I would run a permitted request, a request that should be denied, and a change to the agent’s access. Then I would find the evidence for all three.</p>
+<p class="wp-block-paragraph">That gives us a much stronger basis for exploring the surrounding Entra, Purview and Global Secure Access controls in later episodes. The purpose of this first video is to understand the management surface and its limits, not to imply that every connected protection is already configured.</p>
+<p class="wp-block-paragraph">The practical takeaway: use the inventory to start asking better questions about ownership, access and activity. Then follow those questions into a real request and a verifiable result.</p>
+<p class="wp-block-paragraph">Stay healthy, Cheers Jannik</p>
+<div class="jr-nl jr-nl--article"><div class="jr-nl__copy"><p><span class="jr-nl__kicker">Newsletter</span></p><p class="jr-nl__title">New posts, straight to your inbox.</p><p class="jr-nl__promise">Hands-on guides on Intune, AI and Azure.</p></div><div class="jr-nl__form">
+<p aria-live="polite" class="jr-nl__msg" role="status"></p><p class="jr-nl__trust">190+ guides · 5x Microsoft MVP · No spam, unsubscribe anytime · <a href="https://jannikreinhard.com/datenschutz/">Privacy</a></p></div></div> </div>
+</div></div>
+</article>
+</body>
+</html>
