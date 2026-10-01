@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Copilot Studio Costs Start Before You Publish</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">October 1, 2026</span>
+  </div>
+  <h1>Copilot Studio Costs Start Before You Publish</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/copilot-studio-costs-before-publish/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p class="wp-block-paragraph">The new Copilot Studio home page makes it easy to start an agent. There is another label on the same page that deserves just as much attention: <strong>Uses Copilot Credits</strong>.</p>
+<p class="wp-block-paragraph">If your mental model is “we pay once the agent is published,” it is time to check which harness you are using.</p>
+<p class="wp-block-paragraph">With the GitHub Copilot harness, the work before publication matters too. That changes how I would plan a demo, a development environment and a production pilot.</p>
+<p class="wp-block-paragraph">I opened my ModernDevMgmt tenant to look at the current experience. The screenshots below are fresh portal captures from <strong>28 September 2026</strong>, not Microsoft documentation images. I inspected existing demo agents without changing their configuration, running prompts or publishing them. Cost-control guidance is linked to Microsoft’s documentation; this was not a billing or enforcement benchmark.</p>
+<p><span id="more-20856"></span>
+</p>
+<h2 class="wp-block-heading" id="the-cost-signal-starts-on-the-home-page">The cost signal starts on the home page<a aria-hidden="true" class="jr-anchor" href="#the-cost-signal-starts-on-the-home-page" tabindex="-1">#</a></h2>
+<figure class="wp-block-image"><img alt="Copilot Studio home in the JR Demo Agent Governance environment showing Agent and Workflow cards powered by GitHub Copilot and the Uses Copilot Credits label" data-recalc-dims="1" decoding="async" src="assets/087b8f3b797c68d7/img_0.jpg"/></figure>
+<p class="wp-block-paragraph"><em>The current home page in my demo environment. Agent and Workflow are marked GitHub Copilot, directly below Uses Copilot Credits.</em></p>
+<p class="wp-block-paragraph">Microsoft’s billing documentation says that creating, previewing, testing and evaluating experiences on this harness can consume credits. The charge reflects work involving models, tools and the harness. This scope is specific to the GitHub Copilot harness; it is not a statement that every historical Copilot Studio testing experience now has identical billing. <a href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/billing-credit-overview" rel="noopener" target="_blank">Usage-based billing for this harness</a>.</p>
+<p class="wp-block-paragraph">That is why I would ask for a development allowance before a workshop, not afterwards. It does not need to become a complicated procurement exercise. It does need an owner who understands what people are about to build and test.</p>
+<figure class="wp-block-image"><img alt="Copilot Studio costs across building, testing and operating an agent powered by the GitHub Copilot harness" data-recalc-dims="1" decoding="async" src="assets/087b8f3b797c68d7/img_1.jpg"/></figure>
+<h2 class="wp-block-heading" id="github-copilot-here-identifies-the-runtime">“GitHub Copilot” here identifies the runtime<a aria-hidden="true" class="jr-anchor" href="#github-copilot-here-identifies-the-runtime" tabindex="-1">#</a></h2>
+<p class="wp-block-paragraph">The name can create confusion. This is a Copilot Studio authoring and orchestration framework, not the GitHub Copilot service. Microsoft says that running these agents does not send customer data to that GitHub Copilot service. Standard agents remain available alongside the newer harness. <a href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/harnesses-overview" rel="noopener" target="_blank">Microsoft’s harness explanation</a>.</p>
+<p class="wp-block-paragraph">For a pilot register, I would record the harness explicitly. “Copilot agent” is too broad. My fields would be:</p>
+<ul class="wp-block-list">
+<li>Agent name and purpose.</li>
+<li>Harness and environment.</li>
+<li>Business owner and technical owner.</li>
+<li>Knowledge sources and connected tools.</li>
+<li>Intended audience and publishing channel.</li>
+<li>Funding route and review date.</li>
+</ul>
+<p class="wp-block-paragraph">That small amount of context helps the next administrator answer a cost question without reopening every agent and reconstructing why it exists.</p>
+<p class="wp-block-paragraph">If you are still choosing a platform, my <a href="https://jannikreinhard.com/foundry-vs-copilot-studio/">Foundry versus Copilot Studio guide</a> covers the broader decision. This article starts after that choice: how do we build responsibly inside Studio?</p>
+<h2 class="wp-block-heading" id="do-not-assume-a-trial-environment-means-unlimited-free-testing">Do not assume a trial environment means unlimited free testing<a aria-hidden="true" class="jr-anchor" href="#do-not-assume-a-trial-environment-means-unlimited-free-testing" tabindex="-1">#</a></h2>
+<p class="wp-block-paragraph">Microsoft’s current cost-management guidance states that developer and trial environments moved to usage-based billing on <strong>1 September 2026</strong> for this scenario. It also warns that historical non-billed consumption is only directional information, not a guaranteed future bill. <a href="https://learn.microsoft.com/en-us/power-platform/admin/manage-usage-github-copilot-harness" rel="noopener" target="_blank">GitHub Copilot harness cost management</a>.</p>
+<p class="wp-block-paragraph">I would therefore avoid using an old screenshot of a free preview as the basis for a new workshop budget. Check the current entitlement and funding path for the environment you will use.</p>
+<p class="wp-block-paragraph">For the demo shown here, I am deliberately not claiming that the tenant has a paid allowance, a working stop rule or a particular monthly cost. Those need their own verification in the administrative cost views.</p>
+<h2 class="wp-block-heading" id="review-capacity-overage-and-the-agent-limit-separately">Review capacity, overage and the agent limit separately<a aria-hidden="true" class="jr-anchor" href="#review-capacity-overage-and-the-agent-limit-separately" tabindex="-1">#</a></h2>
+<p class="wp-block-paragraph">The documented administration entry point is <strong>Power Platform admin center → Licensing → Copilot Studio</strong>. Review the environment’s allocated credits and whether additional tenant capacity or pay-as-you-go can fund continued use. Allocation alone is not enough to establish a spending boundary.</p>
+<p class="wp-block-paragraph">For the individual agent, Microsoft documents a monthly limit, notification threshold and <strong>Stop usage</strong> setting. Keep that separate from Azure budget alerts, which are visibility controls rather than automatic workload stops. <a href="https://learn.microsoft.com/en-us/power-platform/admin/manage-usage-github-copilot-harness" rel="noopener" target="_blank">Cost-control instructions</a>.</p>
+<p class="wp-block-paragraph">I would capture those three decisions in one review record:</p>
+<figure class="wp-block-table"><table>
+<thead>
+<tr>
+<th>Review item</th>
+<th>Evidence I would keep</th>
+<th>Owner’s decision</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Environment allocation</td>
+<td>The approved capacity and its scope</td>
+<td>How much capacity is assigned to the pilot?</td>
+</tr>
+<tr>
+<td>Overage route</td>
+<td>Tenant-pool and billing-plan settings</td>
+<td>Can the pilot continue using another funding source?</td>
+</tr>
+<tr>
+<td>Agent limit</td>
+<td>Limit, notification and stop behavior</td>
+<td>When should this particular agent stop?</td>
+</tr>
+</tbody>
+</table></figure>
+<p class="wp-block-paragraph">If a control is unavailable, record that limitation. Do not silently replace “agent stops” with “someone receives an email.” Those are different promises to the team funding the work.</p>
+<h2 class="wp-block-heading" id="my-live-example-is-intentionally-small">My live example is intentionally small<a aria-hidden="true" class="jr-anchor" href="#my-live-example-is-intentionally-small" tabindex="-1">#</a></h2>
+<p class="wp-block-paragraph">Here is the existing <strong>JR Demo – Rollout Coach – New UI Draft</strong>. It explains a fictional rollout policy. The Build page shows the model, a single knowledge file and the optional components around it.</p>
+<figure class="wp-block-image"><img alt="Live Build page for the Rollout Coach showing its instructions, model, rollout-policy-v1.txt knowledge source and optional tools and memory settings" data-recalc-dims="1" decoding="async" src="assets/087b8f3b797c68d7/img_2.jpg"/></figure>
+<p class="wp-block-paragraph"><em>The existing Rollout Coach draft, opened read-only. This screenshot is configuration evidence, not proof that the agent produced a correct answer or stayed within a cost limit.</em></p>
+<p class="wp-block-paragraph">I like this as a pilot shape because the acceptance criteria can be narrow. The agent should explain a rule, cite the policy version and refuse to claim that it changed a device. I do not need a collection of integrations to find out whether that basic experience is useful.</p>
+<p class="wp-block-paragraph">Before adding another tool, I would ask what new outcome it enables and how I will test that outcome. If the answer is only “the demo looks more impressive,” I would leave it out of the pilot.</p>
+<h2 class="wp-block-heading" id="plan-the-tests-before-you-start-consuming-credits">Plan the tests before you start consuming credits<a aria-hidden="true" class="jr-anchor" href="#plan-the-tests-before-you-start-consuming-credits" tabindex="-1">#</a></h2>
+<p class="wp-block-paragraph">An unstructured test session can produce a lot of activity without teaching you much. I would prepare the questions and the expected evidence first.</p>
+<figure class="wp-block-image"><img alt="Live Evaluate page of the Rollout Coach stating that evaluations use Copilot Credits" data-recalc-dims="1" decoding="async" src="assets/087b8f3b797c68d7/img_3.jpg"/></figure>
+<p class="wp-block-paragraph"><em>The live Evaluate page explicitly flags Copilot Credit use. I opened the page but did not create or run an evaluation.</em></p>
+<p class="wp-block-paragraph">The following is a <strong>proposed test plan, not a report of executed tests</strong>:</p>
+<figure class="wp-block-table"><table>
+<thead>
+<tr>
+<th>Test</th>
+<th>What I would check</th>
+<th>What would fail the test</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A rule covered by the source</td>
+<td>Correct policy version and relevant section</td>
+<td>A plausible answer without source support</td>
+</tr>
+<tr>
+<td>A rule absent from the source</td>
+<td>Clear acknowledgement that the information is missing</td>
+<td>Invented guidance</td>
+</tr>
+<tr>
+<td>A request to deploy a change</td>
+<td>Clear statement that this assistant does not execute changes</td>
+<td>“Done” or “Applied” without execution evidence</td>
+</tr>
+<tr>
+<td>A conflicting instruction in the question</td>
+<td>The answer remains within the defined task</td>
+<td>An unsupported exception or approval</td>
+</tr>
+<tr>
+<td>A source update</td>
+<td>The answer follows the reviewed replacement source</td>
+<td>Continued reliance on outdated policy wording</td>
+</tr>
+</tbody>
+</table></figure>
+<p class="wp-block-paragraph">For each run, keep the prompt, outcome, error or retry, and reviewer decision. Record available consumption data after the relevant reporting delay. Do not turn a planned test matrix into a claimed pass rate.</p>
+<p class="wp-block-paragraph">Microsoft’s Preview experience supports interactive tests, including checking knowledge attribution and tool activity. The documentation also describes how configuration changes can affect subsequent turns in an active conversation. For a clean comparison, I would explicitly control the conversation state rather than comparing a fresh session with one full of earlier context. <a href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/authoring-test-bot" rel="noopener" target="_blank">Testing an agent</a>.</p>
+<h2 class="wp-block-heading" id="compare-accepted-work-not-the-cheapest-single-response">Compare accepted work, not the cheapest single response<a aria-hidden="true" class="jr-anchor" href="#compare-accepted-work-not-the-cheapest-single-response" tabindex="-1">#</a></h2>
+<p class="wp-block-paragraph">A useful cost review asks whether the agent completed the task to the agreed standard.</p>
+<p class="wp-block-paragraph">Suppose two configurations answer the same policy question. One is concise but misses the exception. The other identifies the exception and cites the right section. Calling the first configuration cheaper does not settle the decision if someone must repair its answer.</p>
+<p class="wp-block-paragraph">I would compare total consumed credits for the test batch, accepted outcomes and human review effort. Keep failures in the denominator and retries in the consumption total. If you remove failed runs, the result becomes an advertisement rather than a useful engineering measurement.</p>
+<p class="wp-block-paragraph">This article contains no invented credit-per-answer numbers. Once the team has an approved allowance, the next step is to measure its own workload rather than borrow a price from an unrelated agent.</p>
+<figure class="wp-block-image"><img alt="Suggested Copilot Studio costs evaluation process using a fixed test set, all attempts and accepted outcomes" data-recalc-dims="1" decoding="async" src="assets/087b8f3b797c68d7/img_4.jpg"/></figure>
+<h2 class="wp-block-heading" id="a-stop-rule-needs-a-recovery-plan">A stop rule needs a recovery plan<a aria-hidden="true" class="jr-anchor" href="#a-stop-rule-needs-a-recovery-plan" tabindex="-1">#</a></h2>
+<p class="wp-block-paragraph">Microsoft documents that exhausted capacity can affect makers as well as end users, including authoring, preview and evaluation experiences. It also describes overage grace behavior. I would not market a small environment allocation as a precise, instant currency cutoff. <a href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/enforcement-policy-credits" rel="noopener" target="_blank">Credit enforcement policy</a>.</p>
+<p class="wp-block-paragraph">For an internal pilot, my recovery note would answer four questions:</p>
+<ol class="wp-block-list">
+<li>Who checks whether the interruption is capacity-related?</li>
+<li>Who may approve additional capacity?</li>
+<li>What should users do while the agent is unavailable?</li>
+<li>What evidence justifies restarting the pilot?</li>
+</ol>
+<p class="wp-block-paragraph">A one-page answer is enough. Without it, “Stop usage” can become an unexpected outage and an urgent request to remove the very control you introduced.</p>
+<h2 class="wp-block-heading" id="before-the-next-workshop">Before the next workshop<a aria-hidden="true" class="jr-anchor" href="#before-the-next-workshop" tabindex="-1">#</a></h2>
+<p class="wp-block-paragraph">I would check the harness, confirm the environment and agree on the funding route before sending the first build prompt. Then I would prepare a small test set, record outcomes and review consumption together with quality.</p>
+<p class="wp-block-paragraph">That keeps the workshop focused on what we want to learn. It also makes the eventual budget conversation much less surprising.</p>
+<h3 class="wp-block-heading" id="does-unpublished-mean-no-cost">Does unpublished mean no cost?<a aria-hidden="true" class="jr-anchor" href="#does-unpublished-mean-no-cost" tabindex="-1">#</a></h3>
+<p class="wp-block-paragraph">Not for the GitHub Copilot harness’s billable build and test activities. Treat development as part of the planned workload.</p>
+<h3 class="wp-block-heading" id="should-i-disable-every-optional-feature-to-save-money">Should I disable every optional feature to save money?<a aria-hidden="true" class="jr-anchor" href="#should-i-disable-every-optional-feature-to-save-money" tabindex="-1">#</a></h3>
+<p class="wp-block-paragraph">I would start with the minimum useful scope, then add features when the test plan shows why they are needed. Fewer components also make failures easier to explain.</p>
+<h3 class="wp-block-heading" id="what-should-i-bring-to-the-person-approving-the-pilot">What should I bring to the person approving the pilot?<a aria-hidden="true" class="jr-anchor" href="#what-should-i-bring-to-the-person-approving-the-pilot" tabindex="-1">#</a></h3>
+<p class="wp-block-paragraph">The use case, the target environment, the controls you intend to verify, the acceptance tests and the review date. That is more actionable than a request for “some Copilot Credits.”</p>
+<p class="wp-block-paragraph">Stay healthy, Cheers Jannik</p>
+<div class="jr-nl jr-nl--article"><div class="jr-nl__copy"><p><span class="jr-nl__kicker">Newsletter</span></p><p class="jr-nl__title">New posts, straight to your inbox.</p><p class="jr-nl__promise">Hands-on guides on Intune, AI and Azure.</p></div><div class="jr-nl__form">
+<p aria-live="polite" class="jr-nl__msg" role="status"></p><p class="jr-nl__trust">190+ guides · 5x Microsoft MVP · No spam, unsubscribe anytime · <a href="https://jannikreinhard.com/datenschutz/">Privacy</a></p></div></div> </div>
+</div></div>
+</article>
+</body>
+</html>
