@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Windows Backup is Now Enabled by Default for Eligible Intune Managed Devices</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">HTMD / Anoop C Nair</span>
+    <span class="date">October 2, 2026</span>
+  </div>
+  <h1>Windows Backup is Now Enabled by Default for Eligible Intune Managed Devices</h1>
+  <div class="orig">Saved for offline reading · <a href="https://www.anoopcnair.com/windows-backup-is-now-enabled-by-default-intune/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text"><p class="code-block code-block-6">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><h2 class="wp-block-heading" id="key-takeaways"><strong>Key Takeaways</strong></h2><ul class="wp-block-list has-medium-font-size"><li><strong>Windows Backup </strong>is enabled by default for eligible devices with the release of Windows 11,<strong> version 26H2</strong>, unless admins have explicitly configured the policy.</li><li>User settings and Microsoft Store app lists can be restored when users move to a new, replaced, reset, or reimaged <strong>Windows 11 device.</strong></li><li>Backup and restore are controlled <strong>separately</strong>, allowing administrators to manage each experience based on their organization’s requirements.</li><li>Administrators can manage the policies through<strong> Microsoft </strong>Intune, while restore behavior remains admin-controlled</li></ul><p class="wp-block-paragraph">In this post we are discussing, Windows Backup is Now Enabled by Default for Eligible Intune Managed Devices. Microsoft is introducing an update to Windows Settings Backup with the release of<strong> Windows 11, version 26H2. </strong>For eligible devices, Settings <strong><a href="https://www.anoopcnair.com/introduces-windows-backup-for-organizations/" rel="noreferrer noopener" target="_blank">Backup </a></strong>is now enabled by default when administrators have not explicitly configured the policy. This helps ensure that important user settings and the list of installed Microsoft Store apps are available for <strong>recovery </strong>when a device is reset, replaced, upgraded.</p><details class="wp-block-details has-contrast-3-background-color has-background is-layout-flow wp-block-details-is-layout-flow"><summary><strong>Table of Contents</strong></summary>
+</details><h2 class="wp-block-heading" id="windows-backup-is-now-enabled-by-default-for-eligible-intune-managed-devices"><strong>Windows Backup is Now Enabled by Default for Eligible Intune Managed Devices</strong></h2><p class="wp-block-paragraph">The feature is designed to make device replacement and Windows 11 <strong>migrations </strong>easier for users. When a user signs in to a new or reimaged <strong>Windows 11 </strong>device with their work account, they can choose to <strong>restore a backup </strong>from their previous device. Their desktop wallpaper and other supported Windows settings, along with their <strong>Microsoft Store app</strong> list, can then be restored, helping users get back to a familiar working environment more quickly.</p><p class="wp-block-paragraph">The backup and restore experience is available for eligible<strong> Windows 11 devices</strong>, including Microsoft Entra joined and <strong>Microsoft Entra hybrid joined devices </strong>and <strong>Cloud PCs</strong>, depending on the supported Windows <strong>edition</strong>.</p><h2 class="wp-block-heading" id="whats-new"><strong>What’s new</strong></h2><p class="wp-block-paragraph">Windows Settings Backup is now enabled by default on eligible Intune‑managed Windows 11 (26H2) devices. 2. When the backup policy is set to Not Configured, supported user settings and the Microsoft Store app list will be backed up automatically.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><figure class="wp-block-table aligncenter"><table class="has-contrast-3-background-color has-background has-fixed-layout"><thead><tr><th>Support</th><th>Details</th></tr></thead><tbody><tr><td><strong>Supported devices</strong></td><td><strong>Microsoft Entra joined</strong>, Microsoft Entra hybrid joined devices, and<strong> Cloud PCs</strong></td></tr><tr><td><strong>Windows editions</strong></td><td><strong>Windows 11 Enterprise, </strong>Windows 11 Education, and Windows 11 Pro for domain-joined devices</td></tr></tbody></table><figcaption class="wp-element-caption">Windows Backup is Now Enabled by Default for Eligible Intune Managed Devices – Table.1</figcaption></figure><h2 class="wp-block-heading" id="configure-windows-backup-and-restore-using-intune"><strong>Configure Windows Backup and Restore using Intune</strong></h2><p class="wp-block-paragraph"><strong>Administrators</strong> can configure the<strong> Windows Backup </strong>and Restore experience from the Microsoft Intune admin center. The backup and restore functions are managed separately, allowing IT teams to control the restore experience while the new default-on backup behavior applies to <strong>eligible devices</strong>. The first method Open <strong>Windows Backup </strong>and Restore.</p><ul class="wp-block-list"><li>In the <strong>Microsoft Intune admin center</strong>, go to <strong>Devices </strong>&gt; <strong>Enrollment</strong>.</li><li>Under the Device onboarding section, select Enrollment, and then choose <strong>Windows Backup and Restore.</strong></li></ul><div class="wp-block-image"><figure class="aligncenter size-large"><img alt="Windows Backup is Now Enabled by Default for Eligible Intune Managed Devices -Fig.1" class="wp-image-381595" data-lazyloaded="1" data-sizes="(max-width: 1024px) 100vw, 1024px" decoding="async" src="assets/56ef0022c0b5c5f3/img_0.avif" title="Windows Backup is Now Enabled by Default for Eligible Intune Managed Devices 2"/><figcaption class="wp-element-caption">Windows Backup is Now Enabled by Default for Eligible Intune Managed Devices -Fig.1</figcaption></figure></div><p class="wp-block-paragraph">After opening<strong> Windows Backup and Restore,</strong> configure the restore option for users. Under Show restore page, select <strong>On </strong>to allow users to see the restore page and choose a backup when they start their <strong>device</strong>.  Here, you can see that the Show restore page option is already set to <strong>On </strong>in the Intune portal. Click <strong>Save </strong>to apply the setting. With th<strong>e Windows 11 version 26H2 </strong>update, backup is enabled by default for eligible devices, while the restore experience remains separately controlled by the administrator.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><div class="wp-block-image"><figure class="aligncenter size-large"><img alt="Windows Backup is Now Enabled by Default for Eligible Intune Managed Devices -Fig.2" class="wp-image-381596" data-lazyloaded="1" data-sizes="(max-width: 1024px) 100vw, 1024px" decoding="async" src="assets/56ef0022c0b5c5f3/img_1.avif" title="Windows Backup is Now Enabled by Default for Eligible Intune Managed Devices 3"/><figcaption class="wp-element-caption">Windows Backup is Now Enabled by Default for Eligible Intune Managed Devices -Fig.2</figcaption></figure></div><h2 class="wp-block-heading" id="configure-windows-backup-using-intune"><strong>Configure Windows Backup using Intune</strong></h2><p class="wp-block-paragraph">To configure Windows Backup through Intune<strong> </strong>through <strong>Windows 10 and later</strong> under the Settings catalog profile. Then go to Configuration settings &gt; Add settings. Search for Enable Windows Backup, then select <strong>Administrative Templates</strong> &gt;<strong> Windows Components </strong>&gt; <strong>Sync </strong>your settings and choose <strong>Enable Windows Backup. </strong>This setting allows administrators to explicitly enable the backup policy for targeted devices. For eligible Windows 11 version 26H2 devices, leaving the backup policy Not Configured also allows the new default-on behavior to apply.</p><figure class="wp-block-table aligncenter"><table class="has-contrast-3-background-color has-background has-fixed-layout"><thead><tr><th>Policy Info</th></tr></thead><tbody><tr><td>This policy setting <strong>allows administrators</strong> to configure and manage windows backup for their organization. If you enable this policy setting, windows backup will occur <strong>periodically</strong>. If you disable or do not configure this policy setting, <strong>windows backup </strong>will not take place.<br/></td></tr></tbody></table><figcaption class="wp-element-caption">Windows Backup is Now Enabled by Default for Eligible Intune Managed Devices -Table.2</figcaption></figure><div class="wp-block-image"><figure class="aligncenter size-full"><img alt="Windows Backup is Now Enabled by Default for Eligible Intune Managed Devices -Fig.3" class="wp-image-381597" data-lazyloaded="1" data-sizes="auto, (max-width: 822px) 100vw, 822px" decoding="async" src="assets/56ef0022c0b5c5f3/img_2.avif" title="Windows Backup is Now Enabled by Default for Eligible Intune Managed Devices 4"/><figcaption class="wp-element-caption">Windows Backup is Now Enabled by Default for Eligible Intune Managed Devices -Fig.3</figcaption></figure></div><h2 class="wp-block-heading" id="need-further-assistance-or-have-technical-questions"><strong>Need Further Assistance or Have Technical Questions?</strong></h2><p class="has-contrast-3-background-color has-background wp-block-paragraph">Join the <a href="https://www.linkedin.com/company/how-to-manage-devices/" rel="nofollow noopener" target="_blank"><strong>LinkedIn Page</strong></a> and <a href="https://t.me/+Q9lE6G1_BO_bGq97" rel="nofollow"><strong>Telegram group</strong></a> to get the latest step-by-step guides and news updates. Join our <a href="https://www.meetup.com/htmd-community-meetup-group/" rel="nofollow noopener" target="_blank"><strong>Meetup Page</strong></a> to participate in User group meetings. Also, join the <a href="https://htmd.in/WACM2" rel="nofollow noopener" target="_blank"><strong>WhatsApp Community</strong></a>  and the <a href="https://htmd.in/whatsapp_channel" rel="nofollow noopener" target="_blank"><strong>Whatsapp channel</strong></a> to get the latest news on Microsoft Technologies. We are there on <a href="https://www.reddit.com/r/ImpMSNews/" rel="nofollow noopener" target="_blank"><strong>Reddit</strong></a> as well.</p><p class="wp-block-paragraph"><strong>Author</strong></p><p class="wp-block-paragraph"><a href="https://www.linkedin.com/in/anoopcnair/" rel="nofollow noopener" target="_blank"><strong>Anoop C Nair</strong></a>  is Workplace Technology solution architect with 25+ years of experience in global enterprise organizations such as JP Morgan, Capgemini, etc. He is Microsoft Certified Trainer. Microsoft MVP from 2015 onwards for consecutive 11 years! He also conducts Intune and modern workplace tech training for enterprise organizations. He is Blogger, Speaker, and Founder of HTMD Community and HTMD Conference. His focus is on Device Management technologies such as Intune, Windows, Cloud PC. He writes about technologies like Intune, SCCM, Windows, Cloud PC, Windows, Entra, Microsoft Security.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><p class="code-block code-block-8">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="1286776600" data-full-width-responsive="true"></ins> </p><p class="code-block code-block-9">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="8125570634" data-full-width-responsive="true"></ins> </p></div></div></div>
+</article>
+</body>
+</html>

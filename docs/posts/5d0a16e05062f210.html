@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intune Newsletter – 2nd October 2026</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Andrew Taylor</span>
+    <span class="date">October 2, 2026</span>
+  </div>
+  <h1>Intune Newsletter – 2nd October 2026</h1>
+  <div class="orig">Saved for offline reading · <a href="https://andrewstaylor.com/2026/10/02/intune-newsletter-2nd-october-2026/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text">
+<p>It’s 26H2 week so get ready for even more Copilot, I know you were all definitely looking forward to that appearing in File Explorer!  The question is, can it be any worse than native searching in explorer?</p>
+<hr/>
+<h1>Community Content</h1>
+<p>We start this week with a useful tip from <a href="https://www.linkedin.com/in/christopher-mogis-22621061/">Christopher Mogis</a> on how to convert your macOS dmg packages to pkg at the terminal</p>
+<p><a href="https://www.ccmtune.fr/2026/09/how-to-convert-dmg-application-to-pkg.html">https://www.ccmtune.fr/2026/09/how-to-convert-dmg-application-to-pkg.html</a></p>
+<hr/>
+<p>If you are looking to get started with Remote Help now it is in your M365 licensing, check out this thorough guide from <a href="https://www.linkedin.com/in/michaelsendpoint/">Michael Frank</a></p>
+<p><a href="https://michaelsendpoint.com/intune/intune_suite/remote_help.html#v2">https://michaelsendpoint.com/intune/intune_suite/remote_help.html#v2</a></p>
+<p>Michael also looks at the new deployment plans functionality here</p>
+<p><a href="https://michaelsendpoint.com/intune/deployments.html">https://michaelsendpoint.com/intune/deployments.html</a></p>
+<hr/>
+<p>For those of you managing Lenovo devices, learn how to keep the drivers and BIOS updated in this guide from <a href="https://www.linkedin.com/in/mads-johansen/">Mads Johansen</a></p>
+<p><a href="https://evil365.com/lenovo/Update-Lenovo-Devices-With-Lenovo-Commercial-Vantage-Using-Intune/">https://evil365.com/lenovo/Update-Lenovo-Devices-With-Lenovo-Commercial-Vantage-Using-Intune/</a></p>
+<hr/>
+<p>You’ve no doubt heard of the Enterprise App Catalog with your M365 licensing and the “many” apps, but sometimes it’s nice to know which apps are in there, without counting 20 versions of Java as different apps.  Fortunately <a href="https://www.linkedin.com/in/byteben/">Ben Whitmore</a> has a lovely script here which will tell you exactly which apps and how many versions of each.  Plus you can find out how the script works to learn a bit of Graph along the way</p>
+<blockquote class="wp-embedded-content" data-secret="Lp1fnf5enj"><p><a href="https://msendpointmgr.com/2026/09/27/whats-in-the-enterprise-app-catalog/">What’s in the Microsoft Enterprise App Catalog? Finding Out with PowerShell and Microsoft Graph</a></p></blockquote>
+<p></p>
+<hr/>
+<p>For all of the Linux users out there (and I’m sure it’s a growing list), if you still want to be able to access Windows 365, try this guide from <a href="https://www.linkedin.com/in/niallcbrady/">Niall Brady</a></p>
+<blockquote class="wp-embedded-content" data-secret="W7fUNaTZ5R"><p><a href="https://www.niallbrady.com/2026/09/28/using-windows-365-via-linux-zorinos-to-be-precise/">Using Windows 365 via Linux, ZorinOS to be precise.</a></p></blockquote>
+<p></p>
+<hr/>
+<p>You may or may not have noticed the deployment plans now available in Intune to apply the same approach taken with updates to policies and apps.  It has been a popular topic this week, covered here by <a href="https://www.linkedin.com/in/peterwoude/">Peter van der Woude</a></p>
+<blockquote class="wp-embedded-content" data-secret="oRBY9qQIGQ"><p><a href="https://petervanderwoude.nl/post/getting-started-with-deployments-and-deployment-plans-for-an-automated-staged-rollout/">Getting started with deployments and deployment plans for an automated staged rollout</a></p></blockquote>
+<p></p>
+<hr/>
+<p><a href="https://www.linkedin.com/in/jorgeasaurus/">Jorge Suarez</a> also looks at how to use it here, including some useful PowerShell scripts for those of you who want to automate it (and why wouldn’t you!)</p>
+<p><a href="https://www.jorgeasaur.us/intune-deployments-schedule-the-rollout">https://www.jorgeasaur.us/intune-deployments-schedule-the-rollout</a></p>
+<hr/>
+<p>Another look at deployment plans here from <a href="https://www.linkedin.com/in/craig-camacho-59364621/">Craig Camacho</a></p>
+<blockquote class="wp-embedded-content" data-secret="r1Rbs0Jz36"><p><a href="https://thedeploymentguy.co.uk/intune-deployment-plans/">Intune Deployment Plans: Because “Assign to All Devices and Pray” Isn’t a Rollout Strategy</a></p></blockquote>
+<p></p>
+<hr/>
+<p>Win11 26H2 is here, sadly no Windows 95 style launch video for this one, but I’m sure you’re all very interested to try it.  <a href="https://www.linkedin.com/in/thomasmarcussen/">Thomas Marcussen</a> has an excellent run-through of what’s included, what to expect and how to manage the rollout here</p>
+<blockquote class="wp-embedded-content" data-secret="4c4EqoV9Co"><p><a href="https://blog.thomasmarcussen.com/windows-11-26h2-ga-autopilot-intune-reporting/">Windows 11 26H2 Is Here: What to Do with Autopilot and Intune (and How to Report on It)</a></p></blockquote>
+<p></p>
+<hr/>
+<p>For the French speakers, <a href="https://www.linkedin.com/in/jonathan-fievet-2a8670262/">Jonathan Fievet</a> looks at how to deploy 26H2 in this post</p>
+<blockquote class="wp-embedded-content" data-secret="nIKI9BR5Cv"><p><a href="https://leblogmodernworkplace.fr/windows-11-26h2-ce-quil-faut-retenir/">Windows 11 26H2 : ce qu’il faut retenir</a></p></blockquote>
+<p></p>
+<hr/>
+<p><a href="https://www.linkedin.com/in/laurentgebeau/">Laurent Gébeau</a> also looks at 26H2 here (in French)</p>
+<blockquote class="wp-embedded-content" data-secret="MW34UtMe9C"><p><a href="https://www.toutwindows.com/blogtoutwindows/windows-11-2026-aka-26h2-est-dispo/">Windows 11 2026 aka 26H2 est dispo</a></p></blockquote>
+<p></p>
+<hr/>
+<p>This post from <a href="https://www.linkedin.com/in/joeyverlinden/">Joey Verlinden</a> looks at some of the new security features available in 26H2 as well as how to deploy it</p>
+<p><a href="https://www.joeyverlinden.com/upgrade-to-windows-11-26h2-via-intune/">https://www.joeyverlinden.com/upgrade-to-windows-11-26h2-via-intune/</a></p>
+<hr/>
+<p>Away from Windows, a lot of new functionality has been added in the 2609 Intune release for Android Enterprise as covered here by <a href="https://www.linkedin.com/in/nickydewestelinck/">Nicky De Westelinck</a></p>
+<p><a href="https://www.nickydewestelinck.be/2026/09/30/whats-new-for-android-enterprise-in-microsoft-intune-2609-september-2026-highlights/">https://www.nickydewestelinck.be/2026/09/30/whats-new-for-android-enterprise-in-microsoft-intune-2609-september-2026-highlights/</a></p>
+<hr/>
+<p><a href="https://www.linkedin.com/in/jeroenburgerhout/">Jeroen Burgerhout</a> completes the series looking at Windows 365 by covering the dedicated Windows 365 Link device and how to manage it with Intune</p>
+<p><a href="https://www.burgerhout.org/p/windows-365-wednesday-windows-365-link-and-intune">https://www.burgerhout.org/p/windows-365-wednesday-windows-365-link-and-intune</a></p>
+<hr/>
+<p>If you’re looking for ways to manage elevated permissions, or dealing with an estate full of admins, this post from <a href="https://www.linkedin.com/in/dustin-gullett-83607b1ba/">Dustin Gullett</a> is for you.  It looks at Admin Protection and EPM, the use cases for each and how they can help</p>
+<p><a href="https://zerototrust.tech/administrator-protection-vs-intune-epm-high-noon-for-local-admin/">https://zerototrust.tech/administrator-protection-vs-intune-epm-high-noon-for-local-admin/</a></p>
+<hr/>
+<p>You can now have some control over app launches on your macOS fleet as covered here in this comprehensive post from <a href="https://www.linkedin.com/in/someshpathak/">Somesh Pathak</a></p>
+<blockquote class="wp-embedded-content" data-secret="aLYPUbJY6d"><p><a href="https://intuneirl.com/wdac-for-macos-app-control-on-macos-27-with-intune/">WDAC for macOS? App Control on macOS 27 with Intune</a></p></blockquote>
+<p></p>
+<hr/>
+<h1><a id="video"></a>Video Content</h1>
+<p>Now for this weeks video content (and there is a lot), starting with two videos from <a href="https://www.linkedin.com/in/liamrobbo18/">Liam Robinson</a>, the first covers a few different methods to remove Windows 11 bloatware</p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/3HwZvI0IHFM?feature=oembed" title="How to Remove Windows 11 Bloatware (3 Easy Methods)">VIDEO</iframe></p>
+<p>Liam’s second video looks at the new deployment plans in Intune and how to get up and running</p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/lqj5LOpzNSw?feature=oembed" title="Intune Deployment Plans: New App Deployment Rings Are Here!">VIDEO</iframe></p>
+<hr/>
+<p><a href="https://www.linkedin.com/in/deanellerby/">Dean Ellerby</a> also looks at the new deployment plans here</p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/hiuHoxkerNk?feature=oembed" title="Microsoft Intune Deployment Plans: App Rollout Rings Are Here!">VIDEO</iframe></p>
+<hr/>
+<p>This video from <a href="https://www.linkedin.com/in/stevew25/">Steve Weiner</a> also covers the new Deployments functionality</p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/ohOmfJxbHr8?feature=oembed" title="New in Intune: Roll Out Apps and Policies in Rings with Deployments (Preview)">VIDEO</iframe></p>
+<hr/>
+<p>It’s been a popular feature this week, <a href="https://www.linkedin.com/in/chandermanipandey/">Chander Mani Pandey</a> also looks at deployment plans in the first of two videos this week</p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/oIHlVdLx8EE?feature=oembed" title="How to Setup Deployment Plans and Deployments In Microsoft Intune">VIDEO</iframe></p>
+<p>Chander has been quick off the mark with the second video, covering how to deploy Win11 26H2</p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/lLU6Y1I38nA?feature=oembed" title="Deploy Windows 11 26H2 with Intune Feature Updates (Step-by-Step)">VIDEO</iframe></p>
+<hr/>
+<p>Learn how to setup App Inventory in this video and blog post from <a href="https://www.linkedin.com/in/markoldham365/">Mark Oldham</a></p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/9hNEJiGZOfA?feature=oembed" title="How to Set Up Microsoft Intune App Inventory #intune #AppInventory">VIDEO</iframe></p>
+<blockquote class="wp-embedded-content" data-secret="JfR1yg1Sc9"><p><a href="https://controlaltdeletetechbits.co.uk/microsoft-intune-app-inventory/">How to Set Up Microsoft Intune App Inventory</a></p></blockquote>
+<p></p>
+<hr/>
+<p>If you’re running hybrid and trying to work out which wins between Intune and GPO, watch this video from <a href="https://www.linkedin.com/in/jonathanjedwards/">Jonathan Edwards</a></p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/pLR9ZZYYNj0?feature=oembed" title="GPO vs Intune: Who Actually Wins? (Not What You Think)">VIDEO</iframe></p>
+<hr/>
+<h1><a id="microsoft"></a>Microsoft Content</h1>
+<p>Onto the Microsoft content we go, starting with the official 26H2 announcement with all of the information you need from <a href="https://www.linkedin.com/in/aria-carley/">Aria Hanson</a></p>
+<p><a href="https://techcommunity.microsoft.com/blog/Windows-ITPro-blog/an-it-pro%E2%80%99s-guide-to-windows-11-version-26h2/4559760">https://techcommunity.microsoft.com/blog/Windows-ITPro-blog/an-it-pro%E2%80%99s-guide-to-windows-11-version-26h2/4559760</a></p>
+<p>Aria also has a new podcast which I would definitely recommend signing up for here, the first episode covers update management which is something everyone should know about</p>
+<p><a href="https://techcommunity.microsoft.com/t5/windows-it-pro-blog/introducing-ctrl-manage-practical-windows-management-in-30/ba-p/4560916">https://techcommunity.microsoft.com/t5/windows-it-pro-blog/introducing-ctrl-manage-practical-windows-management-in-30/ba-p/4560916</a></p>
+<hr/>
+<p>The Intune Support team also cover the new Settings Catalog updates for 26H2 here</p>
+<p><a href="https://techcommunity.microsoft.com/blog/IntuneCustomerSuccess/microsoft-intune-settings-catalog-updated-to-support-windows-11-version-26h2/4560815">https://techcommunity.microsoft.com/blog/IntuneCustomerSuccess/microsoft-intune-settings-catalog-updated-to-support-windows-11-version-26h2/4560815</a></p>
+<hr/>
+<p>Learn about all of the latest goodies in Windows 365 here from <a href="https://www.linkedin.com/in/syl-liu/">Sylvia Liu</a></p>
+<p><a href="https://techcommunity.microsoft.com/blog/Windows-ITPro-blog/what%E2%80%99s-new-in-windows-365-september-2026-recap/4558777">https://techcommunity.microsoft.com/blog/Windows-ITPro-blog/what%E2%80%99s-new-in-windows-365-september-2026-recap/4558777</a></p>
+<hr/>
+<p>That’s all for this week, have an amazing weekend!</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
