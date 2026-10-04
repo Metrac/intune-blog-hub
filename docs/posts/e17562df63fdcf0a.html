@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Copilot Studio Memory: Off Does Not Mean Deleted</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">October 4, 2026</span>
+  </div>
+  <h1>Copilot Studio Memory: Off Does Not Mean Deleted</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/copilot-studio-memory-governance/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p class="wp-block-paragraph">I opened the Build page of my Copilot Studio demo agent and looked at the Memory switch.</p>
+<p class="wp-block-paragraph">It was off. That is a useful observation, but it does not answer every data-handling question.</p>
+<p class="wp-block-paragraph"><span class="jr-inline-emphasis">Microsoft documents that turning Memory off prevents the agent from using stored memories. It does not delete those memories.</span> If your change record says “memory disabled and all stored information removed,” one toggle is not enough evidence. <a href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/memory-overview" rel="noopener" target="_blank">Copilot Studio Memory documentation</a>.</p>
+<p class="wp-block-paragraph">That distinction is worth understanding before adding memory to a production agent. Here is how I would review the feature, using an existing policy-assistant draft in my ModernDevMgmt tenant.</p>
+<p><span id="more-20857"></span>
+</p>
+<h2 class="wp-block-heading" id="what-the-live-portal-shows">What the live portal shows<a aria-hidden="true" class="jr-anchor" href="#what-the-live-portal-shows" tabindex="-1">#</a></h2>
+<figure class="wp-block-image"><img alt="Copilot Studio memory setting in the live Rollout Coach configuration, alongside knowledge, tools and connected agents" data-recalc-dims="1" decoding="async" src="assets/e17562df63fdcf0a/img_0.jpg"/></figure>
+<p class="wp-block-paragraph"><em>Fresh portal capture from 28 September 2026. Memory is marked Preview and the switch is off. I did not turn it on, save a change or inspect anyone’s stored memories.</em></p>
+<p class="wp-block-paragraph">The broader Build page shows a deliberately narrow scenario: the <strong>JR Demo – Rollout Coach – New UI Draft</strong> is configured to explain a fictional rollout policy. It has a knowledge file named <code>rollout-policy-v1.txt</code>. Its instructions say not to deploy applications, change devices or claim that it applied a change.</p>
+<p class="wp-block-paragraph">That is the context for my review. It is not evidence that the agent has passed security tests, and it is not a statement that no memories have ever existed for it. I can verify the visible configuration. Historical data needs a different check.</p>
+<h2 class="wp-block-heading" id="start-with-a-reason-for-remembering">Start with a reason for remembering<a aria-hidden="true" class="jr-anchor" href="#start-with-a-reason-for-remembering" tabindex="-1">#</a></h2>
+<p class="wp-block-paragraph">I would not enable memory merely because the switch is available. I would first finish this sentence:</p>
+<p class="wp-block-paragraph">“This agent needs to remember ___ between conversations because ___.”</p>
+<p class="wp-block-paragraph">A preference for concise answers may be useful. A temporary deployment exception is a very different kind of information. In a policy assistant, I want current, approved policy to remain the source of authority. An earlier conversation should not quietly turn into an approval record.</p>
+<p class="wp-block-paragraph">For the Rollout Coach, my starting recommendation is therefore conservative: keep the first pilot stateless unless a specific user need justifies persistence. That makes it easier to understand why the agent answered a question and to compare runs using the same source material.</p>
+<p class="wp-block-paragraph">This is a design recommendation for this scenario, not a rule that all agent memory is unsafe. A personal assistant and a policy explainer have different jobs.</p>
+<h2 class="wp-block-heading" id="memory-knowledge-and-permissions-are-different-things">Memory, knowledge and permissions are different things<a aria-hidden="true" class="jr-anchor" href="#memory-knowledge-and-permissions-are-different-things" tabindex="-1">#</a></h2>
+<p class="wp-block-paragraph">The configuration panel puts several components close together. I would still review them separately.</p>
+<figure class="wp-block-table"><table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Question I would ask</th>
+<th>Example in this pilot</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Knowledge</td>
+<td>Which reviewed material should support an answer?</td>
+<td>The current fictional rollout-policy file</td>
+</tr>
+<tr>
+<td>Memory</td>
+<td>Which user context should persist between conversations?</td>
+<td>Possibly a presentation preference, if justified</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>Which external operations can the agent attempt?</td>
+<td>None needed for the initial policy-explanation task</td>
+</tr>
+<tr>
+<td>Permissions</td>
+<td>Which operations are technically allowed?</td>
+<td>Must be checked in the connected systems if tools are added</td>
+</tr>
+</tbody>
+</table></figure>
+<p class="wp-block-paragraph">An instruction such as “do not make changes” describes intended behavior. It is not a substitute for restricting a tool’s permissions. Microsoft describes tools as the mechanism for calling APIs, accessing external services and taking actions. If I later add a device-management tool, I need to review the actual operation and authorization, not only rewrite the prompt. <a href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/tools-overview" rel="noopener" target="_blank">Tools in the GitHub Copilot harness</a>.</p>
+<p class="wp-block-paragraph">For a broader view of where these agents fit, see my <a href="https://jannikreinhard.com/copilot-vs-cowork-vs-agents/">Copilot, Cowork and agents guide</a>.</p>
+<h2 class="wp-block-heading" id="understand-the-documented-memory-boundary">Understand the documented memory boundary<a aria-hidden="true" class="jr-anchor" href="#understand-the-documented-memory-boundary" tabindex="-1">#</a></h2>
+<p class="wp-block-paragraph">Microsoft describes a separate memory store for each user and agent. Makers cannot read users’ memories. Users can review or remove their own memories through the supported chat and memory-portal experiences. The current documentation also describes deletion after 28 days without interaction and says user memory is disabled in group chats and Teams channels. These are preview behaviors, so recheck them before rollout. <a href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/memory-overview" rel="noopener" target="_blank">Memory scope and lifecycle</a>.</p>
+<p class="wp-block-paragraph">I would not use inactivity-based cleanup as my incident-response procedure. If someone needs information removed now, the operating process should identify the supported deletion action and the person who can perform it. “Wait for the retention period” and “delete this information” are different requests.</p>
+<p class="wp-block-paragraph">I would also avoid an administrator support process that asks people to paste their entire private memory store into a ticket. Start with a synthetic reproduction and the minimum evidence needed to understand the issue.</p>
+<figure class="wp-block-image"><img alt="Copilot Studio memory actions: disable use, review context and remove information through supported user controls" data-recalc-dims="1" decoding="async" src="assets/e17562df63fdcf0a/img_1.jpg"/></figure>
+<h2 class="wp-block-heading" id="write-a-short-memory-decision-record">Write a short memory decision record<a aria-hidden="true" class="jr-anchor" href="#write-a-short-memory-decision-record" tabindex="-1">#</a></h2>
+<p class="wp-block-paragraph">Before enabling memory for this kind of assistant, I would want the owner to answer six questions:</p>
+<ol class="wp-block-list">
+<li><strong>Purpose:</strong> What becomes materially better when context persists?</li>
+<li><strong>Scope:</strong> What types of information are appropriate for that purpose?</li>
+<li><strong>Authority:</strong> Which source wins if a remembered preference conflicts with the current policy?</li>
+<li><strong>User control:</strong> Can a pilot user find and understand the review and deletion experience?</li>
+<li><strong>Support:</strong> Who handles a report that the agent remembers something it should not?</li>
+<li><strong>Exit:</strong> How will the team disable use and separately address stored data when retiring the pilot?</li>
+</ol>
+<p class="wp-block-paragraph">The record should describe an operational decision. A checkbox saying “governance completed” does not help a user who asks what the agent remembers about them.</p>
+<p class="wp-block-paragraph">For my policy-assistant example, I would keep approved policy updates in the source-management process. Personal memory should not become a second, unofficial policy repository.</p>
+<figure class="wp-block-image"><img alt="Design review for Copilot Studio memory covering purpose, policy authority and validation" data-recalc-dims="1" decoding="async" src="assets/e17562df63fdcf0a/img_2.jpg"/></figure>
+<h2 class="wp-block-heading" id="test-the-uncomfortable-cases-not-only-personalization">Test the uncomfortable cases, not only personalization<a aria-hidden="true" class="jr-anchor" href="#test-the-uncomfortable-cases-not-only-personalization" tabindex="-1">#</a></h2>
+<p class="wp-block-paragraph">The following tests are <span class="jr-inline-emphasis">proposed, not executed in this walkthrough</span>. They should use synthetic data, an approved allowance and a dedicated pilot user. I did not enable memory or spend credits to manufacture a successful demo.</p>
+<figure class="wp-block-table"><table>
+<thead>
+<tr>
+<th>Test case</th>
+<th>What to check</th>
+<th>Evidence to keep</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Harmless preference</td>
+<td>A preference behaves as intended across new conversations</td>
+<td>Prompt, conversation boundary and observed result</td>
+</tr>
+<tr>
+<td>Conflicting policy request</td>
+<td>Remembered context does not become an unsupported policy exception</td>
+<td>Source version and reviewer explanation</td>
+</tr>
+<tr>
+<td>Second pilot user</td>
+<td>User-specific context does not appear for another user</td>
+<td>Separate identities and sanitized results</td>
+</tr>
+<tr>
+<td>Disable memory</td>
+<td>The behavior after disabling matches the intended change</td>
+<td>Configuration state and controlled follow-up</td>
+</tr>
+<tr>
+<td>Delete synthetic memory</td>
+<td>The supported deletion flow works for the pilot user</td>
+<td>User-visible confirmation and a follow-up test</td>
+</tr>
+<tr>
+<td>Change the source policy</td>
+<td>Current approved content remains authoritative</td>
+<td>Old and new source versions plus acceptance decision</td>
+</tr>
+</tbody>
+</table></figure>
+<p class="wp-block-paragraph">I would keep the test questions consistent and change one variable at a time. If the model, instructions, source document and memory state all change together, a different answer tells me very little about which change caused it.</p>
+<p class="wp-block-paragraph">For each result, record what you observed rather than what you hoped the setting would do. A user-visible confirmation is useful evidence; it is not a claim that you inspected Microsoft’s underlying storage.</p>
+<h2 class="wp-block-heading" id="separate-the-test-plan-from-the-test-results">Separate the test plan from the test results<a aria-hidden="true" class="jr-anchor" href="#separate-the-test-plan-from-the-test-results" tabindex="-1">#</a></h2>
+<p class="wp-block-paragraph">Copilot Studio exposes Build, Preview, Evaluate and Monitor as separate parts of the agent lifecycle. In this draft, Monitor was not available. I would not create a dashboard illustration to fill that gap. <a href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/overview" rel="noopener" target="_blank">The current agent authoring experience</a>.</p>
+<p class="wp-block-paragraph">That separation matters in an article too. The screenshot proves that the Memory control exists and was off in the inspected configuration. The Microsoft reference explains documented behavior. The test table describes what I recommend doing next. None of those should be presented as a completed production validation.</p>
+<h2 class="wp-block-heading" id="decide-what-happens-when-someone-reports-a-problem">Decide what happens when someone reports a problem<a aria-hidden="true" class="jr-anchor" href="#decide-what-happens-when-someone-reports-a-problem" tabindex="-1">#</a></h2>
+<p class="wp-block-paragraph">My proposed support flow is straightforward:</p>
+<ul class="wp-block-list">
+<li>Identify the affected agent and user without collecting unnecessary conversation content.</li>
+<li>Determine whether the concern is source knowledge, current conversation context, persistent memory or an external tool action.</li>
+<li>Use the supported user controls where deletion is required.</li>
+<li>Review whether the agent should stop using memory while the issue is investigated.</li>
+<li>Re-run the relevant synthetic test before broadening access again.</li>
+</ul>
+<p class="wp-block-paragraph">The diagnosis comes first. Re-uploading a knowledge file will not necessarily address a memory concern. Turning off memory will not fix a tool with excessive permissions. A single “reset the agent” instruction hides those differences.</p>
+<h2 class="wp-block-heading" id="my-recommendation-for-a-first-policy-assistant-pilot">My recommendation for a first policy-assistant pilot<a aria-hidden="true" class="jr-anchor" href="#my-recommendation-for-a-first-policy-assistant-pilot" tabindex="-1">#</a></h2>
+<p class="wp-block-paragraph">Keep the scope small: one reviewed source, a clear task and no unnecessary execution capability. Add memory only when you can explain the benefit and test the associated behavior.</p>
+<p class="wp-block-paragraph">For the current Rollout Coach, the useful outcome is a supported explanation of a rollout rule. Remembering more is not automatically an improvement to that outcome.</p>
+<h3 class="wp-block-heading" id="is-memory-off-proof-that-nothing-is-stored">Is Memory off proof that nothing is stored?<a aria-hidden="true" class="jr-anchor" href="#is-memory-off-proof-that-nothing-is-stored" tabindex="-1">#</a></h3>
+<p class="wp-block-paragraph">No. Treat the visible switch as configuration evidence, not a storage audit. Verify the appropriate user-facing controls when stored information is the concern.</p>
+<h3 class="wp-block-heading" id="should-a-maker-inspect-every-users-memories">Should a maker inspect every user’s memories?<a aria-hidden="true" class="jr-anchor" href="#should-a-maker-inspect-every-users-memories" tabindex="-1">#</a></h3>
+<p class="wp-block-paragraph">That is not the model described by Microsoft. Build a support process around user control and minimal, consented evidence rather than assuming maker access.</p>
+<h3 class="wp-block-heading" id="do-i-need-memory-for-the-agent-to-use-a-knowledge-file">Do I need memory for the agent to use a knowledge file?<a aria-hidden="true" class="jr-anchor" href="#do-i-need-memory-for-the-agent-to-use-a-knowledge-file" tabindex="-1">#</a></h3>
+<p class="wp-block-paragraph">These are separate components in the Build experience. My inspected draft has a knowledge file while Memory is off. Whether its answers meet the acceptance criteria still needs testing.</p>
+<h2 class="wp-block-heading" id="my-takeaway">My takeaway<a aria-hidden="true" class="jr-anchor" href="#my-takeaway" tabindex="-1">#</a></h2>
+<p class="wp-block-paragraph">Before enabling agent memory, decide what deserves to persist. Before disabling it, decide whether your task is to stop use, remove stored information or both.</p>
+<p class="wp-block-paragraph">Those are small distinctions in the UI, but important ones in a real operating process.</p>
+<p class="wp-block-paragraph">Stay healthy, Cheers Jannik</p>
+<div class="jr-nl jr-nl--article"><div class="jr-nl__copy"><p><span class="jr-nl__kicker">Newsletter</span></p><p class="jr-nl__title">New posts, straight to your inbox.</p><p class="jr-nl__promise">Hands-on guides on Intune, AI and Azure.</p></div><div class="jr-nl__form">
+<p aria-live="polite" class="jr-nl__msg" role="status"></p><p class="jr-nl__trust">190+ guides · 5x Microsoft MVP · No spam, unsubscribe anytime · <a href="https://jannikreinhard.com/datenschutz/">Privacy</a></p></div></div> </div>
+</div></div>
+</article>
+</body>
+</html>

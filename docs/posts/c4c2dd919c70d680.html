@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intune Can Now Bypass Windows Update Group Policy</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Call4Cloud (Rudy Ooms)</span>
+    <span class="date">October 3, 2026</span>
+  </div>
+  <h1>Intune Can Now Bypass Windows Update Group Policy</h1>
+  <div class="orig">Saved for offline reading · <a href="https://patchmypc.com/blog/ignore-windows-update-group-policy-intune/?utm_term=rss" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="post-content">
+<p class="wp-block-paragraph">This blog will show you how IgnoreWindowsUpdateGroupPolicies changes Windows Update source selection, why MDMWinsOverGP does not apply here, and how to use the policy when moving from GPO or WSUS to Intune.</p>
+<h2 class="wp-block-heading" id="h-introduction-to-ignorewindowsupdategrouppolicies">Introduction to IgnoreWindowsUpdateGroupPolicies<span class="clth-copy-icon" data-heading-id="h-introduction-to-ignorewindowsupdategrouppolicies"><span class="clth-tooltip">Copy Link</span></span></h2>
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr><td><strong>What is actually new here?</strong> The policy itself is not brand new in October 2026. Microsoft was already listing IgnoreWindowsUpdateGroupPolicies in preview documentation by June 2026. The important change is production support: the current Policy CSP documentation now lists Windows 11 version 24H2 with KB5101684, build 26100.8973, and later. KB5101684 was released on July 28, 2026. The current English CSP page was last updated on September 10, 2026.</td></tr></tbody></table></figure>
+<p class="wp-block-paragraph">You move <strong><a href="https://patchmypc.com/blog/windows-update-registry-guide/">Windows Update</a></strong> management from Group Policy or WSUS to Intune. The update ring arrives, the MDM policy is present, and the device is enrolled correctly. Yet Windows Update can still read an old Group Policy value first. That can leave a device pointing at WSUS, following an old schedule, or behaving differently from the policy you are now sending through MDM.</p>
+<p class="wp-block-paragraph">For years, the obvious answer sounded like MDMWinsOverGP. The problem is that Microsoft explicitly documents that the ControlPolicyConflict setting does not apply to the Update Policy CSP. Windows Update needed its own answer.</p>
+<p class="wp-block-paragraph">That answer is IgnoreWindowsUpdateGroupPolicies. Microsoft describes it as a device policy that causes Windows Update Group Policy settings to be ignored so the MDM managed configuration can take over. I wanted to know what “ignored” actually means inside Windows. Does MDM simply win when two values conflict, or does Windows Update stop reading the Group Policy source entirely?</p>
+<p class="wp-block-paragraph">What matters is where Windows makes the decision. This setting does not wait until Group Policy and MDM have both produced a value and then pick a winner. On supported builds, Windows Update can decide not to use the Group Policy source at all. That also means the live Windows Update Group Policy values and the cached Group Policy fallback can both be left out of the read path.</p>
+<figure class="wp-block-image size-full is-resized"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/10/image-10.png"><picture class="wp-image-196166" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/10/image-10.png.webp 629w, https://patchmypc.com/app/uploads/2026/10/image-10-300x232.png.webp 300w" sizes="(max-width: 629px) 100vw, 629px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 629px) 100vw, 629px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/10/image-10.png 629w, https://patchmypc.com/app/uploads/2026/10/image-10-300x232.png 300w" decoding="async" src="assets/c4c2dd919c70d680/img_0.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">Microsoft now lists the policy for Windows 11 version 24H2 with KB5101684, build 26100.8973, and later.</p>
+<h2 class="wp-block-heading" id="h-microsoft-quietly-moved-ignorewindowsupdategrouppolicies-beyond-insider-preview">Microsoft quietly moved IgnoreWindowsUpdateGroupPolicies beyond Insider Preview<span class="clth-copy-icon" data-heading-id="h-microsoft-quietly-moved-ignorewindowsupdategrouppolicies-beyond-insider-preview"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">First, the timing. This policy has been visible for a while. The earliest public Microsoft documentation I can verify already contains the policy in late June 2026, where it was treated as a Windows Insider Preview setting. That is why it may feel familiar if you were watching the Policy CSP pages during the summer.</p>
+<p class="wp-block-paragraph">The production support line is newer. The current English Update Policy CSP page places IgnoreWindowsUpdateGroupPolicies under Other policies and gives Windows 11 version 24H2 with KB5101684, build 26100.8973, as the minimum. Microsoft released that preview cumulative update on July 28, 2026.</p>
+<p class="wp-block-paragraph">I cannot prove the exact documentation commit that changed the entry from Insider Preview to the production build requirement because the Microsoft Learn Edit link for this generated CSP page currently points to a source location that is not publicly retrievable. We can verify the sequence: it existed in preview documentation by June, the required production build shipped on July 28, and the current English page was updated by September 10.</p>
+<h2 class="wp-block-heading" id="h-why-mdmwinsovergp-never-fixed-windows-update">Why MDMWinsOverGP never fixed Windows Update<span class="clth-copy-icon" data-heading-id="h-why-mdmwinsovergp-never-fixed-windows-update"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph"><strong><a href="https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-controlpolicyconflict">MDMWinsOverGP</a></strong> is often described as the switch that lets MDM win when Group Policy and Policy CSP configure the same setting. Windows Update is the exception that matters here. Microsoft explicitly documents that ControlPolicyConflict does not apply to the Update Policy CSP.</p>
+<p class="wp-block-paragraph">MDMWinsOverGP is still more than a simple last-minute winner. For Policy CSP settings that have a known Group Policy equivalent, Windows can identify the matching Group Policy setting, preserve its state, block that mapped Group Policy setting, and keep MDM authoritative while the managed policy is present.</p>
+<p class="wp-block-paragraph">That model is useful for ordinary Policy CSP settings because Windows knows which Group Policy setting belongs to which managed setting. Windows Update is different. Microsoft explicitly excludes the Update Policy CSP from that generic conflict mechanism, so Windows Update needed a control inside its own policy path.</p>
+<p class="wp-block-paragraph">That is where IgnoreWindowsUpdateGroupPolicies comes in. It does not need to find a matching MDM replacement before doing anything. It changes whether Windows Update can use Group Policy as a source for the setting it is currently trying to resolve.</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/10/image-13-1024x319.png"><picture class="wp-image-196173" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/10/image-13-1024x319.png.webp 1024w, https://patchmypc.com/app/uploads/2026/10/image-13-300x93.png.webp 300w, https://patchmypc.com/app/uploads/2026/10/image-13-765x238.png.webp 765w, https://patchmypc.com/app/uploads/2026/10/image-13-1536x478.png.webp 1536w, https://patchmypc.com/app/uploads/2026/10/image-13-2048x637.png.webp 2048w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/10/image-13-1024x319.png 1024w, https://patchmypc.com/app/uploads/2026/10/image-13-300x93.png 300w, https://patchmypc.com/app/uploads/2026/10/image-13-765x238.png 765w, https://patchmypc.com/app/uploads/2026/10/image-13-1536x478.png 1536w, https://patchmypc.com/app/uploads/2026/10/image-13-2048x637.png 2048w" decoding="async" src="assets/c4c2dd919c70d680/img_1.png"/>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-how-ignorewindowsupdategrouppolicies-actually-works">How IgnoreWindowsUpdateGroupPolicies actually works<span class="clth-copy-icon" data-heading-id="h-how-ignorewindowsupdategrouppolicies-actually-works"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The easiest way to understand this setting is as a gate in front of the Windows Update Group Policy reader. First, the control arrives through MDM and becomes a managed device value. Later, when Windows Update needs a different policy value, it checks that control before deciding whether the Group Policy source can be used. The overview on the next page connects those two moments; the steps that follow explain each part.</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/10/image-12-1024x576.png"><picture class="wp-image-196172" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/10/image-12-1024x576.png.webp 1024w, https://patchmypc.com/app/uploads/2026/10/image-12-300x169.png.webp 300w, https://patchmypc.com/app/uploads/2026/10/image-12-768x432.png.webp 768w, https://patchmypc.com/app/uploads/2026/10/image-12-1536x864.png.webp 1536w, https://patchmypc.com/app/uploads/2026/10/image-12-2048x1152.png.webp 2048w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/10/image-12-1024x576.png 1024w, https://patchmypc.com/app/uploads/2026/10/image-12-300x169.png 300w, https://patchmypc.com/app/uploads/2026/10/image-12-768x432.png 768w, https://patchmypc.com/app/uploads/2026/10/image-12-1536x864.png 1536w, https://patchmypc.com/app/uploads/2026/10/image-12-2048x1152.png 2048w" decoding="async" src="assets/c4c2dd919c70d680/img_2.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">Policy delivery and policy use are separate events. Intune supplies the control first; Windows Update evaluates it later, when an operation needs a setting. Receiving the assignment is not, by itself, proof of which source that operation used.</p>
+<p class="wp-block-paragraph">The Group Policy box shows the source under consideration, not a read that always happens. The bypass is checked before that source is read. On the normal branch, a usable GP result ends the lookup; only when no usable GP result is returned does that branch continue to MDM. With the bypass active, it skips both live and cached GP.</p>
+<h3 class="wp-block-heading" id="h-step-1-intune-sends-the-control-ignorewindowsupdategrouppolicies-policy">Step 1: Intune sends the control IgnoreWindowsUpdateGroupPolicies policy<span class="clth-copy-icon" data-heading-id="h-step-1-intune-sends-the-control-ignorewindowsupdategrouppolicies-policy"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">Intune delivers IgnoreWindowsUpdateGroupPolicies through the Update Policy CSP as a device-scoped integer. A value of 1 enables the bypass. A value of 0, or no managed assignment, leaves normal Windows Update Group Policy reading available.</p>
+<p class="wp-block-paragraph">./Device/Vendor/MSFT/Policy/Config/Update/IgnoreWindowsUpdateGroupPolicies<br/>Integer value: 1</p>
+<h3 class="wp-block-heading" id="h-step-2-windows-stores-the-effective-ignorewindowsupdategrouppolicies-managed-value">Step 2: Windows stores the effective IgnoreWindowsUpdateGroupPolicies managed value<span class="clth-copy-icon" data-heading-id="h-step-2-windows-stores-the-effective-ignorewindowsupdategrouppolicies-managed-value"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">After MDM processes the policy, you can inspect the effective device value in PolicyManager. This is the useful place to confirm that the assignment reached the device. The installed default definition is a different thing and should not be treated as proof that Intune configured the policy</p>
+<p class="wp-block-paragraph">HKLM\SOFTWARE\Microsoft\PolicyManager\current\device\Update<br/>IgnoreWindowsUpdateGroupPolicies = 1</p>
+<p class="wp-block-paragraph">That registry location is our inspection point. The Windows Update implementation does not simply open that DWORD every time it needs the control. It reads the managed Update policy through the Windows policy API. That distinction matters because the CSP is a managed policy contract, not a registry tweak. </p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/10/image-11-1024x313.png"><picture class="wp-image-196171" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/10/image-11-1024x313.png.webp 1024w, https://patchmypc.com/app/uploads/2026/10/image-11-300x92.png.webp 300w, https://patchmypc.com/app/uploads/2026/10/image-11-765x234.png.webp 765w, https://patchmypc.com/app/uploads/2026/10/image-11-1536x470.png.webp 1536w, https://patchmypc.com/app/uploads/2026/10/image-11-2048x627.png.webp 2048w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/10/image-11-1024x313.png 1024w, https://patchmypc.com/app/uploads/2026/10/image-11-300x92.png 300w, https://patchmypc.com/app/uploads/2026/10/image-11-765x234.png 765w, https://patchmypc.com/app/uploads/2026/10/image-11-1536x470.png 1536w, https://patchmypc.com/app/uploads/2026/10/image-11-2048x627.png 2048w" decoding="async" src="assets/c4c2dd919c70d680/img_3.png"/>
+</picture>
+</a></figure>
+<h3 class="wp-block-heading" id="h-step-3-windows-update-later-asks-for-a-policy-value">Step 3: Windows Update later asks for a policy value<span class="clth-copy-icon" data-heading-id="h-step-3-windows-update-later-asks-for-a-policy-value"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">At some later point, Windows Update needs the value for an actual update setting. That could be an update service configuration, WUServer or UseWUServer behavior, an installation schedule, restart controls, active hours, internet update restrictions, or another policy-driven update source. IgnoreWindowsUpdateGroupPolicies is not that value. It controls whether Group Policy can participate in finding it.</p>
+<h3 class="wp-block-heading" id="h-step-4-windows-first-decides-whether-group-policy-is-a-possible-source">Step 4: Windows first decides whether Group Policy is a possible source<span class="clth-copy-icon" data-heading-id="h-step-4-windows-first-decides-whether-group-policy-is-a-possible-source"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">The requested Windows Update setting has its own source rules. If Group Policy is not an eligible source for that setting, Windows does not need the bypass and can continue to the sources that are allowed. If Group Policy is eligible, Windows reaches the new control before entering the normal Group Policy reader.</p>
+<h3 class="wp-block-heading" id="h-step-5-windows-checks-the-ignorewindowsupdategrouppolicies-bypass-before-it-reads-group-policy">Step 5: Windows checks the IgnoreWindowsUpdateGroupPolicies bypass before it reads Group Policy<span class="clth-copy-icon" data-heading-id="h-step-5-windows-checks-the-ignorewindowsupdategrouppolicies-bypass-before-it-reads-group-policy"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">Before skipping an eligible Group Policy source, Windows checks that its bypass feature is active on the device and that the control is permitted through MDM. It then reads the managed Update policy, checks that it is actively managed, and expects an integer in the range 0 to 1. A missing assignment, a failed value read, a wrong data type, an invalid value, or 0 does not enable the bypass. A valid managed value of 1 changes the read path only when those prerequisite checks are satisfied.</p>
+<figure class="wp-block-image size-full is-resized"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/10/image-2.jpg"><picture class="wp-image-196163" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/10/image-2.jpg.webp 658w, https://patchmypc.com/app/uploads/2026/10/image-2-300x98.png.webp 300w" sizes="(max-width: 658px) 100vw, 658px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 658px) 100vw, 658px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/10/image-2.jpg 658w, https://patchmypc.com/app/uploads/2026/10/image-2-300x98.png 300w" decoding="async" src="assets/c4c2dd919c70d680/img_4.jpg"/>
+</picture>
+</a></figure>
+<h3 class="wp-block-heading" id="h-step-6-a-value-of-1-prevents-windows-update-from-entering-the-group-policy-reader">Step 6: A value of 1 prevents Windows Update from entering the Group Policy reader<span class="clth-copy-icon" data-heading-id="h-step-6-a-value-of-1-prevents-windows-update-from-entering-the-group-policy-reader"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">This is the important behavior. Windows Update does not read a Group Policy value and then let MDM beat it. When the bypass is active, the Group Policy reader itself is skipped for this path. Because the live registry read and the Group Policy active cache fallback sit inside that reader, both are avoided.</p>
+<h4 class="wp-block-heading" id="h-what-the-windows-update-group-policy-path-includes">What the Windows Update Group Policy path includes<span class="clth-copy-icon" data-heading-id="h-what-the-windows-update-group-policy-path-includes"><span class="clth-tooltip">Copy Link</span></span></h4>
+<p class="wp-block-paragraph">The Windows Update Group Policy path is the local route Windows uses to obtain an update setting from Group Policy. It is not one folder or another CSP setting. In the inspected client, that route includes the live registry locations below and an active Group Policy cache fallback.</p>
+<p class="wp-block-paragraph">HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate<br/>HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU</p>
+<p class="wp-block-paragraph">Normal processing first tries the appropriate live location for the requested setting. If no usable live state is available, Windows can obtain the active Group Policy cache location and try the corresponding cached setting. A usable GP result can complete the lookup without consulting MDM. The investigation did not identify a single fixed cache registry path to publish, so the overview names the cache rather than inventing a location.</p>
+<p class="wp-block-paragraph">When the bypass is active, Windows reaches neither read. Removing a value from the live registry and enabling this CSP are therefore different operations: removing the live value does not itself prevent a cached GP fallback, while the bypass skips the whole GP source route.</p>
+<p class="wp-block-paragraph">The policy does not delete either registry key, remove the domain GPO, clear the cache, or stop Group Policy refresh. It simply prevents Windows Update from consuming those Group Policy sources through this read path. A script that writes a value into the same Windows Update Group Policy source locations is treated the same way because the reader cares about the source location, not who originally wrote the value.</p>
+<figure class="wp-block-image size-full is-resized"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/10/image-4.jpg"><picture class="wp-image-196167" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/10/image-4.jpg.webp 639w, https://patchmypc.com/app/uploads/2026/10/image-4-300x141.png.webp 300w" sizes="(max-width: 639px) 100vw, 639px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 639px) 100vw, 639px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/10/image-4.jpg 639w, https://patchmypc.com/app/uploads/2026/10/image-4-300x141.png 300w" decoding="async" src="assets/c4c2dd919c70d680/img_5.jpg"/>
+</picture>
+</a></figure>
+<h3 class="wp-block-heading" id="h-step-7-windows-checks-mdm-for-the-setting-it-actually-wanted">Step 7: Windows checks MDM for the setting it actually wanted<span class="clth-copy-icon" data-heading-id="h-step-7-windows-checks-mdm-for-the-setting-it-actually-wanted"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">The bypass control and the requested Windows Update setting are separate policies. After Group Policy has been skipped, Windows checks whether the requested setting itself is eligible through MDM and whether a managed value is configured. If it is, that managed value can be returned.</p>
+<h3 class="wp-block-heading" id="h-step-8-no-mdm-value-does-not-bring-group-policy-back">Step 8: No MDM value does not bring Group Policy back<span class="clth-copy-icon" data-heading-id="h-step-8-no-mdm-value-does-not-bring-group-policy-back"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">If MDM has no configured value for the requested setting, Windows does not jump back to the old Group Policy value. The Group Policy branch has already been removed from this source selection attempt. Windows can continue to other supported non Group Policy sources and the fallback behavior for that setting. Depending on the reader and setting, the outcome can be a supported default, an unconfigured result, or an error; the overview does not mean every missing value automatically becomes a default.</p>
+<p class="wp-block-paragraph">That is why this CSP should not be described as a switch that automatically moves a device to Microsoft Update. It removes the Windows Update Group Policy source from consideration. The remaining result still depends on what MDM and the other supported Windows Update sources actually configure.</p>
+<h3 class="wp-block-heading" id="h-the-source-order-in-plain-english">The source order in plain English<span class="clth-copy-icon" data-heading-id="h-the-source-order-in-plain-english"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">Without the bypass, an eligible Windows Update policy can be read from Group Policy first. If no usable Group Policy state is found, Windows can continue to the managed Policy CSP source and then to other sources and fallback logic that apply to that particular setting.</p>
+<p class="wp-block-paragraph">With IgnoreWindowsUpdateGroupPolicies enabled, the Group Policy attempt is removed before it starts. The remaining source logic continues without using either the live Windows Update Group Policy values or their active cache fallback. That is the core behavior this new CSP adds.</p>
+<h2 class="wp-block-heading" id="h-how-to-configure-it-from-intune">How to configure it from Intune<span class="clth-copy-icon" data-heading-id="h-how-to-configure-it-from-intune"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The public configuration contract is a device-scoped Policy CSP setting. If your Intune tenant does not expose it through a first-party UI yet, the direct route is a custom Windows configuration profile using the OMA URI below. A value of 1 enables the bypass. A value of 0, or removing the managed setting, returns Windows Update to normal Group Policy eligibility where Group Policy is a supported source.</p>
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr><td>Setting</td><td>IgnoreWindowsUpdateGroupPolicies</td></tr><tr><td>OMA URI</td><td>./Device/Vendor/MSFT/Policy/Config/Update/IgnoreWindowsUpdateGroupPolicies</td></tr><tr><td>Data type</td><td>Integer</td></tr><tr><td>Value</td><td>1</td></tr></tbody></table></figure>
+<p class="wp-block-paragraph">Deleting the managed setting, or setting it back to 0, removes the enabled bypass condition and allows normal Group Policy reading again where that source is supported.</p>
+<h2 class="wp-block-heading" id="h-verify-that-the-policy-actually-arrived">Verify that the policy actually arrived<span class="clth-copy-icon" data-heading-id="h-verify-that-the-policy-actually-arrived"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The effective device value can be inspected under PolicyManager. On a managed device, the relevant location is HKLM\SOFTWARE\Microsoft\PolicyManager\current\device\Update. The installed default definition is a different thing and should not be mistaken for proof that the device received an assignment.</p>
+<p class="wp-block-paragraph">A simple read only check looks like this:</p>
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr><td>$path = ‘HKLM:\SOFTWARE\Microsoft\PolicyManager\current\device\Update’ $name = ‘IgnoreWindowsUpdateGroupPolicies’   $key = Get-Item -LiteralPath $path -ErrorAction SilentlyContinue if ($key -and $key.GetValueNames() -contains $name) {     $key.GetValue($name) } else {     ‘No effective IgnoreWindowsUpdateGroupPolicies value is present.’ }</td></tr></tbody></table></figure>
+<p class="wp-block-paragraph">In the investigation behind this article, a DeviceManagement Enterprise Diagnostics Provider Admin event recorded the integer policy being set to 1, and a later read of the effective device store showed the DWORD present with value 1. That proves delivery and stored configuration. It does not by itself prove which source a later Windows Update operation selected.</p>
+<figure class="wp-block-image size-full is-resized"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/10/image-5.jpg"><picture class="wp-image-196168" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/10/image-5.jpg.webp 629w, https://patchmypc.com/app/uploads/2026/10/image-5-300x79.png.webp 300w" sizes="(max-width: 629px) 100vw, 629px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 629px) 100vw, 629px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/10/image-5.jpg 629w, https://patchmypc.com/app/uploads/2026/10/image-5-300x79.png 300w" decoding="async" src="assets/c4c2dd919c70d680/img_6.jpg"/>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-what-the-policy-does-not-do">What the policy does not do<span class="clth-copy-icon" data-heading-id="h-what-the-policy-does-not-do"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The bypass is a read decision, not a cleanup operation. It does not remove a domain GPO, delete the WindowsUpdate registry tree, or stop gpupdate from refreshing policy. The legacy Group Policy state can remain on the machine while Windows Update stops consuming it through this read path. If you later disable the bypass, those Group Policy values can become eligible again.</p>
+<p class="wp-block-paragraph">It also does not turn every Windows Update setting into an Intune setting. The requested policy still has to be supported through the source you expect to use. In the Windows build used for this test, there was no matching WindowsUpdate.admx entry for this control. The supported configuration route for the control itself is the Policy CSP URI, not a direct registry edit.</p>
+<p class="wp-block-paragraph">And it does not mean the generic MDMWinsOverGP behavior has changed. Microsoft still documents that ControlPolicyConflict does not apply to the Update Policy CSP. This is a separate update-specific read path. When validating it, treat delivery, stored state, and actual Windows Update behavior as separate checks rather than assuming the registry value alone proves which source Windows Update used.</p>
+<p class="wp-block-paragraph">The static client trace also did not establish a reboot requirement or an exact activation delay. You can verify delivery and the stored PolicyManager value immediately, but you should validate runtime source selection with a controlled Windows Update test on the target build.</p>
+<h2 class="wp-block-heading" id="h-why-this-matters-when-moving-from-wsus-or-gpo-to-intune">Why this matters when moving from WSUS or GPO to Intune<span class="clth-copy-icon" data-heading-id="h-why-this-matters-when-moving-from-wsus-or-gpo-to-intune"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">This is probably the most useful migration story. One of the difficult parts of moving Windows Update management to Intune has been proving that old Group Policy configuration is no longer influencing the device. A lingering WUServer, UseWUServer, schedule, or update source policy can make a correctly enrolled device behave as though the migration is incomplete.</p>
+<p class="wp-block-paragraph">IgnoreWindowsUpdateGroupPolicies gives Windows Update a native device wide control for that transition. You can keep the old GPO present while the supported device is instructed not to use the Windows Update Group Policy source. That lets the MDM managed population move first instead of requiring the old domain policy to disappear at exactly the same moment.</p>
+<p class="wp-block-paragraph">I would still treat that as a migration control rather than a reason to leave obsolete policy in place forever. Once the migration is proven, cleaning up the old GPO and understanding the remaining update source configuration is still the cleaner end state.</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/10/image-14-1024x259.png"><picture class="wp-image-196174" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/10/image-14-1024x259.png.webp 1024w, https://patchmypc.com/app/uploads/2026/10/image-14-300x76.png.webp 300w, https://patchmypc.com/app/uploads/2026/10/image-14-767x194.png.webp 767w, https://patchmypc.com/app/uploads/2026/10/image-14-1536x389.png.webp 1536w, https://patchmypc.com/app/uploads/2026/10/image-14-2048x518.png.webp 2048w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/10/image-14-1024x259.png 1024w, https://patchmypc.com/app/uploads/2026/10/image-14-300x76.png 300w, https://patchmypc.com/app/uploads/2026/10/image-14-767x194.png 767w, https://patchmypc.com/app/uploads/2026/10/image-14-1536x389.png 1536w, https://patchmypc.com/app/uploads/2026/10/image-14-2048x518.png 2048w" decoding="async" src="assets/c4c2dd919c70d680/img_7.png"/>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-windows-update-finally-has-its-own-group-policy-bypass">Windows Update finally has its own Group Policy bypass<span class="clth-copy-icon" data-heading-id="h-windows-update-finally-has-its-own-group-policy-bypass"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">This policy fills a long-standing gap. MDMWinsOverGP works where Windows has a known mapping between a Policy CSP setting and its Group Policy equivalent. Windows Update was explicitly outside that generic mechanism. IgnoreWindowsUpdateGroupPolicies gives Windows Update its own control over whether Group Policy participates in the read path.</p>
+<p class="wp-block-paragraph">The key detail is the sequence. Windows first decides whether Group Policy can be a source for the requested setting. It then checks whether the new bypass is supported and allowed, reads the managed control value, and only activates the bypass when that value resolves to 1. At that point the live Group Policy source and its cached fallback are both skipped before Windows continues to the remaining eligible sources.</p>
+<p class="wp-block-paragraph">For a device moving from legacy Windows Update GPOs or WSUS management to Intune, that creates a cleaner handover because the old policy can remain on the machine while Windows Update is told not to consume that GP source. The setting is therefore not a conflict winner and not a cleanup switch. It is a source selection control inside Windows Update itself.</p>
+<p class="wp-block-paragraph"></p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
