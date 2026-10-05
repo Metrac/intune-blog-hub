@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Manage system settings with Endpoint Privilege Management</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Call4Cloud (Rudy Ooms)</span>
+    <span class="date">October 5, 2026</span>
+  </div>
+  <h1>Manage system settings with Endpoint Privilege Management</h1>
+  <div class="orig">Saved for offline reading · <a href="https://patchmypc.com/blog/intune-epm-system-settings-network-and-time-sync-elevation/?utm_term=rss" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="post-content">
+<p class="wp-block-paragraph">How Intune can let standard users change approved Windows network settings  (EPM System Settings) without giving them local administrator rights.</p>
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr><td><strong>Network settings are now documented</strong> Microsoft now documents an Elevation system settings policy for Endpoint Privilege Management. The currently documented category is Network settings. It lets standard users change approved IPv4, IPv6, gateway, and DNS values through a controlled EPM experience that starts in Company Portal.</td></tr></tbody></table></figure>
+<figure class="wp-block-image size-full"><a href="https://learn.microsoft.com/en-us/intune/epm/manage-system-settings"><img alt="" class="wp-image-196235" data-lazy-sizes="(max-width: 785px) 100vw, 785px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/10/image-15.png 785w, https://patchmypc.com/app/uploads/2026/10/image-15-300x53.png 300w, https://patchmypc.com/app/uploads/2026/10/image-15-768x135.png 768w" decoding="async" src="assets/0fac539a1a3aa44d/img_0.png"/></a></figure>
+<h2 class="wp-block-heading" id="h-introduction">Introduction<span class="clth-copy-icon" data-heading-id="h-introduction"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph"><strong>Endpoint Privilege Management </strong>normally starts with a file. You define a rule for an executable, MSI, or PowerShell script, EPM matches that file, and the user can perform the required action without becoming a local administrator.</p>
+<p class="wp-block-paragraph">System settings are different. If a user needs to change a static IP address or DNS server, the real requirement is not to elevate some random executable. The requirement is to allow one Windows administration task and nothing more.</p>
+<p class="wp-block-paragraph">Microsoft now documents that model in <a href="https://learn.microsoft.com/en-us/intune/epm/manage-system-settings">Manage system settings with Endpoint Privilege Management</a>. The supported experience starts with Network settings. Company Portal is the user entry point, EPM controls the request, and a dedicated helper opens the limited settings experience on the device.</p>
+<p class="wp-block-paragraph">That helper is EpmElevate.exe. It is an important part of this design because it shows how Microsoft separates the privileged task from the normal Windows Settings experience. The user does not launch it directly. EPM invokes it as part of the approved system settings workflow.</p>
+<h2 class="wp-block-heading" id="h-why-windows-system-settings-are-harder-to-elevate-with-epm">Why Windows system settings are harder to elevate with EPM<span class="clth-copy-icon" data-heading-id="h-why-windows-system-settings-are-harder-to-elevate-with-epm"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Traditional EPM works really well when the administrative task maps to a specific executable. If a user needs to run an installer or an administrative utility, EPM can identify that file and elevate only that process.</p>
+<p class="wp-block-paragraph">Modern Windows Settings does not fit that model nearly as well.</p>
+<p class="wp-block-paragraph">Changing something like a DNS server is not represented by a dedicated ChangeDns.exe that EPM can simply identify and elevate. The user works through the broader Windows Settings experience, while Windows handles the privileged configuration behind that interface.</p>
+<p class="wp-block-paragraph">That distinction matters. The Windows Settings application is a shared experience with many pages and administrative actions. Elevating that whole experience would be much broader than the one task the user actually needs to perform.</p>
+<p class="wp-block-paragraph">This is where EPM System Settings changes the model. Instead of trying to elevate the entire Windows Settings application, EPM creates a dedicated privileged surface for the approved task. For Network Settings, the user gets a purpose built interface for IPv4, IPv6, gateway, and DNS configuration while everything else remains outside that elevated experience.</p>
+<p class="wp-block-paragraph">And that is where EpmElevate.exe starts to make sense. The privilege follows the task, not the entire Settings application and not the user account.</p>
+<figure class="wp-block-image size-large is-resized"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-27-1024x485.png"><picture class="wp-image-196211" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-27-1024x485.png.webp 1024w, https://patchmypc.com/app/uploads/2026/06/image-27-300x142.png.webp 300w, https://patchmypc.com/app/uploads/2026/06/image-27-766x363.png.webp 766w, https://patchmypc.com/app/uploads/2026/06/image-27.jpg.webp 1233w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-27-1024x485.png 1024w, https://patchmypc.com/app/uploads/2026/06/image-27-300x142.png 300w, https://patchmypc.com/app/uploads/2026/06/image-27-766x363.png 766w, https://patchmypc.com/app/uploads/2026/06/image-27.jpg 1233w" decoding="async" src="assets/0fac539a1a3aa44d/img_1.png"/>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-what-microsoft-supports-today">What Microsoft supports today<span class="clth-copy-icon" data-heading-id="h-what-microsoft-supports-today"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Microsoft currently documents Network settings. The policy lets a standard user configure IPv4, IPv6, gateway, and DNS server values for the device’s network adapters. The user can select automatic or manual configuration and enter the values required for the selected adapter.</p>
+<p class="wp-block-paragraph">The device also needs the normal EPM elevation settings policy that enables Endpoint Privilege Management. The system settings policy then defines which system settings experience is available.</p>
+<h2 class="wp-block-heading" id="h-is-the-network-settings-ui-out-of-the-box">Is the Network Settings UI out of the box?<span class="clth-copy-icon" data-heading-id="h-is-the-network-settings-ui-out-of-the-box"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Yes. From an administrator perspective, you don’t need to package and deploy a separate Network Settings application. Microsoft explicitly documents that the system settings experience works without a separate app deployment.</p>
+<p class="wp-block-paragraph">The Company Portal is the user entry point. Once EPM is enabled, the system settings policy is assigned, and the device has completed its next policy sync, Company Portal exposes the System settings tile under Help &amp; support. Selecting Edit settings opens the dedicated Endpoint Privilege Management Network Settings experience.</p>
+<p class="wp-block-paragraph">So the UI is part of the EPM experience, not a custom utility IT needs to build. Company Portal still needs to be available on the device, but the Network Settings interface itself does not require a separate application deployment.</p>
+<h2 class="wp-block-heading" id="h-a-practical-example-changing-network-settings-while-offline">A practical example: changing network settings while offline<span class="clth-copy-icon" data-heading-id="h-a-practical-example-changing-network-settings-while-offline"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">One of the best examples is a laptop moving between sites. The new network might require a static IP address or specific DNS servers before the device can get online. That creates an awkward problem for a standard user: the device cannot reach the network until the settings change, but the user usually needs administrator rights to make that change.</p>
+<p class="wp-block-paragraph">If the EPM policy is already on the device, the user can complete the approved network change locally. The user does not need to become a local administrator just to get the device onto the network.</p>
+<h2 class="wp-block-heading" id="h-how-the-epm-system-settings-flow-works">How the EPM system settings flow works<span class="clth-copy-icon" data-heading-id="h-how-the-epm-system-settings-flow-works"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Before we go into each part, here is the complete flow. Intune places the EPM and system settings policies on the device. Company Portal shows only the category with an assigned policy. The user opens System settings; EpmElevate.exe provides the dedicated Network Settings experience; the user makes the requested change, confirms it, completes any required validation, and EPM applies the approved change while the account remains a standard user.</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-95-1024x341.png"><picture class="wp-image-196222" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-95-1024x341.png.webp 1024w, https://patchmypc.com/app/uploads/2026/06/image-95-300x100.png.webp 300w, https://patchmypc.com/app/uploads/2026/06/image-95-768x256.png.webp 768w, https://patchmypc.com/app/uploads/2026/06/image-95-1536x512.png.webp 1536w, https://patchmypc.com/app/uploads/2026/06/image-95-2048x683.png.webp 2048w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-95-1024x341.png 1024w, https://patchmypc.com/app/uploads/2026/06/image-95-300x100.png 300w, https://patchmypc.com/app/uploads/2026/06/image-95-768x256.png 768w, https://patchmypc.com/app/uploads/2026/06/image-95-1536x512.png 1536w, https://patchmypc.com/app/uploads/2026/06/image-95-2048x683.png 2048w" decoding="async" src="assets/0fac539a1a3aa44d/img_2.png"/>
+</picture>
+</a></figure>
+<h3 class="wp-block-heading" id="h-step-1-create-the-system-settings-policy-in-intune">Step 1: Create the System settings policy in Intune<span class="clth-copy-icon" data-heading-id="h-step-1-create-the-system-settings-policy-in-intune"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">The flow starts in the Intune admin center under Endpoint security &gt; Endpoint Privilege Management &gt; Policies. Select Create Policy and choose Windows as the platform.</p>
+<p class="wp-block-paragraph">In my current Intune portal, the profile picker is labeled System settings policy, as shown below. Microsoft Learn currently refers to this policy type as Elevation system settings policy. This profile configures the EPM system settings experience.</p>
+<figure class="wp-block-image size-large is-resized"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-92-1024x389.png"><picture class="wp-image-196212" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-92-1024x389.png.webp 1024w, https://patchmypc.com/app/uploads/2026/06/image-92-300x114.png.webp 300w, https://patchmypc.com/app/uploads/2026/06/image-92-766x291.png.webp 766w, https://patchmypc.com/app/uploads/2026/06/image-92.png.webp 1127w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-92-1024x389.png 1024w, https://patchmypc.com/app/uploads/2026/06/image-92-300x114.png 300w, https://patchmypc.com/app/uploads/2026/06/image-92-766x291.png 766w, https://patchmypc.com/app/uploads/2026/06/image-92.png 1127w" decoding="async" src="assets/0fac539a1a3aa44d/img_3.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">After creating the profile, name it and add an optional description. In Configuration settings, select Add and then Edit instance to open the rule properties. Give the rule a name, set System setting to Network settings, and set Elevation type to User confirmed.</p>
+<p class="wp-block-paragraph">Validation is optional. You can require Business justification, Windows authentication, or both. If you do not select either validation option, the user only needs to confirm the change before EPM applies it.</p>
+<p class="wp-block-paragraph">Finish the policy with Scope tags if needed, assign it to the required groups, and then review and create the profile. The device also needs the normal Elevation settings policy that enables EPM before the System settings policy can take effect.</p>
+<figure class="wp-block-image size-large is-resized"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-28-1024x577.png"><picture class="wp-image-196209" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-28-1024x577.png.webp 1024w, https://patchmypc.com/app/uploads/2026/06/image-28-300x169.png.webp 300w, https://patchmypc.com/app/uploads/2026/06/image-28-767x432.png.webp 767w, https://patchmypc.com/app/uploads/2026/06/image-28.jpg.webp 1078w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-28-1024x577.png 1024w, https://patchmypc.com/app/uploads/2026/06/image-28-300x169.png 300w, https://patchmypc.com/app/uploads/2026/06/image-28-767x432.png 767w, https://patchmypc.com/app/uploads/2026/06/image-28.jpg 1078w" decoding="async" src="assets/0fac539a1a3aa44d/img_4.png"/>
+</picture>
+</a></figure>
+<h3 class="wp-block-heading" id="h-step-2-epm-decides-whether-the-system-settings-category-should-be-exposed">Step 2: EPM decides whether the system settings category should be exposed<span class="clth-copy-icon" data-heading-id="h-step-2-epm-decides-whether-the-system-settings-category-should-be-exposed"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">The policy is what makes the experience available. EPM exposes only the settings categories that the device has a policy for. If there is no Network settings rule for the device, that category is not the task the user should be offered.</p>
+<p class="wp-block-paragraph">This is the first security boundary in the flow. Company Portal is not a generic launcher for privileged Windows tools. What the user can start is determined by the EPM System Settings policy.</p>
+<h3 class="wp-block-heading" id="h-step-3-the-user-starts-from-company-portal">Step 3: The user starts from Company Portal<span class="clth-copy-icon" data-heading-id="h-step-3-the-user-starts-from-company-portal"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">After the device receives the policy, the user opens the Windows Company Portal. Under Help &amp; support, System settings becomes the entry point for EPM-managed system settings.</p>
+<p class="wp-block-paragraph">The user selects Edit settings. There is no command line to remember, no shortcut to deploy, and no reason for the user to know that EpmElevate.exe exists. Company Portal is simply the front door.</p>
+<figure class="wp-block-image size-full is-resized"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-29.jpg"><picture class="wp-image-196210" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-29.jpg.webp 901w, https://patchmypc.com/app/uploads/2026/06/image-29-300x185.png.webp 300w, https://patchmypc.com/app/uploads/2026/06/image-29-766x473.png.webp 766w" sizes="(max-width: 901px) 100vw, 901px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 901px) 100vw, 901px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-29.jpg 901w, https://patchmypc.com/app/uploads/2026/06/image-29-300x185.png 300w, https://patchmypc.com/app/uploads/2026/06/image-29-766x473.png 766w" decoding="async" src="assets/0fac539a1a3aa44d/img_5.jpg"/>
+</picture>
+</a></figure>
+<figure class="wp-block-image size-large is-resized"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-30-1024x421.png"><picture class="wp-image-196216" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-30-1024x421.png.webp 1024w, https://patchmypc.com/app/uploads/2026/06/image-30-300x123.png.webp 300w, https://patchmypc.com/app/uploads/2026/06/image-30-767x315.png.webp 767w, https://patchmypc.com/app/uploads/2026/06/image-30.jpg.webp 1358w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-30-1024x421.png 1024w, https://patchmypc.com/app/uploads/2026/06/image-30-300x123.png 300w, https://patchmypc.com/app/uploads/2026/06/image-30-767x315.png 767w, https://patchmypc.com/app/uploads/2026/06/image-30.jpg 1358w" decoding="async" src="assets/0fac539a1a3aa44d/img_6.png"/>
+</picture>
+</a></figure>
+<h3 class="wp-block-heading" id="h-step-4-epmelevate-exe-opens-the-dedicated-epm-system-settings-experience">Step 4: EpmElevate.exe opens the dedicated EPM system settings experience<span class="clth-copy-icon" data-heading-id="h-step-4-epmelevate-exe-opens-the-dedicated-epm-system-settings-experience"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">On the client, EpmElevate.exe is the helper behind the system settings UI. It is installed under C:\Program Files\Microsoft EPM Agent\EPMElevate\EpmElevate.exe.</p>
+<figure class="wp-block-image size-full is-resized"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-1.jpeg"><picture class="wp-image-196215" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-1.jpeg.webp 624w, https://patchmypc.com/app/uploads/2026/06/image-1-300x147.jpeg.webp 300w" sizes="(max-width: 624px) 100vw, 624px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-1.jpeg 624w, https://patchmypc.com/app/uploads/2026/06/image-1-300x147.jpeg 300w" decoding="async" src="assets/0fac539a1a3aa44d/img_7.jpg"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">The important part is not simply that the executable exists. In my testing, launching it manually was not the intended path. The helper expects to be started through the EPM workflow so it runs with the corresponding policy and rule context.</p>
+<figure class="wp-block-image size-full is-resized"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-94.png"><img alt="" class="wp-image-196214" data-lazy-sizes="(max-width: 361px) 100vw, 361px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-94.png 361w, https://patchmypc.com/app/uploads/2026/06/image-94-300x157.png 300w" decoding="async" src="assets/0fac539a1a3aa44d/img_8.png"/></a></figure>
+<p class="wp-block-paragraph">That is an important security detail. EpmElevate.exe is not a standalone elevation utility that a standard user can start to access privileged settings. EPM decides whether the task is allowed and then launches the helper in that approved context.</p>
+<p class="wp-block-paragraph">This is also why EpmElevate.exe is architecturally interesting. It gives EPM a task-specific privileged surface without elevating the whole Windows Settings experience.</p>
+<figure class="wp-block-image size-large is-resized"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-32-1024x420.png"><picture class="wp-image-196218" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-32-1024x420.png.webp 1024w, https://patchmypc.com/app/uploads/2026/06/image-32-300x123.png.webp 300w, https://patchmypc.com/app/uploads/2026/06/image-32-766x314.png.webp 766w, https://patchmypc.com/app/uploads/2026/06/image-32.jpg.webp 1462w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-32-1024x420.png 1024w, https://patchmypc.com/app/uploads/2026/06/image-32-300x123.png 300w, https://patchmypc.com/app/uploads/2026/06/image-32-766x314.png 766w, https://patchmypc.com/app/uploads/2026/06/image-32.jpg 1462w" decoding="async" src="assets/0fac539a1a3aa44d/img_9.png"/>
+</picture>
+</a></figure>
+<h3 class="wp-block-heading" id="h-step-5-the-user-selects-the-network-adapter-and-setting-to-change">Step 5: The user selects the network adapter and setting to change<span class="clth-copy-icon" data-heading-id="h-step-5-the-user-selects-the-network-adapter-and-setting-to-change"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">The Endpoint Privilege Management Network Settings window lists the adapters that are available on the device. The user selects an adapter such as Ethernet and works with the network values that are exposed in the EPM experience.</p>
+<figure class="wp-block-image size-full is-resized"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-31.jpg"><picture class="wp-image-196217" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-31.jpg.webp 672w, https://patchmypc.com/app/uploads/2026/06/image-31-300x147.png.webp 300w" sizes="(max-width: 672px) 100vw, 672px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 672px) 100vw, 672px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-31.jpg 672w, https://patchmypc.com/app/uploads/2026/06/image-31-300x147.png 300w" decoding="async" src="assets/0fac539a1a3aa44d/img_10.jpg"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">The user can choose IPv4, IPv6, or DNS and then select automatic or manual configuration. The important point is that this is a focused interface. The user is not being dropped into a full privileged Windows Settings session.</p>
+<figure class="wp-block-image size-full is-resized"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-33.jpg"><picture class="wp-image-196219" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-33.jpg.webp 672w, https://patchmypc.com/app/uploads/2026/06/image-33-150x150-1.png.webp 150w, https://patchmypc.com/app/uploads/2026/06/image-33-299x300.png.webp 299w" sizes="(max-width: 672px) 100vw, 672px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 672px) 100vw, 672px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-33.jpg 672w, https://patchmypc.com/app/uploads/2026/06/image-33-150x150-1.png 150w, https://patchmypc.com/app/uploads/2026/06/image-33-299x300.png 299w" decoding="async" src="assets/0fac539a1a3aa44d/img_11.jpg"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph"><em>.</em></p>
+<h3 class="wp-block-heading" id="h-step-6-the-user-saves-the-requested-change">Step 6: The user saves the requested change<span class="clth-copy-icon" data-heading-id="h-step-6-the-user-saves-the-requested-change"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">After entering the required values, the user selects Save. This is the point where the requested configuration is ready to be committed through EPM.</p>
+<p class="wp-block-paragraph">For IPv4, the documented experience includes values such as IP address, subnet mask, gateway, preferred DNS server, and alternate DNS server. IPv6 uses the corresponding IPv6 address, prefix length, gateway, and DNS values.</p>
+<h3 class="wp-block-heading" id="h-step-7-epm-confirms-the-request-and-runs-the-required-validation">Step 7: EPM confirms the request and runs the required validation<span class="clth-copy-icon" data-heading-id="h-step-7-epm-confirms-the-request-and-runs-the-required-validation"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">The system settings rule uses User confirmed. Depending on how the administrator configured the rule, the user can also be required to enter a business justification, authenticate with Windows credentials, or do both before the change is applied.</p>
+<p class="wp-block-paragraph">The validation is tied to the actual privileged action. It is not just a prompt shown when Company Portal opens. If Business justification is required, that justification is also available for review through EPM reporting.</p>
+<h3 class="wp-block-heading" id="h-step-8-the-approved-change-is-applied">Step 8: The approved change is applied<span class="clth-copy-icon" data-heading-id="h-step-8-the-approved-change-is-applied"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">Once the request satisfies the rule, EPM applies the approved network change. The user receives the privilege needed for that task, but the account remains a standard user.</p>
+<p class="wp-block-paragraph">That is the main value of the design. IT does not need to make the user a local administrator, expose a broader networking tool, or hand out a privileged script just to change a network value.</p>
+<figure class="wp-block-image size-large is-resized"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-34-1024x376.png"><picture class="wp-image-196220" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-34-1024x376.png.webp 1024w, https://patchmypc.com/app/uploads/2026/06/image-34-300x110.png.webp 300w, https://patchmypc.com/app/uploads/2026/06/image-34-768x282.png.webp 768w, https://patchmypc.com/app/uploads/2026/06/image-34.jpg.webp 1252w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-34-1024x376.png 1024w, https://patchmypc.com/app/uploads/2026/06/image-34-300x110.png 300w, https://patchmypc.com/app/uploads/2026/06/image-34-768x282.png 768w, https://patchmypc.com/app/uploads/2026/06/image-34.jpg 1252w" decoding="async" src="assets/0fac539a1a3aa44d/img_12.png"/>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-why-epmelevate-exe-matters">Why EpmElevate.exe matters<span class="clth-copy-icon" data-heading-id="h-why-epmelevate-exe-matters"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Microsoft could have reused the normal Windows Settings experience and somehow elevated the networking pages behind it. Instead, they built a dedicated EPM executable for the job.</p>
+<p class="wp-block-paragraph"><code>EpmElevate.exe</code> provides the privileged Network Settings experience itself. Company Portal is only the entry point; the EPM policy determines whether the user is allowed to make the change, and EpmElevate.exe presents the limited interface for changing IPv4, IPv6, and DNS settings.</p>
+<p class="wp-block-paragraph">The actual network configuration still ultimately relies on Windows networking components underneath, but the privileged user experience is no longer the normal Windows Settings app.</p>
+<p class="wp-block-paragraph">That is the important architectural difference. Instead of elevating a broad Windows Settings process, Microsoft created a purpose-built EPM helper for the specific administrative task. The privilege is therefore tied much more closely to the network configuration action rather than to the whole Settings application or the user account.</p>
+<h2 class="wp-block-heading" id="h-what-about-time-sync-system-settings">What about Time Sync System Settings?<span class="clth-copy-icon" data-heading-id="h-what-about-time-sync-system-settings"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The Time Sync work is interesting because it shows that Network Settings does not have to be a one off implementation.</p>
+<p class="wp-block-paragraph">The same model can be reused for other Windows settings that are difficult to handle with a traditional file based EPM rule. Microsoft can create another dedicated experience inside <code>EpmElevate.exe</code>, connect it to a System settings policy, and expose only that specific administrative task to the user.  Time Sync appears to follow that pattern. The implementation I found is focused on Windows Time synchronization and NTP configuration, not simply giving users permission to manually change the system clock.</p>
+<figure class="wp-block-image size-full is-resized"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/06/image-2.jpeg"><img alt="" class="wp-image-196221" data-lazy-sizes="(max-width: 624px) 100vw, 624px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/06/image-2.jpeg 624w, https://patchmypc.com/app/uploads/2026/06/image-2-300x249.jpeg 300w" decoding="async" src="assets/0fac539a1a3aa44d/img_13.jpg"/></a></figure>
+<p class="wp-block-paragraph">Microsoft does not currently document Time Sync in the public System settings policy, so Network Settings is the supported and documented capability today. But it does show where this architecture could go next.</p>
+<p class="wp-block-paragraph">Instead of asking <strong>which executable should EPM elevate?</strong>, Microsoft can keep adding purpose built System Settings experiences for individual Windows administration tasks.</p>
+<h2 class="wp-block-heading" id="h-closing-thoughts">Closing thoughts<span class="clth-copy-icon" data-heading-id="h-closing-thoughts"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">EPM System Settings changes the way we should think about Endpoint Privilege Management. It is no longer only about finding the right executable to elevate.</p>
+<p class="wp-block-paragraph">With Network settings, Intune can approve the Windows task itself. Company Portal gives the user a simple place to start. EPM checks the policy. EpmElevate.exe opens the limited settings experience. The user changes only what is allowed and remains a standard user.</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
