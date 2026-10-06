@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent 365 registration: Python and Entra walkthrough</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">October 6, 2026</span>
+  </div>
+  <h1>Agent 365 registration: Python and Entra walkthrough</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/agent-365-registration-python-video/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p class="wp-block-paragraph">Your agent runs outside Microsoft. Your administrators still need to know that it exists, who owns it and which identity it uses. That is the starting point for this Agent 365 registration walkthrough.</p>
+<p class="wp-block-paragraph">In this episode, I register a small Python-based ticket-triage demo in Microsoft Agent 365, connect its Entra identity and inspect the resulting objects in the portals. The useful part is not another agent demo. It is seeing how the registry entry, identity and activity fit together—and where they remain separate.</p>
+<p><span id="more-20909"></span>
+</p>
+<h2 class="wp-block-heading" id="watch-the-walkthrough">Watch the walkthrough<a aria-hidden="true" class="jr-anchor" href="#watch-the-walkthrough" tabindex="-1">#</a></h2>
+<p class="wp-block-paragraph">The video is in German and runs for about 11 minutes. These are the main sections:</p>
+<ul class="wp-block-list">
+<li><strong>00:49:</strong> the Agent Card and registration API;</li>
+<li><strong>01:42:</strong> the Python registration script;</li>
+<li><strong>02:55:</strong> checking the registry entry in the Microsoft 365 admin center;</li>
+<li><strong>03:58:</strong> the blueprint, agent identity and permissions;</li>
+<li><strong>07:14:</strong> creating the identity and linking it to the registry;</li>
+<li><strong>08:39:</strong> preparing telemetry and interpreting the activity view.</li>
+</ul>
+<p class="wp-block-paragraph">If you are new to the portal, start with my <a href="https://jannikreinhard.com/microsoft-agent-365-portal-overview-video/">Microsoft Agent 365 overview</a>. For the agent-building side, the <a href="https://jannikreinhard.com/microsoft-foundry-python-agents-video/">Foundry Python walkthrough</a> covers the preceding step.</p>
+<h2 class="wp-block-heading" id="what-agent-365-registration-doesand-does-not-do">What Agent 365 registration does—and does not do<a aria-hidden="true" class="jr-anchor" href="#what-agent-365-registration-doesand-does-not-do" tabindex="-1">#</a></h2>
+<p class="wp-block-paragraph">There are three things I want to keep separate:</p>
+<figure class="wp-block-image"><img alt="Agent 365 registration has three separate layers: registry metadata, Entra identity and runtime evidence" data-recalc-dims="1" decoding="async" src="assets/dfd0b72afb7453fb/img_0.jpg"/></figure>
+<p class="wp-block-paragraph">The <strong>registry</strong> describes the agent: its name, capabilities, source and accountable owner. The <strong>Entra identity</strong> gives it an identity and a permission model. <span class="jr-inline-emphasis">Runtime evidence</span> tells us what happened when it executed.</p>
+<p class="wp-block-paragraph">Creating the first does not prove that the other two work. Registration does not deploy the Python application, start its process or test a tool call. It also does not, by itself, prove that every security, compliance or monitoring control is configured.</p>
+<p class="wp-block-paragraph">That distinction is visible in the recording. The initial registry entry exists before I link an Entra agent identity to it. Treating an entry in an inventory as a finished integration would hide that missing step.</p>
+<h2 class="wp-block-heading" id="before-you-start">Before you start<a aria-hidden="true" class="jr-anchor" href="#before-you-start" tabindex="-1">#</a></h2>
+<p class="wp-block-paragraph">Use a development tenant and fictional data. In the demo, <span class="jr-inline-emphasis">Contoso Ticket-Triage</span> describes an external agent that sorts IT tickets. It does not approve changes or perform production remediation.</p>
+<p class="wp-block-paragraph">For the registration call, Microsoft currently documents <code>AgentRegistration.ReadWrite.All</code> for supported work or school accounts and application access. The endpoint used in the recording is <code>POST https://graph.microsoft.com/beta/copilot/agentRegistrations</code>. Microsoft explicitly marks this beta API as changeable and unsupported for production applications. Check the <a href="https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/api/admin-settings/agent-registration/agentregistration-create" rel="noopener" target="_blank">current Agent Registry API reference</a> before copying a request.</p>
+<p class="wp-block-paragraph">You also need access to the relevant Agent 365 and Entra features in your tenant. Verify licensing, rollout availability, admin roles and consent before starting. A successful registry call is not a substitute for those checks.</p>
+<h2 class="wp-block-heading" id="step-1-describe-the-agent-with-an-agent-card">Step 1: describe the agent with an Agent Card<a aria-hidden="true" class="jr-anchor" href="#step-1-describe-the-agent-with-an-agent-card" tabindex="-1">#</a></h2>
+<p class="wp-block-paragraph">The Agent Card is the small metadata document that explains what the agent is. In the recording, I inspect <code>agent-card.json</code> before making any changes.</p>
+<p class="wp-block-paragraph">I would review four parts first:</p>
+<ul class="wp-block-list">
+<li><span class="jr-inline-emphasis">Name and version:</span> can an administrator distinguish this agent from the next version?</li>
+<li><span class="jr-inline-emphasis">Description and provider:</span> is its purpose clear without a developer explaining it?</li>
+<li><span class="jr-inline-emphasis">Input, output and capabilities:</span> do these describe the actual implementation?</li>
+<li><span class="jr-inline-emphasis">Skills and knowledge sources:</span> what can it do, and where does its information come from?</li>
+</ul>
+<p class="wp-block-paragraph">Keep the description concrete. “Sorts fictional IT tickets for a demo” is more useful than “autonomous enterprise AI.” Do not list write capabilities that the runtime cannot perform, and do not place credentials or ticket contents in the card.</p>
+<h2 class="wp-block-heading" id="step-2-create-and-verify-the-registry-entry">Step 2: create and verify the registry entry<a aria-hidden="true" class="jr-anchor" href="#step-2-create-and-verify-the-registry-entry" tabindex="-1">#</a></h2>
+<p class="wp-block-paragraph">The registration script shown in the video has a deliberate write switch. I inspect the planned request first, then use its <code>--apply</code> option to create the entry. This is a behaviour of my demo script, not a built-in Graph dry-run feature.</p>
+<p class="wp-block-paragraph">The script also stores the returned registration ID locally. That helps me continue with the same demo entry rather than create a new one every time. It is not a server-side idempotency guarantee. If a request times out, inspect the tenant state before repeating the create operation.</p>
+<figure class="wp-block-image"><img alt="Agent 365 registration of Contoso Ticket-Triage in the admin center, before its Entra identity is linked" data-recalc-dims="1" decoding="async" src="assets/dfd0b72afb7453fb/img_1.jpg"/></figure>
+<p class="wp-block-paragraph"><em>Frame from the recording: the registry entry is visible, but the agent identity field is still empty at this stage.</em></p>
+<p class="wp-block-paragraph">Check the name, description, owner and source against the intended request. Keep the returned registry ID separate from the later identity and blueprint IDs. Similar-looking GUIDs are not interchangeable.</p>
+<h2 class="wp-block-heading" id="step-3-add-the-entra-identity-and-link-the-objects">Step 3: add the Entra identity and link the objects<a aria-hidden="true" class="jr-anchor" href="#step-3-add-the-entra-identity-and-link-the-objects" tabindex="-1">#</a></h2>
+<p class="wp-block-paragraph">The next part creates an agent identity blueprint, its blueprint principal and the individual agent identity. The registration is then linked to the corresponding identity objects. I verify the result in both the Microsoft 365 admin center and Entra.</p>
+<figure class="wp-block-image"><img alt="Agent Card registration, identity creation and linking are three explicit steps in the recording" data-recalc-dims="1" decoding="async" src="assets/dfd0b72afb7453fb/img_2.jpg"/></figure>
+<p class="wp-block-paragraph">For a new implementation, compare this direct-API demo with Microsoft’s current supported path. Its <a href="https://learn.microsoft.com/en-us/entra/agent-id/create-blueprint" rel="noopener" target="_blank">blueprint documentation</a> now shows <code>v1.0</code> identity endpoints and recommends the Microsoft 365 Agents SDK for new projects. That does not change the beta status of the separate registry endpoint used here.</p>
+<p class="wp-block-paragraph">I would not carry the demo’s temporary local credential into production unchanged. Prefer a suitable managed-identity or federated-credential design, keep permissions narrow and define who owns rotation and retirement. Review each permission independently: creating an identity and giving it access to business data are different decisions.</p>
+<h2 class="wp-block-heading" id="step-4-verify-telemetry-as-a-separate-test">Step 4: verify telemetry as a separate test<a aria-hidden="true" class="jr-anchor" href="#step-4-verify-telemetry-as-a-separate-test" tabindex="-1">#</a></h2>
+<p class="wp-block-paragraph">The last section prepares an OpenTelemetry example. There is an important detail: the run at the end of the recording does <span class="jr-inline-emphasis">not</span> use the script’s <code>--live</code> switch. The activity already visible in the portal comes from an earlier test.</p>
+<p class="wp-block-paragraph">So this episode demonstrates the registration and identity work. It does not prove that the final telemetry example sent a new event successfully.</p>
+<p class="wp-block-paragraph">For your own test, trigger one controlled execution with fictional input. Record its timestamp and correlation identifier, then locate that same execution in the destination. Check failures as well as successes. A populated activity screen alone cannot tell you whether the run you just triggered arrived.</p>
+<h2 class="wp-block-heading" id="my-checks-before-calling-this-complete">My checks before calling this complete<a aria-hidden="true" class="jr-anchor" href="#my-checks-before-calling-this-complete" tabindex="-1">#</a></h2>
+<p class="wp-block-paragraph">I would want evidence for each of these items:</p>
+<ol class="wp-block-list">
+<li>The registry contains the intended agent once, with the correct owner and metadata.</li>
+<li>The linked agent identity and blueprint match the objects in Entra.</li>
+<li>The runtime uses the intended identity rather than an unrelated developer credential.</li>
+<li>An allowed action succeeds, and an action outside its permissions fails.</li>
+<li>A fresh test execution can be traced through the expected telemetry destination.</li>
+<li>Retirement has a documented sequence for the registry entry, runtime, credentials and identity objects.</li>
+</ol>
+<p class="wp-block-paragraph">These are acceptance checks to perform, not a claim that this short video validates a production deployment.</p>
+<h2 class="wp-block-heading" id="frequently-asked-questions">Frequently asked questions<a aria-hidden="true" class="jr-anchor" href="#frequently-asked-questions" tabindex="-1">#</a></h2>
+<h3 class="wp-block-heading" id="can-an-agent-hosted-outside-microsoft-appear-in-agent-365">Can an agent hosted outside Microsoft appear in Agent 365?<a aria-hidden="true" class="jr-anchor" href="#can-an-agent-hosted-outside-microsoft-appear-in-agent-365" tabindex="-1">#</a></h3>
+<p class="wp-block-paragraph">That is the scenario demonstrated here: an external demo agent receives a registry entry and a linked Entra identity. Its hosting and execution remain separate from that entry.</p>
+<h3 class="wp-block-heading" id="is-registration-the-same-as-creating-a-foundry-agent">Is registration the same as creating a Foundry agent?<a aria-hidden="true" class="jr-anchor" href="#is-registration-the-same-as-creating-a-foundry-agent" tabindex="-1">#</a></h3>
+<p class="wp-block-paragraph">No. Creating the application or Foundry agent gives you a runtime implementation. Agent 365 registration makes its metadata available to administrators. Connecting identity and telemetry requires further work.</p>
+<h3 class="wp-block-heading" id="should-i-copy-the-recorded-api-versions-unchanged">Should I copy the recorded API versions unchanged?<a aria-hidden="true" class="jr-anchor" href="#should-i-copy-the-recorded-api-versions-unchanged" tabindex="-1">#</a></h3>
+<p class="wp-block-paragraph">No. Check the linked references and your tenant before running the demo. The registry and identity APIs have separate version and availability considerations.</p>
+<h2 class="wp-block-heading" id="the-practical-takeaway">The practical takeaway<a aria-hidden="true" class="jr-anchor" href="#the-practical-takeaway" tabindex="-1">#</a></h2>
+<p class="wp-block-paragraph">For me, the useful outcome is an agent that administrators can identify and connect to its real execution—not merely another row in a portal. Start with a clear Agent Card, verify the identity link and prove one fresh execution before you expand the integration.</p>
+<p class="wp-block-paragraph">Stay healthy, Cheers Jannik</p>
+<div class="jr-nl jr-nl--article"><div class="jr-nl__copy"><p><span class="jr-nl__kicker">Newsletter</span></p><p class="jr-nl__title">3 free book previews with my newsletter.</p><p class="jr-nl__promise">Subscribe to my hands-on Intune, AI and Azure guides. Your welcome email includes three free English PDF book previews.</p></div><div class="jr-nl__form">
+<p aria-live="polite" class="jr-nl__msg" role="status"></p><p class="jr-nl__trust">190+ guides · 5x Microsoft MVP · No spam, unsubscribe anytime · <a href="https://jannikreinhard.com/datenschutz/">Privacy</a></p></div></div> </div>
+</div></div>
+</article>
+</body>
+</html>
