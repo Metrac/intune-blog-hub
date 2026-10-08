@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inside Intune: Faster compliance updates for Windows devices</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Call4Cloud (Rudy Ooms)</span>
+    <span class="date">October 7, 2026</span>
+  </div>
+  <h1>Inside Intune: Faster compliance updates for Windows devices</h1>
+  <div class="orig">Saved for offline reading · <a href="https://patchmypc.com/blog/intune-faster-compliance-updates-for-windows-devices/?utm_term=rss" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="post-content">
+<p class="wp-block-paragraph">Microsoft has introduced <strong><a href="https://learn.microsoft.com/en-us/intune/whats-new/">client-driven compliance evaluation for Windows devices</a></strong>. The idea is simple. Instead of waiting for the next scheduled check-in, the device notices a change and asks Intune to check again.</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-66-1024x212.png"><picture class="wp-image-196482" decoding="async">
+<source sizes="(max-width: 1024px) 100vw, 1024px" srcset="https://patchmypc.com/app/uploads/2026/08/image-66-1024x212.png.webp 1024w, https://patchmypc.com/app/uploads/2026/08/image-66-300x62.png.webp 300w, https://patchmypc.com/app/uploads/2026/08/image-66-764x158.png.webp 764w" type="image/webp"/>
+<img alt="" decoding="async" src="assets/a4cad5d2974367c8/img_0.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">So how does that work? The device has no new real-time compliance engine. A small part of the Intune Management Extension (IME) does all of that work: the <strong>compliance monitor</strong>. It monitors a short list of Windows settings, remembers what it saw last time, and when something changes, it starts a normal check-in. Intune then does what it always does: it evaluates the compliance policy.</p>
+<p class="wp-block-paragraph">The nice part is that you can follow the whole thing on the device itself. The IME writes every step to its log files, and it keeps its settings and the last values it saw in the registry. In this blog, we walk through the flow in ten steps, using the log lines and registry keys you can check yourself.</p>
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr><td><strong>The short version:</strong> The device doesn’t decide whether it is compliant. It only decides <strong>when</strong> to ask for a check-in. Intune still does the evaluation. It notices changes in two ways: a <strong>timer</strong> (every 5 minutes by default) and <strong>event listeners</strong> for Windows Security Center, Defender, BitLocker, and a few registry values. Intune decides which compliance checks it monitors, and by default it asks for <strong>at most 2 check-ins per hour</strong>.  Fixing the compliance issue triggers a check-in, just like breaking something does.</td></tr></tbody></table></figure>
+<h2 class="wp-block-heading" id="h-why-the-device-needs-to-detect-the-compliance-state">Why the device needs to detect the Compliance State<span class="clth-copy-icon" data-heading-id="h-why-the-device-needs-to-detect-the-compliance-state"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Most things in Intune start in the cloud. You change a policy, Intune sends a push, and the device checks in. Behind every push there is still a timer as a safety net, <strong><a href="https://patchmypc.com/blog/inside-intunes-new-sync-status-window/">like the 8-hour MDM schedule.</a></strong></p>
+<p class="wp-block-paragraph">Compliance doesn’t fit that model. When something changes on the device (Defender real-time protection is switched off, BitLocker is suspended, the firewall goes down), nothing can be pushed from the cloud. The cloud doesn’t know yet. Only the device knows.</p>
+<p class="wp-block-paragraph">Until the next scheduled check-in, Intune keeps showing the old compliance state, and Conditional Access keeps acting on it. It works the other way around too: a device that was fixed stays noncompliant until the schedule catches up. Client-driven compliance closes that gap by letting the device notice the change itself and ask for a check-in.</p>
+<h2 class="wp-block-heading" id="h-the-faster-compliance-updates-for-windows-devices-overview">The Faster compliance updates for Windows devices Overview<span class="clth-copy-icon" data-heading-id="h-the-faster-compliance-updates-for-windows-devices-overview"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">This is the whole feature on one page. Intune sends the settings, the IME on the device notices, reads, compares, and decides, and the result is a normal check-in back to Intune. The numbers are the ten steps this blog walks through.</p>
+<figure class="wp-block-image size-large"><a data-caption="Figure 1 · Client-driven compliance: what lives in the cloud, what runs inside the IME, and how a change becomes a check-in." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-65-1024x545.png"><picture class="wp-image-196481" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-65-1024x545.png.webp 1024w, https://patchmypc.com/app/uploads/2026/08/image-65-300x160.png.webp 300w, https://patchmypc.com/app/uploads/2026/08/image-65-766x408.png.webp 766w, https://patchmypc.com/app/uploads/2026/08/image-65-1536x818.png.webp 1536w, https://patchmypc.com/app/uploads/2026/08/image-65-2048x1090.png.webp 2048w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="Figure 1 · Client-driven compliance: what lives in the cloud, what runs inside the IME, and how a change becomes a check-in." data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-65-1024x545.png 1024w, https://patchmypc.com/app/uploads/2026/08/image-65-300x160.png 300w, https://patchmypc.com/app/uploads/2026/08/image-65-766x408.png 766w, https://patchmypc.com/app/uploads/2026/08/image-65-1536x818.png 1536w, https://patchmypc.com/app/uploads/2026/08/image-65-2048x1090.png 2048w" decoding="async" src="assets/a4cad5d2974367c8/img_1.png"/>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-what-you-will-see-in-the-compliance-monitor-log">What you will see in the Compliance Monitor log<span class="clth-copy-icon" data-heading-id="h-what-you-will-see-in-the-compliance-monitor-log"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The compliance monitor writes to the IME log files in C:\ProgramData\Microsoft\IntuneManagementExtension\Logs. Every part of it uses its own prefix, so it is easy to follow:</p>
+<figure class="wp-block-table"><table class="has-fixed-layout"><thead><tr><td><strong>Log prefix</strong></td><td><strong>What it does</strong></td></tr></thead><tbody><tr><td>[ComplianceMonitor]</td><td>Starts the monitor, runs the timer and reads its settings</td></tr><tr><td>[EventSourceListener] / [EventSource]</td><td>Starts and stops the event listeners and reports Event Log events</td></tr><tr><td>[ComplianceEventListener]</td><td>Reports Security Center and registry changes</td></tr><tr><td>[ComplianceEventProcessor]</td><td>Handles a batch of events and checks if something really changed</td></tr><tr><td>[ComplianceSettingHelper]</td><td>Reads the current value of a setting</td></tr><tr><td>[DciHelper]</td><td>The check-in gate: decides if the device asks for a check-in</td></tr><tr><td>[ComplianceMonitorStore]</td><td>Saves settings and counters in the registry</td></tr></tbody></table></figure>
+<h2 class="wp-block-heading" id="h-the-real-time-faster-compliance-flow-in-ten-steps">The Real-time Faster Compliance flow in ten steps<span class="clth-copy-icon" data-heading-id="h-the-real-time-faster-compliance-flow-in-ten-steps"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Steps 1 to 3 happen when the monitor starts. Steps 4 to 10 repeat every time the timer runs or an event comes in. The numbers match the badges in the diagrams.</p>
+<ol class="wp-block-list">
+<li><strong>The device must qualify.</strong> Windows 10 1703 or later, enrolled in Intune, Defender as the active antivirus.</li>
+<li><strong>Intune sends the rules.</strong> One JSON value in the registry decides what is watched and how often.</li>
+<li><strong>The monitor starts.</strong> It starts a timer and, where available, the event listeners.</li>
+<li><strong>Something changes.</strong> An event comes in, or the timer runs.</li>
+<li><strong>Read the real value.</strong> The monitor reads the current value from Windows.</li>
+<li><strong>Compare with the last value.</strong> A different value is a change, in either direction.</li>
+<li><strong>The gate decides.</strong> Already handled, observe-only, hourly limit reached, or go.</li>
+<li><strong>The device asks for a check-in.</strong> A normal MDM session with one extra alert.</li>
+<li><strong>Intune evaluates.</strong> Intune checks what the device reports and updates the state.</li>
+<li><strong>Save and count.</strong> The new value is saved and the check-in is counted, only after success.</li>
+</ol>
+<h3 class="wp-block-heading" id="h-steps-1-3-getting-the-monitor-running">Steps 1–3: Getting the monitor running<span class="clth-copy-icon" data-heading-id="h-steps-1-3-getting-the-monitor-running"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">Before reading a single value, three things must be in place: a qualifying device, the settings from Intune, and a running monitor.</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-67-1024x506.png"><picture class="wp-image-196483" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-67-1024x506.png.webp 1024w, https://patchmypc.com/app/uploads/2026/08/image-67-300x148.png.webp 300w, https://patchmypc.com/app/uploads/2026/08/image-67-767x379.png.webp 767w, https://patchmypc.com/app/uploads/2026/08/image-67-1536x759.png.webp 1536w, https://patchmypc.com/app/uploads/2026/08/image-67-2048x1012.png.webp 2048w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-67-1024x506.png 1024w, https://patchmypc.com/app/uploads/2026/08/image-67-300x148.png 300w, https://patchmypc.com/app/uploads/2026/08/image-67-767x379.png 767w, https://patchmypc.com/app/uploads/2026/08/image-67-1536x759.png 1536w, https://patchmypc.com/app/uploads/2026/08/image-67-2048x1012.png 2048w" decoding="async" src="assets/a4cad5d2974367c8/img_2.png"/>
+</picture>
+</a></figure>
+<h3 class="wp-block-heading" id="h-step-1-the-device-must-qualify">Step 1: The device must qualify<span class="clth-copy-icon" data-heading-id="h-step-1-the-device-must-qualify"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">Before the monitor does anything, it checks if this device is a candidate. Three things must be true. If one of them isn’t, the log tells you which one:</p>
+<figure class="wp-block-table"><table class="has-fixed-layout"><thead><tr><td><strong>Check</strong></td><td><strong>What it means</strong></td><td><strong>Log line when it fails</strong></td></tr></thead><tbody><tr><td>Windows version</td><td>Windows 10 1703 (build 15063) or later</td><td>not applicable: OS build below Win10 1703.</td></tr><tr><td>MDM enrolled</td><td>The device is enrolled in Intune MDM</td><td>not applicable: device is not MDM-enrolled.</td></tr><tr><td>Defender active</td><td>Microsoft Defender is the active antivirus</td><td>not applicable: Microsoft Defender is not the active AV.</td></tr></tbody></table></figure>
+<p class="wp-block-paragraph">That last one is worth knowing. If you use another antivirus and Defender runs in passive mode, the monitor doesn’t start at all.</p>
+<p class="wp-block-paragraph">Microsoft is also rolling the feature out in phases, so on some tenants the monitor simply doesn’t start yet. The IME tries again every hour. When the feature is turned on for you, the device picks it up without a restart:</p>
+<figure class="wp-block-image size-full is-resized"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-53.jpg"><picture class="wp-image-196464" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-53.jpg.webp 633w, https://patchmypc.com/app/uploads/2026/08/image-53-300x14.png.webp 300w" sizes="(max-width: 633px) 100vw, 633px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 633px) 100vw, 633px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-53.jpg 633w, https://patchmypc.com/app/uploads/2026/08/image-53-300x14.png 300w" decoding="async" src="assets/a4cad5d2974367c8/img_3.jpg"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph"><em>Every hour the IME tries again to start the monitor (no-op when it is already running).</em></p>
+<h3 class="wp-block-heading" id="h-step-2-intune-sends-the-compliance-rules">Step 2: Intune sends the Compliance rules<span class="clth-copy-icon" data-heading-id="h-step-2-intune-sends-the-compliance-rules"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">The monitor doesn’t decide what to watch. Intune does. The settings come along with the normal IME check-in and end up in the registry as one JSON value:</p>
+<figure class="wp-block-image size-large is-resized"><a data-caption="The monitor settings from Intune: ComplianceMonitorConfigJson under SessionSettings." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-54-1024x239.png"><picture class="wp-image-196465" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-54-1024x239.png.webp 1024w, https://patchmypc.com/app/uploads/2026/08/image-54-300x70.png.webp 300w, https://patchmypc.com/app/uploads/2026/08/image-54-766x179.png.webp 766w, https://patchmypc.com/app/uploads/2026/08/image-54-1536x359.png.webp 1536w, https://patchmypc.com/app/uploads/2026/08/image-54.jpg.webp 1609w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="The monitor settings from Intune: ComplianceMonitorConfigJson under SessionSettings." data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-54-1024x239.png 1024w, https://patchmypc.com/app/uploads/2026/08/image-54-300x70.png 300w, https://patchmypc.com/app/uploads/2026/08/image-54-766x179.png 766w, https://patchmypc.com/app/uploads/2026/08/image-54-1536x359.png 1536w, https://patchmypc.com/app/uploads/2026/08/image-54.jpg 1609w" decoding="async" src="assets/a4cad5d2974367c8/img_4.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">The monitor reads this value when it starts and again every round, so a change from Intune applies without a restart. It also keeps a copy under …\IntuneManagementExtension\ComplianceMonitor\Config. When the settings come in, you will see:</p>
+<figure class="wp-block-image size-full is-resized"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-52.jpg"><picture class="wp-image-196463" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-52.jpg.webp 574w, https://patchmypc.com/app/uploads/2026/08/image-52-300x13.png.webp 300w" sizes="(max-width: 574px) 100vw, 574px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 574px) 100vw, 574px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-52.jpg 574w, https://patchmypc.com/app/uploads/2026/08/image-52-300x13.png 300w" decoding="async" src="assets/a4cad5d2974367c8/img_5.jpg"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph"><em><strong>The settings from Intune came in. Here, all 14 settings are turned on.</strong></em></p>
+<p class="wp-block-paragraph">The monitor’s own copy lives under …\ComplianceMonitor\Config, with the timer interval, the hourly limit, and one PerSetting key for every setting it watches:</p>
+<p class="wp-block-paragraph"><em><strong>The monitor’s own copy of its settings under ComplianceMonitor\Config</strong>.</em></p>
+<figure class="wp-block-image size-large is-resized"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-55-1024x182.png"><picture class="wp-image-196468" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-55-1024x182.png.webp 1024w, https://patchmypc.com/app/uploads/2026/08/image-55-300x53.png.webp 300w, https://patchmypc.com/app/uploads/2026/08/image-55-765x136.png.webp 765w, https://patchmypc.com/app/uploads/2026/08/image-55.jpg.webp 1226w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-55-1024x182.png 1024w, https://patchmypc.com/app/uploads/2026/08/image-55-300x53.png 300w, https://patchmypc.com/app/uploads/2026/08/image-55-765x136.png 765w, https://patchmypc.com/app/uploads/2026/08/image-55.jpg 1226w" decoding="async" src="assets/a4cad5d2974367c8/img_6.png"/>
+</picture>
+</a></figure>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-68-1024x394.png"><picture class="wp-image-196486" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-68-1024x394.png.webp 1024w, https://patchmypc.com/app/uploads/2026/08/image-68-300x115.png.webp 300w, https://patchmypc.com/app/uploads/2026/08/image-68-767x295.png.webp 767w, https://patchmypc.com/app/uploads/2026/08/image-68.png.webp 1511w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-68-1024x394.png 1024w, https://patchmypc.com/app/uploads/2026/08/image-68-300x115.png 300w, https://patchmypc.com/app/uploads/2026/08/image-68-767x295.png 767w, https://patchmypc.com/app/uploads/2026/08/image-68.png 1511w" decoding="async" src="assets/a4cad5d2974367c8/img_7.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">This is what the JSON looks like, with the knobs Intune can turn:</p>
+<pre class="wp-block-code"><code>{
+  "Enabled": true,
+  "PollIntervalSeconds": 300,
+  "DciMaxCheckInsPerHourPerDevice": 2,
+  "ComplianceEventProcessorBatchTimeSeconds": 10,
+  "ComplianceEventProcessorDelayTimeSeconds": 300,
+  "Settings": [ "ActiveFirewallRequired", "RtpEnabled", "OsBuildVersion" ],
+  "PerSetting": { "ActiveFirewallRequired": { "Enabled": true }, ... },
+  "EventPerSetting": { "RtpEnabled": { "Enabled": true }, ... }
+}</code></pre>
+<figure class="wp-block-table"><table class="has-fixed-layout"><thead><tr><td><strong>Setting</strong></td><td><strong>What it does</strong></td><td><strong>Range</strong></td><td><strong>Default</strong></td></tr></thead><tbody><tr><td>PollIntervalSeconds</td><td>How often the timer checks</td><td>1 min – 1 h</td><td>5 min</td></tr><tr><td>DciMaxCheckInsPerHourPerDevice</td><td>How many check-ins the device may ask for per hour</td><td>0 – 10</td><td>2</td></tr><tr><td>ComplianceEventProcessorBatchTimeSeconds</td><td>How long events are collected before they are handled</td><td>1 – 60 s</td><td>10 s</td></tr><tr><td>ComplianceEventProcessorDelayTimeSeconds</td><td>How long to wait between two event batches</td><td>1 s – 1 h</td><td>5 min</td></tr><tr><td>Settings + PerSetting</td><td>Which settings the timer checks</td><td>–</td><td>–</td></tr><tr><td>EventPerSetting</td><td>Which settings may be handled through events</td><td>–</td><td>–</td></tr><tr><td>Enabled</td><td>false turns the monitor off</td><td>–</td><td>–</td></tr></tbody></table></figure>
+<p class="wp-block-paragraph">If a value is outside its range, the monitor corrects it and logs it, for example:</p>
+<p class="wp-block-paragraph">[ComplianceMonitor] PollIntervalSeconds 10 clamped to 60 on read — possible registry tamper or stale write.</p>
+<h3 class="wp-block-heading" id="h-step-3-the-monitor-starts">Step 3: The monitor starts<span class="clth-copy-icon" data-heading-id="h-step-3-the-monitor-starts"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">With a device that qualifies and its settings in place, the monitor starts. It starts a timer with a random first tick, so not every device checks at the same second. It also starts the event listeners:</p>
+<figure class="wp-block-image size-full is-resized"><a data-caption="The monitor starts." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-56.jpg"><picture class="wp-image-196470" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-56.jpg.webp 437w, https://patchmypc.com/app/uploads/2026/08/image-56-300x24.png.webp 300w" sizes="(max-width: 437px) 100vw, 437px" type="image/webp"/>
+<img alt="The monitor starts." data-lazy-sizes="(max-width: 437px) 100vw, 437px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-56.jpg 437w, https://patchmypc.com/app/uploads/2026/08/image-56-300x24.png 300w" decoding="async" src="assets/a4cad5d2974367c8/img_8.jpg"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">[EventSourceListener] Starting listener: sourceCount=7.</p>
+<p class="wp-block-paragraph">The event listeners are newer than the timer and are rolled out separately. If you don’t see the listener line, the device only uses the timer for now. That still works; it just reacts a bit slower.</p>
+<h3 class="wp-block-heading" id="h-steps-4-6-noticing-a-change">Steps 4–6: Noticing a change<span class="clth-copy-icon" data-heading-id="h-steps-4-6-noticing-a-change"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">Two ways to notice, one way to confirm. The event listeners are the fast lane, the timer is the safety net, and both end with the same read and the same comparison.</p>
+<figure class="wp-block-image size-large"><a data-caption="Figure 3 · Steps 4–6: where the signals come from, how the monitor notices them, and how a change is confirmed." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-69-1024x545.png"><picture class="wp-image-196487" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-69-1024x545.png.webp 1024w, https://patchmypc.com/app/uploads/2026/08/image-69-300x160.png.webp 300w, https://patchmypc.com/app/uploads/2026/08/image-69-767x408.png.webp 767w, https://patchmypc.com/app/uploads/2026/08/image-69-1536x818.png.webp 1536w, https://patchmypc.com/app/uploads/2026/08/image-69-2048x1090.png.webp 2048w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="Figure 3 · Steps 4–6: where the signals come from, how the monitor notices them, and how a change is confirmed." data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-69-1024x545.png 1024w, https://patchmypc.com/app/uploads/2026/08/image-69-300x160.png 300w, https://patchmypc.com/app/uploads/2026/08/image-69-767x408.png 767w, https://patchmypc.com/app/uploads/2026/08/image-69-1536x818.png 1536w, https://patchmypc.com/app/uploads/2026/08/image-69-2048x1090.png 2048w" decoding="async" src="assets/a4cad5d2974367c8/img_9.png"/>
+</picture>
+</a></figure>
+<h3 class="wp-block-heading" id="h-step-4-something-changes">Step 4: Something changes<span class="clth-copy-icon" data-heading-id="h-step-4-something-changes"><span class="clth-tooltip">Copy Link</span></span></h3>
+<h4 class="wp-block-heading" id="h-the-timer">The timer<span class="clth-copy-icon" data-heading-id="h-the-timer"><span class="clth-tooltip">Copy Link</span></span></h4>
+<p class="wp-block-paragraph">Every 5 minutes (or whatever Intune set), the monitor runs one round. It reads its settings again and then reads every setting Intune turned on, up to 14. Only one round runs at a time. If a round is still busy when the next one is due, the new one is skipped:</p>
+<p class="wp-block-paragraph">[ComplianceMonitor] Cycle skipped — previous cycle still running.</p>
+<h4 class="wp-block-heading" id="h-the-event-listeners">The event listeners<span class="clth-copy-icon" data-heading-id="h-the-event-listeners"><span class="clth-tooltip">Copy Link</span></span></h4>
+<p class="wp-block-paragraph">The timer is the safety net. The event listeners are the fast lane. They listen to seven sources, and each one shows up in the log with its own name when it starts:</p>
+<p class="wp-block-paragraph">[ComplianceEventListener] Windows Security Center listener started: source=wsc.general-change.</p>
+<p class="wp-block-paragraph">[EventSource] Event Log listener started: source=DefenderOperationalRtp,</p>
+<p class="wp-block-paragraph">    channel=Microsoft-Windows-Windows Defender/Operational.</p>
+<p class="wp-block-paragraph">[ComplianceEventListener] Registry listener started: source=registry.os-version-change, …</p>
+<figure class="wp-block-table"><table class="has-fixed-layout"><thead><tr><td><strong>Source name in the log</strong></td><td><strong>What it listens to</strong></td><td><strong>Setting</strong></td></tr></thead><tbody><tr><td>wsc.general-change</td><td>Windows Security Center changes</td><td>ActiveFirewallRequired, AntivirusRequired</td></tr><tr><td>DefenderOperationalRtp</td><td>Defender Operational log, events 5000 and 5001 (real-time protection on/off)</td><td>RtpEnabled</td></tr><tr><td>BitLockerManagementEncryption</td><td>BitLocker Management log, events 768 and 770</td><td>BitLockerEnabled</td></tr><tr><td>SecurityCenterDefenderService</td><td>Application log, SecurityCenter events 15 and 16 for Windows Defender</td><td>DefenderEnabled</td></tr><tr><td>registry.defender-version-change</td><td>HKLM\SOFTWARE\Microsoft\Windows Defender · InstallLocation</td><td>DefenderVersion</td></tr><tr><td>registry.os-version-change</td><td>HKLM\…\Windows NT\CurrentVersion · CurrentBuild, UBR</td><td>OsBuildVersion</td></tr><tr><td>registry.secure-boot-change</td><td>HKLM\SYSTEM\…\SecureBoot\State · UEFISecureBootEnabled</td><td>SecureBootEnabled</td></tr></tbody></table></figure>
+<p class="wp-block-paragraph">The other settings (TPM, code integrity, signatures and anti-spyware) don’t have an event. The timer picks those up.</p>
+<p class="wp-block-paragraph">Want to see it yourself? On a test device, change the UBR value under HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion. That is exactly the value the OsBuildVersion registry listener watches, so the monitor picks up the change right away.</p>
+<figure class="wp-block-image size-full is-resized"><a data-caption="Changing UBR on a test device: an easy way to trigger an OsBuildVersion change." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-58.jpg"><picture class="wp-image-196472" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-58.jpg.webp 559w, https://patchmypc.com/app/uploads/2026/08/image-58-300x127.png.webp 300w" sizes="(max-width: 559px) 100vw, 559px" type="image/webp"/>
+<img alt="Changing UBR on a test device: an easy way to trigger an OsBuildVersion change." data-lazy-sizes="(max-width: 559px) 100vw, 559px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-58.jpg 559w, https://patchmypc.com/app/uploads/2026/08/image-58-300x127.png 300w" decoding="async" src="assets/a4cad5d2974367c8/img_10.jpg"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">Events are not handled one by one. The monitor collects them for 10 seconds, handles them together, and then waits 5 minutes before it handles the next batch. Events that come in while it waits are kept for the next batch. That way, a burst of Defender events doesn’t turn into a burst of check-ins.</p>
+<p class="wp-block-paragraph">The most important thing to understand: <strong>an event is only a hint.</strong> It tells the monitor which settings to look at now. The monitor still reads the real value and compares it, just like the timer does. A Defender event that doesn’t really change anything ends like this:</p>
+<p class="wp-block-paragraph">[ComplianceEventProcessor] Event batch processed without drift: settings=RtpEnabled.</p>
+<h3 class="wp-block-heading" id="h-step-5-read-the-real-value">Step 5: Read the real value<span class="clth-copy-icon" data-heading-id="h-step-5-read-the-real-value"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">Whether it was the timer or an event, the monitor now reads the current value of each setting. Most values come from the MDM Bridge WMI provider, which is the same device status information Intune works with. So the monitor looks at roughly what Intune will look at.</p>
+<figure class="wp-block-table"><table class="has-fixed-layout"><thead><tr><td><strong>Setting</strong></td><td><strong>Where the value comes from</strong></td></tr></thead><tbody><tr><td>ActiveFirewallRequired</td><td>Firewall status (MDM Bridge)</td></tr><tr><td>AntivirusRequired · AntivirusRequireCurrentSignature</td><td>Antivirus status and signature status (MDM Bridge)</td></tr><tr><td>AntiSpywareRequired · AntiSpywareRequireCurrentSignature</td><td>Anti-spyware status and signature status (MDM Bridge)</td></tr><tr><td>BitLockerEnabled</td><td>Encryption status (MDM Bridge)</td></tr><tr><td>SecureBootEnabled</td><td>Secure Boot state (MDM Bridge)</td></tr><tr><td>DefenderEnabled · DefenderVersion · SignatureOutOfDate</td><td>Defender status: service, product version and signature age</td></tr><tr><td>RtpEnabled</td><td>Defender real-time protection setting</td></tr><tr><td>CodeIntegrityEnabled</td><td>Device Guard code integrity status</td></tr><tr><td>TpmRequired</td><td>TPM enabled and activated</td></tr><tr><td>OsBuildVersion</td><td>CurrentBuild and UBR from the registry, for example 26100.4652</td></tr></tbody></table></figure>
+<p class="wp-block-paragraph">These are the same fourteen names you will find as keys under …\ComplianceMonitor\Config\PerSetting:</p>
+<figure class="wp-block-image size-full is-resized"><a data-caption="The fourteen settings the monitor can watch." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-60.jpg"><picture class="wp-image-196474" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-60.jpg.webp" type="image/webp"/>
+<img alt="The fourteen settings the monitor can watch." decoding="async" src="assets/a4cad5d2974367c8/img_11.jpg"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">If one reading fails, that is logged for that setting, and the other settings carry on.</p>
+<h3 class="wp-block-heading" id="h-step-6-compare-with-the-last-value">Step 6: Compare with the last value<span class="clth-copy-icon" data-heading-id="h-step-6-compare-with-the-last-value"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">For every setting, the monitor remembers the last value it accepted. You can find it in the registry:</p>
+<figure class="wp-block-image size-large is-resized"><a data-caption="The last value the monitor accepted, per setting. Here: the Defender version." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-59-1024x285.png"><picture class="wp-image-196473" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-59-1024x285.png.webp 1024w, https://patchmypc.com/app/uploads/2026/08/image-59-300x84.png.webp 300w, https://patchmypc.com/app/uploads/2026/08/image-59-766x213.png.webp 766w, https://patchmypc.com/app/uploads/2026/08/image-59.jpg.webp 1251w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="The last value the monitor accepted, per setting. Here: the Defender version." data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-59-1024x285.png 1024w, https://patchmypc.com/app/uploads/2026/08/image-59-300x84.png 300w, https://patchmypc.com/app/uploads/2026/08/image-59-766x213.png 766w, https://patchmypc.com/app/uploads/2026/08/image-59.jpg 1251w" decoding="async" src="assets/a4cad5d2974367c8/img_12.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">Same value? Nothing happened. Different value? That is a change, which the log calls a <strong>drift</strong>, with the old and the new value. The direction doesn’t matter. Firewall off is a change. Firewall back on is a change too. That is what lets a device get back to compliant quickly, and not only fall out of it.</p>
+<p class="wp-block-paragraph">[ComplianceEventProcessor] Event batch confirmed drift: settings=RtpEnabled.</p>
+<h3 class="wp-block-heading" id="h-steps-7-10-from-change-to-compliance-state">Steps 7–10: From change to compliance state<span class="clth-copy-icon" data-heading-id="h-steps-7-10-from-change-to-compliance-state"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">A change doesn’t go straight to Intune. It passes the check-in gate first. Only then does the device check in and save the new value.</p>
+<figure class="wp-block-image size-large"><a data-caption="Figure 4 · Steps 7–10: the gate, the check-in, the evaluation in Intune and the save on the device." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-70-1024x523.png"><picture class="wp-image-196488" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-70-1024x523.png.webp 1024w, https://patchmypc.com/app/uploads/2026/08/image-70-300x153.png.webp 300w, https://patchmypc.com/app/uploads/2026/08/image-70-767x392.png.webp 767w, https://patchmypc.com/app/uploads/2026/08/image-70-1536x785.png.webp 1536w, https://patchmypc.com/app/uploads/2026/08/image-70-2048x1046.png.webp 2048w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="Figure 4 · Steps 7–10: the gate, the check-in, the evaluation in Intune and the save on the device." data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-70-1024x523.png 1024w, https://patchmypc.com/app/uploads/2026/08/image-70-300x153.png 300w, https://patchmypc.com/app/uploads/2026/08/image-70-767x392.png 767w, https://patchmypc.com/app/uploads/2026/08/image-70-1536x785.png 1536w, https://patchmypc.com/app/uploads/2026/08/image-70-2048x1046.png 2048w" decoding="async" src="assets/a4cad5d2974367c8/img_13.png"/>
+</picture>
+</a></figure>
+<h3 class="wp-block-heading" id="h-step-7-the-gate-decides">Step 7: The gate decides<span class="clth-copy-icon" data-heading-id="h-step-7-the-gate-decides"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">The check-in gate logs as [DciHelper]. Before it lets a change through, it asks four questions:</p>
+<ol class="wp-block-list">
+<li><strong>Already handled?</strong> The timer and an event can spot the same change. If the other one was faster, the change is simply ignored: “Ignoring stale drift snapshot because its baseline was already updated.”</li>
+<li><strong>Observe only?</strong> In the first phase of the rollout, the gate only logs the change and saves the new value, but doesn’t ask for a check-in. You will see decision=Simulated.</li>
+</ol>
+<figure class="wp-block-image size-full is-resized"><a data-caption="Observe-only: the OsBuildVersion change is logged, but there is no check-in." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-61.jpg"><picture class="wp-image-196475" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-61.jpg.webp 572w, https://patchmypc.com/app/uploads/2026/08/image-61-300x19.png.webp 300w" sizes="(max-width: 572px) 100vw, 572px" type="image/webp"/>
+<img alt="Observe-only: the OsBuildVersion change is logged, but there is no check-in." data-lazy-sizes="(max-width: 572px) 100vw, 572px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-61.jpg 572w, https://patchmypc.com/app/uploads/2026/08/image-61-300x19.png 300w" decoding="async" src="assets/a4cad5d2974367c8/img_14.jpg"/>
+</picture>
+</a></figure>
+<ul class="wp-block-list">
+<li><strong>Hourly limit reached?</strong> By default, the device may ask for 2 check-ins per hour. When the limit is reached, the gate waits and doesn’t save the new value yet. The next round finds the same change again and tries again once the hour is over. You will see decision=DeviceCapReachedDeferred.</li>
+</ul>
+<figure class="wp-block-image size-full is-resized"><a data-caption="Hourly limit reached: the firewall change has to wait." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-62.jpg"><picture class="wp-image-196477" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-62.jpg.webp 633w, https://patchmypc.com/app/uploads/2026/08/image-62-300x15.png.webp 300w" sizes="(max-width: 633px) 100vw, 633px" type="image/webp"/>
+<img alt="Hourly limit reached: the firewall change has to wait." data-lazy-sizes="(max-width: 633px) 100vw, 633px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-62.jpg 633w, https://patchmypc.com/app/uploads/2026/08/image-62-300x15.png 300w" decoding="async" src="assets/a4cad5d2974367c8/img_15.jpg"/>
+</picture>
+</a></figure>
+<ul class="wp-block-list">
+<li><strong>Go.</strong> The device asks for a check-in (step 8).</li>
+</ul>
+<p class="wp-block-paragraph">One thing to keep in mind. The hourly counter is saved in the registry (…\ComplianceMonitor\Config\RateWindow), so it survives a restart. But when the IME starts and there is no recent counter, the gate plays it safe and starts the hour as if the limit was already reached. So right after an IME (re)start, the first hour can only wait:</p>
+<p class="wp-block-paragraph"><strong>[DciHelper] No persisted rate window found (first boot or registry missing); failing closed with cap=2</strong></p>
+<h3 class="wp-block-heading" id="h-step-8-the-device-asks-for-a-check-in">Step 8: The device asks for a check-in<span class="clth-copy-icon" data-heading-id="h-step-8-the-device-asks-for-a-check-in"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">When the gate says go, the IME asks Windows to start a new MDM session, with one extra alert added to it:</p>
+<figure class="wp-block-table"><table class="has-fixed-layout"><thead><tr><td><strong>Alert property</strong></td><td><strong>Value</strong></td></tr></thead><tbody><tr><td>Source</td><td>IntuneRealTimeCompliance</td></tr><tr><td>Type</td><td>DriftRetry</td></tr><tr><td>Target</td><td>LocalDevice</td></tr><tr><td>Data</td><td>RealTimeCompliance drift retry</td></tr></tbody></table></figure>
+<p class="wp-block-paragraph">From here, it is a normal check-in, with the same enrollment and the same kind of MDM session you get when you press Sync. If Windows doesn’t start the session within 30 seconds, the attempt counts as failed. Both outcomes are in the log:</p>
+<figure class="wp-block-image size-full is-resized"><a data-caption="The firewall change got through: the device asked for a check-in." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-63.jpg"><picture class="wp-image-196478" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-63.jpg.webp 633w, https://patchmypc.com/app/uploads/2026/08/image-63-300x12.png.webp 300w" sizes="(max-width: 633px) 100vw, 633px" type="image/webp"/>
+<img alt="The firewall change got through: the device asked for a check-in." data-lazy-sizes="(max-width: 633px) 100vw, 633px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-63.jpg 633w, https://patchmypc.com/app/uploads/2026/08/image-63-300x12.png 300w" decoding="async" src="assets/a4cad5d2974367c8/img_16.jpg"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">When Windows doesn’t start the session, you will see decision=TriggerFailed with an error code instead.</p>
+<h3 class="wp-block-heading" id="h-step-9-intune-evaluates">Step 9: Intune evaluates<span class="clth-copy-icon" data-heading-id="h-step-9-intune-evaluates"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">This is why the monitor can stay so simple. It never tells Intune “compliant” or “not compliant”. It only makes sure the check-in happens now instead of later. During that check-in, the device reports its state, Intune checks it against the assigned compliance policies, and the admin center shows the result. Conditional Access follows from there.</p>
+<p class="wp-block-paragraph">When the setting changes back, the same thing happens the other way around.</p>
+<h3 class="wp-block-heading" id="h-step-10-save-and-count">Step 10: Save and count<span class="clth-copy-icon" data-heading-id="h-step-10-save-and-count"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">Only when the check-in started successfully does the gate save the new value as LastValue and count the check-in in the hourly counter. If the check-in failed or was held back, nothing is saved. The next round sees the same change again and tries again.</p>
+<p class="wp-block-paragraph">The hourly counter lives next to the settings. Count is the number of check-ins in the current hour, and WindowStartTicks is when that hour started, in UTC ticks. The PowerShell snippet at the end of this blog turns it into a readable time.</p>
+<figure class="wp-block-image size-large is-resized"><a data-caption="The hourly counter: one check-in so far in this hour." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-64-1024x159.png"><picture class="wp-image-196479" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-64-1024x159.png.webp 1024w, https://patchmypc.com/app/uploads/2026/08/image-64-300x46.png.webp 300w, https://patchmypc.com/app/uploads/2026/08/image-64-766x119.png.webp 766w, https://patchmypc.com/app/uploads/2026/08/image-64.jpg.webp 1448w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="The hourly counter: one check-in so far in this hour." data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-64-1024x159.png 1024w, https://patchmypc.com/app/uploads/2026/08/image-64-300x46.png 300w, https://patchmypc.com/app/uploads/2026/08/image-64-766x119.png 766w, https://patchmypc.com/app/uploads/2026/08/image-64.jpg 1448w" decoding="async" src="assets/a4cad5d2974367c8/img_17.png"/>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-what-faster-compliance-client-driven-does-not-do">What Faster Compliance (Client-Driven) does not do<span class="clth-copy-icon" data-heading-id="h-what-faster-compliance-client-driven-does-not-do"><span class="clth-tooltip">Copy Link</span></span></h2>
+<ul class="wp-block-list">
+<li>It doesn’t decide compliance on the device or send a verdict. Intune still evaluates.</li>
+<li>It doesn’t watch every compliance setting. There are 14 settings, and 8 of them have an event.</li>
+<li>It doesn’t ignore the hourly limit. A setting that keeps flipping can’t cause endless check-ins.</li>
+<li>It doesn’t run when Defender isn’t the active antivirus, or when the device isn’t enrolled in Intune MDM.</li>
+<li>It doesn’t promise real time. The observe-only phase, the hourly limit, the first hour after an IME start, the timer interval and the event batch can all hold a check-in back.</li>
+</ul>
+<h2 class="wp-block-heading" id="h-before-and-after">Before and after<span class="clth-copy-icon" data-heading-id="h-before-and-after"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Side by side, the difference is the gap between “the device changed” and “Intune knows”. Without client-driven compliance, that gap is the time until the next scheduled check-in. With it, the gap is the time to notice, a short batch and one check-in.</p>
+<figure class="wp-block-image size-large"><a data-caption="Figure 5 · How long Intune shows the old state, with and without client-driven compliance (not to scale)." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/08/image-71-1024x212.png"><picture class="wp-image-196489" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-71-1024x212.png.webp 1024w, https://patchmypc.com/app/uploads/2026/08/image-71-300x62.png.webp 300w, https://patchmypc.com/app/uploads/2026/08/image-71-765x158.png.webp 765w, https://patchmypc.com/app/uploads/2026/08/image-71-1536x317.png.webp 1536w, https://patchmypc.com/app/uploads/2026/08/image-71-2048x423-1.png.webp 2048w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="Figure 5 · How long Intune shows the old state, with and without client-driven compliance (not to scale)." data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/08/image-71-1024x212.png 1024w, https://patchmypc.com/app/uploads/2026/08/image-71-300x62.png 300w, https://patchmypc.com/app/uploads/2026/08/image-71-765x158.png 765w, https://patchmypc.com/app/uploads/2026/08/image-71-1536x317.png 1536w, https://patchmypc.com/app/uploads/2026/08/image-71-2048x423-1.png 2048w" decoding="async" src="assets/a4cad5d2974367c8/img_18.png"/>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-how-to-check-it-on-your-own-device">How to check it on your own device<span class="clth-copy-icon" data-heading-id="h-how-to-check-it-on-your-own-device"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Run these from an elevated PowerShell session. If a read is denied, run it as SYSTEM.</p>
+<h3 class="wp-block-heading" id="h-the-settings-intune-sent">The settings Intune sent<span class="clth-copy-icon" data-heading-id="h-the-settings-intune-sent"><span class="clth-tooltip">Copy Link</span></span></h3>
+<pre class="wp-block-code"><code>Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\IntuneManagementExtension\ComplianceMonitor\Config' |
+Select-Object Enabled, PollIntervalSeconds, DciMaxCheckInsPerHourPerDevice, ComplianceEventProcessorBatchTimeSeconds, ComplianceEventProcessorDelayTimeSeconds, Settings, EventSettings</code></pre>
+<h3 class="wp-block-heading" id="h-the-last-values-it-saw">The last values it saw<span class="clth-copy-icon" data-heading-id="h-the-last-values-it-saw"><span class="clth-tooltip">Copy Link</span></span></h3>
+<pre class="wp-block-code"><code>Get-ChildItem 'HKLM:\SOFTWARE\Microsoft\IntuneManagementExtension\ComplianceMonitor\Settings' |
+ForEach-Object { [pscustomobject]@{Setting   = $_.PSChildName LastValue = (Get-ItemProperty $_.PSPath).LastValue } }</code></pre>
+<h3 class="wp-block-heading" id="h-the-hourly-counter">The hourly counter<span class="clth-copy-icon" data-heading-id="h-the-hourly-counter"><span class="clth-tooltip">Copy Link</span></span></h3>
+<pre class="wp-block-code"><code>$rw = Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\IntuneManagementExtension\ComplianceMonitor\Config\RateWindow'
+[pscustomobject]@{HourStartedUtc = [datetime]::new([long]$rw.WindowStartTicks, 'Utc') CheckIns = $rw.Count }</code></pre>
+<h3 class="wp-block-heading" id="h-the-log-lines">The log lines<span class="clth-copy-icon" data-heading-id="h-the-log-lines"><span class="clth-tooltip">Copy Link</span></span></h3>
+<pre class="wp-block-code"><code>Select-String -Path "C:\ProgramData\Microsoft\IntuneManagementExtension\Logs\*.log" `
+-Pattern '\[(ComplianceMonitor|DciHelper|ComplianceEventProcessor|ComplianceEventListener|EventSourceListener)\]'</code></pre>
+<figure class="wp-block-table"><table class="has-fixed-layout"><thead><tr><td><strong>Log line contains</strong></td><td><strong>What it tells you</strong></td></tr></thead><tbody><tr><td>not applicable: …</td><td>Step 1: the device doesn’t qualify (Windows version, enrollment or Defender)</td></tr><tr><td>launcher armed (interval 60 min)</td><td>Step 1: the IME will try to start the monitor every hour</td></tr><tr><td>ingested server config; settings=N</td><td>Step 2: the settings from Intune came in</td></tr><tr><td>Poll interval changed Xs -&gt; Ys</td><td>Step 2: Intune changed the timer interval</td></tr><tr><td>Start entered.</td><td>Step 3: the monitor started</td></tr><tr><td>Starting listener: sourceCount=7</td><td>Step 3: the event listeners started</td></tr><tr><td>Cycle skipped — previous cycle still running</td><td>Step 4: the previous round was still busy</td></tr><tr><td>Event batch confirmed drift: settings=…</td><td>Step 6: an event led to a real change</td></tr><tr><td>Event batch processed without drift</td><td>Step 6: an event, but nothing really changed</td></tr><tr><td>Ignoring stale drift snapshot</td><td>Step 7: the change was already handled</td></tr><tr><td>decision=Simulated</td><td>Step 7: observe-only, no check-in</td></tr><tr><td>decision=DeviceCapReachedDeferred</td><td>Step 7: hourly limit reached, tried again later</td></tr><tr><td>decision=Invoked … corrId=…</td><td>Steps 8–10: check-in started, value saved</td></tr><tr><td>decision=TriggerFailed … errorCode=…</td><td>Step 8: check-in failed, tried again next round</td></tr></tbody></table></figure>
+<h2 class="wp-block-heading" id="h-wrapping-up">Wrapping up<span class="clth-copy-icon" data-heading-id="h-wrapping-up"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Faster compliance (Client-Driven) closes the gap where only the device knows that something changed. It does that without moving the compliance decision to the device. The IME watches a short list of settings, compares them with what it saw last time, and when something really changed, it asks for a normal check-in so Intune can do what it already does.</p>
+<p class="wp-block-paragraph">The event listeners make it fast: Security Center, Defender, BitLocker, and the registry. But an event is still only a hint. The value is always read again, always compared with the last value, and always passes the same gate with its hourly limit. Fast where it can be, careful where it has to be.</p>
+<p class="wp-block-paragraph"></p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
