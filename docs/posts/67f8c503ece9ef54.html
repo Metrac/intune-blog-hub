@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intune Newsletter – 9th October 2026</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Andrew Taylor</span>
+    <span class="date">October 9, 2026</span>
+  </div>
+  <h1>Intune Newsletter – 9th October 2026</h1>
+  <div class="orig">Saved for offline reading · <a href="https://andrewstaylor.com/2026/10/09/intune-newsletter-9th-october-2026/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text">
+<p>A slightly quieter week this week with everyone probably wrestling 26H2 and working out which policies to replace the latest Copilot button</p>
+<hr/>
+<h1>Community Content</h1>
+<p>We start this week with a very useful PowerShell script from <a href="https://www.linkedin.com/in/pej1025/">Philip Jorgensen</a> for all of you managing Lenovo devices.  Quickly create assignment filters for your various different models without needing to go and find all of the model codes with this script!</p>
+<p><a href="https://blog.lenovocdrt.com/creating-intune-assignment-filters-for-lenovo-models/">https://blog.lenovocdrt.com/creating-intune-assignment-filters-for-lenovo-models/</a></p>
+<hr/>
+<p>If you’re managing personal devices with App Protection, you have no doubt hit the issue where your users need to be able to access something in a non-managed app and either you’re left opening a security hole or getting shouted at.  Lucky for you, <a href="https://www.linkedin.com/in/kennethvansurksum/">Kenneth van Surksum</a> has a thorough guide here to make exceptions</p>
+<blockquote class="wp-embedded-content" data-secret="2yuOAEvGYz"><p><a href="https://www.vansurksum.com/2026/10/05/opening-other-apps-and-sharing-data-from-intune-protected-apps-on-apple-mobile-and-android/">Opening other apps and sharing data from Intune protected apps on Apple mobile and Android</a></p></blockquote>
+<p></p>
+<hr/>
+<p>For those of you with AVD or Windows 365 machines (or now RDP), learn how to manage the Windows app here from <a href="https://www.linkedin.com/in/peterwoude/">Peter van der Woude</a></p>
+<blockquote class="wp-embedded-content" data-secret="8g6TDbVOij"><p><a href="https://petervanderwoude.nl/post/easily-managing-windows-app-on-windows-devices/">Easily managing Windows App on Windows devices</a></p></blockquote>
+<p></p>
+<hr/>
+<p>Next, <a href="https://www.linkedin.com/in/jddvincent/">James Vincent</a> looks at the new Deployment Plans functionality recently released</p>
+<blockquote class="wp-embedded-content" data-secret="qah6lMGVR5"><p><a href="https://jamesvincent.co.uk/2026/10/05/intune-deployment-plans-pilot-rollout/">Intune Deployment Plans – Pilot and beyond</a></p></blockquote>
+<p></p>
+<hr/>
+<p>If you’re managing Microsoft Surface devices, learn all about the surface management portal here from <a href="https://www.linkedin.com/in/mrtbone/">Mr T-Bone</a></p>
+<blockquote class="wp-embedded-content" data-secret="C8mV87bFt7"><p><a href="https://www.tbone.se/2026/10/05/intune-surface-management-portal-the-hidden-gem/">Intune Surface Management Portal The Hidden Gem</a></p></blockquote>
+<p></p>
+<p>T-Bone also looks at the new Microsoft hardware announced this week here</p>
+<blockquote class="wp-embedded-content" data-secret="AMT0qghHfF"><p><a href="https://www.tbone.se/2026/10/08/windows-got-hybrid-intelligence-and-i-neeeed-a-surface-ultra/">Windows Got Hybrid Intelligence and I neeeed a Surface Ultra</a></p></blockquote>
+<p></p>
+<hr/>
+<p>Are you wondering how many of the new features in 26H2 you can manage with Intune now?  If so, this post from <a href="https://www.linkedin.com/in/joe-loveless/">Joe loveless</a> is for you!</p>
+<p><a href="https://joeloveless.com/blog/intune-settings-catalog-settings-win11-26h2">https://joeloveless.com/blog/intune-settings-catalog-settings-win11-26h2</a></p>
+<hr/>
+<p>You may have noticed there are now two places where you can configure some Windows 365 settings, including setting users as admins (which with the end of dev boxes is a valid use case).  If you want to be able to automate it, check out this guide from <a href="https://www.linkedin.com/in/areshsarkari/">Aresh Sarkari</a></p>
+<blockquote class="wp-embedded-content" data-secret="U8ff5xtdZU"><p><a href="https://askaresh.com/2026/10/08/windows-365-local-admin-cloud-pc-configurations-vs-user-settings-powershell-graph-rest-api/">Windows 365 Local Admin – Cloud PC Configurations vs User Settings + PowerShell (Graph REST API)</a></p></blockquote>
+<p></p>
+<hr/>
+<p>Grabbing logs from Windows devices is just a button press, but what if you want to send your macOS logs to AppleCare?  Learn how in this post from <a href="https://www.linkedin.com/in/someshpathak/">Somesh Pathak</a></p>
+<blockquote class="wp-embedded-content" data-secret="H941nnFFma"><p><a href="https://intuneirl.com/trigger-enhanced-log-collection-on-macos-27-with-intune-tokens-logs-and-fixes/">Trigger Enhanced Log Collection on macOS 27 with Intune: Tokens, Logs and Fixes</a></p></blockquote>
+<p></p>
+<hr/>
+<p>Assignments are one of these which are very environment specific, but there are always some situations which are best done in a certain way.  Learn about some of these in this post from <a href="https://www.linkedin.com/in/jorgeasaurus/">Jorge Suarez</a></p>
+<p><a href="https://www.jorgeasaur.us/intune-assignments-dos-and-donts">https://www.jorgeasaur.us/intune-assignments-dos-and-donts</a></p>
+<hr/>
+<p>If you are managing Apple devices and want to know exactly how DDM is managing your updates, check out this excellent post from <a href="https://www.linkedin.com/in/kevin-malinoski-a55a65185/">Kevin Malinoski</a></p>
+<blockquote class="wp-embedded-content" data-secret="jkItz0otu7"><p><a href="https://malinoski.me/2026/10/08/are-you-managing-your-apple-updates-or-are-they-managing-you/">Are You Managing Your Apple Updates, or Are They Managing You?</a></p></blockquote>
+<p></p>
+<hr/>
+<h1><a id="video"></a>Video Content</h1>
+<p>Now for the video content, starting with an in-depth look at what’s available with Security Copilot for Intune here from Saurav Sarkar</p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/1a9_DRaF09Y?feature=oembed" title="Intune Nugget 44: Enhancing Endpoint Security with Intune Copilot and Autonomous Intune agents">VIDEO</iframe></p>
+<hr/>
+<p><a href="https://www.linkedin.com/in/stevew25/">Steve Weiner</a> runs through the new deployments functionality here and how best to use it</p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/wMTVZZHDdN4?feature=oembed" title="How to Setup Deployment Plans in Intune">VIDEO</iframe></p>
+<hr/>
+<p>Entra Risk policies are now retired, learn what it means for you here from<a href="https://www.linkedin.com/in/jonathanjedwards/"> Jonathan Edwards</a></p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/7_MAlvluCpU?feature=oembed" title="Your Entra Risk Policies Retired. Here’s What Replaces Them">VIDEO</iframe></p>
+<hr/>
+<h1><a id="microsoft"></a>Microsoft Content</h1>
+<p>Onto this weeks Microsoft content starting with the all important Windows News you can use from <a href="https://www.linkedin.com/in/chrismorrissey2009/">Chris Morrissey</a></p>
+<p><a href="https://techcommunity.microsoft.com/t5/windows-it-pro-blog/windows-news-you-can-use-september-2026/ba-p/4552395">https://techcommunity.microsoft.com/t5/windows-it-pro-blog/windows-news-you-can-use-september-2026/ba-p/4552395</a></p>
+<hr/>
+<p>Windows app finally has support for RDP connections!  Learn more here from <a href="https://www.linkedin.com/in/marvinquinzon/">Marvin Quinzon</a></p>
+<p><a href="https://techcommunity.microsoft.com/t5/windows-it-pro-blog/remote-pc-connections-in-windows-app-on-windows-is-now-generally/ba-p/4561186">https://techcommunity.microsoft.com/t5/windows-it-pro-blog/remote-pc-connections-in-windows-app-on-windows-is-now-generally/ba-p/4561186</a></p>
+<hr/>
+<p>That’s all for this week, have an amazing weekend!</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
