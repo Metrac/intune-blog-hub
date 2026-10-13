@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Easily enabling Sysmon in Windows 11</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Peter van der Woude</span>
+    <span class="date">October 12, 2026</span>
+  </div>
+  <h1>Easily enabling Sysmon in Windows 11</h1>
+  <div class="orig">Saved for offline reading · <a href="https://petervanderwoude.nl/post/easily-enabling-sysmon-in-windows-11/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text">
+<p class="wp-block-paragraph">This week is all about Sysmon and about enabling Sysmon on the latest version of Windows 11. Sysmon itself is not new, but the direct integration within Windows 11 is. Starting in February 2026, Sysmon is available as a built-in optional Windows feature in supported versions of Windows 11. When the feature is enabled and Sysmon is installed, Sysmon remains active after system restarts and continuously monitors system activity, logging detailed events to the event log. Those events include information about process creation, network connections, and changes to file timestamps. That provides an additional layer of visibility into what is happening on Windows devices and supports detecting malicious or unusual behaviour. Sysmon generates the events, but it does notanalysee them. It simply adds deep insights when they are needed. This post will provide a closer look at enabling and configuring Sysmon using the new optional Windows feature, followed by a brief look at the resulting configuration.</p>
+<h2 class="wp-block-heading">Enabling Sysmon using PowerShell and Win32 apps</h2>
+<p class="wp-block-paragraph">When enabling and configuring Sysmon, it starts with the ability to use optional Windows features, as Sysmon is disabled by default. Sysmon can be enabled directly through the Windows optional features interface. After a restart, it becomes active and starts logging detailed events. The easiest and most controlled way to enable Sysmon with Microsoft Intune is to use a PowerShell script and deploy it as a Win32 app.</p>
+<h3 class="wp-block-heading">Creating the PowerShell script to enable or disable Sysmon</h3>
+<p class="wp-block-paragraph">The first step is verifying the current state of Sysmon. Well, technically speaking, this is not really necessary, as that can also be achieved within the detection of the Win32 app. Either way, verifying the state of Sysmon is a good starting point and can be achieved using the following snippet. </p>
+<pre class="wp-block-code"><code class="language-powershell" lang="powershell">(Get-WindowsOptionalFeature -FeatureName “Sysmon” -Online).State</code></pre>
+<p class="wp-block-paragraph">The next step is enabling Sysmon. The following snippet shows how to easily enable the optional Windows feature for Sysmon.</p>
+<pre class="wp-block-code"><code class="language-powershell" lang="powershell">Enable-WindowsOptionalFeature -Online -FeatureName “Sysmon” -NoRestart</code></pre>
+<p class="wp-block-paragraph">The script should also support disabling Sysmon. That provides an easy way to use a single script in the Win32 app. The following snippet shows how to disable the optional Windows feature for Sysmon.</p>
+<pre class="wp-block-code"><code class="language-powershell" lang="powershell">Disable-WindowsOptionalFeature -Online -FeatureName “Sysmon” -NoRestart</code></pre>
+<p class="wp-block-paragraph">Combine those lines into a single PowerShell script, add basic error handling, and it’s ready for enabling Sysmon. A complete working example can be found here: <a href="https://gist.github.com/pvanderwoude/410b842732097ed5eb703e9661d74c49">Set-OptionalWindowsFeature.ps1</a>. Enabling the optional feature does not, by itself, complete the Sysmon installation. That still requires installation and configuration. That can be achieved by using the command line as shown in the snippet below, optionally combined with a configuration file. For that, simply specify the location of the XML configuration file during the installation.</p>
+<pre class="wp-block-code"><code class="language-powershell" lang="powershell">sysmon –i</code></pre>
+<p class="has-background wp-block-paragraph"><strong>Note</strong>: The uninstall of Sysmon can be achieved by simply using <code>sysmon -u</code>.</p>
+<h3 class="wp-block-heading">Wrapping the PowerShell script to enable or disable Sysmon</h3>
+<p class="wp-block-paragraph">Before being able to enable Sysmon using the PowerShell script as a Win32 application, it is required to wrap the PowerShell script. For that specificpurpose,e Microsoft provides the <a href="https://github.com/Microsoft/Microsoft-Win32-Content-Prep-Tool" rel="noopener" target="_blank">Microsoft Win32 Content Prep Tool</a>. The script will be wrapped into a file of the <em>.intunewin</em> format. Like with any other Win32 application, that<em> </em>file can be used in Microsoft Intune. The following five steps walk through downloading and using the Win32 Content PrepTool, to actually wrap the created script file.</p>
+<ol class="wp-block-list">
+<li>Download the <a href="https://github.com/Microsoft/Microsoft-Win32-Content-Prep-Tool" rel="noopener" target="_blank">Microsoft Win32 Content Prep Tool</a> to C:\Temp</li>
+<li>Add the created PowerShell script to C:\Temp\OWF</li>
+<li><span>Open a Terminal using </span><em>Run as administrator</em><span> and navigate to the location ofIntuneWinAppUtil.exe</span><em>e</em><span> using </span><strong>cd \Temp</strong></li>
+<li>Run <em>IntuneWinAppUtil.exe</em> to start the wrapping process and provide the following information, when requested:</li>
+</ol>
+<ul class="wp-block-list">
+<li>Please specify the source folder: <strong>C:\Temp\OWF</strong></li>
+<li>Please specify the setup file: <strong>Set-OptionalWindowsFeature.ps1</strong></li>
+<li>Please specify the output folder: <strong>C:\Temp</strong></li>
+<li>Do you want to specify catalog folder (Y/N): <strong>N</strong></li>
+</ul>
+<ol class="wp-block-list" start="5">
+<li>Once the wrapping isdone,e the message <em>Done!!!</em> will be shown and a file named <em>Set-OptionalWindowsFeature.intunewin</em> will be created in <em>C:\Temp</em></li>
+</ol>
+<h3 class="wp-block-heading">Creating the Win32 application that includes the Sysmon enablement</h3>
+<p class="wp-block-paragraph">The wrapped PowerShell script can now be added as a Win32 application. That is a pretty straightforward process that is similar to adding any other Win32 application and can be achieved by adding an application of the <em>Windows app (Win32)</em> type. The following 12 steps walk through the steps to create the Win32 application by adding the created <em>.intunewin </em>file. As part of thosesteps,s a detection script is added that verifies the state of Sysmon. </p>
+<ol class="wp-block-list">
+<li><span>Open the </span><a href="https://intune.microsoft.com/" rel="noopener" target="_blank">Microsoft Intune admincentrer</a><span> portal and navigate </span><strong>Apps</strong><span> &gt;Windows.</span><strong>s</strong></li>
+<li><span>On the </span><strong>Windows | Windows apps</strong><span> page, clickCreate.</span><strong>e</strong></li>
+<li><span>On the </span><strong>Select app type</strong><span> pane, select </span><strong>Windows app (Win32)</strong><span> and clickSelect.</span><strong>t</strong></li>
+<li><span>On the </span><strong>App information</strong><span> page, select the created </span><em><em>Set-OptionalWindowsFeature</em></em><span>.</span><em>intunewin</em><span> and clickOK.</span><strong>K</strong></li>
+<li><span>Back on the </span><strong>App information</strong><span> page, specify the basic information about the PowerShell script and clickNext.</span><strong>t</strong></li>
+<li><span>On the </span><strong>Program</strong><span> page, as shown below in Figure 1, specify at least the following information about the PowerShell script and clickNext.</span><strong>t</strong></li>
+</ol>
+<ul class="wp-block-list">
+<li><strong>Install command</strong>: Specify <em>PowerShell.exe -NoProfile -ExecutionPolicy ByPass -File .\<em>Set-OptionalWindowsFeature</em>.ps1 -optionalWindowsFeatureAction Enable</em> as the installation command to make sure that the PowerShell script will berun.n</li>
+<li><strong>Uninstall command</strong>: Specify <em>PowerShell.exe -NoProfile -ExecutionPolicy ByPass -File .\<em>Set-OptionalWindowsFeature</em>.ps1 -optionalWindowsFeatureAction Disable</em> as the uninstall command to make sure that the PowerShell script will berun.n</li>
+<li><strong>Installbehaviourr</strong>: Select <strong>System </strong>to make sure that the PowerShell script will run in the right context</li>
+</ul>
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-1 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><a href="https://petervanderwoude.nl/wordpress/wp-content/uploads/ESM-AppProgram.png"><img alt="" class="wp-image-23446" data-id="23446" decoding="async" src="assets/90c86b51fceab502/img_0.png"/></a><figcaption class="wp-element-caption">Figure 1: Overview of theprogrammem configuration</figcaption></figure>
+</figure>
+<ol class="wp-block-list" start="7">
+<li><span>On the </span><strong>Requirements</strong><span> page, specify at least the operating system details and clickNext.</span><strong>t</strong></li>
+<li>On the <strong>Detection rules</strong> page, as shown below in Figure 2, specify a simple script that does the detection of a successful installation by checking the state of the optional Windows feature and click <strong>Next</strong></li>
+</ol>
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-2 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><a href="https://petervanderwoude.nl/wordpress/wp-content/uploads/ESM-AppDetection.png"><img alt="" class="wp-image-23444" data-id="23444" decoding="async" src="assets/90c86b51fceab502/img_1.png"/></a><figcaption class="wp-element-caption">Figure 2: Overview of the detection configuration</figcaption></figure>
+</figure>
+<ol class="wp-block-list" start="9">
+<li><span>On the </span><strong>Dependencies</strong><span> page, no configuration is required and clickNext.</span><strong>t</strong></li>
+<li><span>On the </span><strong>Supersedence</strong><span> page, no configuration is required and clickNext.</span><strong>t</strong></li>
+<li><span>On the </span><strong>Assignments</strong><span> page, configure the assignment for the enablement of Sysmon and clickNext.</span><strong>t</strong></li>
+<li><span>On the </span><strong>Review + create</strong><span> page, verify the configuration and clickCreate.</span><strong>e</strong></li>
+</ol>
+<p class="has-background wp-block-paragraph"><strong>Note</strong>: This configuration provides a straightforward example of enabling Sysmon using a Win32 app. It is also possible to extend the PowerShell script with the functionality to also actually install and configure Sysmon.</p>
+<h2 class="wp-block-heading">Experiencing Sysmon in Windows 11</h2>
+<p class="wp-block-paragraph">Once Sysmon is enabled, verifying the configuration is straightforward. That makes the actual installation, configuration and usage available via the command line. That is also what is shown below in Figure 3. Asuccessfull enablement of the Sysmon feature is shown in the Company Portal app, while the enablement is verified in PowerShell. Besides that, it also provides an overview of the options for actually installing and configuring Sysmon. </p>
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-3 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><a href="https://petervanderwoude.nl/wordpress/wp-content/uploads/ESM-ConfigurationExperience.png"><img alt="" class="wp-image-23445" data-id="23445" decoding="async" src="assets/90c86b51fceab502/img_2.png"/></a><figcaption class="wp-element-caption">Figure 3: Overview of the enabled Sysmon feature</figcaption></figure>
+</figure>
+<p class="wp-block-paragraph">Once Sysmon is installed and configured, it starts capturing detailed system activity that helps identify unusual or potentially maliciousbehaviourr. That includes process creation, network connections, and changes to file timestamps. All of that information is written to the Event Viewer under <strong>Applications and Services Logs &gt; Microsoft &gt; Windows &gt; Sysmon</strong>.</p>
+<h2 class="wp-block-heading">More information</h2>
+<p class="wp-block-paragraph">For more information about Sysmon in Windows 11, refer to the following docs.</p>
+<div class="wp-block-group has-border-color"><div class="wp-block-group__inner-container is-layout-flow wp-block-group-is-layout-flow">
+<hr class="wp-block-separator has-alpha-channel-opacity is-style-wide"/>
+<h3 class="wp-block-heading has-text-align-center">Discover more from All about Microsoft Intune</h3>
+<p class="has-text-align-center wp-block-paragraph">Subscribe to get the latest posts sent to your email.</p>
+</div></div>
+</div>
+</div></div>
+</article>
+</body>
+</html>

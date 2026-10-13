@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Azure AI Gateway: Foundry and MCP with API Management</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">October 13, 2026</span>
+  </div>
+  <h1>Azure AI Gateway: Foundry and MCP with API Management</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/azure-ai-gateway-apim-video/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p class="wp-block-paragraph">One application calls a Foundry model directly. Another has its own API key. A third agent connects to an MCP server. Each works, but each also introduces another place to manage access, limits and monitoring.</p>
+<p class="wp-block-paragraph">An <strong>Azure AI Gateway</strong> can give these callers a common entry point. In this walkthrough, I use Azure API Management to look at Foundry model integration, MCP tools and the newer gateway experience. I also separate what the portal lets us configure from what a real client test still needs to prove.</p>
+<p><span id="more-20910"></span>
+</p>
+<p class="wp-block-paragraph"><strong>Watch the video walkthrough (German)</strong></p>
+<h2 class="wp-block-heading" id="where-the-azure-ai-gateway-sits">Where the Azure AI Gateway sits<a aria-hidden="true" class="jr-anchor" href="#where-the-azure-ai-gateway-sits" tabindex="-1">#</a></h2>
+<p class="wp-block-paragraph">AI gateway capabilities are part of Azure API Management. They are not a replacement for the model deployment or the tool backend. Microsoft’s <a href="https://learn.microsoft.com/en-us/azure/api-management/genai-gateway-capabilities" rel="noopener" target="_blank">AI gateway overview</a> describes capabilities such as routing, token controls, caching and monitoring, with availability varying by feature and tier.</p>
+<figure class="wp-block-image"><img alt="Azure AI Gateway request path: applications and agents, API Management, then models and MCP tools" data-recalc-dims="1" decoding="async" src="assets/ead8e52757277c55/img_0.jpg"/></figure>
+<p class="wp-block-paragraph">The gateway sits between callers and the services they use. That gives you a place to apply shared policies and observe requests. The backend still needs its own authorization. Passing through a gateway should not give an agent unrestricted access to every tool or data source behind it.</p>
+<p class="wp-block-paragraph">If you want a deeper look at the governance boundary, my earlier <a href="https://jannikreinhard.com/azure-api-management-mcp-control-plane/">API Management and MCP control-plane guide</a> covers that angle. This article follows the model and MCP configuration shown in my newer recording.</p>
+<h2 class="wp-block-heading" id="choose-the-service-tier-before-following-the-portal-steps">Choose the service tier before following the portal steps<a aria-hidden="true" class="jr-anchor" href="#choose-the-service-tier-before-following-the-portal-steps" tabindex="-1">#</a></h2>
+<p class="wp-block-paragraph">Start with a development resource, fictional data and one model deployment you can test safely. You need permission to configure API Management and the Foundry resource, plus the appropriate access for the gateway’s backend identity.</p>
+<p class="wp-block-paragraph">Do not pick a tier only because its headline price looks attractive. The MCP integration demonstrated here is not available in the Consumption tier. Check the tier list and limitations in Microsoft’s <a href="https://learn.microsoft.com/en-us/azure/api-management/expose-existing-mcp-server" rel="noopener" target="_blank">existing MCP server integration guide</a>.</p>
+<p class="wp-block-paragraph">Developer is intended for development and testing and has no production SLA. For a production design, compare supported features, capacity and networking requirements in the <a href="https://azure.microsoft.com/en-us/pricing/details/api-management/" rel="noopener" target="_blank">APIM pricing and tier information</a>.</p>
+<p class="wp-block-paragraph">I deliberately avoid a fixed monthly figure here. The amount shown in a demo depends on region, currency, tier and pricing at that time. Your estimate should include the gateway, model usage and any extra services such as a cache or monitoring destination. A budget alert is useful, but it is not the same as a hard spending stop.</p>
+<h2 class="wp-block-heading" id="import-foundry-models-and-check-the-backend-identity">Import Foundry models and check the backend identity<a aria-hidden="true" class="jr-anchor" href="#import-foundry-models-and-check-the-backend-identity" tabindex="-1">#</a></h2>
+<p class="wp-block-paragraph">In the recording, I first explore the classic API Management experience, then the newer AI gateway interface marked as preview. The model-import wizard discovers Foundry deployments and offers an authentication choice.</p>
+<figure class="wp-block-image"><img alt="Azure AI Gateway model-import wizard showing Microsoft Foundry deployments and managed identity authentication" data-recalc-dims="1" decoding="async" src="assets/ead8e52757277c55/img_1.jpg"/></figure>
+<p class="wp-block-paragraph"><em>Actual frame from the recording: the Foundry import wizard, not a reconstructed interface.</em></p>
+<p class="wp-block-paragraph">Selecting <strong>managed identity</strong> in a wizard is not the final access check. Verify that the intended identity has the required rights on the correct backend, then send a request through the gateway. Also check whether a caller can still bypass the gateway by calling the model endpoint directly.</p>
+<p class="wp-block-paragraph">I would document these three values next to each other: the client-facing endpoint, the gateway identity and the backend deployment. It makes a later failed request much easier to investigate.</p>
+<h2 class="wp-block-heading" id="use-model-aliases-without-assuming-automatic-failover">Use model aliases without assuming automatic failover<a aria-hidden="true" class="jr-anchor" href="#use-model-aliases-without-assuming-automatic-failover" tabindex="-1">#</a></h2>
+<p class="wp-block-paragraph">The newer interface also shows model aliases. A stable client-facing name can make it easier to change a backend without changing every application.</p>
+<p class="wp-block-paragraph">But an alias is not evidence of automatic failover, load balancing or identical model behaviour. In the recording, I create and inspect an alias. I do not demonstrate a backend outage and successful fallback.</p>
+<p class="wp-block-paragraph">For a real change, compare the candidate model’s output, tool calls, latency and token usage on representative tasks. Then change the mapping in a controlled rollout. Keep a known-good mapping available for rollback. A technically valid response is not enough if the new model breaks the workflow.</p>
+<h2 class="wp-block-heading" id="two-different-ways-to-put-mcp-behind-api-management">Two different ways to put MCP behind API Management<a aria-hidden="true" class="jr-anchor" href="#two-different-ways-to-put-mcp-behind-api-management" tabindex="-1">#</a></h2>
+<h3 class="wp-block-heading" id="connect-an-existing-mcp-server">Connect an existing MCP server<a aria-hidden="true" class="jr-anchor" href="#connect-an-existing-mcp-server" tabindex="-1">#</a></h3>
+<p class="wp-block-paragraph">This keeps the MCP server as the backend and introduces API Management as an entry point. You need to consider authentication in both directions: client to gateway, and gateway to MCP server. Microsoft explains that distinction in its <a href="https://learn.microsoft.com/en-us/azure/api-management/secure-mcp-servers" rel="noopener" target="_blank">MCP security guidance</a>.</p>
+<p class="wp-block-paragraph">The connection attempt in my recording does not complete successfully. I therefore do not present it as a working end-to-end integration. A portal entry or catalog selection is not enough to prove the backend can be reached.</p>
+<p class="wp-block-paragraph">The other path uses an existing REST API. In the demo, I select operations from the Echo API and expose them as tools. The resulting list makes the scope of the interface visible.</p>
+<figure class="wp-block-image"><img alt="Echo API operations selected as MCP tools in Azure API Management during the recorded walkthrough" data-recalc-dims="1" decoding="async" src="assets/ead8e52757277c55/img_2.jpg"/></figure>
+<p class="wp-block-paragraph">Start with a small read-only surface. Check operation names, descriptions, input schemas and backend permissions before adding write actions. The <a href="https://learn.microsoft.com/en-us/azure/api-management/export-rest-mcp-server" rel="noopener" target="_blank">REST-to-MCP documentation</a> describes the supported setup.</p>
+<p class="wp-block-paragraph">The recording shows tool selection, not a completed MCP client invocation. Your next test should call an allowed tool and attempt an operation outside the intended scope. Do not assume that a reduced tool list alone removes all other paths to the REST backend.</p>
+<h2 class="wp-block-heading" id="request-limits-token-limits-and-cost-policies-are-different">Azure AI Gateway Limits: Requests, Tokens and Costs<a aria-hidden="true" class="jr-anchor" href="#request-limits-token-limits-and-cost-policies-are-different" tabindex="-1">#</a></h2>
+<p class="wp-block-paragraph">The gateway interface brings several controls together. They still measure different things:</p>
+<figure class="wp-block-image"><img alt="Azure AI Gateway limits: request counts, token usage and policy-specific cost measurements are separate" data-recalc-dims="1" decoding="async" src="assets/ead8e52757277c55/img_3.jpg"/></figure>
+<figure class="wp-block-table"><table>
+<thead>
+<tr>
+<th>Control</th>
+<th>Question it answers</th>
+<th>What I would check</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Request rate limit</td>
+<td>How many calls can this caller make in a window?</td>
+<td>The counter key and the response when the threshold is crossed</td>
+</tr>
+<tr>
+<td>Token limit</td>
+<td>How much model usage is allowed?</td>
+<td>Token accounting, supported backend and streaming behaviour</td>
+</tr>
+<tr>
+<td>Cost-related policy</td>
+<td>Which usage does this policy measure?</td>
+<td>Its pricing assumptions, scope and reset behaviour</td>
+</tr>
+</tbody>
+</table></figure>
+<p class="wp-block-paragraph">None of these automatically becomes a hard spending cap for the entire Azure subscription. A shared counter can also let one application consume another application’s allowance. Choose the counter boundary deliberately and test two different callers.</p>
+<h2 class="wp-block-heading" id="caching-and-content-safety-need-their-own-tests">Caching and content safety need their own tests<a aria-hidden="true" class="jr-anchor" href="#caching-and-content-safety-need-their-own-tests" tabindex="-1">#</a></h2>
+<p class="wp-block-paragraph">I explore semantic caching and content-safety options in the portal. In the recorded setup, both options are disabled before the configuration is created. There is no demonstrated cache hit or blocked unsafe response in this episode.</p>
+<p class="wp-block-paragraph">Before enabling a cache, decide what may be stored, which identities may share entries and how changes invalidate earlier results. Similar prompts from different users can have different authorization contexts. A cache that ignores that boundary can undermine an otherwise careful design.</p>
+<p class="wp-block-paragraph">For content safety, test the configured categories and thresholds with controlled inputs. Treat those results as one control, not as proof that the agent cannot leak data or perform an unauthorized action.</p>
+<h2 class="wp-block-heading" id="my-acceptance-tests-for-a-gateway-pilot">My acceptance tests for a gateway pilot<a aria-hidden="true" class="jr-anchor" href="#my-acceptance-tests-for-a-gateway-pilot" tabindex="-1">#</a></h2>
+<p class="wp-block-paragraph">These are the tests I would run next. They are recommendations, not results from the recording:</p>
+<ol class="wp-block-list">
+<li>Send an allowed model request through the gateway and find its corresponding monitoring record.</li>
+<li>Send a request with missing or invalid credentials and confirm rejection under the chosen authentication design.</li>
+<li>Use a valid identity without access to the intended resource and confirm that the request cannot reach that backend.</li>
+<li>Cross a configured request or token threshold and check the rejection, timing and counter reset.</li>
+<li>Repeat with a second caller to check whether its allowance is separate or intentionally shared.</li>
+<li>Invoke one selected MCP tool, then attempt an unapproved operation and a direct backend request.</li>
+<li>Make the backend unavailable in a safe test environment and check the actual behaviour. Only claim failover if a configured fallback succeeds.</li>
+<li>Inspect traces and logs for prompts, credentials and sensitive output before expanding retention or access.</li>
+</ol>
+<p class="wp-block-paragraph">For each test, keep the policy version, timestamp, caller and correlation identifier. That is more useful than a screenshot of a successful configuration wizard.</p>
+<h2 class="wp-block-heading" id="frequently-asked-questions">Frequently asked questions<a aria-hidden="true" class="jr-anchor" href="#frequently-asked-questions" tabindex="-1">#</a></h2>
+<h3 class="wp-block-heading" id="is-azure-ai-gateway-a-separate-product-from-api-management">Is Azure AI Gateway a separate product from API Management?<a aria-hidden="true" class="jr-anchor" href="#is-azure-ai-gateway-a-separate-product-from-api-management" tabindex="-1">#</a></h3>
+<p class="wp-block-paragraph">Here, it refers to the AI gateway capabilities and experience within Azure API Management. You still need to check which features your chosen tier supports.</p>
+<h3 class="wp-block-heading" id="do-i-need-a-gateway-for-every-agent-demo">Do I need a gateway for every agent demo?<a aria-hidden="true" class="jr-anchor" href="#do-i-need-a-gateway-for-every-agent-demo" tabindex="-1">#</a></h3>
+<p class="wp-block-paragraph">No. A direct model connection can be sensible for a small isolated experiment. A gateway becomes more useful when several applications need shared access rules, usage controls and operational ownership.</p>
+<h3 class="wp-block-heading" id="does-importing-a-model-make-the-deployment-private">Does importing a model make the deployment private?<a aria-hidden="true" class="jr-anchor" href="#does-importing-a-model-make-the-deployment-private" tabindex="-1">#</a></h3>
+<p class="wp-block-paragraph">No. Importing it does not prove that public access or direct calls are blocked. Verify the networking and authorization of both gateway and backend separately.</p>
+<p class="wp-block-paragraph">For the surrounding platform design, use <a href="https://jannikreinhard.com/secure-microsoft-foundry/">my Foundry security guide</a> to separate network, identity and guardrails. If your agent runs outside Microsoft, the <a href="https://jannikreinhard.com/agent-365-registration-python-video/">Agent 365 registration walkthrough</a> covers registration; it does not replace Azure AI Gateway enforcement.</p>
+<h2 class="wp-block-heading" id="my-takeaway">My takeaway<a aria-hidden="true" class="jr-anchor" href="#my-takeaway" tabindex="-1">#</a></h2>
+<p class="wp-block-paragraph">I would start with one model, one small MCP tool surface and a few measurable tests. Once the request path is understood, expand it. The value of a shared gateway is not the number of services listed in the portal. It is having a request boundary you can explain, test and operate.</p>
+<div class="jr-nl jr-nl--article"><div class="jr-nl__copy"><p><span class="jr-nl__kicker">Newsletter</span></p><p class="jr-nl__title">New posts, straight to your inbox.</p><p class="jr-nl__promise">Hands-on guides on Intune, AI and Azure.</p></div><div class="jr-nl__form"><p aria-live="polite" class="jr-nl__msg" role="status"></p><p class="jr-nl__trust">190+ guides · 5x Microsoft MVP · No spam, unsubscribe anytime · <a href="https://jannikreinhard.com/datenschutz/">Privacy</a></p></div></div> </div>
+</div></div>
+</article>
+</body>
+</html>
