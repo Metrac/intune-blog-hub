@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Build Your First AI Agent in Microsoft Foundry Step by Step</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">July 1, 2026</span>
+  </div>
+  <h1>Build Your First AI Agent in Microsoft Foundry Step by Step</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/microsoft-foundry-first-agent/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="prose" data-article-body=""><p>AI agents are everywhere right now, and many IT pros ask me where they should start. In this blog post I show you how to build your first Microsoft Foundry agent. We go step by step: create a project in the portal, deploy a model, create the agent with instructions and tools, test it in the playground, and finally call it from Python code. You do not need to be a developer to follow along. At the end you have a working Microsoft Foundry agent that you can extend for your own use cases.</p>
+<p class="preserved-content"><span id="what-is-microsoft-foundry"></span></p>
+<h2 id="what-is-microsoft-foundry">What Is Microsoft Foundry?</h2>
+<p>Microsoft Foundry is Microsoftâs platform for building AI applications and agents. You might know it under the old name Azure AI Foundry â Microsoft renamed it at Ignite in November 2025, and the portal and the documentation now say Microsoft Foundry. The platform gives you three main things:</p>
+<ul>
+<li>A <strong>model catalog</strong> with models from OpenAI, Microsoft, Meta, DeepSeek, xAI and other providers that you can deploy with a few clicks.</li>
+<li>The <strong>Foundry Agent Service</strong>, which hosts your agents. An agent is a model plus instructions plus tools. You define it once and the service keeps it consistent for every user interaction. The new version of this service went generally available in March 2026 and is built on the OpenAI Responses API.</li>
+<li><strong>SDKs and APIs</strong> so you can call your models and agents from your own code and automation.</li>
+</ul>
+<p>The agent part is the interesting one for us. Instead of sending a system prompt with every request, you create a Microsoft Foundry agent one time with a name, instructions, and optional tools like web search or code interpreter. Then every app or script just references the agent by name. Foundry calls this a <strong>prompt agent</strong>: pure configuration, no code to host, no compute to pay for beyond the calls. There are also hosted agents where you bring your own code in a container, but that is a topic for another post. If you want the bigger picture of where Microsoft is going with agents, have a look at my post about the <a href="/microsoft-build-2026-agentic-stack/">agentic stack from Microsoft Build 2026</a>.</p>
+<p class="preserved-content"><span id="what-do-i-need-before-i-start"></span></p>
+<h2 id="what-do-i-need-before-i-start">What Do I Need Before I Start?</h2>
+<p>To build a Microsoft Foundry agent you need surprisingly little:</p>
+<ol>
+<li>An <strong>Azure subscription</strong>. A free account is enough for testing.</li>
+<li>The right <strong>permissions</strong>. To create the Foundry resource and project you need the <strong>Foundry Account Owner</strong> role (or Contributor/Owner) on the subscription or resource group. To work inside the project you need the <strong>Foundry User</strong> role. These roles were renamed in 2026 from âAzure AI Account Ownerâ and âAzure AI Userâ, so do not be confused if you still see the old names in some places â the role IDs and permissions did not change.</li>
+<li>For the code part: <strong>Python</strong> and the <strong>Azure CLI</strong> installed on your machine.</li>
+</ol>
+<p>Note: You pay for the model usage per token, not for the agent itself. Also, not every model is available in every region, so check the region support and pricing pages before you pick a location for your project.</p>
+<p class="preserved-content"><span id="how-do-i-create-a-project-and-deploy-a-model"></span></p>
+<h2 id="how-do-i-create-a-project-and-deploy-a-model">How Do I Create a Project and Deploy a Model?</h2>
+<p>A Microsoft Foundry agent always lives inside a project. Here is the click path:</p>
+<ol>
+<li>Go to the <a href="https://ai.azure.com">Microsoft Foundry portal</a> and sign in with your Azure account. Make sure the <strong>New Foundry</strong> toggle at the top is on. The steps below are different in the classic experience, so this toggle matters.</li>
+<li>If this is your first visit, the portal asks you to create a project. Select <strong>Create a new project</strong>. Otherwise, click the project name in the upper-left corner and select <strong>Create new project</strong>.</li>
+<li>Enter a name, for example <code>my-first-agent-project</code>.</li>
+<li>Open <strong>Advanced options</strong> if you want to choose the resource group and the region yourself. I recommend a region close to you.</li>
+<li>Click <strong>Create project</strong> and wait a moment until the project overview page appears.</li>
+</ol>
+<p><img alt="Microsoft Foundry portal at ai.azure.com with the New Foundry toggle switched on and the" decoding="async" fetchpriority="auto" src="assets/5ded9248a91ef15b/img_0.webp"/></p>
+<p>Next we need a model deployment. The agent needs a brain:</p>
+<ol>
+<li>Select <strong>Discover</strong> in the upper-right navigation, then <strong>Models</strong> in the left pane.</li>
+<li>Search for a model, for example <strong>gpt-5.4-mini</strong>. It is cheap and good enough for a first test.</li>
+<li>Select the model and deploy it with the default settings to add it to your project.</li>
+<li>Note the deployment name. You need it later in the code.</li>
+</ol>
+<p><img alt="Microsoft Foundry agent portal flow: create project, deploy model, create agent, test in" decoding="async" fetchpriority="auto" src="assets/5ded9248a91ef15b/img_1.webp"/></p>
+<p>Hint: If you create your project in the <strong>West US 3</strong> region, you can try the new instant models (preview) and skip the deployment step completely. Nice for a quick demo.</p>
+<p class="preserved-content"><span id="how-do-i-create-the-microsoft-foundry-agent"></span></p>
+<h2 id="how-do-i-create-the-microsoft-foundry-agent">How Do I Create the Microsoft Foundry Agent?</h2>
+<p>Now the fun part. We create the Microsoft Foundry agent in the portal:</p>
+<ol>
+<li>Select <strong>Build</strong> in the upper-right navigation, then <strong>Agents</strong> in the left pane.</li>
+<li>Click <strong>New agent</strong> and select <strong>Build an agent</strong>.</li>
+<li>Give it a name, for example <code>MyAgent</code>, and click <strong>Create and open playground</strong>. The portal creates the agent and drops you directly into the agent editor with the playground on the right side.</li>
+</ol>
+<p><img alt="Build section with Agents selected in the left pane, the New agent button open and the Build" decoding="async" fetchpriority="auto" src="assets/5ded9248a91ef15b/img_2.webp"/></p>
+<p>The agent editor is where your agent takes shape. On the left you find the configuration sections: <strong>Instructions</strong>, <strong>Tools</strong>, <strong>Knowledge</strong>, <strong>Memory (Preview)</strong>, and <strong>Guardrail (Preview)</strong>. Here is what I do for a first agent:</p>
+<ol>
+<li>Select your <strong>model deployment</strong> from the dropdown, for example the gpt-5.4-mini deployment from the previous step.</li>
+<li>Add <strong>instructions</strong>. This is the personality and the job description of your agent. For example: <em>âYou are a helpful assistant for IT admins. Answer questions about device management short and precise.â</em> In a real project this is where you spend the most care.</li>
+<li>Check the <strong>Tools</strong> section. Two useful tools for later: <strong>file search</strong> lets the agent answer questions from documents you upload, and <strong>code interpreter</strong> lets the agent write and run Python code, for example to create a chart from numbers.</li>
+<li>Save. Every time you save, Foundry snapshots a new <strong>version</strong> of the agent. You can compare versions and roll back if a change makes the agent worse. Agents in the new Foundry are addressed by name plus version â there is no agent GUID anymore.</li>
+</ol>
+<p><img alt="Agent editor with the Instructions field filled in, the model deployment selected and the" decoding="async" fetchpriority="auto" src="assets/5ded9248a91ef15b/img_3.webp"/></p>
+<p>Note: The <strong>web search tool is switched on by default</strong> for a new agent. It is great for up-to-date answers, but it is billed per use (14 US dollars per 1,000 transactions at the time of writing). My first test agent does not need the web, so I switch it off. Decide consciously instead of paying for a default.</p>
+<p>That is already it. The agent is saved in your project and every colleague with the Foundry User role can use it.</p>
+<p class="preserved-content"><span id="how-do-i-test-the-agent-in-the-playground"></span></p>
+<h2 id="how-do-i-test-the-agent-in-the-playground">How Do I Test the Agent in the Playground?</h2>
+<p>You do not need any code to test your Microsoft Foundry agent. The playground is already open right next to the agent settings:</p>
+<ol>
+<li>Type a question in the chat box, for example <em>âWrite me a short checklist for onboarding a new Windows device.â</em></li>
+<li>Check if the answer matches your instructions. If not, adjust the instructions, save, and try again.</li>
+<li>Ask a follow-up question that only makes sense with context, for example <em>âWhich of these steps can I automate?â</em>. The agent keeps the conversation history on the server side, so it should understand what âthese stepsâ means.</li>
+</ol>
+<p><img alt="Agents playground with a checklist answer and a follow-up question that proves the" decoding="async" fetchpriority="auto" src="assets/5ded9248a91ef15b/img_4.webp"/></p>
+<p>This loop â change instructions, test, change again â is where you spend most of your time. Do it in the playground before you touch any code. Every save creates a new version, so you can always go back to the state that worked.</p>
+<p class="preserved-content"><span id="how-do-i-call-the-agent-from-code"></span></p>
+<h2 id="how-do-i-call-the-agent-from-code">How Do I Call the Agent From Code?</h2>
+<p>For automation you want to call the Microsoft Foundry agent from a script. The pattern to understand is the <strong>two-client pattern</strong>: the project client (<code>AIProjectClient</code>) manages the agent definition and its versions, and the OpenAI client (from <code>get_openai_client()</code>) does the actual chatting through conversations and responses.</p>
+<p>Install the packages <code>azure-ai-projects</code> (version 2.0.0 or higher) and <code>azure-identity</code> with pip, run <code>az login</code>, and copy your <strong>project endpoint</strong> from the overview page of your project. It has the format <code>https://&amp;lt;resource&gt;.services.ai.azure.com/api/projects/&amp;lt;project&gt;</code>. Then a minimal example looks like this:</p>
+<pre class="astro-code github-dark" data-language="python" tabindex="0"><code><span class="line"><span># pip install "azure-ai-projects&gt;=2.0.0" azure-identity   (run az login first)</span></span>
+<span class="line"><span>from</span><span> azure.identity </span><span>import</span><span> DefaultAzureCredential</span></span>
+<span class="line"><span>from</span><span> azure.ai.projects </span><span>import</span><span> AIProjectClient</span></span>
+<span class="line"><span>from</span><span> azure.ai.projects.models </span><span>import</span><span> PromptAgentDefinition</span></span>
+<span class="line"></span>
+<span class="line"><span>project </span><span>=</span><span> AIProjectClient(</span></span>
+<span class="line"><span>    endpoint</span><span>=</span><span>"https://&lt;resource&gt;.services.ai.azure.com/api/projects/&lt;project&gt;"</span><span>,</span></span>
+<span class="line"><span>    credential</span><span>=</span><span>DefaultAzureCredential(),</span></span>
+<span class="line"><span>)</span></span>
+<span class="line"></span>
+<span class="line"><span># Create the agent, or snapshot a new version if it already exists</span></span>
+<span class="line"><span>agent </span><span>=</span><span> project.agents.create_version(</span></span>
+<span class="line"><span>    agent_name</span><span>=</span><span>"MyAgent"</span><span>,</span></span>
+<span class="line"><span>    definition</span><span>=</span><span>PromptAgentDefinition(</span></span>
+<span class="line"><span>        model</span><span>=</span><span>"gpt-5.4-mini"</span><span>,  </span><span># your model deployment name</span></span>
+<span class="line"><span>        instructions</span><span>=</span><span>"You are a helpful assistant for IT admins. Answer short and precise."</span><span>,</span></span>
+<span class="line"><span>    ),</span></span>
+<span class="line"><span>)</span></span>
+<span class="line"><span>print</span><span>(</span><span>f</span><span>"Agent: </span><span>{</span><span>agent.name</span><span>}</span><span>, version: </span><span>{</span><span>agent.version</span><span>}</span><span>"</span><span>)</span></span>
+<span class="line"></span>
+<span class="line"><span># Chat with the agent: the OpenAI client is pre-bound to MyAgent</span></span>
+<span class="line"><span>openai </span><span>=</span><span> project.get_openai_client(</span><span>agent_name</span><span>=</span><span>"MyAgent"</span><span>)</span></span>
+<span class="line"><span>conversation </span><span>=</span><span> openai.conversations.create()</span></span>
+<span class="line"></span>
+<span class="line"><span>reply </span><span>=</span><span> openai.responses.create(</span></span>
+<span class="line"><span>    conversation</span><span>=</span><span>conversation.id,</span></span>
+<span class="line"><span>    input</span><span>=</span><span>"Write a short checklist for onboarding a new Windows device."</span><span>,</span></span>
+<span class="line"><span>)</span></span>
+<span class="line"><span>print</span><span>(reply.output_text)</span></span>
+<span class="line"></span>
+<span class="line"><span>followup </span><span>=</span><span> openai.responses.create(</span></span>
+<span class="line"><span>    conversation</span><span>=</span><span>conversation.id,</span></span>
+<span class="line"><span>    input</span><span>=</span><span>"Which of these steps can I automate with Autopilot?"</span><span>,</span></span>
+<span class="line"><span>)</span></span>
+<span class="line"><span>print</span><span>(followup.output_text)</span></span></code></pre>
+<p>The code does three things. It connects to your project with your Azure login. It creates a new version of the agent with <code>create_version</code> â the same call creates the agent if it does not exist yet. And it chats through a <strong>conversation</strong>: the second question never mentions the checklist, but the agent answers correctly because the conversation carries the context on the server. That is exactly what you saw in the playground, now from code.</p>
+<p><img alt="Microsoft Foundry agent architecture: Python script calling the project agent with model," decoding="async" fetchpriority="auto" src="assets/5ded9248a91ef15b/img_5.webp"/></p>
+<p>Note: The agent API changed in 2025/2026 and there are two generations. If you find older tutorials with <code>threads</code>, <code>runs</code>, and agent GUIDs, they use the deprecated classic API. The old Assistants API retires on August 26, 2026, and the classic agent service is announced to retire on March 31, 2027. The new SDK (azure-ai-projects 2.x) is not compatible with the old 1.x samples, so check the imports before you copy code. The current steps are in the official <a href="https://learn.microsoft.com/en-us/azure/foundry/quickstarts/get-started-code">Microsoft Foundry quickstart</a>.</p>
+<p class="preserved-content"><span id="what-does-the-agent-cost"></span></p>
+<h2 id="what-does-the-agent-cost">What Does the Agent Cost?</h2>
+<p>The pricing of a prompt agent is pleasantly simple. The agent runtime itself has no extra charge. You pay the model tokens your agent consumes, plus a meter for each tool you switch on. At the time of writing (US East prices): web search costs 14 US dollars per 1,000 transactions, code interpreter costs 0.033 US dollars per session, and file search storage costs 0.11 US dollars per GB per day with the first GB free. An agent without tools, like the one we built here, costs exactly its tokens.</p>
+<p class="preserved-content"><span id="whats-next"></span></p>
+<h2 id="whats-next">Whatâs Next?</h2>
+<p>You now have a working Microsoft Foundry agent: a project, a model deployment, an agent with instructions, and a Python script that talks to it. From here you can connect your own data with file search, add tools like MCP servers or OpenAPI actions, or publish the agent to Microsoft Teams and Microsoft 365 Copilot. Before you ship anything to real users, please also test it properly â I wrote a separate post about <a href="/microsoft-foundry-agent-evaluations/">how to evaluate AI agents in Microsoft Foundry</a>. If you are still choosing the platform, my <a href="/foundry-vs-copilot-studio/">Microsoft Foundry vs Copilot Studio comparison</a> maps the trade-offs. And if you want to play with models without any cloud at all, have a look at my post about <a href="/run-ai-models-offline-mac-foundry-local/">running AI models offline with Foundry Local</a>.</p>
+<p>I hope this is a little help.</p>
+<p>Stay healthy, Cheers Jannik</p></div></div></div>
+</article>
+</body>
+</html>

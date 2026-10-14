@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Copilot vs Cowork vs Agents: Licenses, Costs and Governance</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">September 16, 2026</span>
+  </div>
+  <h1>Copilot vs Cowork vs Agents: Licenses, Costs and Governance</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/copilot-vs-cowork-vs-agents/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="prose" data-article-body=""><p>You want AI to prepare a rollout meeting. Should you ask Copilot, delegate the work to Cowork, or build an agent?</p>
+<p>All three might help. But you would be buying, operating and governing three different things. One approach may need only a prompt. Another needs a consumption budget. A third becomes a service that somebody has to maintain.</p>
+<p>In this <strong>Copilot vs Cowork vs agents</strong> guide, I explain how I would make that decision. We will look at each option, its licenses and charges, and the governance boundaries. I also walk through the new Copilot Studio interface with real product screenshots.</p>
+<p><strong>Scope and date:</strong> commercial Microsoft 365, checked on <strong>16 September 2026</strong>. This is not a comparison with consumer Copilot, Claude Cowork or the GitHub coding subscription. Prices below are US public list prices, excluding tax, base subscriptions and contractual discounts. Availability varies by region, cloud, license and rollout.</p>
+<p>This guide focuses on the <strong>platform decision</strong>: use Microsoft 365 Copilot, configure a Copilot Studio agent or build with Microsoft Foundry. For the narrower question of interactive help, delegated work and ongoing follow-up, see my <a href="/copilot-chat-vs-cowork-vs-autopilot/">Copilot Chat vs Cowork vs Autopilot comparison</a>.</p>
+<p class="preserved-content"><span id="copilot-vs-cowork-vs-agents-the-short-answer"></span></p>
+<h2 id="copilot-vs-cowork-vs-agents-the-short-answer">Copilot vs Cowork vs agents: the short answer</h2>
+<p>My starting point is the job, not the product name.</p>
+<div class="preserved-content"><table><thead><tr><th>What I need</th><th>Where I would start</th><th>What I still own</th></tr></thead><tbody><tr><td>Help writing, summarizing or understanding something</td><td>Copilot Chat; licensed Microsoft 365 Copilot when broader work context and app capabilities matter</td><td>The prompt, source selection and review</td></tr><tr><td>A finished piece of work involving several steps and files</td><td>Copilot Cowork</td><td>The scope, permissions, spending and final acceptance</td></tr><tr><td>A reusable specialist for a defined knowledge area</td><td>Agent Builder</td><td>Instructions, knowledge quality, access and ownership</td></tr><tr><td>A shared process with tools, approvals, channels and a release lifecycle</td><td>Copilot Studio</td><td>Design, tests, access, monitoring and support</td></tr><tr><td>Custom code, orchestration or infrastructure requirements</td><td>A code-first solution, potentially Microsoft Foundry</td><td>Engineering and the full operational lifecycle</td></tr><tr><td>A known sequence of rules and API calls</td><td>A conventional workflow</td><td>Reliable execution, retries and exception handling</td></tr></tbody></table></div>
+<p>These are starting points, not hard product boundaries. Copilot can use agents. Cowork is itself an agentic experience. Studio agents can appear inside Copilot. A workflow can call an AI step without becoming an open-ended agent.</p>
+<p>The useful distinction is <strong>who directs the work, how much freedom the system has, and who operates it afterwards</strong>.</p>
+<p><a href="https://i0.wp.com/jannikreinhard.com/wp-content/uploads/2026/09/copilot-cowork-agents-06-choose-the-right-option.jpg?quality=70&amp;strip=all&amp;ssl=1"><img alt="Decision guide for Copilot vs Cowork vs agents, separating assistance, delegation, reusable knowledge and owned business processes" decoding="async" fetchpriority="auto" src="assets/7e7466b3e24e497a/img_0.webp"/></a></p>
+<p><em>My selection guide. This is an explanatory diagram, not a product screenshot.</em></p>
+<p class="preserved-content"><span id="what-do-the-different-options-actually-do"></span></p>
+<h2 id="what-do-the-different-options-actually-do">What do the different options actually do?</h2>
+<p class="preserved-content"><span id="copilot-chat-and-licensed-microsoft-365-copilot"></span></p>
+<h3 id="copilot-chat-and-licensed-microsoft-365-copilot">Copilot Chat and licensed Microsoft 365 Copilot</h3>
+<p>Copilot Chat gives eligible Microsoft 365 users an enterprise AI chat at no additional charge. Web information and files supplied or referenced in the conversation can be useful without a paid Copilot seat. Supported Outlook experiences can also ground answers in a bounded set of work content. It is no longer accurate to say âfree means web only.â</p>
+<p>The licensed offering adds broader work-grounded assistance and Copilot capabilities across Microsoft 365 apps. I would assess that against the employeeâs real work: finding the relevant conversation, understanding a meeting, preparing a document or working inside Excel. <a href="https://learn.microsoft.com/en-us/copilot/overview">Copilot Chat and the licensed experience</a></p>
+<p><a href="https://i0.wp.com/jannikreinhard.com/wp-content/uploads/2026/09/copilot-cowork-agents-03-copilot-chat-basic-live.jpg?quality=70&amp;strip=all&amp;ssl=1"><img alt="Microsoft 365 Copilot Chat in the demo tenant, with the Copilot Chat Basic account label visible" decoding="async" fetchpriority="auto" src="assets/7e7466b3e24e497a/img_1.webp"/></a></p>
+<p><em>Live Copilot Chat in the demo account, captured on 15 September. The Basic label describes this account, not every account in the tenant.</em></p>
+<p>My recommendation: start with three representative tasks. If somebody only needs occasional help rewriting text they already have, that is a different purchasing case from someone who spends their day working across meetings, email and documents.</p>
+<p>Also look at an existing Microsoft agent before building another one. Researcher and Analyst, for example, may already cover the intended job. Check the entitlement for the exact capability rather than assuming every agent is included in every plan.</p>
+<p class="preserved-content"><span id="copilot-cowork-delegate-a-result-not-just-the-next-answer"></span></p>
+<h3 id="copilot-cowork-delegate-a-result-not-just-the-next-answer">Copilot Cowork: delegate a result, not just the next answer</h3>
+<p>Cowork is designed for longer tasks across Microsoft 365. It can gather context, work through steps, produce files and take supported actions. The user can steer the work and review the result. Microsoft made the commercial offering generally available in June 2026; <strong>its consumption is metered on top of the required Copilot license</strong>. <a href="https://www.microsoft.com/en-us/microsoft-365/blog/2026/06/16/copilot-cowork-is-now-generally-available/">Cowork availability and billing announcement</a></p>
+<p>Here is the kind of task I would consider:</p>
+<blockquote>
+<p>Prepare tomorrowâs application-rollout review from the approved status files and project documents. Create a short briefing with deployment status, unresolved risks and the decisions we need. Cite the source and date for each figure. Save a draft; do not send messages or change deployments.</p>
+</blockquote>
+<p>That is more useful than âhelp with my rollout.â It defines an output and tells the system where to stop.</p>
+<p>Cowork is not limited to one-off tasks. Its documented capabilities include recurring and event-triggered automations, reusable skills and plugins. The difference from a shared business service is therefore not simply whether it can run on a schedule. I would distinguish a personâs delegated routine from a process that needs a team owner, a support commitment and controlled releases. <a href="https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/use-cowork">Using Cowork</a></p>
+<p>In an enabled account, the documented entry point is the <strong>Cowork</strong> toggle beside Chat. The prerequisites include a Microsoft 365 Copilot license, enabled access and usage billing. <a href="https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/get-started">Getting started with Cowork</a></p>
+<p><strong>Screenshot boundary:</strong> Cowork was not visible in the demo account used for this article. I have not substituted a documentation screenshot or a generated screen. The Cowork sections describe Microsoftâs documented behavior, not a paid task I ran in that account.</p>
+<p class="preserved-content"><span id="agent-builder-give-a-specialist-a-defined-job"></span></p>
+<h3 id="agent-builder-give-a-specialist-a-defined-job">Agent Builder: give a specialist a defined job</h3>
+<p>Agent Builder is a useful starting point when the repeated task is âanswer these questions using this knowledge and these instructions.â You build within the Microsoft 365 experience rather than starting a separate application project. <a href="https://learn.microsoft.com/en-us/microsoft-365-copilot/extensibility/agent-builder">Agent Builder overview</a></p>
+<p><a href="https://i0.wp.com/jannikreinhard.com/wp-content/uploads/2026/09/copilot-cowork-agents-04-agent-builder-live.jpg?quality=70&amp;strip=all&amp;ssl=1"><img alt="Agent Builder entry screen in Microsoft 365 Copilot, showing the specialist-agent prompt and templates" decoding="async" fetchpriority="auto" src="assets/7e7466b3e24e497a/img_2.webp"/></a></p>
+<p><em>Live Agent Builder, captured on 16 September. No prompt was submitted and no agent was created.</em></p>
+<p>A sensible first example would be an onboarding helper restricted to approved workplace guidance. Give it a clear source set, tell it to cite the relevant policy, and define what to do when the policy does not answer the question.</p>
+<p><a href="https://i0.wp.com/jannikreinhard.com/wp-content/uploads/2026/09/copilot-cowork-agents-05-agent-builder-configure-live.jpg?quality=70&amp;strip=all&amp;ssl=1"><img alt="Agent Builder configuration showing the agent name, instructions and knowledge section, with Create disabled" decoding="async" fetchpriority="auto" src="assets/7e7466b3e24e497a/img_3.webp"/></a></p>
+<p><em>The configuration view after selecting Skip. The empty form shows the distinction between instructions and knowledge; it is not a deployed agent.</em></p>
+<p>For declarative agents, Microsoftâs Copilot runtime supplies the orchestration. A custom-engine agent can bring its own orchestration and models. That is a technical distinction, not a promise that one approach is automatically more capable or secure. <a href="https://learn.microsoft.com/en-us/microsoft-365-copilot/extensibility/agents-overview">Microsoftâs agent architecture overview</a></p>
+<p>I would move beyond a lightweight knowledge helper when the job needs richer integrations, controlled actions, more channels or an operational lifecycle. Microsoft supports copying suitable Agent Builder agents into Studio, but that is not the same as universal, lossless conversion between every runtime. <a href="https://learn.microsoft.com/en-us/microsoft-365-copilot/extensibility/copilot-studio-experience">Agent Builder and Studio comparison</a></p>
+<p class="preserved-content"><span id="what-changed-in-the-new-copilot-studio-experience"></span></p>
+<h2 id="what-changed-in-the-new-copilot-studio-experience">What changed in the new Copilot Studio experience?</h2>
+<p>The new interface is not just a visual refresh. You need to know which <strong>harness</strong> powers what you build. A harness is the runtime that coordinates the model, tools and execution.</p>
+<p><a href="https://i0.wp.com/jannikreinhard.com/wp-content/uploads/2026/09/copilot-cowork-agents-01-copilot-studio-new-home.jpg?quality=70&amp;strip=all&amp;ssl=1"><img alt="New Copilot Studio home showing Agent and Workflow cards powered by GitHub Copilot and the Uses Copilot Credits notice" decoding="async" fetchpriority="auto" src="assets/7e7466b3e24e497a/img_4.webp"/></a></p>
+<p><em>Live Studio home, captured on 15 September. Notice the runtime labels and the credit notice, not only the New experience switch.</em></p>
+<p>Microsoft currently documents three harnesses:</p>
+<div class="preserved-content"><table><thead><tr><th>Harness</th><th>Intended emphasis</th><th>Publishing scope in Microsoftâs comparison</th></tr></thead><tbody><tr><td>GitHub Copilot</td><td>Longer, reasoning-heavy tasks across tools and files; skills and memory</td><td>Internal teams or external customers</td></tr><tr><td>Standard</td><td>Authored topics, rules and structured conversations or agent flows</td><td>Internal teams or external customers</td></tr><tr><td>Copilot chat</td><td>Extending Microsoft 365 Copilot with organizational knowledge</td><td>Internal teams</td></tr></tbody></table></div>
+<p>These choices affect capabilities and billing. âGitHub Copilotâ on the Studio card identifies the harness; this is not a recommendation to buy a coding subscription for each business user. Also, structured paths do not make every generative step deterministic. <a href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/harnesses-overview">Copilot Studio harnesses</a></p>
+<p>The <strong>Other ways to build</strong> entry exposes the Standard agent and Agent flows choices in this tenant:</p>
+<p><a href="https://i0.wp.com/jannikreinhard.com/wp-content/uploads/2026/09/copilot-cowork-agents-02-copilot-studio-other-ways-to-build.jpg?quality=70&amp;strip=all&amp;ssl=1"><img alt="Other ways to build in the new Copilot Studio experience, with Agent Standard and Agent flows options" decoding="async" fetchpriority="auto" src="assets/7e7466b3e24e497a/img_5.webp"/></a></p>
+<p><em>Live Studio navigation. The Standard option remains available alongside the new entry point.</em></p>
+<p>Pay attention to the labels here: a <strong>Workflow</strong> on the GitHub Copilot harness and a Standard <strong>Agent flow</strong> do not inherit the same billing model. A separate <strong>Power Automate cloud flow</strong> uses Power Automate licensing, not the agent-flow Copilot Credit meter. A visual workflow canvas alone does not tell you which entitlement you need. <a href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/requirements-messages-management">Billing scope and flow distinction</a></p>
+<p class="preserved-content"><span id="how-i-would-approach-a-new-studio-project"></span></p>
+<h3 id="how-i-would-approach-a-new-studio-project">How I would approach a new Studio project</h3>
+<ol>
+<li><strong>Select the runtime deliberately.</strong> Write down the reason before building: a controlled conversation, a knowledge extension or a longer tool-driven task.</li>
+<li><strong>Define the output and limits.</strong> âCreate a draft change requestâ is a much safer initial scope than âmanage our devices.â</li>
+<li><strong>Add only the required knowledge and tools.</strong> Separate read tools from write tools. A convenient broad connector is not automatically the right permission boundary.</li>
+<li><strong>Build a small evaluation set.</strong> Include normal requests, missing information, denied access and tool failures.</li>
+<li><strong>Test the actual channel.</strong> A makerâs successful preview is not proof that the intended end user has the right permissions or that every channel behaves identically.</li>
+<li><strong>Release to a small group and measure outcomes.</strong> Monitor both failed work and expensive work, including tasks that technically completed but needed correction.</li>
+</ol>
+<p>Those are my recommended implementation steps, not a claim that this walkthrough created and evaluated a production agent. In the available Studio account, the environment picker did not expose an existing agent environment to inspect. The screenshots therefore show the real entry points, not fabricated evaluation results.</p>
+<p>Microsoft still marks specific capabilities, including natural-language building, as preview in its current overview. A generally available platform does not make every feature generally available. Validate the required feature, channel, region and support terms before committing. <a href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/fundamentals-what-is-copilot-studio">Copilot Studio overview</a></p>
+<p class="preserved-content"><span id="licenses-and-costs-separate-seats-from-execution"></span></p>
+<h2 id="licenses-and-costs-separate-seats-from-execution">Licenses and costs: separate seats from execution</h2>
+<p>The mistake I would avoid is asking only, âHow much is Copilot?â There are several different cost layers.</p>
+<p><a href="https://i0.wp.com/jannikreinhard.com/wp-content/uploads/2026/09/copilot-cowork-agents-07-cost-and-control-layers.jpg?quality=70&amp;strip=all&amp;ssl=1"><img alt="Cost layers for Microsoft AI: base services, user entitlements, execution consumption and governance plus operations" decoding="async" fetchpriority="auto" src="assets/7e7466b3e24e497a/img_6.webp"/></a></p>
+<p><em>Budget model, not a Microsoft licensing diagram. Not every scenario needs every additional license.</em></p>
+<p class="preserved-content"><span id="the-commercial-building-blocks"></span></p>
+<h3 id="the-commercial-building-blocks">The commercial building blocks</h3>
+<div class="preserved-content"><table><thead><tr><th>Item</th><th>Public price or charging model</th><th>What to check</th></tr></thead><tbody><tr><td>Microsoft 365 Copilot Chat</td><td>No additional charge with an eligible Microsoft 365 subscription</td><td>Metered agent capabilities are a separate question</td></tr><tr><td>Microsoft 365 Copilot, enterprise offer</td><td><strong>$30/user/month, paid yearly</strong></td><td>Qualifying base subscription required; do not confuse annual billing with a cancel-anytime monthly plan</td></tr><tr><td>Copilot Cowork</td><td>Required Copilot license <strong>plus Copilot Credits</strong></td><td>Access and spending configuration; no flat âunlimited Coworkâ assumption</td></tr><tr><td>Copilot Studio capacity pack</td><td><strong>$200/pack/month for 25,000 credits</strong></td><td>Tenant capacity, not a per-agent or per-maker price</td></tr><tr><td>Copilot Credits PAYG</td><td><strong>$0.01/credit</strong></td><td>Azure billing, eligible services and actual consumption</td></tr><tr><td>Copilot Credit Pre-Purchase Plan</td><td>Commitment-based pricing</td><td>Commitment term, utilization and overage route</td></tr><tr><td>Agent 365</td><td><strong>$15/user/month</strong> standalone; also included in E7</td><td>Governance entitlement, not execution capacity</td></tr><tr><td>Microsoft 365 E7</td><td><strong>$99/user/month, paid yearly</strong> for the displayed US enterprise offer</td><td>Compare the full bundle with existing entitlements; it is not simply an extra $99 Copilot add-on</td></tr></tbody></table></div>
+<p>Price references: <a href="https://www.microsoft.com/en-us/microsoft-365-copilot/pricing/enterprise">Copilot enterprise</a>, <a href="https://www.microsoft.com/en-us/microsoft-365-copilot/pricing/copilot-studio">Studio</a>, <a href="https://www.microsoft.com/licensing/guidance/Copilot-Credits">Copilot Credits licensing guidance</a>, <a href="https://www.microsoft.com/en-us/security/blog/2026/05/01/microsoft-agent-365-now-generally-available-expands-capabilities-and-integrations/">Agent 365</a> and <a href="https://www.microsoft.com/en-us/microsoft-365/enterprise/microsoft-365-plans-and-pricing">Microsoft 365 enterprise plans</a>.</p>
+<p>Regional currency, Teams variants, business offers, taxes, reseller terms and negotiated agreements can change your quote. I would check the organizationâs actual agreement before treating this table as a purchasing decision.</p>
+<p class="preserved-content"><span id="when-is-agent-usage-included-with-a-copilot-seat"></span></p>
+<h3 id="when-is-agent-usage-included-with-a-copilot-seat">When is agent usage included with a Copilot seat?</h3>
+<p>The included rights are not a blanket exemption for everything called an agent. Microsoftâs current pricing distinguishes <strong>Copilot chat and Standard harness</strong> usage from the <strong>GitHub Copilot harness</strong>, which requires credits. <a href="https://www.microsoft.com/en-us/microsoft-365-copilot/pricing/copilot-studio">Studio licensing options</a></p>
+<p>For Standard agents, the billing documentation ties the employee-facing inclusion to a licensed, authenticated Microsoft 365 Copilot user and that userâs identity. Fair-use conditions apply. Agent flows have a narrower condition: the inclusion applies to the <strong>When an agent calls the flow</strong> trigger in that licensed-user context. Other triggers consume credits. Computer-using agent usage is not covered by that inclusion. <a href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/requirements-messages-management">Standard-harness billing conditions</a></p>
+<p>A nightly event-triggered job therefore needs a separate licensing check, even if its maker has a Copilot seat. The same applies to external audiences and employees without that seat. The makerâs license is not a license for every future caller.</p>
+<p>Microsoftâs Standard-harness licensing documentation also distinguishes tenant entitlement, maker access and end-user access. A person using the agent does not automatically need the maker license. <a href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/requirements-licensing">Studio licensing requirements</a></p>
+<p class="preserved-content"><span id="a-credit-is-not-a-message-token-or-completed-task"></span></p>
+<h3 id="a-credit-is-not-a-message-token-or-completed-task">A credit is not a message, token or completed task</h3>
+<p>For <strong>Standard-harness</strong> billing, selected current rates are:</p>
+<div class="preserved-content"><table class="has-fixed-layout"><thead><tr><th>Meter</th><th>Credits</th></tr></thead><tbody><tr><td>Classic answer</td><td>1</td></tr><tr><td>Generative answer</td><td>2</td></tr><tr><td>Agent action</td><td>5</td></tr><tr><td>Tenant Graph grounding</td><td>10</td></tr><tr><td>Agent flow actions</td><td>13 per 100 actions</td></tr></tbody></table></div>
+<p>One interaction can trigger several meters. Reasoning, other tools and separately billed model configurations can add cost. This is a selected rate card, not the complete tariff. <a href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/requirements-messages-management">Standard-harness rates</a></p>
+<p>The <strong>GitHub Copilot harness uses a different consumption model</strong>: tokens, tools and the harness contribute to cost. Natural-language creation, preview, testing and evaluation generation can consume credits <strong>before publication</strong>. Do not estimate it using the Standard table or assume the prototype phase is free. <a href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/billing-credit-overview">New-harness billing</a></p>
+<p>For Cowork, model choice, retrieved context, tools and runtime matter. The public launch pricing lists PAYG at $0.01 per credit, with commitment options. A longer task can require multiple model and tool calls; one submitted prompt is not one fixed-price operation. <a href="https://www.microsoft.com/en-us/microsoft-365/blog/2026/06/16/copilot-cowork-is-now-generally-available/">Cowork consumption model</a></p>
+<p class="preserved-content"><span id="three-cost-exampleswith-the-assumptions-visible"></span></p>
+<h3 id="three-cost-exampleswith-the-assumptions-visible">Three cost examplesâwith the assumptions visible</h3>
+<p>These are <strong>illustrative calculations, not benchmark measurements or tenant invoices</strong>.</p>
+<p><strong>1. Fifty licensed employees.</strong> At the displayed enterprise list price, 50 Ã $30 is <strong>$1,500 per month equivalent</strong>, or $18,000 for a year of Copilot seats. Their base Microsoft 365 subscriptions are separate. Add consumption only for the workloads that actually require it; do not count included usage twice.</p>
+<p><strong>2. A Standard agent serving metered users.</strong> Assume 10,000 interactions, each with exactly one generative answer and one agent action, with no other billable features. That is 10,000 Ã (2 + 5) = <strong>70,000 credits</strong>. At PAYG it is <strong>$700</strong>. Three fully applicable monthly packs provide 75,000 credits for <strong>$600</strong>, leaving 5,000 unused. This arithmetic is not a guarantee about your agentâs trace or the best purchasing plan. <a href="https://cdn-dynmedia-1.microsoft.com/is/content/microsoftcorp/microsoft/bade/documents/products-and-services/en-us/bizapps/Microsoft-Copilot-Studio-Licensing-Guide-May-2026-PUB.pdf">Rates and licensing basis</a></p>
+<p><strong>3. A Cowork pilot.</strong> Assume 20 people each run 10 tasks per month, averaging <strong>250 credits per task solely for this example</strong>. That would be 50,000 credits, or <strong>$500 PAYG</strong>, in addition to their required seats. If the average doubles, the consumption cost doubles. Replace the assumed average with representative pilot measurements before budgeting.</p>
+<p>Coworkâs <code>/cost</code> command provides a session and usage view; I would use that for user feedback, then reconcile reporting with the billing view. It is not a substitute for an invoice or a detailed attribution model. <a href="https://learn.microsoft.com/en-us/microsoft-365/copilot/usage-based-billing-copilot-credits-cost">Cowork cost reporting</a></p>
+<p class="preserved-content"><span id="budget-for-the-parts-outside-the-meter"></span></p>
+<h3 id="budget-for-the-parts-outside-the-meter">Budget for the parts outside the meter</h3>
+<p>My budget would include source-system licenses, external APIs, model or search services, storage, logging, connectors where separately licensed, support and human review. A connector being available in Studio does not pay the subscription of the system behind it.</p>
+<p>For a fair comparison, I would measure:</p>
+<blockquote>
+<p><strong>Cost per accepted outcome = all relevant execution and operating costs Ã· outcomes that meet the agreed quality and control criteria.</strong></p>
+</blockquote>
+<p>A cheap response that requires a person to redo the work is not necessarily the cheaper solution. Track retries, corrections, time to completion and the human minutes still needed.</p>
+<p class="preserved-content"><span id="governance-similar-screens-do-not-mean-identical-controls"></span></p>
+<h2 id="governance-similar-screens-do-not-mean-identical-controls">Governance: similar screens do not mean identical controls</h2>
+<p>I would treat the following as a design review, not as a checklist that a product logo automatically satisfies.</p>
+<p class="preserved-content"><span id="identity-and-authorization-whose-permissions-are-being-used"></span></p>
+<h3 id="identity-and-authorization-whose-permissions-are-being-used">Identity and authorization: whose permissions are being used?</h3>
+<p>Write down the identity for every tool. Is it the person asking, a makerâs connection, an application identity or a separately governed agent identity?</p>
+<p>A user-scoped design and an application-scoped design have very different failure modes. An agent must not become a convenient route to data the caller should not see. For actions, authorization must hold at the API or service boundary, not only in an instruction saying âdo not do this.â</p>
+<p>For Studio, Microsoft documents controls across environments, roles, tool authentication and administration. Verify how those controls apply to the selected harness and channel. <a href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/security-and-governance">Studio security and governance</a></p>
+<p>In an Intune scenario I would begin with read access to the minimum reporting scope. Adding the ability to change assignments, retire devices or run remediation is a separate security decisionânot the next harmless checkbox.</p>
+<p class="preserved-content"><span id="data-access-dlp-and-purview-are-different-layers"></span></p>
+<h3 id="data-access-dlp-and-purview-are-different-layers">Data access, DLP and Purview are different layers</h3>
+<p>First fix the source permissions. An AI assistant can make an existing oversharing problem easier to exploit; it cannot decide that a widely shared document should secretly have been restricted.</p>
+<p>Then distinguish two types of control:</p>
+<ul>
+<li><strong>Power Platform data policies</strong> govern connector combinations, endpoints and supported capabilities. They can restrict unauthenticated chat, HTTP, knowledge sources, channels and other paths. Connector-backed MCP tools are not outside this review. <a href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/admin-data-loss-prevention">Studio data policies</a></li>
+<li><strong>Purview controls</strong> concern information protection, audit, retention and supported AI interactions. The exact feature and surface matter; a connector policy is not the same as inspecting sensitive information in a generated answer.</li>
+</ul>
+<p>There is a particularly important Cowork caveat. Microsoftâs current <strong>Cowork-specific Purview matrix</strong> lists auditing, labels, encryption, eDiscovery and lifecycle capabilities as supported, but marks <strong>DLP and data classification as unsupported for those AI interactions</strong>. That does not mean every existing Microsoft 365, browser or endpoint data-protection control disappears. It means you must not claim full Copilot/Purview feature parity for Cowork. <a href="https://learn.microsoft.com/en-us/purview/ai-copilot-cowork">Cowork Purview support matrix</a></p>
+<p>If a required control is missing for the intended path, narrow the use case or do not enable it. âWe own the licenseâ is not a substitute.</p>
+<p class="preserved-content"><span id="models-processing-location-and-retention"></span></p>
+<h3 id="models-processing-location-and-retention">Models, processing location and retention</h3>
+<p>Model choice is also a data-processing decision. Record the exact model, provider arrangement, region commitments and retention termsânot just the word âCopilot.â</p>
+<p>For example, Microsoftâs Anthropic documentation distinguishes subprocessor offerings from optional <strong>Data Retention</strong> offerings with different terms. It also documents user/group controls and geography-specific enablement. Do not generalize one modelâs arrangement to the whole family. <a href="https://learn.microsoft.com/en-us/microsoft-365/copilot/connect-to-ai-subprocessor">Anthropic provider settings</a></p>
+<p>Likewise, Microsoft distinguishes Microsoft-operated Azure OpenAI from OpenAI-operated subprocessor experiences. Review the documented residency exclusions and service-specific conditions. âIt is in our Microsoft subscriptionâ does not establish that every model call uses the same hosting path. <a href="https://learn.microsoft.com/en-us/microsoft-365/copilot/openai-subprocessor">OpenAI subprocessor guidance</a></p>
+<p>Temporary task storage and retained business records are separate issues. Coworkâs Purview guidance describes transcripts and artifacts in Microsoft 365 retention surfaces. A temporary execution workspace being cleaned up does not mean that all resulting content has vanished. <a href="https://learn.microsoft.com/en-us/purview/ai-copilot-cowork">Cowork records and retention</a></p>
+<p class="preserved-content"><span id="tools-browser-access-and-human-approval"></span></p>
+<p>My default would be read-only tools first. For write actions, define which actions need approval and what the reviewer sees: exact target, proposed change and likely impact.</p>
+<p>Coworkâs documented controls include browsing restrictions and site policies. Browser use can involve the userâs signed-in session. Approvals and pre-authorized actions also matter: do not assume the user will always approve every action individually. <a href="https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-admin-governance">Cowork administration</a></p>
+<p>Treat content from documents, websites, emails and tool responses as untrusted input. A retrieved page asking the agent to send a file somewhere is not an instruction from the user. I would test that case deliberately, including a malicious instruction embedded in an otherwise relevant document.</p>
+<p>For a device-management change, a good proposal still needs the normal change authority. Afterwards, verify the result in Intune or the target system. âThe agent says it applied the changeâ is not endpoint evidence.</p>
+<p class="preserved-content"><span id="spending-policies-are-also-access-policies"></span></p>
+<h3 id="spending-policies-are-also-access-policies">Spending policies are also access policies</h3>
+<p>For Cowork, the current admin guidance says access follows the relevant spending policy. A one-credit limit is not a reliable way to deny access, and the old preview entry under All Agents is not the current access switch. <a href="https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-admin-governance">Cowork access governance</a></p>
+<p>In Microsoft 365 <strong>Copilot â Cost Management â Configuration</strong>, review the users, groups, services and limits together. Watch two documented details:</p>
+<ul>
+<li>Auto-applying newly added services can broaden what an existing policy enables.</li>
+<li>Overlapping policies do not simply resolve to the smallest limit. The documented selection prefers the higher per-user limit, then higher overall limit, then the newer policy.</li>
+</ul>
+<p>Do not treat separate policy limits or capacity allocations as a single guaranteed organization-wide ceiling. Verify the actual enforcement and overage behavior of each billing route. <a href="https://learn.microsoft.com/en-us/microsoft-365/copilot/usage-based-billing-manage-copilot-credits">Credit and spending-policy management</a></p>
+<p class="preserved-content"><span id="lifecycle-monitoring-and-agent-365"></span></p>
+<h3 id="lifecycle-monitoring-and-agent-365">Lifecycle, monitoring and Agent 365</h3>
+<p>Every shared agent needs a named owner and backup, approved sources, a change history and a way to stop it. I would separate development, testing and production where the platform supports the required lifecycle, with controlled promotion and connection configuration. <a href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/guidance/sec-gov-phase3">Studio lifecycle governance guidance</a></p>
+<p>Monitor more than adoption. Capture task success, inappropriate access attempts, tool failures, unexpected actions, latency, consumption and user corrections. Keep sensitive prompt data out of broad-access logs unless you have a justified collection and retention policy.</p>
+<p>Agent 365 adds a governance and management layer; it is not another agent builder or a pool of inference credits. Its standalone price is per user, <strong>not $15 for every agent</strong>. Check the licensing scope for people who manage, sponsor or use agents, and verify which agents are onboarded and which controls apply. <a href="https://www.microsoft.com/en-us/security/blog/2026/05/01/microsoft-agent-365-now-generally-available-expands-capabilities-and-integrations/">Agent 365 availability and licensing</a></p>
+<p>An E7 or Agent 365 purchase does not configure the controls for you. Neither should it be assumed to make Cowork or new-harness execution unlimited.</p>
+<p class="preserved-content"><span id="when-to-use-what-one-intune-example-five-approaches"></span></p>
+<h2 id="when-to-use-what-one-intune-example-five-approaches">When to use what: one Intune example, five approaches</h2>
+<p>Imagine an application rollout is stuck. Some devices have not checked in, others show installation failures, and the project owner needs an update.</p>
+<p><strong>Copilot:</strong> I would use it to understand an approved status export or help draft a clear explanation of known issues. The human still drives the investigation and decides which evidence is relevant.</p>
+<p><strong>Cowork:</strong> I would consider delegating the review pack: gather approved project material, compare dated exports, prepare a briefing and draft follow-ups. Scope it to preparation first. Access to Microsoft 365 documents does not automatically grant permission to operate Intune.</p>
+<p><strong>Agent Builder:</strong> I would use a knowledge specialist for repeated questions about the organizationâs rollout policy, exception process and support guidance. I would not pretend that a policy answer proves a deviceâs current state.</p>
+<p><strong>Copilot Studio:</strong> I would consider a supported team service that retrieves current reporting through an approved integration, explains failures and drafts a change request. It needs caller authorization, reliable tools, escalation, approvals and verification. The harness should follow those requirements rather than whichever creation card is most prominent.</p>
+<p><strong>A normal workflow:</strong> If the requirement is âwhen an approved request reaches this state, create a ticket and notify the owner,â I would first consider a conventional workflow. A clear rule does not need an LLM to rediscover it on every run.</p>
+<p>These are proposed designs, not out-of-the-box promises or demos executed for this article. The point is to keep the level of automation proportionate to the job and its risk.</p>
+<p class="preserved-content"><span id="where-microsoft-foundry-fits"></span></p>
+<h2 id="where-microsoft-foundry-fits">Where Microsoft Foundry fits</h2>
+<p>I would assess a code-first approach when the requirements include custom orchestration, deeper application integration, specific networking, model control or a development workflow that fits the engineering team better.</p>
+<p>That does not make Foundry automatically cheaper or Studio automatically easier. Engineering time, operations, evaluation and support all belong in the comparison. A mixed design may also make sense: a user-facing Microsoft 365 entry point with a controlled backend service.</p>
+<p>I cover that separate platform decision in <a href="/foundry-vs-copilot-studio/">Microsoft Foundry vs Copilot Studio</a>. Recheck current harness-specific capabilities alongside that article; the platform is moving quickly.</p>
+<p class="preserved-content"><span id="how-i-would-run-the-first-rollout"></span></p>
+<h2 id="how-i-would-run-the-first-rollout">How I would run the first rollout</h2>
+<p>I would start with a small pilot and explicit acceptance criteria, not a tenant-wide enablement announcement.</p>
+<p class="preserved-content"><span id="first-establish-the-boundary"></span></p>
+<h3 id="first-establish-the-boundary">First: establish the boundary</h3>
+<p>Choose one task, the intended users and the data classification. Name the owner, approver and support contact. Specify what the system may read, what it may change and which actions always require a person.</p>
+<p>Confirm the exact license, harness, channel, provider settings, environment and billing route. Record whether any required capability is in preview. Set the funding and alerting before enabling repeated work.</p>
+<p class="preserved-content"><span id="then-test-the-uncomfortable-cases"></span></p>
+<h3 id="then-test-the-uncomfortable-cases">Then: test the uncomfortable cases</h3>
+<p>My minimum evaluation set would include:</p>
+<ul>
+<li>A straightforward request with a known correct result.</li>
+<li>An answer that is absent from the approved sources.</li>
+<li>A source that changed since the previous run.</li>
+<li>A user whose access has been revoked.</li>
+<li>A malicious instruction inside a retrieved document.</li>
+<li>A tool timeout, rate limit and partial failure.</li>
+<li>The same event arriving twice.</li>
+<li>An expensive or looping task that needs to stop.</li>
+<li>An action requiring approval and a rejected approval.</li>
+<li>A successful API response where the final business outcome still needs verification.</li>
+</ul>
+<p>For each case, record the expected outcome before testing. Otherwise it is too easy to explain away a convincing but wrong result after the fact.</p>
+<p class="preserved-content"><span id="finally-decide-whether-to-expand"></span></p>
+<h3 id="finally-decide-whether-to-expand">Finally: decide whether to expand</h3>
+<p>Review accepted outcomes, human correction time, failed actions, evidence quality and cost. Compare the pilot with the existing way of doing the job.</p>
+<p>I would expand only when the benefit survives that comparison and the support model is clear. If the best solution is still a simple workflow plus a helpful Copilot prompt, that is a good result.</p>
+<p class="preserved-content"><span id="frequently-asked-questions"></span></p>
+<h2 id="frequently-asked-questions">Frequently asked questions</h2>
+<p class="preserved-content"><span id="is-copilot-cowork-included-in-the-30-copilot-price"></span></p>
+<h3 id="is-copilot-cowork-included-in-the-30-copilot-price">Is Copilot Cowork included in the $30 Copilot price?</h3>
+<p>The license is a prerequisite, but Cowork usage is metered. Budget its consumption separately and check the organizationâs eligible funding route. The pricing table explicitly labels Cowork as metered.</p>
+<p class="preserved-content"><span id="do-i-need-copilot-studio-to-use-cowork"></span></p>
+<h3 id="do-i-need-copilot-studio-to-use-cowork">Do I need Copilot Studio to use Cowork?</h3>
+<p>Cowork is a user-facing Microsoft 365 experience; you do not need to build a Studio agent to delegate a task to it. The required access, license and billing setup still apply. Studio is relevant when you are building and operating your own solution.</p>
+<p class="preserved-content"><span id="does-every-person-using-an-agent-need-a-30-copilot-seat"></span></p>
+<h3 id="does-every-person-using-an-agent-need-a-30-copilot-seat">Does every person using an agent need a $30 Copilot seat?</h3>
+<p>No single rule covers every scenario. Metered Studio agents can serve audiences without a Copilot seat. Included employee usage has specific conditions, and external channels, autonomous triggers and different harnesses need separate checks.</p>
+<p class="preserved-content"><span id="does-the-new-studio-interface-replace-all-standard-agents"></span></p>
+<h3 id="does-the-new-studio-interface-replace-all-standard-agents">Does the new Studio interface replace all Standard agents?</h3>
+<p>The interface exposes several approaches. Microsoft documents Standard, Copilot chat and GitHub Copilot harnesses separately. Review an existing agentâs actual capabilities and migration path; do not rebuild it merely because the home page changed.</p>
+<p class="preserved-content"><span id="can-i-use-one-security-checklist-for-all-of-them"></span></p>
+<h3 id="can-i-use-one-security-checklist-for-all-of-them">Can I use one security checklist for all of them?</h3>
+<p>You can use common questions, but not assume identical answers. Identity, data access, model processing, Purview support, approvals and billing controls must be checked for the specific execution path.</p>
+<p class="preserved-content"><span id="my-recommendation"></span></p>
+<h2 id="my-recommendation">My recommendation</h2>
+<p>I would not turn this into a contest over which option is the most âagentic.â</p>
+<p>Use Copilot when someone needs assistance in their work. Consider Cowork when they want to delegate a bounded task with a result they can review. Build a specialist or shared agent when the job needs a reusable service with a clear owner. Keep fixed rules in a workflow when that is enough.</p>
+<p>Then check the three things that are easy to miss in a demo: <strong>whose permissions it uses, what it costs to complete the job, and how you know the result is correct</strong>.</p>
+<p>Stay healthy, Cheers Jannik</p></div></div></div>
+</article>
+</body>
+</html>

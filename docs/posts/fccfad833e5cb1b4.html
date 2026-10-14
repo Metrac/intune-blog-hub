@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to Evaluate AI Agents in Microsoft Foundry Step by Step</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">July 7, 2026</span>
+  </div>
+  <h1>How to Evaluate AI Agents in Microsoft Foundry Step by Step</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/microsoft-foundry-agent-evaluations/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="prose" data-article-body=""><p>Many companies are building their first AI agents right now. Most of them test the agent by chatting with it a few times in the playground and then call it done. In this blog post I explain how to evaluate AI agents in Microsoft Foundry (formerly Azure AI Foundry) in a structured way. At the end you can run an evaluation in the portal or with the SDK, read the results, and set up continuous evaluation for production. If you do not have an agent yet, start with my post about <a href="/microsoft-foundry-first-agent/">building your first agent in Microsoft Foundry</a> and come back here.</p>
+<p class="preserved-content"><span id="why-should-i-evaluate-ai-agents-at-all"></span></p>
+<h2 id="why-should-i-evaluate-ai-agents-at-all">Why Should I Evaluate AI Agents at All?</h2>
+<p>An agent that âseems fineâ in the playground can still fail in production. The reason is simple. An agent is not a single answer. It is a chain of steps: understand the intent, pick a tool, call the tool with the right parameters, use the tool result, and write the final answer. Every step can go wrong. When I test manually, I only see five or ten happy-path conversations. Real users send hundreds of messy questions.</p>
+<p>Evaluation fixes this. To evaluate AI agents in Foundry, you run them against a test dataset and let evaluators score every response. The evaluators work like unit tests for your agent. They return pass or fail per test case. With that you get a baseline and you can define a release gate, for example â85% task adherence or we do not shipâ. You can also compare two agent versions and see if your prompt change made things better or worse.</p>
+<p>The good news: this is not a preview toy anymore. Evaluations, monitoring, and tracing in Microsoft Foundry became generally available in March 2026. Some individual evaluators are still marked as preview, but the workflow itself is production-ready. Agents were the big topic at Microsoft Build 2026 â I wrote about the whole <a href="/microsoft-build-2026-agentic-stack/">agentic stack in my Build recap</a>. Evaluation is the part of that stack that turns a nice demo into something you can ship with confidence.</p>
+<p class="preserved-content"><span id="which-evaluators-does-foundry-offer"></span></p>
+<h2 id="which-evaluators-does-foundry-offer">Which Evaluators Does Foundry Offer?</h2>
+<p>Foundry brings a set of built-in evaluators to evaluate AI agents from different angles. Most of them use a model as a judge and return a pass/fail result with a short reasoning. There are three groups that matter for agents: agentic evaluators, quality evaluators, and safety evaluators. These are the ones I find most useful:</p>
+<div class="preserved-content"><table>
+<thead>
+<tr>
+<th>Evaluator</th>
+<th>What it checks</th>
+<th>When I use it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Task Adherence (preview)</td>
+<td>Does the agent follow its instructions and constraints?</td>
+<td>Almost always. This is my baseline metric.</td>
+</tr>
+<tr>
+<td>Intent Resolution (preview)</td>
+<td>Did the agent correctly understand what the user wants?</td>
+<td>Support and conversational agents.</td>
+</tr>
+<tr>
+<td>Task Completion (preview)</td>
+<td>Did the agent fully complete the task with a usable result?</td>
+<td>Goal-oriented workflows and automation.</td>
+</tr>
+<tr>
+<td>Tool Call Accuracy</td>
+<td>Did the agent call the right tools with the right parameters?</td>
+<td>Every agent that uses tools or APIs.</td>
+</tr>
+<tr>
+<td>Groundedness</td>
+<td>Is the answer backed by the provided context?</td>
+<td>RAG agents, to catch hallucinations.</td>
+</tr>
+<tr>
+<td>Relevance</td>
+<td>Does the answer actually address the question?</td>
+<td>RAG and Q&amp;A scenarios.</td>
+</tr>
+<tr>
+<td>Fluency and Coherence</td>
+<td>Does the answer read well and hold together?</td>
+<td>Quick general quality check.</td>
+</tr>
+<tr>
+<td>Safety evaluators (Violence, Sexual, Self-harm, Hate and Unfairness)</td>
+<td>Does the response contain harmful content?</td>
+<td>Before every user-facing release.</td>
+</tr>
+</tbody>
+</table></div>
+<p>There are more, for example Tool Selection, Tool Input Accuracy, Tool Call Success, Task Navigation Efficiency, and Customer Satisfaction. You find the full list in the <a href="https://learn.microsoft.com/en-us/azure/foundry/concepts/built-in-evaluators">built-in evaluators reference</a>.</p>
+<p>Note: The AI-assisted evaluators need a judge model. You must have a model deployment in your project (for example gpt-4.1-mini) and select it as the judge. This judge model counts against your quota and produces token costs. The safety evaluators work differently â they run on the <a href="/what-azure-ai-content-safety-does-and-why-it-matters/">Azure AI Content Safety backend</a> and need no judge deployment.</p>
+<p>Note: Evaluators score either single <strong>turns</strong> (one question, one answer) or whole <strong>conversations</strong>. You cannot mix both levels in one run, so plan your dataset accordingly.</p>
+<p><img alt="Evaluate AI agents: test dataset, agent responses, evaluators scoring and pass-fail report in" decoding="async" fetchpriority="auto" src="assets/fccfad833e5cb1b4/img_0.webp"/></p>
+<p class="preserved-content"><span id="how-do-i-evaluate-ai-agents-in-the-foundry-portal"></span></p>
+<h2 id="how-do-i-evaluate-ai-agents-in-the-foundry-portal">How Do I Evaluate AI Agents in the Foundry Portal?</h2>
+<p>The portal is the easiest way to evaluate AI agents when you start. You need a Foundry project with an agent, a model deployment for the judge, and the Foundry User role. The evaluation wizard then walks you through five steps:</p>
+<ol>
+<li>Sign in to the Microsoft Foundry portal (ai.azure.com) and open your project. In the left pane, open <strong>Evaluations</strong> and click <strong>Create</strong>.</li>
+<li><strong>Select the target.</strong> You can evaluate an <strong>agent</strong>, a plain <strong>model</strong>, or an already recorded <strong>dataset</strong> of question-and-answer pairs. Choose your agent. Foundry will then send every test query to the agent and capture the full response, including the tool calls.</li>
+</ol>
+<p><img alt="Evaluation wizard, first step with the target selection between agent, model and dataset, and" decoding="async" fetchpriority="auto" src="assets/fccfad833e5cb1b4/img_1.webp"/></p>
+<ol start="3">
+<li><strong>Select the scope.</strong> You decide if the evaluators judge <strong>individual turns</strong> (single responses and their tool usage) or <strong>complete conversations</strong> (whole multi-turn chats). For a first run I take individual turns.</li>
+<li><strong>Select the data.</strong> This step surprised me positively, because you have four options: let Foundry <strong>generate synthetic test data</strong> for you (you describe the scenario, it writes the queries), upload an <strong>existing dataset</strong> (JSONL or CSV with your test queries), use a <strong>benchmark</strong>, or evaluate <strong>existing traces</strong> from real usage. The traces option only works when an Application Insights resource is connected to your project.</li>
+</ol>
+<p><img alt="Evaluation wizard, data step with the four options generate synthetic data, existing dataset," decoding="async" fetchpriority="auto" src="assets/fccfad833e5cb1b4/img_2.webp"/></p>
+<ol start="5">
+<li><strong>Select the testing criteria.</strong> The wizard auto-suggests evaluators that fit your agent â in my run it preselected Tool Call Accuracy, Task Adherence, Intent Resolution, Fluency, and Coherence. Add or remove what you need, for example the safety evaluators before a user-facing release, and pick the judge model.</li>
+</ol>
+<p><img alt="Evaluation wizard, testing criteria step with auto-suggested evaluators like Tool Call" decoding="async" fetchpriority="auto" src="assets/fccfad833e5cb1b4/img_3.webp"/></p>
+<ol start="6">
+<li><strong>Review and create.</strong> Check the summary and submit the run. It takes a few minutes, depending on the dataset size.</li>
+</ol>
+<p>When the run finishes, you find it under <strong>Evaluations</strong>. The results view shows the pass rate per evaluator at the top and a row-by-row table below. Every row has the individual score and a short reasoning from the judge. This reasoning is the most valuable part â it tells you <em>why</em> a row failed, not just that it failed. Often the fix is one sentence in the instructions, not a new model.</p>
+<p><img alt="Evaluation results with the pass rate per evaluator on top and the per-row detail table with" decoding="async" fetchpriority="auto" src="assets/fccfad833e5cb1b4/img_4.webp"/></p>
+<p>Hint: Start small. A dataset with 10 to 20 realistic queries already shows you where the agent struggles. You can grow the dataset later and reuse it for every new agent version.</p>
+<p class="preserved-content"><span id="how-do-i-run-an-evaluation-with-the-sdk"></span></p>
+<h2 id="how-do-i-run-an-evaluation-with-the-sdk">How Do I Run an Evaluation with the SDK?</h2>
+<p>For repeatable runs and CI/CD pipelines I prefer to evaluate AI agents from code. The <code>azure-ai-evaluation</code> Python package wraps the same built-in evaluators. You run it locally against a recorded dataset and log the results to your Foundry project, so the run also appears in the portal:</p>
+<pre class="astro-code github-dark" data-language="python" tabindex="0"><code><span class="line"><span># pip install azure-ai-evaluation azure-identity   (run az login first â Entra ID is required)</span></span>
+<span class="line"><span>from</span><span> azure.ai.evaluation </span><span>import</span><span> (</span></span>
+<span class="line"><span>    evaluate, TaskAdherenceEvaluator, ToolCallAccuracyEvaluator, RelevanceEvaluator,</span></span>
+<span class="line"><span>)</span></span>
+<span class="line"></span>
+<span class="line"><span># Judge model used by the AI-assisted evaluators</span></span>
+<span class="line"><span>model_config </span><span>=</span><span> {</span></span>
+<span class="line"><span>    "azure_endpoint"</span><span>: </span><span>"https://&lt;your-resource&gt;.openai.azure.com"</span><span>,</span></span>
+<span class="line"><span>    "azure_deployment"</span><span>: </span><span>"gpt-4.1-mini"</span><span>,</span></span>
+<span class="line"><span>}</span></span>
+<span class="line"></span>
+<span class="line"><span>result </span><span>=</span><span> evaluate(</span></span>
+<span class="line"><span>    data</span><span>=</span><span>"eval-dataset.jsonl"</span><span>,  </span><span># one test case per line: query, response, tool calls, ...</span></span>
+<span class="line"><span>    evaluators</span><span>=</span><span>{</span></span>
+<span class="line"><span>        "task_adherence"</span><span>: TaskAdherenceEvaluator(</span><span>model_config</span><span>=</span><span>model_config),</span></span>
+<span class="line"><span>        "tool_call_accuracy"</span><span>: ToolCallAccuracyEvaluator(</span><span>model_config</span><span>=</span><span>model_config),</span></span>
+<span class="line"><span>        "relevance"</span><span>: RelevanceEvaluator(</span><span>model_config</span><span>=</span><span>model_config),</span></span>
+<span class="line"><span>    },</span></span>
+<span class="line"><span>    # Log the run into your Foundry project (visible in the portal)</span></span>
+<span class="line"><span>    azure_ai_project</span><span>=</span><span>"https://&lt;your-resource&gt;.services.ai.azure.com/api/projects/&lt;project&gt;"</span><span>,</span></span>
+<span class="line"><span>)</span></span>
+<span class="line"><span>print</span><span>(result[</span><span>"metrics"</span><span>])  </span><span># aggregate scores, e.g. task adherence pass rate</span></span></code></pre>
+<p>Because this is plain Python, the same script runs on your laptop and in a GitHub Actions or Azure DevOps pipeline. That is the whole trick behind an evaluation gate in CI/CD: run the suite on every change, compare against your baseline, fail the pipeline if the pass rate drops.</p>
+<p>If you want the cloud-side variant that targets a live agent instead of a recorded dataset, that flow runs through the projectâs OpenAI client: each built-in evaluator has a stable ID like <code>builtin.task_adherence</code> that you reference as testing criteria, and Foundry generates the responses for you server-side. The complete sample is in the <a href="https://learn.microsoft.com/en-us/azure/foundry/observability/how-to/evaluate-agent">evaluate your AI agents guide</a>.</p>
+<p>Note: Evaluations require Microsoft Entra ID authentication. API keys do not work for evaluations at all. If a run fails with an authorization error, check that your identity holds the Foundry User role on the project.</p>
+<p class="preserved-content"><span id="how-do-i-evaluate-ai-agents-in-production"></span></p>
+<h2 id="how-do-i-evaluate-ai-agents-in-production">How Do I Evaluate AI Agents in Production?</h2>
+<p>A one-time evaluation is a snapshot. Production traffic changes, and your agent can drift. For this Foundry offers <strong>continuous evaluation</strong>. It samples your live agent responses and runs evaluators on them automatically â quality dimensions like task adherence and tool-call success, but also risk dimensions like sensitive-data leakage. This way you evaluate AI agents on real traffic, not only on your test dataset. You see the scores on the agentâs <strong>Monitor</strong> tab, together with latency, token usage, and run success rate, and you can set up alerts.</p>
+<p>Two prerequisites, then it is a few clicks: connect an <strong>Application Insights</strong> resource to your project, and make sure the <strong>project managed identity holds the Foundry User role</strong> â continuous evaluation runs under this identity. Then open the agentâs monitoring dashboard and select <strong>Set up continuous evaluation</strong>. Without the prerequisites, the monitoring charts simply stay empty, which is a support ticket I have seen more than once.</p>
+<p><img alt="Agent Monitor tab with the Set up continuous evaluation option and quality scores next to" decoding="async" fetchpriority="auto" src="assets/fccfad833e5cb1b4/img_5.webp"/></p>
+<p>On top of that there is the <strong>AI Red Teaming Agent</strong>. Evaluators measure how the agent behaves with normal input; red teaming asks how it behaves when someone attacks it. The AI Red Teaming Agent is built on PyRIT, Microsoftâs open-source Python Risk Identification Tool, and probes your agent with adversarial prompts â including encoded and rewritten variants that try to slip past your guardrails. The result is an Attack Success Rate per risk category, logged to your Foundry project as a scorecard. You can run scans locally with the evaluation SDK or schedule them centrally. Details are in the <a href="https://learn.microsoft.com/en-us/azure/foundry/concepts/ai-red-teaming-agent">AI Red Teaming Agent documentation</a>. One honest note: check the current preview or GA status in the docs before you build a formal compliance process on top of it.</p>
+<p><img alt="Continuous evaluation loop to evaluate AI agents in production with the Foundry Monitor" decoding="async" fetchpriority="auto" src="assets/fccfad833e5cb1b4/img_6.webp"/></p>
+<p>To evaluate AI agents is not a one-time task. My rhythm is simple: build a small test dataset early, run an evaluation for every agent change, keep task adherence and tool call accuracy as release gates, run a red teaming scan before major releases, and let continuous evaluation watch production. That is maybe one day of setup work, and it is the difference between hoping and knowing. With this you catch the problems in the evaluation report and not in a user complaint.</p>
+<p>I hope this is a little help.</p>
+<p>Stay healthy, Cheers Jannik</p></div></div></div>
+</article>
+</body>
+</html>

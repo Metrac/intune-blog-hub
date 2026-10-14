@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Copilot Budgets: Which Settings Actually Stop Usage?</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">September 29, 2026</span>
+  </div>
+  <h1>Copilot Budgets: Which Settings Actually Stop Usage?</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/copilot-budgets-spending-limits/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="prose" data-article-body=""><p>You give a Copilot pilot a budget. Someone enters a number in an admin portal. Finance expects the service to stop at that number.</p>
+<p>That expectation is worth checking before the pilot starts.</p>
+<p><strong>Some Copilot budgets send alerts. Other controls restrict access or turn an agent off. They are not interchangeable.</strong> The answer depends on the service, the billing experience and the setting you configure.</p>
+<p>I would start with the control, not the credit price: what exactly should happen when the team reaches its allowance?</p>
+<p>This guide separates the main control types and gives you a practical review plan. Product information was checked on <strong>28 September 2026</strong>. The screenshot comes from my ModernDevMgmt demo tenant. Billing and enforcement behavior below is Microsoft-documented; I did not enable paid billing or run a limit-exhaustion test for this article.</p>
+<p class="preserved-content"><span id="first-identify-what-you-are-paying-for"></span></p>
+<h2 id="first-identify-what-you-are-paying-for">First identify what you are paying for</h2>
+<p>âCopilotâ is not a sufficiently precise entry in a budget spreadsheet. Write down the experience, its runtime and the admin surface that owns the charge.</p>
+<p>For example, my demo environment contains a Rollout Coach using the GitHub Copilot harness and a separate Standard version. The live inventory makes that distinction visible in <strong>Powered by</strong>. Both are drafts. A shared purpose does not make their billing behavior identical.</p>
+<p><img alt="Live Copilot Studio inventory showing the GitHub Copilot and Standard versions of the Rollout Coach in the ModernDevMgmt demo tenant" decoding="async" fetchpriority="auto" src="assets/ff6051832daa5d04/img_0.webp"/></p>
+<p><em>My live agent inventory, captured on 28 September 2026. This establishes which harness each demo uses; it does not show configured budgets or measured costs.</em></p>
+<p>Microsoft separates the newer Microsoft 365 usage-based billing experience from classic Copilot Chat and SharePoint-agent pay-as-you-go setup, and from Copilot Studio administration. The newer Cost management experience currently covers services such as Cowork and Work IQ API. Start with the appropriate service documentation rather than applying one portalâs budget instructions to everything. <a href="https://learn.microsoft.com/en-us/microsoft-365/copilot/usage-based-billing-overview-copilot-credits">Microsoftâs usage-based billing overview</a>.</p>
+<p>For the broader product decision, see my <a href="/copilot-chat-vs-cowork-vs-autopilot/">Copilot Chat, Cowork and Autopilot comparison</a>. Here, the question is narrower: how do we keep the chosen workload within an approved operating plan?</p>
+<p class="preserved-content"><span id="a-simple-map-of-the-controls"></span></p>
+<h2 id="a-simple-map-of-the-controls">A simple map of the controls</h2>
+<div class="preserved-content"><table>
+<thead>
+<tr>
+<th>Control</th>
+<th>The question it answers</th>
+<th>What I would not assume</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Budget alert</td>
+<td>Who is warned when spending reaches a threshold?</td>
+<td>That receiving an alert also stops the workload</td>
+</tr>
+<tr>
+<td>Credit allocation</td>
+<td>Which capacity is available to this environment?</td>
+<td>That other capacity or pay-as-you-go cannot take over</td>
+</tr>
+<tr>
+<td>Usage limit</td>
+<td>When should this user, policy or agent lose access?</td>
+<td>That it is a universal cap for every Copilot service</td>
+</tr>
+<tr>
+<td>Approval process</td>
+<td>Who may increase capacity or resume the service?</td>
+<td>That the person reading the dashboard owns the decision</td>
+</tr>
+</tbody>
+</table></div>
+<p>The first three are product controls. The last is an operating decision. I want all four recorded before a team calls its pilot âcost controlled.â</p>
+<p><img alt="Copilot budgets control map distinguishing alerts, capacity allocation and a usage stop" decoding="async" fetchpriority="auto" src="assets/ff6051832daa5d04/img_1.webp"/></p>
+<p class="preserved-content"><span id="classic-copilot-pay-as-you-go-budgets-do-not-stop-billing"></span></p>
+<h2 id="classic-copilot-pay-as-you-go-budgets-do-not-stop-billing">Classic Copilot pay-as-you-go budgets do not stop billing</h2>
+<p>In the classic Microsoft 365 flow, budgets sit at the billing-policy level. The documented path is <strong>Copilot â Billing &amp; usage â Billing policies â your policy â Budget</strong>. The budget is not an individual userâs or agentâs allowance.</p>
+<p>Microsoft explicitly states that reaching 100% does <strong>not</strong> stop the service or its billing. Consumption may take four hours to appear, and email alerts can arrive up to 24 hours late. Treat this as delayed visibility, not real-time enforcement. <a href="https://learn.microsoft.com/en-us/microsoft-365/commerce/services/pay-as-you-go-budget?view=o365-worldwide">Classic pay-as-you-go budgets</a>.</p>
+<p>My recommendation: decide who receives the alert and what that person is allowed to do. âNotify ITâ is too vague. Name a service owner, a backup and a response window. Write down whether the next action is investigation, a temporary restriction or a request for more funding.</p>
+<p>A deliberately small pilot group makes that response manageable. If a hundred people depend on a workflow, turning it off is an availability decision as well as a budget decision.</p>
+<p><img alt="Suggested response process for Copilot budgets: review the signal, obtain an owner decision and record the next review" decoding="async" fetchpriority="auto" src="assets/ff6051832daa5d04/img_2.webp"/></p>
+<p class="preserved-content"><span id="new-microsoft-365-spending-policies-are-different"></span></p>
+<h2 id="new-microsoft-365-spending-policies-are-different">New Microsoft 365 spending policies are different</h2>
+<p>The newer <strong>Copilot â Cost Management</strong> experience supports policy-level and per-user credit limits for its supported services. Microsoft documents loss of access when the relevant monthly limit is reached. These spending policies control access and limits; they do not reserve a private credit balance for each team. Additional policies have their own limits rather than inheriting a universal ceiling from the default policy. <a href="https://learn.microsoft.com/en-us/microsoft-365/copilot/usage-based-billing-manage-copilot-credits">Microsoft 365 spending-policy behavior</a>.</p>
+<p>That changes the review I would do with finance. Instead of asking âWhere is the budget?â, I would ask:</p>
+<ul>
+<li>Which services does this policy cover?</li>
+<li>Which people can consume against it?</li>
+<li>What happens to the userâs work at the limit?</li>
+<li>Can another team create an independent policy?</li>
+<li>Who approves an increase, and when does the exception expire?</li>
+</ul>
+<p>I would also keep a service-specific validation record. A documented limit is not proof that my tenantâs assignments match my intent. Review the actual assignments and test the expected behavior in an approved, bounded pilot before making a production commitment.</p>
+<p class="preserved-content"><span id="copilot-studio-adds-environment-and-agent-controls"></span></p>
+<h2 id="copilot-studio-adds-environment-and-agent-controls">Copilot Studio adds environment and agent controls</h2>
+<p>In Copilot Studio, an environmentâs allocation is only part of the picture. Check whether it can draw from unallocated tenant capacity or a linked pay-as-you-go plan after using its own allocation.</p>
+<p>Microsoft also documents per-agent monthly limits with notifications and a <strong>Stop usage</strong> option in Power Platform admin center. That is a different control from an environment allocation or an Azure budget. <a href="https://learn.microsoft.com/en-us/power-platform/admin/manage-copilot-studio-copilot-credits-capacity">Copilot Studio capacity and agent limits</a>.</p>
+<p>For my Rollout Coach example, I would document the environmentâs funding route and the agentâs intended stop behavior separately. A screenshot of the environment name is not enough. Neither is a screenshot of a credit total with no explanation of what happens next.</p>
+<p>There is an availability trade-off here: stopping an experimental policy assistant may be acceptable; stopping a workflow that supports an operational deadline may require a manual fallback. I would make that choice explicit instead of leaving it to the person who happens to create the billing plan.</p>
+<p class="preserved-content"><span id="build-a-pilot-plan-before-choosing-a-number"></span></p>
+<h2 id="build-a-pilot-plan-before-choosing-a-number">Build a pilot plan before choosing a number</h2>
+<p>This is a <strong>planning example, not measured tenant usage or a price quote</strong>.</p>
+<p>Imagine a small team evaluating a policy assistant. I would split its plan into three parts:</p>
+<ol>
+<li><strong>Preparation:</strong> reviewed source material, a named owner and a fixed set of test questions.</li>
+<li><strong>Evaluation:</strong> a bounded number of test runs, with failed attempts recorded rather than silently repeated.</li>
+<li><strong>Pilot operation:</strong> limited participants, a review date and an agreed response to a usage warning.</li>
+</ol>
+<p>The budget worksheet would track:</p>
+<div class="preserved-content"><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Example decision</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Business purpose</td>
+<td>Help the pilot team find the right rollout rule</td>
+</tr>
+<tr>
+<td>Allowed activity</td>
+<td>Explain the policy; do not change devices</td>
+</tr>
+<tr>
+<td>Cost owner</td>
+<td>Named owner from the team funding the pilot</td>
+</tr>
+<tr>
+<td>Approval boundary</td>
+<td>No increase without that ownerâs decision</td>
+</tr>
+<tr>
+<td>Stop response</td>
+<td>Tell users why access paused and where to get help</td>
+</tr>
+<tr>
+<td>Review outcome</td>
+<td>Continue, reduce scope, redesign or stop</td>
+</tr>
+</tbody>
+</table></div>
+<p>I would not start by dividing the allowance evenly across employees. Someone building and testing an agent has a different workload from someone asking an occasional question. Start with the work you need to complete, then measure the pilot against that work.</p>
+<p class="preserved-content"><span id="measure-cost-against-an-accepted-result"></span></p>
+<h2 id="measure-cost-against-an-accepted-result">Measure cost against an accepted result</h2>
+<p>My preferred pilot metric is <strong>cost per accepted outcome</strong>, alongside failure rate and review time.</p>
+<p>For a policy assistant, an accepted outcome might mean that the answer uses the current approved policy, points to the right section and does not invent permission to take an action. A cheap answer that needs manual correction is not the result I wanted to buy.</p>
+<p>The review should include failed runs, retries and necessary human checking. Keep the acceptance rule fixed during a comparison. Otherwise, one version can appear cheaper simply because you stopped checking it as carefully.</p>
+<p>Do not convert a credit total into a final invoice by assumption. Funding sources and billing views matter. Microsoftâs admin dashboards and Azure billing answer different questions; prepaid capacity consumption is not the same as a new pay-as-you-go charge. <a href="https://learn.microsoft.com/en-us/microsoft-365/copilot/usage-based-billing-compare-dashboard-views">Copilot consumption versus the Azure bill</a>.</p>
+<p class="preserved-content"><span id="what-i-would-verify-before-expanding-the-pilot"></span></p>
+<h2 id="what-i-would-verify-before-expanding-the-pilot">What I would verify before expanding the pilot</h2>
+<ul>
+<li>The exact service, harness and environment are recorded.</li>
+<li>The billing route is known, including any overage route.</li>
+<li>The configured control is identified as an alert, allocation or usage stop.</li>
+<li>Someone owns the notification and the response.</li>
+<li>Users know what happens if access stops.</li>
+<li>There is a controlled path for requesting more capacity.</li>
+<li>A reviewer can connect consumption to useful, accepted work.</li>
+</ul>
+<p>I would keep screenshots of the actual settings with the change record. This articleâs demo screenshot is not a substitute for that evidence in your tenant.</p>
+<p class="preserved-content"><span id="questions-i-would-expect-from-the-pilot-team"></span></p>
+<h2 id="questions-i-would-expect-from-the-pilot-team">Questions I would expect from the pilot team</h2>
+<p class="preserved-content"><span id="does-a-microsoft-365-copilot-license-make-every-agent-activity-free"></span></p>
+<h3 id="does-a-microsoft-365-copilot-license-make-every-agent-activity-free">Does a Microsoft 365 Copilot license make every agent activity free?</h3>
+<p>No blanket assumption is safe. Check the workload and harness. Microsoftâs GitHub Copilot harness billing model includes billable authoring and testing activity, not only use after publication. <a href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/billing-credit-overview">GitHub Copilot harness billing</a>.</p>
+<p class="preserved-content"><span id="is-a-lower-limit-always-better"></span></p>
+<h3 id="is-a-lower-limit-always-better">Is a lower limit always better?</h3>
+<p>Not if it interrupts useful work without a fallback. I would start small, keep the failure mode understandable and expand only after reviewing the pilotâs results.</p>
+<p class="preserved-content"><span id="can-i-call-a-budget-a-hard-cap"></span></p>
+<h3 id="can-i-call-a-budget-a-hard-cap">Can I call a budget a hard cap?</h3>
+<p>Only after identifying the exact enforcement control and its documented scope. A currency threshold on an alerting dashboard is not enough evidence.</p>
+<p class="preserved-content"><span id="my-takeaway"></span></p>
+<h2 id="my-takeaway">My takeaway</h2>
+<p>The useful question is not âDid we set a Copilot budget?â It is âWhich work can continue, who can pay for it, and what happens when the approved allowance runs out?â</p>
+<p>Answer that clearly, and the credit discussion becomes much easier to manage.</p>
+<p>Stay healthy, Cheers Jannik</p></div></div></div>
+</article>
+</body>
+</html>

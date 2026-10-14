@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent Skills Explained: How to Build Your First Skill</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">July 3, 2026</span>
+  </div>
+  <h1>Agent Skills Explained: How to Build Your First Skill</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/agent-skills-explained/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="prose" data-article-body=""><p>Every AI agent is only as good as the knowledge you give it. For a long time the common answer was to stuff everything into one giant system prompt. This does not scale. Agent Skills solve this problem in a much cleaner way. In this blog post I explain what Agent Skills are, why they beat the big system prompt, and how you can build your first skill step by step. At the end you will have a small working skill that runs in Claude Code and in many other AI tools.</p>
+<p class="preserved-content"><span id="what-are-agent-skills"></span></p>
+<h2 id="what-are-agent-skills">What Are Agent Skills?</h2>
+<p>An Agent Skill is, at its core, just a folder. The folder contains one required file called SKILL.md and, if you want, extra scripts and reference documents. The SKILL.md file has two parts. A short YAML frontmatter tells the agent what the skill does and when to use it. The Markdown body tells the agent how to do the task. The agent only keeps the frontmatter in context. The rest is loaded on demand when a task matches.</p>
+<p>The pattern was introduced by Anthropic for Claude in October 2025. Shortly after, in December 2025, Anthropic published it as an open standard at <a href="https://agentskills.io/specification">agentskills.io</a>. Since then the adoption has moved very fast. Tools like OpenAI Codex, GitHub Copilot, Cursor, Gemini CLI and many more support the same format today. This is the nice part: you write a skill once and you can reuse it across different agents.</p>
+<p><img alt="Agent Skills anatomy: SKILL.md with frontmatter plus scripts, references and assets folders" decoding="async" fetchpriority="auto" src="assets/48ed5cef8f202ffe/img_0.webp"/></p>
+<p class="preserved-content"><span id="why-are-agent-skills-better-than-a-big-system-prompt"></span></p>
+<h2 id="why-are-agent-skills-better-than-a-big-system-prompt">Why Are Agent Skills Better Than a Big System Prompt?</h2>
+<p>The magic phrase is progressive disclosure. The idea is simple: give the agent only the information it needs right now, not everything at once. Agent Skills work in three levels:</p>
+<ol>
+<li><strong>Metadata (about 100 tokens per skill).</strong> At startup the agent loads only the name and the description of every installed skill. This is like the table of contents of a book.</li>
+<li><strong>Instructions (recommended under 5,000 tokens).</strong> When a task matches the description, the agent reads the full SKILL.md body. This is like opening one chapter.</li>
+<li><strong>Resources (as needed).</strong> Scripts and reference files are loaded only when the agent really needs them. This is like the appendix at the end of the book.</li>
+</ol>
+<p>Now compare this with a system prompt that carries every instruction for every possible task. The context window is limited, and every token costs money and attention. Even worse, instructions that are not relevant for the current task distract the model and make the results worse. With skills, a large reference document costs nothing until the moment the agent opens it.</p>
+<p><img alt="Agent Skills progressive disclosure: metadata, SKILL.md body and resources loaded in three" decoding="async" fetchpriority="auto" src="assets/48ed5cef8f202ffe/img_1.webp"/></p>
+<p class="preserved-content"><span id="how-is-a-skill-structured"></span></p>
+<h2 id="how-is-a-skill-structured">How Is a Skill Structured?</h2>
+<p>The structure of Agent Skills is defined in the open specification and it is very small. A skill is a directory that contains at least a SKILL.md file:</p>
+<pre class="astro-code github-dark" data-language="plaintext" tabindex="0"><code><span class="line"><span>my-skill/</span></span>
+<span class="line"><span>âââ SKILL.md          # Required: metadata + instructions</span></span>
+<span class="line"><span>âââ scripts/          # Optional: executable code</span></span>
+<span class="line"><span>âââ references/       # Optional: extra documentation</span></span>
+<span class="line"><span>âââ assets/           # Optional: templates and resources</span></span></code></pre>
+<p>The frontmatter of SKILL.md has only two required fields:</p>
+<ul>
+<li><strong>name</strong>: Maximum 64 characters. Only lowercase letters, numbers and hyphens. It must not start or end with a hyphen, must not contain two hyphens in a row, and it must match the folder name.</li>
+<li><strong>description</strong>: Maximum 1024 characters. It should describe <em>what</em> the skill does and <em>when</em> the agent should use it.</li>
+</ul>
+<p>There are also a few optional fields:</p>
+<ul>
+<li><strong>license</strong>: The license of the skill, or a pointer to a bundled license file.</li>
+<li><strong>compatibility</strong>: Up to 500 characters for environment requirements, for example âRequires git and dockerâ. Most skills do not need it.</li>
+<li><strong>metadata</strong>: A free key-value map, for example for an author or a version.</li>
+<li><strong>allowed-tools</strong>: A space-separated list of tools the skill is pre-approved to use, for example <code>Bash(git:*) Read</code>. This field is still marked experimental in the specification, so support varies between agents. Claude Code already supports it: the listed tools run without a permission prompt while the skill is active.</li>
+</ul>
+<p>The body below the frontmatter is plain Markdown with no format restrictions. The specification recommends to keep SKILL.md under 500 lines and to move long details into separate reference files. When you link those files, use relative paths from the skill root and keep them one level deep â no long reference chains.</p>
+<p>Note: The description is the most important line of the whole skill. The agent decides only based on this text if the skill is relevant for the current task. A description like âHelps with PDFsâ is too vague. Write what the skill does and when to use it, and include the keywords a user would say.</p>
+<p class="preserved-content"><span id="where-do-skills-live"></span></p>
+<h2 id="where-do-skills-live">Where Do Skills Live?</h2>
+<p>Every tool that supports the standard documents its own skill directories, but the format inside is identical. In Claude Code there are three main places:</p>
+<ul>
+<li><strong>Personal skills</strong> live in <code>~/.claude/skills/&amp;lt;skill-name&gt;/</code>. They are available in all your projects.</li>
+<li><strong>Project skills</strong> live in <code>.claude/skills/&amp;lt;skill-name&gt;/</code> inside the repository. They are available for everyone who works in that project, and you can version them in git together with the code.</li>
+<li><strong>Plugin skills</strong> ship inside a plugin under <code>&amp;lt;plugin&gt;/skills/&amp;lt;skill-name&gt;/</code> and are available where the plugin is enabled.</li>
+</ul>
+<p>If two skills share the same name, the more specific level wins, and plugin skills are namespaced as <code>plugin-name:skill-name</code> so they never conflict. You can also invoke a skill directly by typing <code>/skill-name</code>, and the <code>/skills</code> menu shows everything that is installed. Changes to a SKILL.md are picked up live, so you can edit and test without restarting the session.</p>
+<p class="preserved-content"><span id="how-can-i-build-my-first-skill"></span></p>
+<h2 id="how-can-i-build-my-first-skill">How Can I Build My First Skill?</h2>
+<p>Let us build a small but useful example: a skill that turns raw meeting notes into clean meeting minutes. You do not need any framework for Agent Skills, only a text editor. I use Claude Code here, but the same folder works in every tool that supports the standard.</p>
+<ol>
+<li><strong>Create the skill folder.</strong> Create a folder with the name of your skill in your personal skills directory:</li>
+</ol>
+<pre class="astro-code github-dark" data-language="bash" tabindex="0"><code><span class="line"><span>mkdir</span><span> -p</span><span> ~/.claude/skills/meeting-minutes</span></span></code></pre>
+<ol start="2">
+<li><strong>Create the SKILL.md file.</strong> Add the frontmatter with <code>name</code> and <code>description</code>, and write the instructions in the body. This is already a complete, valid skill:</li>
+</ol>
+<pre class="astro-code github-dark" data-language="markdown" tabindex="0"><code><span class="line"><span>---</span></span>
+<span class="line"><span>name</span><span>: </span><span>meeting-minutes</span></span>
+<span class="line"><span>description</span><span>: </span><span>Turns raw meeting notes into clean, structured meeting</span></span>
+<span class="line"><span>  minutes. Use when the user asks to summarize a meeting, write</span></span>
+<span class="line"><span>  minutes, or clean up meeting notes.</span></span>
+<span class="line"><span>---</span></span>
+<span class="line"></span>
+<span class="line"><span># Meeting Minutes</span></span>
+<span class="line"></span>
+<span class="line"><span>Follow these steps to create the minutes:</span></span>
+<span class="line"></span>
+<span class="line"><span>1.</span><span> Read the raw notes the user provides.</span></span>
+<span class="line"><span>2.</span><span> Extract the date, the participants, and the topic.</span></span>
+<span class="line"><span>3.</span><span> Group the content into: Decisions, Open Points, Action Items.</span></span>
+<span class="line"><span>4.</span><span> Every action item needs an owner and a due date. Ask the user</span></span>
+<span class="line"><span>   if one is missing.</span></span>
+<span class="line"><span>5.</span><span> Use the template in references/template.md for the output.</span></span></code></pre>
+<ol start="3">
+<li><strong>Add a reference file (optional).</strong> Create <code>references/template.md</code> with your output template. The agent will only load this file when it really creates the minutes. This keeps the main skill lean. The finished folder looks like this:</li>
+</ol>
+<pre class="astro-code github-dark" data-language="plaintext" tabindex="0"><code><span class="line"><span>meeting-minutes/</span></span>
+<span class="line"><span>âââ SKILL.md</span></span>
+<span class="line"><span>âââ references/</span></span>
+<span class="line"><span>    âââ template.md</span></span></code></pre>
+<p><img alt="macOS Terminal showing the output of âtree ~/.claude/skills/meeting-minutesâ with SKILL.md and" decoding="async" fetchpriority="auto" src="assets/48ed5cef8f202ffe/img_2.webp"/></p>
+<ol start="4">
+<li><strong>Test the skill.</strong> Start a new agent session and give it a matching task, for example: âCan you turn these notes into meeting minutes?â. The agent sees the description, activates the skill and follows your instructions. If the skill does not trigger, sharpen the description with more concrete keywords.</li>
+<li><strong>Validate the skill (optional).</strong> The specification project provides a small reference tool that checks the frontmatter and the naming rules:</li>
+</ol>
+<pre class="astro-code github-dark" data-language="bash" tabindex="0"><code><span class="line"><span>skills-ref</span><span> validate</span><span> ./meeting-minutes</span></span></code></pre>
+<p>That is all. Your first skill is done. From here you can grow it: add a script to <code>scripts/</code> for a step that should run as code, or split long instructions into more reference files.</p>
+<p>Hint: Start small. One skill should solve one job. If your SKILL.md grows and grows, that is usually a sign that you should split it into two skills or move content into the references folder.</p>
+<p class="preserved-content"><span id="which-pitfalls-should-i-avoid"></span></p>
+<h2 id="which-pitfalls-should-i-avoid">Which Pitfalls Should I Avoid?</h2>
+<p>I made most of these mistakes myself, so here is an honest list:</p>
+<ul>
+<li><strong>A vague description.</strong> This is by far the number one reason a skill does not trigger. The agent never reads your great instructions because the description did not sound relevant. Rewrite it with the words a user would actually type.</li>
+<li><strong>Name and folder do not match.</strong> The <code>name</code> field must match the directory name. If they differ, validation fails and some tools will not load the skill.</li>
+<li><strong>Everything in one SKILL.md.</strong> Once the skill is activated, the whole body goes into context. A 2,000-line SKILL.md destroys the token advantage. Keep the body short and push details into <code>references/</code>.</li>
+<li><strong>Expecting deterministic triggering.</strong> Skill activation is a model decision, not a rule engine. Two similar skills with overlapping descriptions will compete, and sometimes the wrong one wins. Keep the descriptions clearly separated, and remember you can always invoke a skill explicitly.</li>
+<li><strong>Forgetting that scripts are code.</strong> A skill can contain scripts that the agent executes on your machine. Treat installing a foreign skill like installing software: read the SKILL.md and the scripts before you trust it.</li>
+<li><strong>Using a skill for the wrong job.</strong> A skill carries knowledge and workflows. It does not give the agent new access to live systems â no credentials, no sessions. For that you need a CLI tool or MCP.</li>
+</ul>
+<p class="preserved-content"><span id="where-do-skills-fit-next-to-mcp-and-cli-tools"></span></p>
+<p>I wrote before about <a href="/why-cli-tools-are-beating-mcp-for-ai-agents/">why CLI tools are beating MCP for AI agents</a>. The core argument was context efficiency: MCP tool definitions eat a lot of the context window before the agent has done anything. For me, skills are the third piece of the same picture. CLI tools give the agent capabilities. MCP connects the agent to live services. Agent Skills package the knowledge and the workflows: how your team does things, which conventions apply, which steps to follow. If you want the full map of these building blocks, I put them together in <a href="/skills-mcp-cli-computer-use-mapping-the-ai-tooling-surface-in-2026/">my post about the AI tooling surface in 2026</a>.</p>
+<p>In this blog post I explained what Agent Skills are, why progressive disclosure beats a giant system prompt, and how you build your first skill with a simple SKILL.md file. Because the format is an open standard now, the skill you wrote today will very likely still work in the tools you use tomorrow. A good next step is the official <a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview">Agent Skills documentation from Anthropic</a> and the <a href="https://agentskills.io/specification">specification</a> itself. I hope this is a little help.</p>
+<p>Stay healthy, Cheers Jannik</p></div></div></div>
+</article>
+</body>
+</html>

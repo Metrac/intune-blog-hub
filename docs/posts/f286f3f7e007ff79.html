@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intune Multi Admin Approval Now Enforced on Graph API Calls</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">July 30, 2026</span>
+  </div>
+  <h1>Intune Multi Admin Approval Now Enforced on Graph API Calls</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/intune-multi-admin-approval-graph-api/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="prose" data-article-body=""><p>In June 2026 (week of June 22), Microsoft changed something that can break your automation overnight. Multi Admin Approval is now also enforced on Microsoft Graph API calls made with app-only tokens. Until now, only interactive (delegated) admin actions were intercepted. From now on, service principals, PowerShell scripts and third-party tools that change protected resources like apps or scripts are intercepted too. If they donât handle the new approval flow, they fail with an HTTP 403 error. In this blog post I explain what changed, why your automation suddenly gets 403 errors, how the approval flow works for API calls, and how you can exclude your automation apps from the enforcement.</p>
+<p class="preserved-content"><span id="what-is-multi-admin-approval"></span></p>
+<h2 id="what-is-multi-admin-approval">What Is Multi Admin Approval?</h2>
+<p>Multi Admin Approval (MAA) is a protection against compromised admin accounts. You create an access policy for a resource type, and from that moment every change to this resource type needs a second administrator to approve it. One admin submits the change with a business justification, a different admin approves or rejects it. An admin can never approve his own request â that also applies to Global Administrators.</p>
+<p>Intune supports access policies for these resource types:</p>
+<ul>
+<li>Apps (app deployments, not app protection policies)</li>
+<li>Compliance policies</li>
+<li>Configuration policies (settings catalog)</li>
+<li>Device actions (wipe, retire, delete)</li>
+<li>Role-based access control</li>
+<li>Scripts (Windows PowerShell scripts)</li>
+<li>Tenant Configuration (device categories)</li>
+</ul>
+<p>Changes to the access policies themselves are always protected as well, so this type is not selectable when you create a policy. You find everything under <strong>Tenant administration</strong> &gt; <strong>Multi Admin Approval</strong> in the Intune admin center (intune.microsoft.com).</p>
+<p><img alt="Intune admin center â Tenant administration &gt; Multi Admin Approval &gt; Access policies" decoding="async" fetchpriority="auto" src="assets/f286f3f7e007ff79/img_0.webp"/></p>
+<p>Note: The approver group must be a security group (no Microsoft 365 groups, no distribution lists), and this group must itself be assigned as a member group to an Intune role. If it is not, Intune periodically removes the members from the approver logic and your approvals silently stop working.</p>
+<p class="preserved-content"><span id="what-changed-in-june-2026"></span></p>
+<h2 id="what-changed-in-june-2026">What Changed in June 2026?</h2>
+<p>Before this change, Multi Admin Approval only applied to interactive (delegated) admin actions. A script with an app-only token could create or change protected resources without any approval. That was a real gap, because a compromised app registration could bypass the whole protection.</p>
+<p>Since the week of June 22, 2026, this gap is closed. Application-authenticated (app-auth) API calls through Microsoft Graph are now also intercepted by MAA when the target resource is protected by an access policy.</p>
+<p>Important to know: this is opt-in per workload. Nothing changes if your tenant has no MAA access policies. The enforcement only applies to tenants that already configured access policies. It does not automatically enable MAA anywhere.</p>
+<p>Also important: MAA only applies to operations that modify a protected resource (POST, PATCH, PUT, DELETE). Read-only GET requests are not affected.</p>
+<p class="preserved-content"><span id="why-does-my-automation-get-a-403"></span></p>
+<h2 id="why-does-my-automation-get-a-403">Why Does My Automation Get a 403?</h2>
+<p>If your app calls Microsoft Graph with an app-only token and targets a protected resource, the call no longer goes through directly. Two things can happen:</p>
+<ol>
+<li><strong>Without the required justification header</strong>, the request fails with an error that the <code>x-msft-approval-justification</code> header is required.</li>
+<li><strong>With the justification header</strong>, the request still returns an HTTP 403, but with the error code <code>ApprovalRequired</code>. This 403 is expected. It is not a permission problem. It is how MAA tells you that the request was received and is now waiting for approval.</li>
+</ol>
+<p>So before you start rotating certificates or adding Graph permissions, check the error body. If you see <code>ApprovalRequired</code>, your permissions are fine â MAA is doing its job. If you want to decode other Intune and Graph error codes quickly, ErrorHunter (a tool I built) can help: <a href="https://errorhunter.msnugget.com/">errorhunter.msnugget.com</a>. For a general approach to Intune errors, I also wrote <a href="/intune-troubleshooting-guide/">the ultimate Intune troubleshooting guide</a>.</p>
+<p class="preserved-content"><span id="how-does-the-approval-flow-work-for-api-calls"></span></p>
+<h2 id="how-does-the-approval-flow-work-for-api-calls">How Does the Approval Flow Work for API Calls?</h2>
+<p>The flow for automation has four steps. All details are in the official documentation: <a href="https://learn.microsoft.com/en-us/intune/fundamentals/role-based-access-control/multi-admin-approval-graph-api">Use Multi Admin Approval with the Microsoft Graph API</a>.</p>
+<p><img alt="Multi Admin Approval flow for Graph API calls with HTTP 403 ApprovalRequired and approval code" decoding="async" fetchpriority="auto" src="assets/f286f3f7e007ff79/img_1.webp"/></p>
+<ol>
+<li><strong>Submit the request with a justification header.</strong> Add the <code>x-msft-approval-justification</code> header to your call. The value must be Base64-encoded.</li>
+<li><strong>Handle the 403 response.</strong> The response has the error code <code>ApprovalRequired</code> and contains an <code>x-msft-approval-code</code> header with a request ID. The same ID is also written into the error message text, which is easier to grab in PowerShell. Save this code.</li>
+<li><strong>Wait for approval.</strong> A different administrator must approve the request in the Intune admin center under <strong>Tenant administration</strong> &gt; <strong>Multi Admin Approval</strong> &gt; <strong>Received requests</strong>. Applications canât approve or reject MAA requests. You can query the status with <code>GET /beta/deviceManagement/operationApprovalRequests?$filter=requestId eq '&amp;lt;code&gt;'</code> and wait until it is <code>approved</code> (other values are <code>needsApproval</code>, <code>rejected</code> and <code>cancelled</code>).</li>
+<li><strong>Resubmit with the approval code.</strong> Send the original request again, but replace the justification header with the <code>x-msft-approval-code</code> header. Now the request completes.</li>
+</ol>
+<p>Here is a short PowerShell example for the whole flow:</p>
+<pre class="astro-code github-dark" data-language="powershell" tabindex="0"><code><span class="line"><span># Step 1: send the change with a Base64-encoded business justification</span></span>
+<span class="line"><span>$justification </span><span>=</span><span> [</span><span>Convert</span><span>]::ToBase64String([</span><span>Text.Encoding</span><span>]::UTF8.GetBytes(</span><span>"Deploy remediation script v2"</span><span>))</span></span>
+<span class="line"><span>$headers </span><span>=</span><span> @</span><span>{ </span><span>"x-msft-approval-justification"</span><span> =</span><span> $justification }</span></span>
+<span class="line"><span>$uri </span><span>=</span><span> "https://graph.microsoft.com/beta/deviceManagement/deviceManagementScripts"</span></span>
+<span class="line"></span>
+<span class="line"><span>try</span><span> {</span></span>
+<span class="line"><span>    Invoke-MgGraphRequest</span><span> -</span><span>Method POST </span><span>-</span><span>Headers $headers </span><span>-</span><span>Uri $uri </span><span>`</span></span>
+<span class="line"><span>        -</span><span>Body $body </span><span>-</span><span>ContentType </span><span>"application/json"</span></span>
+<span class="line"><span>}</span></span>
+<span class="line"><span>catch</span><span> {</span></span>
+<span class="line"><span>    # Step 2: a 403 with error code "ApprovalRequired" is expected with MAA.</span></span>
+<span class="line"><span>    # The request ID is in the x-msft-approval-code response header and the message text.</span></span>
+<span class="line"><span>    $message </span><span>=</span><span> $_</span><span>.ErrorDetails.Message</span></span>
+<span class="line"><span>    $approvalCode </span><span>=</span><span> [</span><span>regex</span><span>]::Match($message</span><span>,</span><span> '[0-9a-f\-]{36}'</span><span>).Value</span></span>
+<span class="line"><span>}</span></span>
+<span class="line"></span>
+<span class="line"><span># Step 3: poll until another admin approved the request</span></span>
+<span class="line"><span>$status </span><span>=</span><span> (</span><span>Invoke-MgGraphRequest</span><span> -</span><span>Method GET </span><span>-</span><span>Uri </span><span>`</span></span>
+<span class="line"><span>    "https://graph.microsoft.com/beta/deviceManagement/operationApprovalRequests?</span><span>`$</span><span>filter=requestId eq '</span><span>$approvalCode</span><span>'"</span><span>).value.status</span></span>
+<span class="line"></span>
+<span class="line"><span># Step 4: resubmit with the approval code instead of the justification</span></span>
+<span class="line"><span>if</span><span> ($status </span><span>-eq</span><span> "approved"</span><span>) {</span></span>
+<span class="line"><span>    Invoke-MgGraphRequest</span><span> -</span><span>Method POST </span><span>-</span><span>Uri $uri </span><span>-</span><span>Body $body </span><span>-</span><span>ContentType </span><span>"application/json"</span><span> `</span></span>
+<span class="line"><span>        -</span><span>Headers </span><span>@</span><span>{ </span><span>"x-msft-approval-code"</span><span> =</span><span> $approvalCode }</span></span>
+<span class="line"><span>}</span></span></code></pre>
+<p>Note: Intune sends no notification when a new request is waiting. For urgent changes, ping an approver directly. And donât wait too long: a request that isnât processed further within 3 days expires and must be resubmitted.</p>
+<p>Hint: This flow needs a human in the loop. A fully unattended pipeline canât approve itself. So for pure automation, the exclusion described in the next section is often the more realistic option.</p>
+<p class="preserved-content"><span id="how-do-i-exclude-my-automation-app"></span></p>
+<h2 id="how-do-i-exclude-my-automation-app">How Do I Exclude My Automation App?</h2>
+<p>If you canât update your application right away, Microsoft added a new <strong>Exclusions</strong> tab to the access policy. With it you can exclude specific applications from the Multi Admin Approval enforcement.</p>
+<p><img alt="Multi Admin Approval access policy Exclusions tab with an automation app pending second admin" decoding="async" fetchpriority="auto" src="assets/f286f3f7e007ff79/img_2.webp"/></p>
+<p>The steps are simple:</p>
+<ol>
+<li>Go to <strong>Tenant administration</strong> &gt; <strong>Multi Admin Approval</strong> &gt; <strong>Access policies</strong>.</li>
+<li>Edit the access policy for the workload your app calls.</li>
+<li>Add the application on the <strong>Exclusions</strong> tab.</li>
+<li>A second administrator must approve this change before the exclusion takes effect.</li>
+</ol>
+<p>Note: Exclusions only apply to app-auth calls made by the excluded service principal. Interactive admin actions on the same resources still require approval. So the protection for humans stays fully in place.</p>
+<p class="preserved-content"><span id="what-do-i-recommend"></span></p>
+<h2 id="what-do-i-recommend">What Do I Recommend?</h2>
+<p>This is what I would do in a tenant with MAA access policies:</p>
+<ol>
+<li><strong>Inventory your automation first.</strong> Find every script, pipeline, and third-party tool that writes to apps, scripts, or policies with an app-only token. The Intune audit log records MAA events like approve, block, pass, and exclusion add/remove, so you can see which app-auth calls are hitting MAA.</li>
+<li><strong>Decide per app.</strong> For tools where a human review makes sense, implement the justification and approval-code flow. For trusted, unattended automation (packaging pipelines, service accounts), use the Exclusions tab.</li>
+<li><strong>Keep the exclusion list small.</strong> Every excluded app is a bypass of MAA. Treat these app registrations like privileged accounts and protect their credentials well.</li>
+<li><strong>Be careful with the Role policy type.</strong> An access policy for role-based access control protects all role changes â including the RBAC assignments that MAA itself needs. You can lock yourself into a deadlock. If that happens: delete the Role access policy, wait a few minutes, fix the role assignments under <strong>Tenant administration</strong> &gt; <strong>Roles</strong>, and recreate the policy afterwards. My advice: configure and verify all other access policies first, and enable the Role policy type last.</li>
+<li><strong>Donât turn off Multi Admin Approval</strong> just because automation broke. The 403 is annoying for a day, but the protection is worth it.</li>
+</ol>
+<p>In this blog post I showed you why Multi Admin Approval now breaks Graph automation with 403 errors, how the new approval flow for API calls works, and how the Exclusions tab helps for service accounts. I hope this is a little help.</p>
+<p>Stay healthy, Cheers Jannik</p></div></div></div>
+</article>
+</body>
+</html>

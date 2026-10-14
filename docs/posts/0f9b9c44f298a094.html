@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Secure Microsoft Foundry: Network, Identity and Guardrails</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">July 15, 2026</span>
+  </div>
+  <h1>Secure Microsoft Foundry: Network, Identity and Guardrails</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/secure-microsoft-foundry/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="prose" data-article-body=""><p>AI agents in production are a security topic, not only an AI topic. An agent has an identity, network paths, data at rest and a behavior that you need to control. In this blog post I explain how I secure Microsoft Foundry end to end, from the IT admin perspective: network isolation, agent identities, RBAC, encryption and guardrails. This is the checklist I would hand to any team that wants to move a Foundry agent from playground to production.</p>
+<p>I think about it in four layers, and I will walk through them in this order.</p>
+<p><img alt="Secure Microsoft Foundry in four layers: network, identity, data and guardrails" decoding="async" fetchpriority="auto" src="assets/0f9b9c44f298a094/img_0.webp"/></p>
+<p class="preserved-content"><span id="layer-1-how-do-i-isolate-the-network"></span></p>
+<h2 id="layer-1-how-do-i-isolate-the-network">Layer 1: How Do I Isolate the Network?</h2>
+<p>Microsoft Foundry has <a href="https://learn.microsoft.com/en-us/azure/foundry/how-to/configure-private-link">three network planes</a> you control separately: inbound traffic to the Foundry resource, outbound traffic from the resource to dependent services, and the network of the agent runtime itself.</p>
+<p><strong>Inbound</strong> is classic Azure. You add a private endpoint on the Foundry account and set public network access to Disabled. The click path for an existing resource: Azure portal â your Foundry resource â <strong>Resource Management</strong> â <strong>Networking</strong> â <strong>Private endpoint connections</strong> â <strong>+ Private endpoint</strong>, target subresource <strong>account</strong>. Whoever creates the endpoint needs Network Contributor on the VNet, and approving the connection needs Contributor or Owner on the resource.</p>
+<p><img alt="Azure portal - my-foundry-resource-jr - Resource Management - Networking" decoding="async" fetchpriority="auto" src="assets/0f9b9c44f298a094/img_1.webp"/></p>
+<p>Note: A Foundry account answers under three DNS namespaces, so you need three private DNS zones linked to the VNet: <code>privatelink.cognitiveservices.azure.com</code>, <code>privatelink.openai.azure.com</code> and <code>privatelink.services.ai.azure.com</code>. If only one zone exists, some SDK calls resolve privately and others still go public, and you get very confusing 403 errors. With your own DNS servers, forward these zones to the Azure DNS address 168.63.129.16.</p>
+<p><strong>The agent runtime</strong> is the interesting part. With the standard agent setup you inject the runtime into a delegated subnet in your own VNet. The requirements are specific: the subnet must be delegated to <code>Microsoft.App/environments</code> (agents run on Azure Container Apps infrastructure), minimum /27, recommended /24, one dedicated subnet per Foundry resource, and the VNet must be in the same region as the resource. In return you bring your own data resources, so all agent state stays in your tenant:</p>
+<ul>
+<li><strong>Azure Cosmos DB</strong> â threads and messages</li>
+<li><strong>Azure Storage</strong> â files the agent works with</li>
+<li><strong>Azure AI Search</strong> â vector stores</li>
+</ul>
+<p><img alt="Microsoft Foundry standard agent setup network isolation: private endpoints, delegated subnet" decoding="async" fetchpriority="auto" src="assets/0f9b9c44f298a094/img_2.webp"/></p>
+<p>That means conversation history and uploaded files are at rest in your tenant, under your encryption and residency rules, and Microsoftâs guarantee for the injected setup is: no public egress. There are ready-made <a href="https://github.com/microsoft-foundry/foundry-samples/tree/main/infrastructure/infrastructure-setup-bicep/15-private-network-standard-agent-setup">Bicep and Terraform samples</a> for the whole setup â use them, the dependency chain is long, and the deploying identity needs Foundry Account Owner at subscription scope plus role-assignment rights.</p>
+<p>Note: Agent networking is a <strong>create-time-only decision</strong>. You cannot add VNet injection to an existing Foundry resource and you cannot change the delegated subnet later â you redeploy. Also, private endpoints to your Cosmos DB, Storage and AI Search are not created automatically; each needs its own endpoint and DNS zone.</p>
+<p>And now the honest part that the architecture slides skip: even in a fully injected setup, not every agent tool uses your VNet. This table is my data-exfiltration review checklist:</p>
+<div class="preserved-content"><table>
+<thead>
+<tr>
+<th>Traffic path</th>
+<th>Tools</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Through your VNet subnet</td>
+<td>Private MCP servers, OpenAPI tool, Azure Functions, A2A, Azure AI Search (via private endpoint)</td>
+</tr>
+<tr>
+<td>Microsoft backbone</td>
+<td>Function calling, Code Interpreter (no file up/download in a BYO VNet)</td>
+</tr>
+<tr>
+<td><strong>Public endpoints</strong></td>
+<td>Grounding with Bing, Web Search, SharePoint Grounding</td>
+</tr>
+<tr>
+<td>Not supported behind VNet</td>
+<td>Logic Apps, File Search, Browser Automation, Computer Use, Image Generation, Fabric Data Agent</td>
+</tr>
+</tbody>
+</table></div>
+<p>So Bing and SharePoint grounding leave your network boundary even when everything else is private. If your compliance rule is âno public endpoints, periodâ, block these tools with Azure Policy rather than assume the VNet catches them. Trace ingestion to Application Insights also has no private path yet, so observability needs the monitoring FQDNs on the firewall allow-list.</p>
+<p class="preserved-content"><span id="layer-2-which-identity-does-an-agent-have"></span></p>
+<h2 id="layer-2-which-identity-does-an-agent-have">Layer 2: Which Identity Does an Agent Have?</h2>
+<p>This is where Microsoft did something genuinely new. With <a href="https://learn.microsoft.com/en-us/entra/agent-id/what-is-microsoft-entra-agent-id">Microsoft Entra Agent ID</a> (generally available since April 2026), agents get first-class identities in Entra â visible, governable and revocable like users and service principals.</p>
+<p>How it works in Foundry (<a href="https://learn.microsoft.com/en-us/azure/foundry/agents/concepts/agent-identity">details</a>): when the first agent in a project is created, Foundry provisions an agent identity blueprint plus a shared agent identity for the project. All agents in development share this identity, so you can experiment without ceremony. When you <strong>publish</strong> an agent, it gets its own dedicated blueprint and identity. At runtime no secrets are involved â the blueprint has a federated credential trust with the projectâs managed identity, and Entra issues short-lived tokens scoped to a specific audience like <code>https://graph.microsoft.com</code>. A wrong audience fails authentication even when the RBAC is correct, so keep that in mind when debugging.</p>
+<p>For you as admin this means: open the Entra admin center under <strong>Agent ID</strong> â <strong>All agent identities</strong>, and you see every agent in the tenant â from Foundry, Copilot Studio and third-party platforms. From there you can apply Conditional Access to agents, watch risky agents in Identity Protection, and put lifecycle governance (owners, sponsors, expiration) on them.</p>
+<p><img alt="Entra admin center (entra.microsoft.com) - Agent ID - All agent identities" decoding="async" fetchpriority="auto" src="assets/0f9b9c44f298a094/img_3.webp"/></p>
+<p>Granting an agent access to a resource works like for any service principal:</p>
+<pre class="astro-code github-dark" data-language="bash" tabindex="0"><code><span class="line"><span># Give the published agent's identity access to a storage account</span></span>
+<span class="line"><span>az</span><span> role</span><span> assignment</span><span> create</span><span> \</span></span>
+<span class="line"><span>  --assignee</span><span> "&lt;agentIdentityId&gt;"</span><span> \</span></span>
+<span class="line"><span>  --role</span><span> "Storage Blob Data Contributor"</span><span> \</span></span>
+<span class="line"><span>  --scope</span><span> "/subscriptions/&lt;sub&gt;/resourceGroups/&lt;rg&gt;/providers/Microsoft.Storage/storageAccounts/&lt;sa&gt;"</span></span></code></pre>
+<p>Hint: The publish step is a trap. Because publishing creates a new identity, the role assignments of the development identity do <strong>not</strong> carry over. Put âre-assign RBAC to the published agent identityâ into your release checklist, otherwise the agent works in dev and fails in production.</p>
+<p>Note: Two Conditional Access gotchas from the docs: âall usersâ policies do not include agent user accounts, and anything that authenticates with an API key bypasses Conditional Access entirely. One more reason for the keyless setup in the next layer.</p>
+<p class="preserved-content"><span id="layer-3-who-may-do-what-the-foundry-rbac-roles"></span></p>
+<h2 id="layer-3-who-may-do-what-the-foundry-rbac-roles">Layer 3: Who May Do What? The Foundry RBAC Roles</h2>
+<p>In May 2026 Microsoft renamed the built-in roles â Azure AI User is now <strong>Foundry User</strong> and so on. The role IDs and permissions stayed the same, so nothing breaks, but you may still see old names in some blades. These are <a href="https://learn.microsoft.com/en-us/azure/foundry/concepts/rbac-foundry">the five roles</a> I actually work with:</p>
+<div class="preserved-content"><table>
+<thead>
+<tr>
+<th>Role</th>
+<th>What it can do</th>
+<th>I give it to</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Foundry Agent Consumer</td>
+<td>Only call agent endpoints</td>
+<td>End users, calling apps</td>
+</tr>
+<tr>
+<td>Foundry User</td>
+<td>Build agents, run evals, call models â no deploy, no publish</td>
+<td>Developers</td>
+</tr>
+<tr>
+<td>Foundry Project Manager</td>
+<td>Everything Foundry User can, plus manage projects and publish agents</td>
+<td>Team leads</td>
+</tr>
+<tr>
+<td>Foundry Account Owner</td>
+<td>Create accounts/projects, deploy models â no data-plane build actions</td>
+<td>Platform team</td>
+</tr>
+<tr>
+<td>Foundry Owner</td>
+<td>Everything, control plane and data plane</td>
+<td>Break-glass, IaC pipeline</td>
+</tr>
+</tbody>
+</table></div>
+<p>Note: The portal role picker currently displays the agent-consumer role as <strong>Foundry Project Runtime User</strong>, not âFoundry Agent Consumerâ. Same role, same ID (<code>eed3b665-ab3a-47b6-8f48-c9382fb1dad6</code>) â do not let the name confuse you when you search for it in the IAM blade.</p>
+<p>Hint: Because the names are still in transition, script role assignments with the role definition GUIDs instead of display names. That is Microsoftâs own guidance during the rollout. Foundry User for example is <code>53ca6127-db72-4b80-b1b0-d745d6d5456d</code>.</p>
+<p>Role assignments work on three scopes: account, project and even a single agent. The agent scope is evaluated only for endpoint access, so you can give an app permission to exactly one agent:</p>
+<pre class="astro-code github-dark" data-language="bash" tabindex="0"><code><span class="line"><span># Foundry Agent Consumer for a service principal on ONE agent only</span></span>
+<span class="line"><span>az</span><span> role</span><span> assignment</span><span> create</span><span> \</span></span>
+<span class="line"><span>  --assignee</span><span> "&lt;sp-object-id&gt;"</span><span> \</span></span>
+<span class="line"><span>  --role</span><span> "eed3b665-ab3a-47b6-8f48-c9382fb1dad6"</span><span> \</span></span>
+<span class="line"><span>  --scope</span><span> "/subscriptions/&lt;sub&gt;/resourceGroups/&lt;rg&gt;/providers/Microsoft.CognitiveServices/accounts/my-foundry-resource-jr/projects/my-foundry-project/agents/MyAgent"</span></span></code></pre>
+<p>In the portal it is the normal flow: Azure portal â Foundry resource or project â <strong>Access control (IAM)</strong> â <strong>Add</strong> â <strong>Add role assignment</strong>. Project leads who never touch the Azure portal can do the same in the Foundry portal under <strong>Operate</strong> â <strong>Admin</strong> â select project â <strong>Add user</strong>.</p>
+<p><img alt="Azure portal - my-foundry-resource-jr - Access control (IAM) - Add role assignment, Role tab" decoding="async" fetchpriority="auto" src="assets/0f9b9c44f298a094/img_4.webp"/></p>
+<p>Two details that are easy to miss. First, Azure Owner or Contributor on the subscription does <strong>not</strong> include data actions: a subscription owner can create the resource but cannot build or call agents. That confuses people in every project I have seen. Second, key-based authentication bypasses RBAC completely â whoever has the key has everything, without user attribution. Agents and evaluations do not accept keys anyway, so go Entra-only and disable local auth in your template:</p>
+<pre class="astro-code github-dark" data-language="bicep" tabindex="0"><code><span class="line"><span>properties: {</span></span>
+<span class="line"><span>  allowProjectManagement: </span><span>true</span></span>
+<span class="line"><span>  customSubDomainName: </span><span>'my-foundry-resource-jr'</span></span>
+<span class="line"><span>  disableLocalAuth: </span><span>true</span><span> // API keys stop working; Entra ID only</span></span>
+<span class="line"><span>}</span></span></code></pre>
+<p class="preserved-content"><span id="layer-4-how-do-i-control-agent-behavior-guardrails"></span></p>
+<h2 id="layer-4-how-do-i-control-agent-behavior-guardrails">Layer 4: How Do I Control Agent Behavior? Guardrails</h2>
+<p><a href="/what-azure-ai-content-safety-does-and-why-it-matters/">Azure AI Content Safety in Foundry</a> is now organized as <a href="https://learn.microsoft.com/en-us/azure/foundry/guardrails/guardrails-overview">guardrails and controls</a> â the docs literally say âGuardrails (previously content filters)â. A guardrail is a named collection of controls, and each control defines a risk to detect, the intervention points to scan, and the action to take. New for agents: besides <strong>user input</strong> and <strong>output</strong>, you can now intervene at <strong>tool call</strong> and <strong>tool response</strong> (both preview, agents only). That is exactly where indirect prompt injection lives â a poisoned document coming back from a retrieval tool. Agent guardrails as a whole are still in preview; the model-side system is GA.</p>
+<p>You configure guardrails per project under <strong>Build</strong> â <strong>Guardrails</strong>, and there is a fleet-wide view under <strong>Operate</strong> â <strong>Compliance</strong> â <strong>Guardrails</strong>. Creating them requires the Foundry Account Owner role.</p>
+<p><img alt="Foundry portal (ai.azure.com) - project my-foundry-project - Build - Guardrails" decoding="async" fetchpriority="auto" src="assets/0f9b9c44f298a094/img_5.webp"/></p>
+<p>What I switch on for a production agent:</p>
+<ol>
+<li>The four harm categories (hate, sexual, self-harm, violence) at medium severity â that is the default anyway.</li>
+<li><strong>Prompt Shields</strong> for direct jailbreaks and indirect attacks embedded in third-party content.</li>
+<li><strong>Task adherence</strong> (preview) â flags when the agent drifts away from its instructions or tool calls go off course.</li>
+<li>A <strong>blocklist</strong> with the internal terms that must never leave the company (custom term lists, regex supported).</li>
+</ol>
+<p>Hint: An agent guardrail fully <strong>overrides</strong> the model guardrail â it does not merge with it. If you assign a slim guardrail to the agent, you silently switch off filters that the model deployment had. The inheritance rule is: no custom agent guardrail assigned â the agent uses the guardrail of its model deployment; custom guardrail assigned â only that one counts. Check the effective set, not the intended one.</p>
+<p>Note: Not every control works for agents yet. Groundedness and Spotlighting controls apply to models only, and agents currently only support the âannotate and blockâ action. Check the applicability tables in the docs before you promise a control to your compliance team.</p>
+<p>On top of the built-in guardrails I put <a href="https://learn.microsoft.com/en-us/azure/defender-for-cloud/ai-threat-protection">Microsoft Defender for Cloud AI threat protection</a>. Since February 2026 the Defender for AI Services plan also covers agents built with Foundry. It correlates Prompt Shields signals with Microsoft threat intelligence and raises alerts for jailbreaks, data leakage or credential theft into Defender XDR â where the SOC already lives. I wrote about the endpoint side of this in <a href="/defender-ai-agent-runtime-protection/">Protect AI agents with Microsoft Defender</a>.</p>
+<p class="preserved-content"><span id="what-about-encryption-and-data-residency"></span></p>
+<h2 id="what-about-encryption-and-data-residency">What About Encryption and Data Residency?</h2>
+<p>By default Microsoft manages the keys (AES-256). If compliance requires it, you can bring <a href="https://learn.microsoft.com/en-us/azure/foundry/concepts/encryption-keys-portal">customer-managed keys</a> from Azure Key Vault or Managed HSM. Requirements: key vault in the same region, soft delete plus purge protection enabled, RSA key with at least 2048 bits, and a managed identity with the Key Vault Crypto User role (or wrap/unwrap permissions). The click path: Azure portal â Foundry resource â <strong>Resource Management</strong> â <strong>Encryption</strong> â <strong>Customer-Managed Keys</strong>. Be aware this is a one-way door â you can move from Microsoft-managed keys to CMK, but not back.</p>
+<p>The nice part of the standard agent setup: because threads, files and vectors live in your own Cosmos DB, Storage and AI Search, residency and encryption simply follow those resources â you apply each serviceâs own CMK there.</p>
+<p>For the prompts themselves, the deployment type is the lever. Standard and Data Zone deployments process within the geography or data zone you chose; <strong>Global deployments process anywhere in the world</strong> â data at rest stays in your geography, processing does not. If your organization committed to the EU Data Boundary, use Data Zone or Regional deployments and keep Global SKUs out via Azure Policy. And the answer to the DPO question: for models sold by Azure, prompts and completions are not used to train the models and are not shared with the model providers. Partner models like Anthropic Claude run under the partnerâs data terms â read them before routing regulated data there.</p>
+<p class="preserved-content"><span id="the-approach-i-actually-use"></span></p>
+<h2 id="the-approach-i-actually-use">The Approach I Actually Use</h2>
+<p>For a production rollout I do it in this order:</p>
+<ol>
+<li>Deploy the Foundry resource with <strong>network isolation from day one</strong> (Bicep sample 15), because you cannot retrofit VNet injection.</li>
+<li><strong>Entra-only auth</strong>, <code>disableLocalAuth: true</code> in the template.</li>
+<li>RBAC minimal: developers get Foundry User on the project, apps get Foundry Agent Consumer on exactly one agent.</li>
+<li>Guardrail set per agent: defaults plus Prompt Shields plus blocklist; task adherence in annotate mode first.</li>
+<li>Defender for Cloud AI plan on, alerts wired to the SOC.</li>
+<li>CMK only if compliance explicitly demands it.</li>
+</ol>
+<p class="preserved-content"><span id="pitfalls-i-now-avoid"></span></p>
+<h2 id="pitfalls-i-now-avoid">Pitfalls I Now Avoid</h2>
+<ul>
+<li><strong>Retrofitting network isolation.</strong> Not possible for the agent subnet. Decide before the first deployment.</li>
+<li><strong>Forgetting RBAC after publish.</strong> New identity, empty permissions. Release checklist.</li>
+<li><strong>Trusting âprivateâ for every tool.</strong> Bing and SharePoint grounding stay public â block them via policy if needed.</li>
+<li><strong>Assigning slim agent guardrails.</strong> Override, not merge. Verify the effective filters.</li>
+<li><strong>Searching for âFoundry Agent Consumerâ in the portal.</strong> The role picker says Foundry Project Runtime User. Use the GUID in scripts.</li>
+<li><strong>Leaving API keys enabled</strong> âfor the quick testâ. They bypass everything this post is about, including Conditional Access.</li>
+</ul>
+<p class="preserved-content"><span id="where-this-is-heading"></span></p>
+<h2 id="where-this-is-heading">Where This Is Heading</h2>
+<p>Agent security is converging with normal identity and network security, and that is good news: Conditional Access, RBAC, private endpoints and SOC alerting are muscles your organization already has. The Foundry Control Plane pulls governance of the whole agent fleet into one place, and Purview integration brings prompts and responses into the compliance world. My advice: treat every agent like a new employee â it gets an identity, least privilege, a network policy and supervision. Start with the <a href="https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/virtual-networks">network isolation docs</a> and build the checklist from there.</p>
+<p>I hope this saves you a security review round or two.</p>
+<p>Stay healthy,</p>
+<p>Cheers Jannik</p></div></div></div>
+</article>
+</body>
+</html>
