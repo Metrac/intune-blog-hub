@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Skills vs MCP vs CLI: AI Agent Tools Compared</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">May 15, 2026</span>
+  </div>
+  <h1>Skills vs MCP vs CLI: AI Agent Tools Compared</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/skills-mcp-cli-computer-use-mapping-the-ai-tooling-surface-in-2026/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="prose" data-article-body=""><p><strong>Skills describe how to do a task. MCP connects an agent to tools and data. A CLI executes commands. Computer Use operates a user interface.</strong> They solve different problems, and an agent can combine them.</p>
+<p>If you are comparing <strong>Skills vs MCP vs CLI</strong>, that distinction is the useful starting point. You do not have to choose one technology for the whole application. Choose the simplest reliable interface for each capability, then enforce permissions outside the model.</p>
+<p>In this guide I map the main AI agent tools, explain where function calling fits, and use an Intune support workflow to make the choices concrete. <strong>Updated 28 September 2026:</strong> the vendor mapping now includes Codex Skills and Googleâs Agent Development Kit. The original illustration is retained at the end as a historical overview.</p>
+<p class="preserved-content"><span id="the-ai-tooling-surface-in-plain-language"></span></p>
+<div class="preserved-content"><table>
+<thead>
+<tr>
+<th>Building block</th>
+<th>What it does</th>
+<th>What it does not provide by itself</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Function calling</td>
+<td>Lets a model request a typed operation</td>
+<td>Permission to execute that operation</td>
+</tr>
+<tr>
+<td>MCP</td>
+<td>Standardizes communication between a host and a tool server</td>
+<td>A guarantee that every host supports every feature</td>
+</tr>
+<tr>
+<td>CLI</td>
+<td>Runs an installed command-line program</td>
+<td>A safe identity or a restricted execution environment</td>
+</tr>
+<tr>
+<td>Computer Use</td>
+<td>Works through the visible application interface</td>
+<td>A stable API contract</td>
+</tr>
+<tr>
+<td>Hosted tools</td>
+<td>Runs a provider-managed capability such as search</td>
+<td>Identical behavior, billing or retention across providers</td>
+</tr>
+<tr>
+<td>Sub-agents</td>
+<td>Delegates part of the work</td>
+<td>Free parallelism or automatic quality improvement</td>
+</tr>
+<tr>
+<td>Skills</td>
+<td>Packages instructions and supporting resources</td>
+<td>Access to a system that the agent does not already have</td>
+</tr>
+</tbody>
+</table></div>
+<p class="preserved-content"><span id="1-function-calling-the-original-ai-tooling-surface"></span></p>
+<p>Your application describes an operation and its arguments. The model requests it; your code validates the request, checks access and executes it. A schema can constrain the shape of the arguments. It cannot decide whether this user is allowed to restart that device.</p>
+<p>I would start here for a small application with a few internal operations. For example, <code>get_device_compliance(device_id)</code> can expose one useful, read-only result instead of handing the agent a broad administrative API.</p>
+<p class="preserved-content"><span id="2-mcp-model-context-protocol"></span></p>
+<h3 id="2-mcp--model-context-protocol">2. MCP â Model Context Protocol</h3>
+<p>MCP is useful when a capability needs to work across several compatible agent hosts. It separates the client from the server that offers tools, resources or prompts. That reuse can justify a separately operated service; three private helper functions do not automatically need one.</p>
+<p>For remote HTTP servers, authentication is something you configure and validate, not something the letters MCP grant you. The specification defines an OAuth-based authorization framework but does not make authorization mandatory for every implementation. Check the clientâs supported flow, the token audience, scopes and the serverâs own access checks. <a href="https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization">MCP authorization specification</a>.</p>
+<p>My design question is: <strong>who owns this operation, and which callers may use it?</strong> A successfully connected server is not evidence that tenant isolation or write permissions are correct.</p>
+<p class="preserved-content"><span id="3-cli-tools-the-surprise-winner"></span></p>
+<p>A terminal-based agent may already have useful programs such as <code>az</code>, <code>gh</code> or PowerShell. A command with predictable exit codes and structured output can be a practical integration. This is the idea behind my earlier <a href="/why-cli-tools-are-beating-mcp-for-ai-agents/">CLI tools and MCP comparison</a>.</p>
+<p>But a good prompt is not enough. I would verify the signed-in account, tenant, subscription, working directory and command version. Prefer read-only access for investigation. Do not assume that a CLI inherits the permission boundary you intended for the agent.</p>
+<p>A narrower service or wrapper can still make sense when you need consistent outputs, centralized policy or a small tool surface. Reuse is useful; unrestricted shell access is a separate decision.</p>
+<p class="preserved-content"><span id="4-computer-use"></span></p>
+<h3 id="4-computer-use">4. Computer Use</h3>
+<p>Computer Use acts through an applicationâs interface, using screenshots or other supported UI information. It helps with workflows that are only exposed in the UI, or when the goal is specifically to demonstrate the portal experience.</p>
+<p>The trade-off is dependence on layout, loading states and dialogs. I would test the actual workflow rather than declare every UI task too slow or unreliable. For consequential actions, add a review step and verify the saved result. Do not treat a button click as proof that a change took effect.</p>
+<p>Page text and screenshots are input, not instructions that may override the userâs task. Logs also need care: a useful screenshot trace can contain customer data.</p>
+<p class="preserved-content"><span id="5-hosted-tools-code-execution-retrieval-web-search"></span></p>
+<p>Provider-managed tools can save you from operating a search service or execution sandbox yourself. Check each capability separately: supported file types, citations, limits, retention and additional charges can differ.</p>
+<p><strong>Uploading a file is not the same as providing retrieval over it.</strong> A Files API can manage file objects without being an indexed search product. Googleâs Gemini documentation, for example, documents File Search as its own managed retrieval capability. <a href="https://ai.google.dev/gemini-api/docs/file-search">Gemini File Search</a>.</p>
+<p>I would evaluate a hosted option against the workloadâs requirements first. Building your own is justified when you need control the hosted product cannot provide, not simply because the project is important.</p>
+<p class="preserved-content"><span id="6-sub-agents-as-a-tool"></span></p>
+<p>Delegation can help when a task has independent parts or needs a separate context and a narrower set of tools. A handoff that transfers control is not necessarily the same as calling an agent and waiting for its result.</p>
+<p>My starting point would still be one agent with a clear task. Split when you can explain the benefit: a separate reviewer, a bounded research task or parallel work with independent outputs. Measure the extra latency, usage and coordination failures. More agents is not a quality metric.</p>
+<p class="preserved-content"><span id="7-skills-the-term-that-means-four-different-things"></span></p>
+<h3 id="7-skills--the-term-that-means-four-different-things">7. Skills â the term that means four different things</h3>
+<p>For file-based Agent Skills, think of a package containing <code>SKILL.md</code> and optional scripts, references or assets. The description helps a compatible agent identify relevant guidance; the package describes a repeatable way of working. It is not a network endpoint. <a href="https://agentskills.io/specification">Agent Skills specification</a>.</p>
+<p>Codex also supports this pattern. Its skills can combine written instructions with scripts and references, and can work alongside MCP tools. It is incorrect to treat skills as exclusive to Claude. <a href="https://learn.chatgpt.com/docs/customization/overview#skills">Codex customization and skills</a>.</p>
+<p>Keep other product concepts separate. A Microsoft 365 declarative agent, a custom engine agent, a Semantic Kernel plugin and a reusable skill package are not interchangeable types. Ask what is actually being packaged: instructions, executable operations, an agent or an entire user experience.</p>
+<p class="preserved-content"><span id="vendor-terminology-cheat-sheet-for-the-ai-tooling-surface"></span></p>
+<p>This is a map of examples, not a feature-parity promise. Product plans, model support and available tool types still need checking.</p>
+<div class="preserved-content"><table>
+<thead>
+<tr>
+<th>Ecosystem</th>
+<th>Examples to distinguish</th>
+<th>Important correction</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Anthropic</td>
+<td>Claude Code skills, tool use, Claude Agent SDK</td>
+<td>A skill is not the same thing as an API tool</td>
+</tr>
+<tr>
+<td>OpenAI</td>
+<td>Codex skills, function calling, Agents SDK</td>
+<td>Codex does have skills; Custom GPTs are a different product concept</td>
+</tr>
+<tr>
+<td>Microsoft</td>
+<td>Foundry agents, Copilot Studio agents, Microsoft 365 agent types</td>
+<td>Do not call every agent or plugin a skill</td>
+</tr>
+<tr>
+<td>Google</td>
+<td>Gemini tools and Agent Development Kit</td>
+<td>Google does have a first-party agent SDK</td>
+</tr>
+</tbody>
+</table></div>
+<p>Googleâs <a href="https://github.com/google/adk-python">official ADK repository</a> describes its code-first agent toolkit. The practical comparison is the behavior your application needs, not whether two vendors use the same noun.</p>
+<p class="preserved-content"><span id="the-decision-tree-i-actually-use"></span></p>
+<h2 id="the-decision-tree-i-actually-use">The decision tree I actually use</h2>
+<p>Imagine an Intune support agent answering: âWhy is this device still noncompliant?â</p>
+<ol>
+<li><strong>Retrieve a bounded device summary.</strong> Use a typed operation with read-only access. Use MCP if several agent clients should reuse the same service.</li>
+<li><strong>Apply the investigation procedure.</strong> A skill can define the order of checks, evidence to collect and when to stop. It does not grant extra Microsoft Graph permissions.</li>
+<li><strong>Use existing operational tools where appropriate.</strong> A controlled PowerShell or CLI command may be enough in a developer workflow. Return the evidence needed for the answer, not every tenant object.</li>
+<li><strong>Use the portal when the UI is the point.</strong> For a live walkthrough, show the relevant device view. For unattended operations, prefer a stable supported interface where available.</li>
+<li><strong>Keep remediation separate.</strong> A suggested fix is not authorization to execute it. Scope write operations and require approval where the impact warrants it.</li>
+</ol>
+<p>That is not four competing architectures. It is one workflow with separate instruction, integration and execution layers.</p>
+<p class="preserved-content"><span id="pitfalls-across-the-ai-tooling-surface-i-now-avoid"></span></p>
+<ul>
+<li><strong>A skill presented as a security boundary.</strong> Instructions can guide behavior; identities and service-side checks enforce access.</li>
+<li><strong>A protocol presented as universal compatibility.</strong> Test the actual host, transport, authentication flow and tool behavior.</li>
+<li><strong>A file upload presented as search.</strong> Check indexing, retrieval, citations and lifecycle explicitly.</li>
+<li><strong>Too many tools without a reason.</strong> Expose the smallest useful set and evaluate selection failures before adding more.</li>
+<li><strong>An action presented as an outcome.</strong> Re-read the resulting state, record failures and make the evidence reviewable.</li>
+</ul>
+<p>For an implementation in a repository, my <a href="/claude-code-github-actions/">Claude Code GitHub Actions guide</a> covers triggers, authentication and a constrained starting workflow. For the platform decision, see <a href="/copilot-vs-cowork-vs-agents/">Copilot, Copilot Studio and custom agents</a>.</p>
+<p class="preserved-content"><span id="where-the-ai-tooling-surface-is-heading"></span></p>
+<p>My useful rule is simple: <strong>package the procedure as instructions, expose the smallest useful operations, and choose the execution interface that fits the environment.</strong> Combine these building blocks when there is a reason, and test what happens when a tool fails or the caller lacks permission.</p>
+<p>The original May 2026 overview below is retained for continuity. Its vendor labels are historical; use the updated distinctions above rather than reading it as a current product support matrix.</p>
+<p><img alt="Mapping the AI tooling surface in 2026 across Anthropic, OpenAI, Microsoft and Google" decoding="async" fetchpriority="auto" src="assets/b4f33718d01a5277/img_0.webp"/></p>
+<p>Stay healthy, Cheers Jannik</p>
+<p><img alt="AI tooling surface decision tree mapped across Anthropic, OpenAI, Microsoft and Google" decoding="async" fetchpriority="auto" src="assets/b4f33718d01a5277/img_1.webp"/></p></div></div></div>
+</article>
+</body>
+</html>

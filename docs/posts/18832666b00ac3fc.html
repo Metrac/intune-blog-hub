@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Microsoft Agent 365 vs. Microsoft 365 Agents: A Field Guide for IT and Architects</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">May 5, 2026</span>
+  </div>
+  <h1>Microsoft Agent 365 vs. Microsoft 365 Agents: A Field Guide for IT and Architects</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/microsoft-365-agents-explained-what-agents-365-means/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="prose" data-article-body=""><p><strong>Microsoft Agent 365 vs. Microsoft 365 Agents</strong> is the field guide distinction for IT teams and architects: one term describes governed agent operations, while the other describes the agents users build and run inside Microsoft 365 experiences.</p>
+<p>If youâve spent the last twelve months in the Microsoft AI ecosystem, youâve watched the same pattern repeat: every announcement reframes the same thing under a slightly different banner. Copilot. Copilot Studio. Microsoft Foundry. Microsoft Agent Framework. Declarative agents. Custom engine agents. And now, two terms that <em>sound</em> almost identical but mean very different things <strong>Microsoft 365 Agents</strong> and <strong>Microsoft Agent 365</strong>.</p>
+<p>I keep seeing them used interchangeably, including in serious technical posts. They are not interchangeable. With <strong>Agent 365 hitting general availability on May 1, 2026</strong>, getting this distinction right is no longer a pedantry exercise itâs a procurement, governance, and architecture decision.</p>
+<p>This post is the field guide to Microsoft 365 Agents I would have wanted before I started building.</p>
+<p><img alt="Microsoft 365 Agents: declarative agents, custom engine agents, and Agent Builder in the Microsoft Copilot host" decoding="async" fetchpriority="auto" src="assets/18832666b00ac3fc/img_0.webp"/></p>
+<p class="preserved-content"><span id="the-two-terms-side-by-side"></span></p>
+<h2 id="the-two-terms-side-by-side">The two terms, side by side</h2>
+<div class="preserved-content"><table class="has-fixed-layout"><thead><tr><th></th><th><span>Microsoft 365 Agents</span></th><th><span>Microsoft Agent 365</span></th></tr></thead><tbody><tr><td><span>What it is</span></td><td>The agents themselves + the SDK to build them</td><td>The IT/security control plane that governs agents</td></tr><tr><td><span>Who itâs for</span></td><td>Developers, makers, line-of-business owners</td><td>IT admins, security teams, compliance leads</td></tr><tr><td><span>Examples</span></td><td>Declarative agents, custom engine agents, Copilot Studio agents, Foundry-built agents</td><td>Registry, Entra Agent ID, Agent Blueprints, Work IQ MCP governance</td></tr><tr><td><span>Licensing</span></td><td>Bundled with Microsoft 365 Copilot, Foundry consumption, Copilot Studio</td><td><span>Separate SKU</span>: USD 15 / user / month, or bundled in <span>Microsoft 365 E7 (Frontier Suite)</span></td></tr><tr><td><span>Status</span></td><td>GA across most components</td><td><span>GA since May 1, 2026</span></td></tr></tbody></table></div>
+<p>In one sentence: Microsoft 365 Agents are what you build. Microsoft Agent 365 is what you use to keep them safe at scale. Now letâs go layer by layer.</p>
+<p class="preserved-content"><span id="microsoft-365-agents-the-agent-layer"></span></p>
+<h2 id="microsoft-365-agents--the-agent-layer">Microsoft 365 Agents â the agent layer</h2>
+<p>Strip away the branding and Microsoft 365 Agents is four ways to build an agent, all stacked on top of the same identity, grounding, and governance model:</p>
+<ul>
+<li>Declarative agents â manifest-described agents that run inside the Microsoft 365 Copilot host. No custom backend. You describe the persona, grounding sources (SharePoint, OneDrive, Graph, web), connector tools, and conversational starters. Microsoft executes them inside Copilot Chat in Teams, Word, Outlook, and Microsoft365.com.</li>
+<li>Agent Builder â the no-code authoring path inside Microsoft Copilot. Same execution model as declarative agents, with templates and a visual setup. Excellent for line-of-business owners who would otherwise build the same flow in Power Apps.</li>
+<li>Copilot Studio agents â the low-code path. Topic-driven authoring, multi-channel publishing, model picker, MCP support. The natural home for citizen-developer-led automation that needs more control than a declarative manifest gives you.</li>
+<li>Custom engine agents â full-control agents you build with the Microsoft 365 Agents SDK (<a href="https://learn.microsoft.com/en-us/microsoft-365/agents-sdk/">documented on Microsoft Learn</a>, the successor to the Bot Framework, AI-stack-agnostic, .NET GA / JS / Python). You bring your own model (Foundry, Azure OpenAI, Anthropic via Foundry, open-weights), your own memory store, your own tool surface. Microsoft handles distribution, identity, and channel plumbing across Teams, M365 Copilot, web, and embedded surfaces.</li>
+</ul>
+<p>Pro-code teams typically pair the M365 Agents SDK with the Microsoft Agent Framework (v1.0 GA April 2026 for .NET and Python) for orchestration, multi-agent patterns, and skills authoring. For how these Microsoft 365 Agents fit the wider stack, see my <a href="/microsoft-build-2026-agentic-stack/">field guide to the Microsoft Build 2026 agentic stack</a>.</p>
+<p>The choice between these is not a feature checkbox â itâs an architectural decision:</p>
+<ul>
+<li>Default to declarative agents or Agent Builder for flows that are mostly grounding, summarisation, or Q&amp;A over Microsoft 365 content. Cheaper, governed, and you donât reinvent identity.</li>
+<li>Reach for Copilot Studio when business users need to own the lifecycle but you still want IT guardrails.</li>
+<li>Reach for custom engine agents when you need orchestrated tool use, deterministic state, custom memory, non-Microsoft models, or strict latency control. Thatâs where Foundryâs evaluation, monitoring, and observability really start to pay back.</li>
+</ul>
+<p class="preserved-content"><span id="microsoft-agent-365-the-control-plane"></span></p>
+<h2 id="microsoft-agent-365--the-control-plane">Microsoft Agent 365 â the control plane</h2>
+<p>Now the part that actually changes how IT does its job. Microsoft Agent 365 is not a place to build agents. It is the centralised layer that lets IT, security, and compliance teams <em>observe, govern, and secure</em> every agent in the tenant â regardless of whether it was built in Copilot Studio, Foundry, the Microsoft Agent Framework, the OpenAI Agents SDK, Claude Code SDK, LangChain, or registered from a third-party platform.</p>
+<p>It aligns to four admin domains and five core capabilities, and itâs the same pattern Microsoft already uses for users, devices, and apps â just applied to agents.</p>
+<p class="preserved-content"><span id="the-four-admin-surfaces"></span></p>
+<h3 id="the-four-admin-surfaces">The four admin surfaces</h3>
+<ul>
+<li>Microsoft 365 admin center â the central hub. Inventory, blueprint approval, lifecycle, agent analytics.</li>
+<li>Microsoft Entra â identity and access. Entra Agent ID gives every agent its own first-class identity, so Conditional Access, risk-based access, and least-privilege scoping apply natively.</li>
+<li>Microsoft Purview â data protection. Sensitivity labels, DLP, insider risk, audit. Agents that ground in SharePoint or OneDrive inherit existing labels; custom-engine agents that reach external data need explicit DLP wiring.</li>
+<li>Microsoft Defender â threat protection. Posture management, anomaly detection, advanced hunting over agent tool-calls.</li>
+</ul>
+<p class="preserved-content"><span id="the-five-capabilities"></span></p>
+<h3 id="the-five-capabilities">The five capabilities</h3>
+<ol>
+<li>Registry â a unified inventory across Microsoft-built, partner-built (Genspark, Zensai, Egnyte, Zendesk, Kasisto, Kore, n8n at launch), and self-registered agents. Registry sync with AWS Bedrock and Google Cloud is in public preview, so multicloud estates are visible in one place.</li>
+<li>Access control â every agent gets an Entra-backed identity. Admins set guardrails on who can create, onboard, and manage agents.</li>
+<li>Visualization â the <em>Agent Map</em>: how agents connect to other agents, MCP servers, identities, and cloud resources.</li>
+<li>Interoperability â governed access to Microsoft 365 workloads through Work IQ MCP servers (Outlook, Word, Teams, SharePoint, Dataverse, and more). Admins allow or block servers from the M365 admin center; Defender Advanced Hunting traces every tool call.</li>
+<li>Security â runtime policy enforcement, agent-to-agent segmentation, and the Shadow AI discovery surface for unmanaged agents.</li>
+</ol>
+<p class="preserved-content"><span id="agent-blueprints-the-governance-primitive"></span></p>
+<h3 id="agent-blueprints--the-governance-primitive">Agent Blueprints â the governance primitive</h3>
+<p>The piece that ties this together is the Entra agent blueprint: an IT-approved, pre-configured definition of an agent type. The blueprint specifies the agentâs capabilities, required Work IQ tools, security and compliance constraints, audit requirements, and linked policy templates (DLP, external access, logging).</p>
+<p>Once activated in a tenant, users <em>request</em> agent instances from blueprints in the M365 admin center. Every instance inherits the blueprintâs posture by default. This is the App Catalog pattern from the SCCM/Intune era applied to agents â and itâs the single most important Agent 365 concept to internalise <em>before</em> your users start uploading agents from random GitHub repos.</p>
+<p class="preserved-content"><span id="the-agent-365-sdk-and-cli"></span></p>
+<h3 id="the-agent-365-sdk-and-cli">The Agent 365 SDK and CLI</h3>
+<p>Developers donât have to migrate frameworks to participate. The Agent 365 SDK (NuGet, PyPI â packages prefixed <code>Microsoft.Agents.A365</code> / <code>microsoft-agents-a365</code>) extends <em>any</em> agent â built on the M365 Agents SDK, Microsoft Agent Framework, OpenAI Agents SDK, LangChain, Claude Code SDK â with enterprise-grade observability (OpenTelemetry), notifications (Teams, Outlook, Word comments), and governed MCP access.</p>
+<p>The Agent 365 CLI automates the lifecycle: blueprint creation, identity wiring, MCP integration, Azure deployment, publishing to the M365 admin center, and clean-up.</p>
+<p class="preserved-content"><span id="where-this-lands-for-endpoint-admins"></span></p>
+<h2 id="where-this-lands-for-endpoint-admins">Where this lands for endpoint admins</h2>
+<p>If your job is keeping a tenant clean â and especially if you spend your days in Intune and Defender â governing Microsoft 365 Agents through Agent 365 adds three new admin surfaces you didnât have a year ago:</p>
+<p class="preserved-content"><span id="1-shadow-ai-discovery-via-defender-intune"></span></p>
+<h3 id="1-shadow-ai-discovery-via-defender--intune">1. Shadow AI discovery via Defender + Intune</h3>
+<p>Microsoft has flagged that agent context mapping, policy-based controls, and runtime blocking will hit public preview in June 2026 through Intune and Defender. Customers in the Frontier program already see local agents (the <em>OpenClaw</em> surface, in Microsoftâs terminology) in the new Shadow AI page in the M365 admin center and in Intune. You can apply Intune policies to detect managed devices running unmanaged agents and block the common execution paths.</p>
+<p>For Intune admins, this is the natural extension of the work you already do for unmanaged software. The pattern is the same; the inventory target is new.</p>
+<p class="preserved-content"><span id="2-conditional-access-for-agents-not-just-users"></span></p>
+<h3 id="2-conditional-access-for-agents-not-just-users">2. Conditional Access for agents, not just users</h3>
+<p>Every agent action runs as an Entra-backed identity. Custom engine agents authenticate as application identities (or as the user via on-behalf-of flows). Declarative agents inherit user permissions when they call Graph through connectors. Either way, your existing Conditional Access policies â device compliance, location, MFA, risk â apply automatically.</p>
+<p>This is the single most under-appreciated feature. Well-architected agents are governed exactly like the users that sponsor them.</p>
+<p class="preserved-content"><span id="3-windows-365-for-agents"></span></p>
+<h3 id="3-windows-365-for-agents">3. Windows 365 for Agents</h3>
+<p>In parallel with Agent 365 GA, Microsoft launched Windows 365 for Agents in public preview (US only, for now): a secured, managed Cloud PC environment specifically scoped to agent workloads. Agent 365 governs <em>what</em> an agent is allowed to do; Windows 365 for Agents governs <em>where</em> it does the work. Worth piloting if your scenarios involve agents driving desktop applications.</p>
+<p class="preserved-content"><span id="my-architecture-rules-of-thumb"></span></p>
+<h2 id="my-architecture-rules-of-thumb">My architecture rules of thumb</h2>
+<p>After shipping a handful of these into production tenants, here are the rules I now apply by default:</p>
+<ul>
+<li>Default to declarative agents or Copilot Studio for grounding-heavy flows. Reach for the M365 Agents SDK only when the use case justifies the operational weight.</li>
+<li>Define blueprints before users define agents. The default blueprint surface in your tenant determines whether Agent 365 actually governs anything, or just observes it.</li>
+<li>Treat agent identities as service principals. Scope them tightly via Graph application permissions; never use a global adminâs credentials. Audit them like any other service principal.</li>
+<li>Never ship without an eval suite. Without one you cannot tell whether your next prompt edit broke the previous five workflows. Run evals in CI, gate deployment behind a quality threshold.</li>
+<li>Label your tools. Every tool an agent can call gets a docstring, a schema, and a policy stating when it is allowed. The agentâs prompt is not where that policy belongs.</li>
+</ul>
+<p class="preserved-content"><span id="what-to-do-this-quarter"></span></p>
+<h2 id="what-to-do-this-quarter">What to do this quarter</h2>
+<p>If you are an admin or IT architect and you have not yet operationalised Microsoft 365 Agents through Microsoft Agent 365, four steps will pay for themselves:</p>
+<ol>
+<li>Stand up Agent 365 in the M365 admin center. Either via the standalone SKU (USD 15 / user / month) or as part of Microsoft 365 E7 (Frontier Suite). Activate the registry; default to admin approval for new agent installations.</li>
+<li>Inventory shadow AI. Defender for Cloud Apps already classifies AI tools; combine with the Agent 365 registry to get a unified picture across managed, partner, and self-registered agents. Measure before you block.</li>
+<li>Pilot one declarative agent. Pick an internal workflow thatâs currently a wiki page or a Teams FAQ. Declarative + grounding is your minimum viable AI feature.</li>
+<li>Stand up Foundry plus the M365 Agents SDK for the next workflow. Evaluation framework, monitoring, prompt versioning, deployment slots, full identity wiring through Agent 365. This is the platform youâll wish you had when your first agent goes wrong at 3 a.m.</li>
+</ol>
+<p class="preserved-content"><span id="closing-thoughts"></span></p>
+<h2 id="closing-thoughts">Closing thoughts</h2>
+<p>Microsoft 365 Agents and Microsoft Agent 365 are two halves of the same story, but they live in different budgets and answer to different teams. Microsoft 365 Agents is what your developers and makers build with. Microsoft Agent 365 is what your IT and security teams use to keep what got built from becoming a problem.</p>
+<p>The hard part for IT teams isnât the technology itself â itâs recognising that <em>agents are now part of your tenantâs identity surface, attack surface, and DLP surface</em>. Treat them with the same rigour you treat application registrations and Conditional Access today, and you will be fine. Treat them as a marketing curiosity, and you will be cleaning up shadow AI for the rest of the year.</p>
+<p>The vocabulary matters because the licensing matters because the governance matters. Get the words right first; the rest follows.</p>
+<p><a href="https://www.adminbyrequest.com/en/?utm_source=jannik_reinhard&amp;utm_medium=web&amp;utm_campaign=german_marketing&amp;utm_term=website_logo&amp;utm_content=logo"><img alt="ALL-ABR â sample screenshot for Microsoft 365 Agents post" decoding="async" fetchpriority="auto" src="assets/18832666b00ac3fc/img_1.webp"/></a></p></div></div></div>
+</article>
+</body>
+</html>

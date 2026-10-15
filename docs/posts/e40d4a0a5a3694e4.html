@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Models 2026: Prices, Task Costs and EU Hosting</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">June 15, 2026</span>
+  </div>
+  <h1>AI Models 2026: Prices, Task Costs and EU Hosting</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/ai-models-2026-comparison-europe/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="prose" data-article-body=""><p>The cheapest token price does not necessarily give you the cheapest finished task. That is the first thing I would check when choosing an AI model for an enterprise agent.</p>
+<p>This <strong>AI model comparison for 2026</strong> covers GPT-6, current Claude models, Gemini and a European open-weight option. I compare published API prices, explain what those prices leave out, and show how I would check EU deployment requirements. My recommendation is a shortlist and a test method, not a claim that one model wins every workload.</p>
+<p><strong>Updated 28 September 2026.</strong> The price table replaces the June snapshot. These are provider-direct standard API prices in USD per million tokens, not ChatGPT, Claude or Microsoft 365 seat prices. I have not run a new head-to-head benchmark for this update. The original June illustrations are preserved in a clearly marked historical section below.</p>
+<p class="preserved-content"><span id="which-ai-models-would-i-shortlist-now"></span></p>
+<h2 id="which-ai-models-would-i-shortlist-now">Which AI models would I shortlist now?</h2>
+<p>For a new workload, I would test one cost-focused model and one stronger candidate with exactly the same task, tools and acceptance criteria. Then I would add a self-hosted candidate only if the operating requirements justify it.</p>
+<div class="preserved-content"><table>
+<thead>
+<tr>
+<th>Starting point</th>
+<th>Candidates to evaluate</th>
+<th>What I would check first</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Difficult reasoning or long agent tasks</td>
+<td>GPT-6 Astra, Claude Fable 5.1</td>
+<td>Does the additional spend reduce failures or human repair?</td>
+</tr>
+<tr>
+<td>Coding and everyday agent work</td>
+<td>GPT-6 Sol, Claude Opus 5.5, Claude Sonnet 5</td>
+<td>Accepted changes, test results, latency and tool-use reliability</td>
+</tr>
+<tr>
+<td>High-volume, narrow tasks</td>
+<td>GPT-6 Luna, Gemini 3.8 Flash, Claude Haiku 4.5</td>
+<td>Schema validity, exception rate and escalation cost</td>
+</tr>
+<tr>
+<td>An open-weight deployment under your control</td>
+<td>Mistral Large 3</td>
+<td>Hardware footprint, throughput, maintenance and the exact license</td>
+</tr>
+</tbody>
+</table></div>
+<p>These are evaluation starting points, not measured rankings. The current catalogs distinguish the GPT-6 family and Claudeâs Fable, Opus, Sonnet and Haiku tiers. Availability in a direct API does not prove that the same model is available in your Foundry region or deployment type. <a href="https://developers.openai.com/api/docs/models">OpenAI model catalog</a>, <a href="https://platform.claude.com/docs/en/models/overview">Claude model catalog</a>.</p>
+<p>For Microsoft Foundry, I would check the model catalog in the actual subscription before designing around a model name. Model, region, quota and processing boundary have to work together. My <a href="/microsoft-foundry-model-deployment-guide/">Foundry model deployment guide</a> covers that next step.</p>
+<p class="preserved-content"><span id="ai-model-api-prices-september-2026"></span></p>
+<h2 id="ai-model-api-prices-september-2026">AI model API prices: September 2026</h2>
+<p>The table separates uncached input from output. It excludes tax, tools, search, storage, cache writes and hosting. OpenAI figures use the <strong>short-context Standard</strong> band. Read the providerâs full pricing rules before estimating a large-context agent.</p>
+<div class="preserved-content"><table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Input / 1M tokens</th>
+<th>Output / 1M tokens</th>
+<th>Important qualification</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GPT-6 Astra</td>
+<td>$10.00</td>
+<td>$50.00</td>
+<td>Short-context Standard rate</td>
+</tr>
+<tr>
+<td>GPT-6 Sol</td>
+<td>$2.00</td>
+<td>$10.00</td>
+<td>Short-context Standard rate</td>
+</tr>
+<tr>
+<td>GPT-6 Luna</td>
+<td>$0.10</td>
+<td>$0.50</td>
+<td>Short-context Standard rate</td>
+</tr>
+<tr>
+<td>Claude Fable 5.1</td>
+<td>$10.00</td>
+<td>$50.00</td>
+<td>Base API rate, not Fast mode</td>
+</tr>
+<tr>
+<td>Claude Opus 5.5</td>
+<td>$4.00</td>
+<td>$20.00</td>
+<td>Base API rate, not Fast mode</td>
+</tr>
+<tr>
+<td>Claude Sonnet 5</td>
+<td>$2.00</td>
+<td>$10.00</td>
+<td>Base API rate</td>
+</tr>
+<tr>
+<td>Claude Haiku 4.5</td>
+<td>$1.00</td>
+<td>$5.00</td>
+<td>Base API rate</td>
+</tr>
+<tr>
+<td>Gemini 3.8 Flash</td>
+<td>$0.75</td>
+<td>$3.75</td>
+<td>Promotional Standard rate through 31 December 2026</td>
+</tr>
+<tr>
+<td>Mistral Large 3</td>
+<td>$0.50</td>
+<td>$1.50</td>
+<td>Hosted API price; not the cost of self-hosting</td>
+</tr>
+</tbody>
+</table></div>
+<p>Sources checked for this update: <a href="https://developers.openai.com/api/docs/pricing">OpenAI pricing</a>, <a href="https://platform.claude.com/docs/en/about-claude/pricing">Claude pricing</a>, <a href="https://ai.google.dev/gemini-api/docs/pricing">Gemini pricing</a>, <a href="https://docs.mistral.ai/models/mistral-large-3-25-12">Mistral Large 3 model card</a>.</p>
+<p>Google currently lists Gemini 3.8 Flash Standard prices of $1.50 input and $7.50 output from 1 January 2027. Do not build a full-year business case using only the promotional rate. The other providers also distinguish features and processing tiers; a cloud marketplace or a negotiated agreement can have different billing.</p>
+<p>Token counts also differ between models. The same document is not guaranteed to produce the same number of billable tokens. Caching and batch processing can help, but the cache-write, storage, eligibility and latency rules need to fit the workload.</p>
+<p class="preserved-content"><span id="what-does-a-finished-task-actually-cost"></span></p>
+<h2 id="what-does-a-finished-task-actually-cost">What does a finished task actually cost?</h2>
+<p>Consider a support agent that reads an incident, checks approved guidance and returns a reviewable remediation plan. One request is not necessarily one completed incident. The agent might retry a tool, repeat context, ask another model or need a human correction.</p>
+<p>My useful unit is:</p>
+<pre class="astro-code github-dark" data-language="text" tabindex="0"><code><span class="line"><span>cost per accepted task =</span></span>
+<span class="line"><span>  (model + tools + retrieval + infrastructure + human review cost)</span></span>
+<span class="line"><span>  / number of tasks that meet the acceptance criteria</span></span></code></pre>
+<p>Here is a <strong>calculation, not a performance test</strong>. Assume each run uses 20,000 uncached input tokens and 2,000 billable output tokens, in the quoted pricing band, with no other charges:</p>
+<div class="preserved-content"><table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Calculation</th>
+<th>Model cost for one run</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GPT-6 Luna</td>
+<td>0.02 Ã $0.10 + 0.002 Ã $0.50</td>
+<td>$0.003</td>
+</tr>
+<tr>
+<td>GPT-6 Sol</td>
+<td>0.02 Ã $2 + 0.002 Ã $10</td>
+<td>$0.06</td>
+</tr>
+<tr>
+<td>Claude Opus 5.5</td>
+<td>0.02 Ã $4 + 0.002 Ã $20</td>
+<td>$0.12</td>
+</tr>
+<tr>
+<td>GPT-6 Astra or Claude Fable 5.1</td>
+<td>0.02 Ã $10 + 0.002 Ã $50</td>
+<td>$0.30</td>
+</tr>
+</tbody>
+</table></div>
+<p>At these assumptions, five Sol runs cost the same as one Astra run. That does <strong>not</strong> mean Astra needs one run or Sol needs five. It tells you the break-even question to measure. Equally, a narrow classifier may finish reliably with Luna and have no reason to use a larger model.</p>
+<p>Count unsuccessful runs in the numerator. Include human repair time consistently. Otherwise a cheap model can look excellent because the spreadsheet silently gives it free human help.</p>
+<p class="preserved-content"><span id="how-i-would-use-real-benchmarks"></span></p>
+<h2 id="how-i-would-use-real-benchmarks">How I would use real benchmarks</h2>
+<p>I use benchmarks to identify candidates, not to approve a production rollout. For coding, the official <a href="https://www.swebench.com/">SWE-bench leaderboard</a> distinguishes Verified, Lite, Multilingual and other tracks. Verified contains 500 human-filtered tasks. Its Bash Only comparison uses the same mini-SWE-agent environment, which is more useful for comparing models than mixing unrelated agent setups.</p>
+<p>A score still belongs to a particular model version, agent, tool set, budget and test. A percentage from one track is not interchangeable with another. Neither proves that an agent can follow your permissions or handle your companyâs documents.</p>
+<p>For an enterprise trial, I would keep a small, versioned set of real tasks:</p>
+<ol>
+<li>A normal case with a known correct result.</li>
+<li>An ambiguous case where the agent should ask a question.</li>
+<li>An outdated document that conflicts with the current policy.</li>
+<li>A tool failure that should not trigger an uncontrolled retry loop.</li>
+<li>A request the caller is not allowed to perform.</li>
+</ol>
+<p>Record accepted outcomes, critical mistakes, billable usage, elapsed time and human edits. Keep prompts and tools consistent. My <a href="/microsoft-foundry-tracing-evaluation-video/">Foundry tracing and evaluation walkthrough</a> explains the operational side. Do not claim a benchmark result if you have not actually run that test.</p>
+<p class="preserved-content"><span id="eu-hosting-check-the-deployment-not-just-the-model"></span></p>
+<h2 id="eu-hosting-check-the-deployment-not-just-the-model">EU hosting: check the deployment, not just the model</h2>
+<p>I separate three questions: where data is stored, where inference happens, and who controls the service and its dependencies. A European address in a resource name does not answer all three.</p>
+<p>Microsoft documents different processing boundaries for <strong>Global</strong>, <strong>Data Zone</strong> and <strong>geography-based</strong> Foundry deployments. Global can process in other Azure regions; Data Zone stays within the specified Microsoft data zone. That zone is not necessarily the same as a single country. Model support varies. <a href="https://learn.microsoft.com/en-us/azure/foundry/foundry-models/concepts/deployment-types">Foundry deployment types</a>.</p>
+<p>Before approval, I would document:</p>
+<ul>
+<li>The exact model, version, provider and deployment type.</li>
+<li>Prompt, response, uploaded-file, search and tool data flows.</li>
+<li>Retention, abuse-monitoring, logging and access settings.</li>
+<li>The applicable agreement, subprocessors and operational owners.</li>
+<li>What happens during failover and when the selected model retires.</li>
+</ul>
+<p>Self-hosting can give you more infrastructure control, but it does not automatically make an application private or compliant. A local model can still call an external tool, send telemetry or write sensitive text to logs. Mistral Large 3 provides Apache 2.0 weights, but its model card lists 675 billion total parameters. That is not a promise that it fits on one workstation GPU. Budget for the actual serving configuration, support and capacity.</p>
+<p>I would involve the organizationâs privacy and security owners in that decision. A blog comparison cannot give a workload a blanket compliance approval.</p>
+<p class="preserved-content"><span id="my-practical-recommendation"></span></p>
+<h2 id="my-practical-recommendation">My practical recommendation</h2>
+<p>Start with the least expensive candidate that might meet the taskâs quality and control requirements. Test it against a stronger model. Escalate only when you can explain the failed condition, and cap retries and spend.</p>
+<p>For coding and agent workflows, I would include GPT-6 Sol and a current Claude candidate in the first evaluation. For narrowly defined high-volume work, I would test a smaller option early. If self-hosting is mandatory, I would build a separate shortlist around deployment requirements rather than pretending hosted token prices describe GPU economics.</p>
+<p>The decision I want at the end is simple: <strong>this model completes this task, inside this data boundary, at this measured cost</strong>. That is more useful than a universal winner.</p>
+<p class="preserved-content"><span id="original-june-illustrations"></span></p>
+<h2 id="original-june-illustrations">Original June illustrations</h2>
+<p>The illustrations below are preserved from the original June 2026 article. They are <strong>historical editorial graphics, not current prices, measured benchmark scores or compliance classifications</strong>. Some labels and assumptions are superseded by this update. Use the sourced tables and checks above for current decisions.</p>
+<p>View the original June illustrations
+<img alt="Price versus capability of the leading AI models in 2026" decoding="async" fetchpriority="auto" src="assets/e40d4a0a5a3694e4/img_0.webp"/>
+<img alt="Output price per one million tokens across the latest AI models in 2026" decoding="async" fetchpriority="auto" src="assets/e40d4a0a5a3694e4/img_1.webp"/>
+<img alt="Data sovereignty versus capability of AI models in 2026 for European companies" decoding="async" fetchpriority="auto" src="assets/e40d4a0a5a3694e4/img_2.webp"/></p>
+<p>Stay healthy, Cheers Jannik</p>
+<p><img alt="ALL-ABR â sample screenshot for Microsoft 365 Agents post" decoding="async" fetchpriority="auto" src="assets/e40d4a0a5a3694e4/img_3.webp"/></p></div></div></div>
+</article>
+</body>
+</html>
