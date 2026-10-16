@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Azure AI Content Safety Guide: Filters and Best Practices</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">February 18, 2026</span>
+  </div>
+  <h1>Azure AI Content Safety Guide: Filters and Best Practices</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/what-azure-ai-content-safety-does-and-why-it-matters/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="prose" data-article-body=""><p>Azure AI Content Safety is Microsoftâs AI-powered service for detecting harmful content in both user-generated and AI-generated text and images. It runs as the <strong>built-in content filtering system</strong> for all <a href="/document-manager-using-azure-ai-foundry-or-openai-for-my-paperless-office/">Azure OpenAI and Foundry</a> model deployments, screening both <a href="/become-a-prompt-engineering-pro-mastering-the-art-of-talking-to-ai-in-2025/">prompts</a> and completions through an ensemble of classification models. The service is available as a standalone API and is deeply integrated into the <a href="/building-your-own-intune-agent-with-microsoft-foundry/">Microsoft Foundry portal</a>. It went through major expansion, adding <a href="https://en.wikipedia.org/wiki/Prompt_injection">prompt injection</a> defense, <a href="https://en.wikipedia.org/wiki/Hallucination_(artificial_intelligence)">hallucination detection</a>, copyright protection, and <a href="https://en.wikipedia.org/wiki/Personal_data">PII filtering</a> alongside its core harm-category classifiers.</p>
+<p>In my opinion, Microsoft did a great job with this service. Over the past year, Azure AI Content Safety has matured from a simple harm classifier into a full guardrail platform, and this guide walks through what Azure AI Content Safety can do and how to configure it.</p>
+<p><img alt="Azure AI Content Safety dashboard with moderation categories" decoding="async" fetchpriority="auto" src="assets/5c9d9776af9327cd/img_0.webp"/></p>
+<p><strong>Quick answer:</strong> Azure AI Content Safety is Microsoftâs managed service for detecting harmful text and images and protecting generative-AI applications. In production I combine harm severity thresholds with Prompt Shields, groundedness, protected-material checks and application-level controls because no single filter covers every risk.</p>
+<p><strong>Last verified:</strong> July 22, 2026</p>
+<p class="preserved-content"><span id="the-core-azure-ai-content-safety-filter-four-harm-categories-with-severity-scoring"></span></p>
+<h2 id="the-core-azure-ai-content-safety-filter-four-harm-categories-with-severity-scoring">The core Azure AI Content Safety filter: four harm categories with severity scoring</h2>
+<p>The backbone of Azure AI Content Safety is a <strong>neural multi-class classification system</strong> that evaluates content across four harm categories. Each category returns a severity score, and a single piece of text can trigger multiple categories simultaneously, which is why Azure AI Content Safety is built around an ensemble rather than a single model.</p>
+<p><strong>The four categories are:</strong></p>
+<ul>
+<li><strong>Hate and Fairness</strong> (<code>Hate</code>): Attacks or discriminatory language targeting identity groups (race, ethnicity, gender, sexual orientation, religion, disability, etc.). Includes harassment and bullying.</li>
+<li>Sexual (<code>Sexual</code>): Content related to sexual acts, anatomical references, erotic content, pornography, exploitation, and grooming.</li>
+<li>Violence (<code>Violence</code>): Language depicting physical harm, weapons, terrorism, intimidation, stalking, and violent extremism.</li>
+<li>Self-Harm (<code>SelfHarm</code>): Content about self-injury, suicide, eating disorders, and related bullying or instructions.</li>
+</ul>
+<p><img alt="Azure AI Content Safety filtering harmful text and images" decoding="async" fetchpriority="auto" src="assets/5c9d9776af9327cd/img_1.webp"/></p>
+<p class="preserved-content"><span id="how-severity-levels-work"></span></p>
+<h3 id="how-severity-levels-work">How severity levels work</h3>
+<p>The system uses an internal 0â7 scale that gets trimmed to four actionable levels for filtering decisions:</p>
+<div class="preserved-content"><table class="has-fixed-layout"><thead><tr><th>Severity</th><th>Score</th><th>What it means</th></tr></thead><tbody><tr><td><span>Safe</span></td><td>0</td><td>No harmful material; not subject to filtering and not configurable</td></tr><tr><td><span>Low</span></td><td>2</td><td>Positive characterization, general references, fictional contexts, low-intensity mentions</td></tr><tr><td><span>Medium</span></td><td>4</td><td>Insults, bullying, intimidation, dehumanization, moderate graphic content</td></tr><tr><td><span>High</span></td><td>6</td><td>Hate propaganda, explicit harmful instructions, terrorism content, extreme graphic material</td></tr></tbody></table></div>
+<p>The text model supports the full 0â7 range internally (mapping [0,1]â0, [2,3]â2, [4,5]â4, [6,7]â6). The image model only returns the trimmed 0/2/4/6 scale. The multimodal model supports both.</p>
+<p>The default configuration filters at medium severity threshold â content scoring medium (4) or high (6) is blocked; low (2) and safe (0) pass through. This applies to both prompts and completions. For serverless image model deployments, the default is stricter at the low threshold.</p>
+<p class="preserved-content"><span id="configuring-thresholds"></span></p>
+<h3 id="configuring-thresholds">Configuring thresholds</h3>
+<p>Customers can adjust severity thresholds freely among three levels (Low+Medium+High, Medium+High, High only). Turning filters off entirely or using âannotate onlyâ mode (returns scores without blocking) requires a formal approval process via the âAzure OpenAI Limited Access Review: Modified Content Filtersâ form.</p>
+<p class="preserved-content"><span id="beyond-harm-categories-the-advanced-filter-arsenal"></span></p>
+<h2 id="beyond-harm-categories-the-advanced-filter-arsenal">Beyond harm categories: the advanced filter arsenal</h2>
+<p>Azure AI Content Safety has expanded well beyond the four core categories into a suite of specialized filters, each addressing a distinct threat vector. These advanced filters are what make Azure AI Content Safety suitable for production agentic systems and not just basic moderation.</p>
+<p class="preserved-content"><span id="prompt-shields-ga-defending-against-injection-attacks"></span></p>
+<h3 id="prompt-shields-ga--defending-against-injection-attacks">Prompt Shields (GA) â defending against injection attacks</h3>
+<p>Prompt Shields is a unified API that detects adversarial prompt injection before content generation. This becomes especially relevant for agentic systems like <a href="/microsoft-iq-the-intelligence-layer-that-finally-makes-ai-agents-useful/">Microsoft IQ</a>, where the model may reason over context and trigger actions based on user input. It replaces the older âJailbreak risk detectionâ feature and returns a binary classification (attack detected or not).</p>
+<p>Two shield types:</p>
+<ol>
+<li>Direct attacks (jailbreak detection) â Targets deliberate attempts to bypass system rules. Detects attempts to change system rules, embedded conversation mockups, role-play exploits, and encoding attacks (ciphers, character transformations). On by default.</li>
+<li>Indirect attacks (XPIA / Cross-Domain Prompt Injection) â Detects malicious instructions embedded in documents, emails, or web content that the LLM processes. Covers manipulated content, unauthorized access attempts, information gathering, fraud, malware distribution, and availability attacks. Off by default â requires document embedding and formatting in prompts.</li>
+</ol>
+<p>Both can be configured to either âAnnotate onlyâ or âAnnotate and block.â Trained on English, Chinese, French, German, Spanish, Italian, Japanese, and Portuguese.</p>
+<p><img alt="Azure AI Content Safety service overview diagram" decoding="async" fetchpriority="auto" src="assets/5c9d9776af9327cd/img_2.webp"/></p>
+<p>A newer sub-feature called Spotlighting (preview, announced Build 2025) tags input documents with special formatting to distinguish trusted from untrusted inputs, enhancing indirect attack protection.</p>
+<p class="preserved-content"><span id="groundedness-detection-fighting-hallucinations"></span></p>
+<h3 id="groundedness-detection--fighting-hallucinations">Groundedness detection â fighting hallucinations</h3>
+<p>Groundedness detection in Azure AI Content Safety checks whether LLM text responses are grounded in user-provided source materials. It uses a custom language model to evaluate claims against source data. Key specs:</p>
+<ul>
+<li>Available only in streaming scenarios</li>
+<li>Supported regions: Central US, East US, France Central, Canada East</li>
+<li>English only</li>
+<li>Maximum grounding sources: 55,000 characters per API call</li>
+<li>Maximum text/query: 7,500 characters; minimum query: 3 words</li>
+<li>Correction feature (preview): Automatically rewrites ungrounded text, returning a <code>correctedText</code> field aligned with sources</li>
+<li>Default: Off â must be enabled explicitly</li>
+</ul>
+<p><img alt="Azure AI Content Safety content filtering dashboard" decoding="async" fetchpriority="auto" src="assets/5c9d9776af9327cd/img_3.webp"/></p>
+<p class="preserved-content"><span id="protected-material-detection-ga-for-text-preview-for-code"></span></p>
+<h3 id="protected-material-detection-ga-for-text-preview-for-code">Protected material detection (GA for text; preview for code)</h3>
+<p>Protected Material for Text identifies and blocks known copyrighted content (song lyrics, articles, recipes, selected web content) in model completions. English only. Maximum inference input: 1K characters. Content owners can submit text for protection via a request form. On by default.</p>
+<p>Protected Material for Code detects source code matching public GitHub repositories, powered by GitHub Copilot. When enabled in annotate mode, it displays citation URLs alongside detected code. The code scanner index is only current through April 6, 2023 â newer code wonât be detected. This feature may be required for Microsoftâs Customer Copyright Commitment coverage. On by default.</p>
+<p><img alt="Azure AI Content Safety content moderation dashboard" decoding="async" fetchpriority="auto" src="assets/5c9d9776af9327cd/img_4.webp"/></p>
+<p class="preserved-content"><span id="pii-detection-available-as-built-in-filter"></span></p>
+<h3 id="pii-detection-available-as-built-in-filter">PII detection (available as built-in filter)</h3>
+<p>Detects personally identifiable information â names, addresses, phone numbers, email addresses, SSNs, driverâs license numbers, passport numbers â in model completions. Within Azure AI Content Safety this is added as a built-in content filter option. Default: Off.</p>
+<p><img alt="Azure AI Content Safety filters and moderation workflow" decoding="async" fetchpriority="auto" src="assets/5c9d9776af9327cd/img_5.webp"/></p>
+<p class="preserved-content"><span id="custom-blocklists"></span></p>
+<h3 id="custom-blocklists">Custom blocklists</h3>
+<p>Supports exact text matching for specific terms. Includes a built-in profanity blocklist. Multiple blocklists can be combined in a single filter configuration and applied to input filters, output filters, or both. No semantic matching and no image matching capability. Customer-supplied blocklists are stored by the service (an exception to the general no-storage policy).</p>
+<p><img alt="Azure AI Content Safety filtering workflow diagram" decoding="async" fetchpriority="auto" src="assets/5c9d9776af9327cd/img_6.webp"/></p>
+<p class="preserved-content"><span id="custom-categories-two-approaches"></span></p>
+<h3 id="custom-categories--two-approaches">Custom categories â two approaches</h3>
+<p>Custom Categories (Standard) API (preview): ML-based. Define a category, provide 50â5,000 positive samples (plus optional negatives, up to 10,000 total), train a model (can take several hours), then use <code>analyzeCustomCategory</code> API. Returns boolean. Text only, English only. Limit: 3 categories per user, 3 versions per category.</p>
+<p>Custom Categories (Rapid) API (preview): LLM-based, no training needed. Create an âincidentâ object with a text description, upload text or image samples (up to 1,000 per incident, max 100 incidents per resource). Uses semantic text matching (embedding search + lightweight classifier) and image matching (object-tracking model + embedding search). Works on both text and images, all supported languages.</p>
+<p class="preserved-content"><span id="task-adherence"></span></p>
+<h3 id="task-adherence">Task Adherence</h3>
+<p>The newest feature in Azure AI Content Safety identifies discrepancies between an LLMâs behavior and its assigned task, including misaligned tool invocations and inconsistencies between responses and user intent. It enables blocking misaligned actions or escalation to human reviewers.</p>
+<p class="preserved-content"><span id="how-to-configure-content-filters-in-azure-ai-foundry-portal"></span></p>
+<h2 id="how-to-configure-content-filters-in-azure-ai-foundry-portal">How to configure content filters in Azure AI Foundry portal</h2>
+<p>The step-by-step configuration flow:</p>
+<ol>
+<li>Sign in to Microsoft Foundry at ai.azure.com</li>
+<li>Navigate to your project â Guardrails + controls â Content filters tab</li>
+<li>Select + Create content filter</li>
+<li>Basic Information: Enter a filter name and select the connection (Azure AI Services resource)</li>
+<li>Input filters page: Configure filters for user prompts â set severity thresholds for each of the four harm categories (Low, Medium, High), configure Prompt Shields (Annotate only or Block), enable/disable Protected Material detection</li>
+<li>Output filters page: Configure filters for model completions â same severity controls, plus streaming mode option, Groundedness detection, Protected Material (text and code), and PII detection</li>
+<li>Blocklist configuration: Enable blocklists on either input or output filters, select custom blocklists or the built-in profanity blocklist</li>
+<li>Connection page: Associate the filter with specific model deployments (can also be done later)</li>
+<li>Review and create</li>
+</ol>
+<p>Azure AI Content Safety filters are created at the hub/resource level and can be associated with one or more deployments. Each deployment can only have one active filter configuration at a time.</p>
+<p class="preserved-content"><span id="content-safety-studio"></span></p>
+<h3 id="content-safety-studio">Content Safety Studio</h3>
+<p>There is also the Azure AI Content Safety Studio where you can follow a similar flow to generate the code example.</p>
+<p><img alt="Azure AI content safety filters and moderation workflow" decoding="async" fetchpriority="auto" src="assets/5c9d9776af9327cd/img_7.webp"/></p>
+<p class="preserved-content"><span id="request-level-override"></span></p>
+<h3 id="request-level-override">Request-level override</h3>
+<p>Microsoft Foundry supports a <code>x-policy-id</code> request header to specify a custom content filter at the API call level, overriding the deployment-level configuration. Not available for image input (chat with images) scenarios.</p>
+<p class="preserved-content"><span id="integration-with-azure-openai-models-api-behavior"></span></p>
+<h2 id="integration-with-azure-openai-models--api-behavior">Integration with Azure OpenAI models â API behavior</h2>
+<p class="preserved-content"><span id="how-filtering-manifests-in-api-responses"></span></p>
+<h3 id="how-filtering-manifests-in-api-responses">How filtering manifests in API responses</h3>
+<p>When a prompt is filtered (harmful input detected): Returns HTTP 400 error with error code <code>content_filter</code> and error param <code>prompt</code>.</p>
+<p>When a completion is filtered (harmful output detected): The responseâs <code>finish_reason</code> is set to <code>content_filter</code>. In non-streaming mode, no content is returned. In streaming mode, content streams until the filtered segment is detected.</p>
+<p>When the content filtering system is down: The request completes without filtering, and error information appears in the <code>content_filter_results</code> object.</p>
+<p>Standard responses from Azure AI Content Safety include a <code>content_filter_results</code> object with per-category annotations showing severity scores.</p>
+<p class="preserved-content"><span id="azure-api-management-integration"></span></p>
+<h3 id="azure-api-management-integration">Azure API Management integration</h3>
+<p>The <code>llm-content-safety</code> policy element (GA as of April 2025) enables content safety enforcement at the API gateway level:</p>
+<pre class="astro-code github-dark" data-language="plaintext" tabindex="0"><code><span class="line"><span>&lt;llm-content-safety backend-id="name" shield-prompt="true" enforce-on-completions="true"&gt;  &lt;categories output-type="FourSeverityLevels"&gt;    &lt;category name="Hate" threshold="4" /&gt;    &lt;category name="Violence" threshold="4" /&gt;  &lt;/categories&gt;  &lt;blocklists&gt;    &lt;id&gt;blocklist-identifier&lt;/id&gt;  &lt;/blocklists&gt;&lt;/llm-content-safety&gt;</span></span></code></pre>
+<p>Returns HTTP 403 when content safety detects malicious content. This enables centralized content safety enforcement across multiple AI endpoints.</p>
+<p class="preserved-content"><span id="performance-considerations"></span></p>
+<h3 id="performance-considerations">Performance considerations</h3>
+<ul>
+<li>Synchronous mode (default): Filters run sequentially â adds 100â300ms latency per request</li>
+<li>Asynchronous mode: Filters run in parallel while the LLM response streams, significantly reducing latency. Recommended for production streaming applications.</li>
+</ul>
+<p>Enterprise best practices and real-world guidance</p>
+<p>Severity threshold recommendations by scenario</p>
+<p>The right Azure AI Content Safety configuration depends heavily on your audience. Customer-facing chatbots (B2C): Start with the default medium threshold. Enable Prompt Shields in block mode. Enable Protected Material and Groundedness Detection. Add custom blocklists for brand-specific terms.</p>
+<p>Internal enterprise tools (B2B): Consider low threshold â only blocking the most severe content. Business content (engineering, medical, legal terminology) frequently triggers false positives at lower thresholds. Real-world practitioners at Pondhouse Data documented cases where engineering content about âdatabase killingâ was blocked for self-harm, and electrical engineering guidelines triggered self-harm filters.</p>
+<p>Children/education platforms: Set thresholds at high â maximum restriction. Enable all safety features. Use custom blocklists aggressively.</p>
+<p>Healthcare applications: Start at medium and calibrate. Medical terminology routinely triggers self-harm and violence filters. Use custom categories for domain-specific concerns. Implement human review for edge cases.</p>
+<p>Key pitfalls to avoid</p>
+<ol>
+<li>Over-aggressive default filtering â Test with domain-specific data before production. Engineering, medical, and legal content triggers false positives at medium threshold.</li>
+<li>Ignoring latency impact â Synchronous filtering adds 100â300ms. Use async streaming mode in production.</li>
+<li>Skipping Prompt Shields â Prompt injection is OWASPâs #1 LLM threat. Even minimal-filtering configurations should keep Prompt Shields enabled (very low false-positive rate).</li>
+<li>Static âset and forgetâ configuration â Monitor block rates, category distributions, and false positives continuously. Iterate thresholds and blocklists regularly.</li>
+<li>No human review escalation â Automated moderation alone frustrates users when legitimate content is blocked. Build appeal mechanisms and human-in-the-loop review.</li>
+<li>Same filters for input and output â Configure input and output filters separately. Input filters should focus on prompt injection; output filters on harmful generation, groundedness, and copyright.</li>
+<li>Insufficient logging â Log all content safety events with full metadata for compliance audits and system improvement. Integrate with Azure Monitor and Microsoft Purview.</li>
+</ol>
+<p>Data privacy and compliance</p>
+<ul>
+<li>No data storage: Input texts/images are not stored during detection (except customer blocklists)</li>
+<li>No training on user data: User inputs never used to train Content Safety models</li>
+<li>Regional data residency: All processing stays within the selected Azure region</li>
+</ul>
+<p>Pricing and technical specs</p>
+<ul>
+<li>Pricing tiers: F0 (free) and S0 (standard) for the standalone service</li>
+<li>Rate limits: Default 1,000 requests per 10 seconds (model-dependent)</li>
+<li>Text moderation input limit: 10K characters per submission; default minimum 110 characters for LLM completion scanning</li>
+<li>Language support: Core harm categories trained on 8 languages, work in 100+ with varying quality. Protected material, groundedness, and custom categories (standard) are English only.</li>
+<li>SDKs: C# (NuGet), Python (PyPI), Java (Maven), JavaScript (npm)</li>
+</ul>
+<p><img alt="Azure AI Content Safety filters and best practices diagram" decoding="async" fetchpriority="auto" src="assets/5c9d9776af9327cd/img_8.webp"/></p>
+<p>Code example stand alone service</p>
+<pre class="astro-code github-dark" data-language="python" tabindex="0"><code><span class="line"><span>## Copyright (c) Microsoft. All rights reserved.# To learn more, please visit the documentation - Quickstart: Azure Content Safety: https://aka.ms/acsstudiodoc#import enumimport jsonimport requestsfrom typing import Unionclass MediaType(enum.Enum):    Text = 1    Image = 2class Category(enum.Enum):    Hate = 1    SelfHarm = 2    Sexual = 3    Violence = 4class Action(enum.Enum):    Accept = 1    Reject = 2class DetectionError(Exception):    def __init__(self, code: str, message: str) -&gt; None:        """        Exception raised when there is an error in detecting the content.        Args:        - code (str): The error code.        - message (str): The error message.        """        self.code = code        self.message = message    def __repr__(self) -&gt; str:        return f"DetectionError(code={self.code}, message={self.message})"class Decision(object):    def __init__(        self, suggested_action: Action, action_by_category: dict[Category, Action]    ) -&gt; None:        """        Represents the decision made by the content moderation system.        Args:        - suggested_action (Action): The suggested action to take.        - action_by_category (dict[Category, Action]): The action to take for each category.        """        self.suggested_action = suggested_action        self.action_by_category = action_by_categoryclass ContentSafety(object):    def __init__(self, endpoint: str, subscription_key: str, api_version: str) -&gt; None:        """        Creates a new ContentSafety instance.        Args:        - endpoint (str): The endpoint URL for the Content Safety API.        - subscription_key (str): The subscription key for the Content Safety API.        - api_version (str): The version of the Content Safety API to use.        """        self.endpoint = endpoint        self.subscription_key = subscription_key        self.api_version = api_version    def build_url(self, media_type: MediaType) -&gt; str:        """        Builds the URL for the Content Safety API based on the media type.        Args:        - media_type (MediaType): The type of media to analyze.        Returns:        - str: The URL for the Content Safety API.        """        if media_type == MediaType.Text:            return f"{self.endpoint}/contentsafety/text:analyze?api-version={self.api_version}"        elif media_type == MediaType.Image:            return f"{self.endpoint}/contentsafety/image:analyze?api-version={self.api_version}"        else:            raise ValueError(f"Invalid Media Type {media_type}")    def build_headers(self) -&gt; dict[str, str]:        """        Builds the headers for the Content Safety API request.        Returns:        - dict[str, str]: The headers for the Content Safety API request.        """        return {            "Ocp-Apim-Subscription-Key": self.subscription_key,            "Content-Type": "application/json",        }    def build_request_body(        self,        media_type: MediaType,        content: str,        blocklists: list[str],    ) -&gt; dict:        """        Builds the request body for the Content Safety API request.        Args:        - media_type (MediaType): The type of media to analyze.        - content (str): The content to analyze.        - blocklists (list[str]): The blocklists to use for text analysis.        Returns:        - dict: The request body for the Content Safety API request.        """        if media_type == MediaType.Text:            return {                "text": content,                "blocklistNames": blocklists,            }        elif media_type == MediaType.Image:            return {"image": {"content": content}}        else:            raise ValueError(f"Invalid Media Type {media_type}")    def detect(        self,        media_type: MediaType,        content: str,        blocklists: list[str] = [],    ) -&gt; dict:        """        Detects unsafe content using the Content Safety API.        Args:        - media_type (MediaType): The type of media to analyze.        - content (str): The content to analyze.        - blocklists (list[str]): The blocklists to use for text analysis.        Returns:        - dict: The response from the Content Safety API.        """        url = self.build_url(media_type)        headers = self.build_headers()        request_body = self.build_request_body(media_type, content, blocklists)        payload = json.dumps(request_body)        response = requests.post(url, headers=headers, data=payload)        print(response.status_code)        print(response.headers)        print(response.text)        res_content = response.json()        if response.status_code != 200:            raise DetectionError(                res_content["error"]["code"], res_content["error"]["message"]            )        return res_content    def get_detect_result_by_category(        self, category: Category, detect_result: dict    ) -&gt; Union[int, None]:        """        Gets the detection result for the given category from the Content Safety API response.        Args:        - category (Category): The category to get the detection result for.        - detect_result (dict): The Content Safety API response.        Returns:        - Union[int, None]: The detection result for the given category, or None if it is not found.        """        category_res = detect_result.get("categoriesAnalysis", None)        for res in category_res:            if category.name == res.get("category", None):                return res        raise ValueError(f"Invalid Category {category}")    def make_decision(        self,        detection_result: dict,        reject_thresholds: dict[Category, int],    ) -&gt; Decision:        """        Makes a decision based on the Content Safety API response and the specified reject thresholds.        Users can customize their decision-making method.        Args:        - detection_result (dict): The Content Safety API response.        - reject_thresholds (dict[Category, int]): The reject thresholds for each category.        Returns:        - Decision: The decision based on the Content Safety API response and the specified reject thresholds.        """        action_result = {}        final_action = Action.Accept        for category, threshold in reject_thresholds.items():            if threshold not in (-1, 0, 2, 4, 6):                raise ValueError("RejectThreshold can only be in (-1, 0, 2, 4, 6)")            cate_detect_res = self.get_detect_result_by_category(                category, detection_result            )            if cate_detect_res is None or "severity" not in cate_detect_res:                raise ValueError(f"Can not find detection result for {category}")            severity = cate_detect_res["severity"]            action = (                Action.Reject                if threshold != -1 and severity &gt;= threshold                else Action.Accept            )            action_result[category] = action            if action.value &gt; final_action.value:                final_action = action        if (            "blocklistsMatch" in detection_result            and detection_result["blocklistsMatch"]            and len(detection_result["blocklistsMatch"]) &gt; 0        ):            final_action = Action.Reject        print(final_action.name)        print(action_result)        return Decision(final_action, action_result)if __name__ == "__main__":    # Replace the placeholders with your own values    endpoint = "&lt;endpoint&gt;"    subscription_key = "&lt;subscription_key&gt;"    api_version = "2024-09-01"    # Initialize the ContentSafety object    content_safety = ContentSafety(endpoint, subscription_key, api_version)    # Set the media type and blocklists    media_type = MediaType.Text    blocklists = []    # Set the content to be tested    content = "&lt;test_content&gt;"    # Detect content safety    detection_result = content_safety.detect(media_type, content, blocklists)    # Set the reject thresholds for each category    reject_thresholds = {        Category.Hate: 4,        Category.SelfHarm: 4,        Category.Sexual: 4,        Category.Violence: 4,    }    # Make a decision based on the detection result and reject thresholds    decision_result = content_safety.make_decision(detection_result, reject_thresholds)</span></span></code></pre>
+<p class="preserved-content"><span id="final-thoughts-on-azure-ai-content-safety"></span></p>
+<h2 id="final-thoughts-on-azure-ai-content-safety">Final thoughts on Azure AI Content Safety</h2>
+<p>Azure AI Content Safety has grown into one of the most complete responsible-AI toolkits on any cloud, pairing the four classic harm classifiers with Prompt Shields, groundedness detection, protected-material checks, and PII filtering. For most teams the smartest path is to start with the medium default, watch your block rates, and tune from there.</p>
+<p>If you are wiring this into agents, pair Azure AI Content Safety with a strong system prompt and review my guide on <a href="/become-a-prompt-engineering-pro-mastering-the-art-of-talking-to-ai-in-2025/">prompt engineering</a> for the application side. For the full API reference and the latest feature rollouts, the official <a href="https://learn.microsoft.com/azure/ai-services/content-safety/overview">Microsoft Learn documentation for Azure AI Content Safety</a> is the canonical source, and it is updated far more often than most blog posts.</p>
+<p>Used together, these pieces let Azure AI Content Safety act as a reliable guardrail rather than a blunt filter.</p></div></div></div>
+</article>
+</body>
+</html>

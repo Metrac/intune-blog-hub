@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CLI Tools vs MCP: Better AI Agents With Less Context</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">February 22, 2026</span>
+  </div>
+  <h1>CLI Tools vs MCP: Better AI Agents With Less Context</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/why-cli-tools-are-beating-mcp-for-ai-agents/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="prose" data-article-body=""><p>Letâs be honest: MCP (Model Context Protocol) was supposed to be the universal connector between AI models and the real world. A clean, structured protocol that lets your AI agent talk to any tool through a standardized interface. Sounds great in theory. In practice? Iâm increasingly reaching for good old CLI tools instead â and Iâm not alone.</p>
+<p>After months of building <a href="/microsoft-iq-the-intelligence-layer-that-finally-makes-ai-agents-useful/">AI agent solutions</a> and working with both approaches in real-world enterprise scenarios, hereâs my take: <strong>CLI tools are the better choice in many cases</strong>, and the reason is surprisingly simple â context efficiency. Microsoftâs own guidance on <a href="https://learn.microsoft.com/en-us/cli/azure/what-is-azure-cli">CLI tools like the Azure CLI</a> reflects how mature this tooling has become.</p>
+<p><img alt="CLI tools for AI agents shown in a terminal window next to MCP" decoding="async" fetchpriority="auto" src="assets/5092dc30a403784f/img_0.webp"/></p>
+<p class="preserved-content"><span id="the-problem-with-mcp-nobody-talks-about"></span></p>
+<h2 id="the-problem-with-mcp-nobody-talks-about">The Problem with MCP Nobody Talks About</h2>
+<p>MCP works. Iâm not saying it doesnât. But hereâs the thing that hit me after integrating multiple MCP servers into <a href="/deep-dive-into-co-pilots-understanding-architecture-llms-and-advanced-concepts/">agent workflows</a>: <strong>MCP is a context hog.</strong></p>
+<p>A typical MCP server doesnât just expose the tools you need. It dumps an entire schema into your agentâs context window â tool definitions, parameter descriptions, authentication flows, state management, the whole package.</p>
+<p>Let me show you what I mean. Hereâs what happens when you connect a popular GitHub MCP server:</p>
+<pre class="astro-code github-dark" data-language="plaintext" tabindex="0"><code><span class="line"><span>{  "tools": [    {      "name": "create_issue",      "description": "Create a new issue in a GitHub repository",      "inputSchema": {        "type": "object",        "properties": {          "owner": { "type": "string", "description": "Repository owner" },          "repo": { "type": "string", "description": "Repository name" },          "title": { "type": "string", "description": "Issue title" },          "body": { "type": "string", "description": "Issue body content" },          "assignees": { "type": "array", "items": { "type": "string" } },          "labels": { "type": "array", "items": { "type": "string" } },          "milestone": { "type": "integer" }        },        "required": ["owner", "repo", "title"]      }    }    // ... repeat this for 92 more tools  ]}</span></span></code></pre>
+<p>Thatâs <strong>one</strong> tool definition. The full GitHub MCP server ships with 93 tools. Total context cost? Around <strong>55,000 tokens</strong> â before youâve even asked a single question. Thatâs roughly half of GPT-4oâs context window or a significant chunk of Claudeâs budget gone just for the plumbing.</p>
+<p>Now stack multiple MCP servers. A typical enterprise agent might need GitHub, a database connector, Microsoft Graph, and maybe Jira. Youâre easily looking at 150,000+ tokens of tool definitions alone.</p>
+<p>Compare that to CLI:</p>
+<pre class="astro-code github-dark" data-language="plaintext" tabindex="0"><code><span class="line"><span>gh issue create --repo my-org/my-repo --title "Bug in auth flow" --body "Steps to reproduce..."</span></span></code></pre>
+<p>The model already knows <code>gh</code>. Zero schema tokens consumed. The entire interaction â command plus output â might cost you 200 tokens.</p>
+<p class="preserved-content"><span id="the-token-math-that-changed-my-mind"></span></p>
+<h2 id="the-token-math-that-changed-my-mind">The Token Math That Changed My Mind</h2>
+<p>I ran a side-by-side comparison on a real task: âList all non-compliant <a href="/how-to-create-powershell-script-to-automate-tasks-in-intune/">Intune devices</a> and export their details to a CSV.â</p>
+<p>MCP approach (Microsoft Graph MCP Server):</p>
+<div class="preserved-content"><table class="has-fixed-layout"><thead><tr><th>Phase</th><th>Token Cost</th></tr></thead><tbody><tr><td>Tool schema injection</td><td>~28,000 tokens</td></tr><tr><td>Agent reasoning + tool selection</td><td>~3,200 tokens</td></tr><tr><td>MCP call: list devices with filter</td><td>~1,800 tokens</td></tr><tr><td>MCP response parsing</td><td>~4,500 tokens</td></tr><tr><td>MCP call: get device details (per device)</td><td>~2,100 tokens Ã N</td></tr><tr><td><span>Total for 50 devices</span></td><td><span>~145,000 tokens</span></td></tr></tbody></table></div>
+<p>CLI approach:</p>
+<div class="preserved-content"><table class="has-fixed-layout"><thead><tr><th>Phase</th><th>Token Cost</th></tr></thead><tbody><tr><td>Tool schema injection</td><td>0 tokens</td></tr><tr><td>Agent reasoning + command composition</td><td>~800 tokens</td></tr><tr><td>Shell command execution</td><td>~150 tokens</td></tr><tr><td>Output parsing</td><td>~3,200 tokens</td></tr><tr><td><span>Total for 50 devices</span></td><td><span>~4,150 tokens</span></td></tr></tbody></table></div>
+<p>Thatâs not a marginal difference. Thatâs a 35x reduction in token usage. And tokens arenât just a cost metric â theyâre directly tied to how much reasoning capacity your agent has left for the actual problem.</p>
+<p class="preserved-content"><span id="real-world-example-intune-compliance-automation"></span></p>
+<h2 id="real-world-example-intune-compliance-automation">Real-World Example: Intune Compliance Automation</h2>
+<p>Let me walk you through both approaches for a task I actually built for a customer.</p>
+<p>The goal: Build an agent that checks device compliance across an Intune tenant, identifies policy violations, cross-references with Entra ID group memberships, and generates a remediation report.</p>
+<p class="preserved-content"><span id="the-mcp-approach"></span></p>
+<h3 id="the-mcp-approach">The MCP Approach</h3>
+<p>I set up three MCP servers: Microsoft Graph (for Intune and Entra ID), a custom compliance rules engine, and a reporting tool.</p>
+<pre class="astro-code github-dark" data-language="plaintext" tabindex="0"><code><span class="line"><span>Agent Context Window:âââ System prompt:          ~2,000 tokensâââ Graph MCP schema:      ~28,000 tokensâââ Compliance MCP schema:  ~8,500 tokensâââ Reporting MCP schema:   ~5,200 tokensâââ Conversation history:   ~4,000 tokensâââ Available for reasoning: ~82,300 tokens (of 128K)</span></span></code></pre>
+<p>The agent worked, but it was noticeably slower. Multi-step reasoning broke down after 3-4 tool calls because the accumulated context from MCP responses pushed the agent into the tail end of its context window where attention quality drops. I had to split the workflow into multiple agent sessions to get reliable results.</p>
+<p class="preserved-content"><span id="the-cli-tools-approach"></span></p>
+<p>Same task. I gave the agent a shell with <code>mgc</code> (Microsoft Graph CLI), <code>az</code> CLI, and three focused PowerShell scripts.</p>
+<pre class="astro-code github-dark" data-language="plaintext" tabindex="0"><code><span class="line"><span># The agent composed this pipeline autonomously:mgc devices list --filter "complianceState eq 'noncompliant'" `  --select "id,deviceName,complianceState,userPrincipalName" --output json |  ConvertFrom-Json |  ForEach-Object {    $device = $_    $groups = mgc users list-member-of --user-id $_.userPrincipalName `      --output json | ConvertFrom-Json    [PSCustomObject]@{      DeviceName = $device.deviceName      User       = $device.userPrincipalName      Compliance = $device.complianceState      Groups     = ($groups.displayName -join "; ")    }  } |  Export-Csv -Path "compliance-report.csv" -NoTypeInformation</span></span></code></pre>
+<pre class="astro-code github-dark" data-language="plaintext" tabindex="0"><code><span class="line"><span>Agent Context Window:âââ System prompt:          ~2,000 tokensâââ Tool schemas:           0 tokensâââ Conversation history:   ~1,500 tokensâââ Command output:         ~3,200 tokensâââ Available for reasoning: ~121,300 tokens (of 128K)</span></span></code></pre>
+<p>The agent had 95% of its context window available for reasoning. It composed the entire pipeline in one shot, handled edge cases proactively, and completed the task in a single session. No splitting needed.</p>
+<p class="preserved-content"><span id="why-ai-models-are-native-cli-tools-speakers"></span></p>
+<p>Thereâs a deeper reason why CLI tools work so well with AI agents, and it goes beyond token efficiency.</p>
+<p>AI models have been trained on billions of lines of terminal interactions â Stack Overflow answers, GitHub repos, documentation, tutorials. When you ask Claude or GPT to use <code>git</code>, <code>docker</code>, <code>az</code>, <code>kubectl</code>, or <code>gh</code>, youâre tapping into deeply learned patterns. The model doesnât need a schema to know that <code>git log --oneline -10</code> shows the last 10 commits.</p>
+<p>MCP servers, on the other hand, are custom schemas that the model sees for the first time at runtime. Even with good descriptions, the model has to reason about unfamiliar tool interfaces on the fly. Thatâs additional cognitive load that directly competes with the actual task.</p>
+<p>Hereâs a quick comparison of how an agent interacts with both:</p>
+<pre class="astro-code github-dark" data-language="plaintext" tabindex="0"><code><span class="line"><span># CLI: The model already knows thisdocker ps --filter "status=running" --format "{{.Names}}: {{.Status}}"# MCP: The model has to interpret this schema first{  "name": "list_containers",  "inputSchema": {    "properties": {      "status_filter": { "enum": ["running", "stopped", "all"] },      "format_fields": { "type": "array", "items": { "enum": ["name", "status", "image", "ports"] } }    }  }}</span></span></code></pre>
+<p>The CLI version is self-documenting. The MCP version requires the model to map its intent to an unfamiliar abstraction layer.</p>
+<p class="preserved-content"><span id="cli-tools-composability-the-unix-philosophy-meets-ai"></span></p>
+<p>One of the most powerful advantages of CLI tools is composability â and AI agents are surprisingly good at it.</p>
+<pre class="astro-code github-dark" data-language="plaintext" tabindex="0"><code><span class="line"><span># Agent-composed pipeline: Find Azure VMs with high CPU,# get their Intune compliance statusaz vm list --query "[?powerState=='VM running']" -o json |  jq -r '.[].name' |  xargs -I {} mgc devices list \    --filter "displayName eq '{}'" \    --select "complianceState" -o json |  jq '[.[] | {name: .displayName, compliance: .complianceState}]'</span></span></code></pre>
+<p>Try building this cross-tool workflow with MCP. Youâd need both servers loaded, the agent would have to orchestrate multiple structured calls, manage intermediate state, and deal with different response formats. With CLI, the agent just pipes text through familiar tools.</p>
+<p class="preserved-content"><span id="benchmarks-back-this-up"></span></p>
+<h2 id="benchmarks-back-this-up">Benchmarks Back This Up</h2>
+<p>This isnât just my experience. Recent benchmarks from the community confirm the pattern. One detailed comparison ran identical browser automation tasks through both MCP and CLI interfaces. The results: CLI achieved a 28% higher task completion score with roughly the same total token count â meaning the tokens were spent more effectively on actual problem-solving rather than protocol overhead.</p>
+<p>The Token Efficiency Score (TES) told the story: CLI scored 202 vs. MCPâs 152, a 33% efficiency advantage. And CLI completed tasks that MCP structurally couldnât handle, like memory profiling, because it had full access to selective queries and targeted output rather than dumping entire data structures.</p>
+<p class="preserved-content"><span id="when-mcp-still-makes-sense"></span></p>
+<h2 id="when-mcp-still-makes-sense">When MCP Still Makes Sense</h2>
+<p>Iâm not saying MCP is dead. There are legitimate use cases where itâs the right choice:</p>
+<p>Structured production environments where you need strict input validation, OAuth-based authentication flows, and audit trails. MCPâs schema enforcement prevents agents from running malformed commands.</p>
+<p>Multi-tenant SaaS platforms where tools need fine-grained permission scoping. MCPâs capability negotiation protocol handles this elegantly.</p>
+<p>Non-CLI tools and services that donât have a command-line interface. If youâre integrating with Figma, Notion, or a custom internal API, MCP is often the only practical option. But you can also build your own CLI for it.</p>
+<p>Discovery-heavy scenarios where agents need to dynamically find available tools. MCPâs <code>tools/list</code> endpoint gives agents a structured way to discover capabilities. CLI requires the agent to already know what tools exist.</p>
+<p>The sweet spot? Use CLI tools as your default, fall back to MCP when you need its specific guarantees.</p>
+<p class="preserved-content"><span id="practical-guidelines-for-building-cli-first-agents"></span></p>
+<h2 id="practical-guidelines-for-building-cli-first-agents">Practical Guidelines for Building CLI-First Agents</h2>
+<p>If you want to adopt this approach, here are the patterns that work well:</p>
+<ol>
+<li>Provide a focused tool manifest instead of MCP schemas. Instead of loading full MCP tool definitions, give your agent a lightweight markdown file:</li>
+</ol>
+<pre class="astro-code github-dark" data-language="plaintext" tabindex="0"><code><span class="line"><span>## Available Tools- `mgc`: Microsoft Graph CLI. Use for Intune, Entra ID, Teams, SharePoint queries.- `az`: Azure CLI. Use for Azure resource management, VMs, networking.- `gh`: GitHub CLI. Use for repos, issues, PRs, actions.- Custom scripts in /tools/: compliance-check.ps1, export-report.ps1</span></span></code></pre>
+<p>Thatâs ~100 tokens instead of 50,000+.</p>
+<ol start="2">
+<li>Build thin wrapper scripts for complex multi-step operations.</li>
+</ol>
+<pre class="astro-code github-dark" data-language="plaintext" tabindex="0"><code><span class="line"><span># /tools/get-noncompliant-devices.ps1param(    [string]$OutputFormat = "json",    [switch]$IncludeGroupMembership)$devices = mgc devices list `    --filter "complianceState eq 'noncompliant'" `    --select "id,deviceName,userPrincipalName,complianceState,lastSyncDateTime" `    --output $OutputFormatif ($IncludeGroupMembership) {    $devices | ConvertFrom-Json | ForEach-Object {        $groups = mgc users list-member-of --user-id $_.userPrincipalName --output json        $_ | Add-Member -NotePropertyName "groups" -NotePropertyValue ($groups | ConvertFrom-Json).displayName        $_    } | ConvertTo-Json -Depth 5} else {    $devices}</span></span></code></pre>
+<p>The agent calls one script instead of reasoning through five MCP tool calls.</p>
+<ol start="3">
+<li>Use structured output flags. Most modern CLIs support <code>--output json</code> or <code>--format json</code>. This gives agents clean, parseable data without the overhead of an MCP response wrapper.</li>
+</ol>
+<pre class="astro-code github-dark" data-language="plaintext" tabindex="0"><code><span class="line"><span># Structured output that agents parse effortlesslyaz vm list --output json --query "[].{name:name, state:powerState, os:storageProfile.osDisk.osType}"mgc devices list --output json --select "deviceName,complianceState"kubectl get pods -o json | jq '.items[] | {name: .metadata.name, status: .status.phase}'</span></span></code></pre>
+<ol start="4">
+<li>Leverage <code>--help</code> as dynamic documentation. If the agent isnât sure about a command, it can call <code>mgc devices list --help</code> for just-in-time documentation. This is more token-efficient than pre-loading the entire schema â the agent only pays the token cost when it actually needs the information.</li>
+</ol>
+<p class="preserved-content"><span id="key-takeaways-on-cli-tools"></span></p>
+<p>Start with CLI tools. Before reaching for MCP, ask yourself: does a CLI tool already exist for this? If yes, use it. Your agent will perform better with the extra context headroom.</p>
+<p>Measure your context budget. Track how many tokens your tool integrations consume. You might be shocked at how much overhead MCP adds â and how directly that impacts agent reasoning quality.</p>
+<p>Design for composability. Build small, focused CLI tools that do one thing well. Let the AI agent compose them. This is the Unix philosophy â and it turns out, AI agents love it.</p>
+<p>Reserve MCP for what itâs good at. Production security, multi-tenant access control, tool discovery in large organizations. Donât use it just because itâs the new shiny thing.</p>
+<p>The future of AI agent tooling isnât about the most sophisticated protocol. Itâs about the leanest path between the model and the action. And right now, that path runs through the terminal â powered by CLI tools.</p>
+<p>There is another layer to this decision: reusable instructions for the agent. My <a href="/agent-skills-vs-mcp/">Agent Skills vs MCP comparison</a> explains where those fit, and <a href="/agent-skills-explained/">Agent Skills Explained</a> walks through building a first skill.</p></div></div></div>
+</article>
+</body>
+</html>
