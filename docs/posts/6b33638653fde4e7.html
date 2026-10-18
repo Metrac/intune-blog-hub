@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intune AI Agent Runtime Protection: The Missing Second Switch</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">October 18, 2026</span>
+  </div>
+  <h1>Intune AI Agent Runtime Protection: The Missing Second Switch</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/intune-ai-agent-runtime-protection/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="prose" data-article-body=""><p>I opened the new Intune AI agent runtime protection profile. There was one setting. Microsoftâs documentation describes two inspection paths.</p>
+<p>That difference is easy to miss if your acceptance criterion is âthe policy was assigned.â It matters if your actual question is âwhat protects this coding agent on this Windows device?â</p>
+<p>I walked through the profile in my Modern Device Management tenant on 12 October 2026. Below is the exact UI, the coverage checks I would make before a pilot, and a small PowerShell collector that reads settings without changing them. This is a portal and configuration walkthrough, not a claim that I blocked an attack on a test endpoint.</p>
+<p class="preserved-content"><span id="the-profile-is-real-the-coverage-still-needs-checking"></span></p>
+<h2 id="where-to-configure-intune-ai-agent-runtime-protection">Where to Configure Intune AI Agent Runtime Protection</h2>
+<p>The current path in my tenant is <code>Endpoint security â Antivirus â Create Policy â Windows â Microsoft Defender AI agent runtime protection</code>.</p>
+<p><img alt="Intune AI agent runtime protection profile selected in the real admin center" decoding="async" fetchpriority="auto" src="assets/6b33638653fde4e7/img_0.webp"/></p>
+<p>I entered a temporary name, moved to <strong>Configuration settings</strong> and expanded <strong>Defender</strong>. The profile exposed <strong>Ai Agent Protection</strong>. Its menu offered disabled, block and audit modes.</p>
+<p><img alt="Intune AI agent runtime protection: actual disabled, block and audit options" decoding="async" fetchpriority="auto" src="assets/6b33638653fde4e7/img_1.webp"/></p>
+<p>The settingâs help text explains the native hook/bridge approach. This is more useful than inferring coverage from the broad description shown when selecting the profile.</p>
+<p><img alt="Intune AI agent runtime protection help text describing native hook inspection" decoding="async" fetchpriority="auto" src="assets/6b33638653fde4e7/img_2.webp"/></p>
+<p><em>All three screenshots are from the same tenant session. I discarded the form without creating or assigning the policy.</em></p>
+<p class="preserved-content"><span id="native-events-and-network-traffic-are-separate-paths"></span></p>
+<h2 id="native-events-and-network-traffic-are-separate-paths">Native events and network traffic are separate paths</h2>
+<p>Microsoft describes agent-native event inspection and inspection of covered agent-to-model network traffic. The two settings are <code>AiAgentProtection</code> and <code>AiAgentNetworkInspection</code>; the documented Intune antivirus profile configures the native path, while network inspection has a separate PowerShell setup. <a href="https://learn.microsoft.com/en-us/defender-endpoint/configure-ai-agent-runtime-protection">Runtime-protection setup</a>.</p>
+<p><img alt="Intune AI agent runtime protection: native events versus network inspection" decoding="async" fetchpriority="auto" src="assets/6b33638653fde4e7/img_3.webp"/></p>
+<p>This is why I would not write âenable this profile to secure all local agents.â The sentence hides both a configuration question and a support question.</p>
+<p>First, is the relevant path enabled on the endpoint? Second, does the exact application, operating system and usage mode support that path? A Windows policy title cannot answer whether an agent running somewhere else is covered.</p>
+<p>Network inspection also has limits. Microsoftâs overview excludes certificate-pinned traffic and HTTP/3. It is not a promise to inspect every packet from every AI application. <a href="https://learn.microsoft.com/en-us/defender-endpoint/ai-agent-runtime-protection-overview">Runtime-protection overview</a>.</p>
+<p>I would start with the supported client configuration, not disable transport security to force a test through an inspection path.</p>
+<p class="preserved-content"><span id="the-support-table-matters-more-than-the-product-name"></span></p>
+<h2 id="the-support-table-matters-more-than-the-product-name">The support table matters more than the product name</h2>
+<p>There is a subtle documentation mismatch worth calling out. On the review date, the overview named <strong>Codex CLI</strong> among agents exposing native interfaces. The detailed runtime-support table did <strong>not</strong> list Codex in its native inspection section, although it appeared in discovery. I would treat that combination as unconfirmed until Microsoft clarifies it, not copy the broader sentence into a deployment promise.</p>
+<p>The same table distinguishes <strong>Claude Desktop in Code mode</strong> from other desktop usage and <strong>ChatGPT Desktop in Chat mode</strong> on the network path. The latter lists a minimum tested version. Discovery and runtime coverage are separate lists. <a href="https://learn.microsoft.com/en-us/defender-endpoint/ai-agent-support-matrix">Current support matrix</a>.</p>
+<p>My pilot worksheet therefore has these columns:</p>
+<div class="preserved-content"><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Why I record it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OS and build</td>
+<td>âInstalled somewhereâ is not a supported operating-system combination</td>
+</tr>
+<tr>
+<td>Application and version</td>
+<td>CLI, desktop and editor extension are different clients</td>
+</tr>
+<tr>
+<td>Usage mode</td>
+<td>A product may have multiple execution paths</td>
+</tr>
+<tr>
+<td>Inspection method</td>
+<td>Native events and network inspection are not synonyms</td>
+</tr>
+<tr>
+<td>Effective local setting</td>
+<td>Assignment intent is not device state</td>
+</tr>
+<tr>
+<td>Test result and timestamp</td>
+<td>Support does not prove the configured control ran</td>
+</tr>
+</tbody>
+</table></div>
+<p>If any row is unknown, I keep it unknown. A blank cell should not silently become a green tick in the project slide.</p>
+<p class="preserved-content"><span id="check-prerequisites-before-collecting-alert-screenshots"></span></p>
+<h2 id="check-prerequisites-before-collecting-alert-screenshots">Check prerequisites before collecting alert screenshots</h2>
+<p>The current preview setup requires an eligible Defender entitlement, an onboarded device, active Defender Antivirus and current platform, engine and intelligence versions. The setup guide also specifies the preview update-channel requirement and a minimum intelligence version. These are moving prerequisites, so I would check the live guide before every pilot rather than freeze them into a long-lived baseline. <a href="https://learn.microsoft.com/en-us/defender-endpoint/configure-ai-agent-runtime-protection">Microsoftâs setup requirements</a>.</p>
+<p>I would capture those facts before sending any test prompt. Otherwise a âno alertâ result is hard to interpret: did the detector miss it, was the application unsupported, or was the device never ready?</p>
+<p>The portal can help find the policy. The endpoint is where I would check the effective configuration. The SOC view is where I would correlate a detection. They answer different questions.</p>
+<p class="preserved-content"><span id="a-read-only-powershell-check"></span></p>
+<h2 id="a-read-only-powershell-check">A read-only PowerShell check</h2>
+<p>For a quick first pass on a Windows pilot device:</p>
+<pre class="astro-code github-dark" data-language="powershell" tabindex="0"><code><span class="line"><span># Read only. These commands do not enable either protection path.</span></span>
+<span class="line"><span>Get-MpPreference</span><span> |</span></span>
+<span class="line"><span>    Select-Object</span><span> AiAgentProtection</span><span>,</span><span> AiAgentNetworkInspection</span></span>
+<span class="line"></span>
+<span class="line"><span>Get-MpComputerStatus</span><span> |</span></span>
+<span class="line"><span>    Select-Object</span><span> AntivirusEnabled</span><span>,</span><span> RealTimeProtectionEnabled</span><span>,</span></span>
+<span class="line"><span>                  AMRunningMode</span><span>,</span><span> AMProductVersion</span><span>,</span></span>
+<span class="line"><span>                  AntivirusSignatureVersion</span></span></code></pre>
+<p>A missing property is not the same as <strong>Disabled</strong>. An older platform can produce a different object shape. I want that distinction preserved in evidence rather than lost in a spreadsheet formula.</p>
+<p>Here is the slightly more defensive collector I prepared for this review. It emits JSON, performs no network request and does not call <code>Set-MpPreference</code>:</p>
+<pre class="astro-code github-dark" data-language="powershell" tabindex="0"><code><span class="line"><span>[</span><span>CmdletBinding</span><span>()]</span></span>
+<span class="line"><span>param</span><span>()</span></span>
+<span class="line"></span>
+<span class="line"><span>$ErrorActionPreference</span><span> =</span><span> 'Stop'</span></span>
+<span class="line"><span>$report </span><span>=</span><span> [</span><span>ordered</span><span>]</span><span>@</span><span>{</span></span>
+<span class="line"><span>    CapturedAtUtc </span><span>=</span><span> [</span><span>DateTime</span><span>]::UtcNow.ToString(</span><span>'o'</span><span>)</span></span>
+<span class="line"><span>    Scope </span><span>=</span><span> 'Local settings only; no enforcement test'</span></span>
+<span class="line"><span>    AiAgentProtection </span><span>=</span><span> $null</span></span>
+<span class="line"><span>    AiAgentNetworkInspection </span><span>=</span><span> $null</span></span>
+<span class="line"><span>    Errors </span><span>=</span><span> @</span><span>()</span></span>
+<span class="line"><span>}</span></span>
+<span class="line"></span>
+<span class="line"><span>try</span><span> {</span></span>
+<span class="line"><span>    $preferences </span><span>=</span><span> Get-MpPreference</span></span>
+<span class="line"><span>    foreach</span><span> ($name </span><span>in</span><span> @</span><span>(</span><span>'AiAgentProtection'</span><span>,</span><span> 'AiAgentNetworkInspection'</span><span>)) {</span></span>
+<span class="line"><span>        $property </span><span>=</span><span> $preferences.PSObject.Properties[$name]</span></span>
+<span class="line"><span>        if</span><span> (</span><span>$null</span><span> -eq</span><span> $property) {</span></span>
+<span class="line"><span>            $report.Errors </span><span>+=</span><span> "Property unavailable: </span><span>$name</span><span>"</span></span>
+<span class="line"><span>        } </span><span>else</span><span> {</span></span>
+<span class="line"><span>            $report[$name] </span><span>=</span><span> [</span><span>string</span><span>]$property.Value</span></span>
+<span class="line"><span>        }</span></span>
+<span class="line"><span>    }</span></span>
+<span class="line"><span>} </span><span>catch</span><span> {</span></span>
+<span class="line"><span>    $report.Errors </span><span>+=</span><span> 'Could not read Defender preferences.'</span></span>
+<span class="line"><span>}</span></span>
+<span class="line"></span>
+<span class="line"><span>[</span><span>pscustomobject</span><span>]$report </span><span>|</span><span> ConvertTo-Json</span><span> -</span><span>Depth </span><span>4</span></span></code></pre>
+<p>Preserve the values as returned. Do not invent a numeric-enum mapping because a similar policy uses one. A report with an error means âinvestigate,â not âprotection confirmed.â</p>
+<p>I syntax-checked the full collector locally. I did not execute Defender cmdlets against a Windows endpoint during this walkthrough, so there is no device-result screenshot to pass off as proof.</p>
+<p class="preserved-content"><span id="my-pilot-would-test-normal-work-first"></span></p>
+<h2 id="my-pilot-would-test-normal-work-first">My pilot would test normal work first</h2>
+<p>Security validation should not begin and end with an impressive blocked prompt. I would agree on a small set of normal tasks with the developer using the agent:</p>
+<ol>
+<li>Read a synthetic repository and explain a function.</li>
+<li>Propose a small code change in that repository.</li>
+<li>Run the existing tests with the normal approval flow.</li>
+<li>Read a harmless tool response from the approved test service.</li>
+</ol>
+<p>Record completion, unexpected prompts and any new friction. A control that blocks the demo but makes everyday work unusable will be bypassed or switched off eventually.</p>
+<p>Then I would run Microsoftâs benign validation scenario in the approved pilot environment. The linked demonstration specifically requires the native inspection path; it is not a generic network-inspection test. Keep the expected device and SOC evidence explicit before starting. An agentâs own refusal is not proof of a Defender detection. <a href="https://learn.microsoft.com/en-us/defender-endpoint/defender-endpoint-demonstration-ai-agent-runtime-protection">Microsoftâs runtime-protection demonstration</a>.</p>
+<p>Do not use real credentials, production files or customer documents as bait. A synthetic marker is enough to test the observation chain. There is no need to make the exercise more dangerous to make it more convincing.</p>
+<p class="preserved-content"><span id="audit-block-and-the-result-i-would-accept"></span></p>
+<h2 id="audit-block-and-the-result-i-would-accept">Audit, block and the result I would accept</h2>
+<p>Audit is useful for learning what the control would detect without preventing the action. Block is intended to stop supported malicious activity at the available inspection point. Neither means the agent has become incapable of making a bad decision. <a href="https://learn.microsoft.com/en-us/defender-endpoint/ai-agent-runtime-protection-overview">Microsoftâs mode descriptions</a>.</p>
+<p>Here is how I would evaluate the pilot rather than just collect a success screenshot:</p>
+<div class="preserved-content"><table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Evidence to collect</th>
+<th>Result I would not accept</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ordinary supported workflow</td>
+<td>Task completes; no unexplained new failures</td>
+<td>âNo complaints yetâ with no task test</td>
+</tr>
+<tr>
+<td>Benign validation in Audit</td>
+<td>Expected action behaviour and correlated detection</td>
+<td>Agent error with no explanation of which layer caused it</td>
+</tr>
+<tr>
+<td>Approved Block test</td>
+<td>Action outcome plus matching control evidence</td>
+<td>A policy-assignment badge by itself</td>
+</tr>
+<tr>
+<td>Unsupported or ambiguous client</td>
+<td>Explicit coverage gap with owner and next step</td>
+<td>Assuming the same vendor name means the same integration</td>
+</tr>
+<tr>
+<td>Reopened terminal/session</td>
+<td>Repeated check after the documented restart step</td>
+<td>Only testing a process that predates the change</td>
+</tr>
+</tbody>
+</table></div>
+<p><img alt="Three evidence questions for an Intune AI agent runtime protection pilot" decoding="async" fetchpriority="auto" src="assets/6b33638653fde4e7/img_4.webp"/></p>
+<p>For rollout, I would keep a small developer ring first, with someone from endpoint engineering and someone from security reviewing the same results. Decide in advance which false positive stops the expansion and how an exception expires. Those are my operating recommendations, not additional product switches.</p>
+<p class="preserved-content"><span id="who-owns-the-gap-between-discovery-and-protection"></span></p>
+<h2 id="who-owns-the-gap-between-discovery-and-protection">Who owns the gap between discovery and protection?</h2>
+<p>This is where endpoint experience helps AI governance. Inventory, configuration and runtime behaviour need separate owners and separate evidence.</p>
+<p>The endpoint team can tell me the managed device and effective preference. The AI platform owner can tell me which client and workflow the developer uses. Security can tell me whether the expected detection arrived and how it was investigated.</p>
+<p>I would put all three into the pilot review. Otherwise one team says âthe agent is discovered,â another says âthe policy deployed,â and nobody notices that the actual workflow uses a different path.</p>
+<p>My earlier <a href="/intune-shadow-ai-openclaw/">OpenClaw and shadow AI guide</a> focuses on finding and investigating local AI usage. This article starts after that discovery: what can you demonstrate about the protection actually running?</p>
+<p class="preserved-content"><span id="intune-ai-agent-runtime-protection-common-questions"></span></p>
+<h2 id="intune-ai-agent-runtime-protection-common-questions">Intune AI Agent Runtime Protection: Common Questions</h2>
+<p class="preserved-content"><span id="does-the-intune-profile-enable-both-inspection-paths"></span></p>
+<h3 id="does-the-intune-profile-enable-both-inspection-paths">Does the Intune profile enable both inspection paths?</h3>
+<p>No. The documented antivirus profile configures agent-native inspection. Network inspection has a separate setup. Check <code>AiAgentProtection</code> and <code>AiAgentNetworkInspection</code> on the actual Windows device, then match the client and version to the support matrix.</p>
+<p class="preserved-content"><span id="does-discovering-an-ai-agent-prove-it-is-protected"></span></p>
+<h3 id="does-discovering-an-ai-agent-prove-it-is-protected">Does discovering an AI agent prove it is protected?</h3>
+<p>No. Discovery, policy assignment and runtime enforcement are different evidence. Intune AI agent runtime protection needs a supported client path and a verified endpoint configuration. A discovery entry alone does not demonstrate either.</p>
+<p class="preserved-content"><span id="where-should-i-continue-after-the-pilot"></span></p>
+<h3 id="where-should-i-continue-after-the-pilot">Where should I continue after the pilot?</h3>
+<p>For the wider operational picture, compare <a href="/security-copilot-agents-intune/">Security Copilot agents in Intune</a> with <a href="/intune-troubleshooting-guide/">my Intune troubleshooting workflow</a>. Neither replaces the native and network checks in this article.</p>
+<p class="preserved-content"><span id="the-takeaway"></span></p>
+<h2 id="the-takeaway">The takeaway</h2>
+<p>I like seeing agent runtime protection arrive in the endpoint-management workflow. But the useful unit of coverage is not âAI enabledâ or âDefender installed.â It is this application, in this mode, on this device, through this inspection path.</p>
+<p>Start there. Read the two settings separately. Test the normal task and the agreed validation scenario. Keep the unsupported combinations visible.</p>
+<p>One policy can be a good start. It should not become a claim that every agent is protected.</p></div></div></div>
+</article>
+</body>
+</html>

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recast Cloud With Intune: App Deployment and Patching</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">October 15, 2026</span>
+  </div>
+  <h1>Recast Cloud With Intune: App Deployment and Patching</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/recast-cloud-intune-deployment-patching/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="prose" data-article-body=""><p>Getting an app into Microsoft Intune is only the first part of the work. In this blog post I explain how to connect Recast Cloud to Intune, prepare an app deployment, and configure a separate process for keeping installed apps up to date.</p>
+<p>I used 7-Zip as the example and captured the portal screens. The tour covers connection setup, deployment, update mode, scheduling, and the checks before a wider rollout.</p>
+<p>Note: This tour uses the Recast Cloud preview portal, inspected on October 4, 2026. The environment reached Ready, and authentication checks passed. An integration test still returned a configuration error. I therefore stopped before saving or running a deployment process. The deployment and patching instructions below combine the inspected wizard with linked vendor documentation; they are not a claim of a completed device test. Private account and tenant details have been removed from the screenshots.</p>
+<p>Watch the video walkthrough (German)</p>
+<p><img alt="Play video" decoding="async" fetchpriority="auto" src="assets/1319a075ce9018de/img_0.jpg"/></p>
+<p>The video uses Google Chrome; the written portal inspection below uses 7-Zip. They illustrate the same workflow, not the same completed deployment test.</p>
+<p class="preserved-content"><span id="what-does-recast-cloud-manage"></span></p>
+<h2 id="what-does-recast-cloud-manage">What Does Recast Cloud Manage?</h2>
+<p>This tour focuses on the Patching area of Recast Cloud. The portal exposes other product areas, too; the Intune connection does not validate them.</p>
+<p>These are the four objects I would learn first:</p>
+<div class="preserved-content"><table>
+<thead>
+<tr>
+<th>Object</th>
+<th>What I use it for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Environment</td>
+<td>Connect the patching configuration to the Intune service connection.</td>
+</tr>
+<tr>
+<td>Application catalog</td>
+<td>Find the application and the correct architecture.</td>
+</tr>
+<tr>
+<td>Deployment process</td>
+<td>Bring an environment, applications, events, and a target group together.</td>
+</tr>
+<tr>
+<td>Event</td>
+<td>Decide what can trigger a process.</td>
+</tr>
+</tbody>
+</table></div>
+<p>The navigation separates Patching â Applications, Deployment Processes, Events, and Settings. I would start with one app and one small device group to make each result easier to understand.</p>
+<p><img alt="Recast Cloud workflow from connection through configuration and publication to device verification" decoding="async" fetchpriority="auto" src="assets/1319a075ce9018de/img_1.webp"/></p>
+<p><em>Conceptual workflow. The last two stages still need a live pilot test in this lab.</em></p>
+<p>I previously wrote an <a href="/intune-application-workspace/">overview of Recast application management</a>. This article focuses on the cloud patching screens I inspected and the practical Intune workflow.</p>
+<p class="preserved-content"><span id="how-do-i-connect-recast-cloud-to-intune"></span></p>
+<h2 id="how-do-i-connect-recast-cloud-to-intune">How Do I Connect Recast Cloud to Intune?</h2>
+<p>Before starting, prepare a valid product license or trial, an Intune tenant, and an administrator who can register an application and grant the required consent. For the deployment test, also prepare an enrolled Windows device and a dedicated Entra device group.</p>
+<p class="preserved-content"><span id="1-prepare-the-entra-application"></span></p>
+<h3 id="1-prepare-the-entra-application">1. Prepare the Entra Application</h3>
+<p>In Microsoft Entra admin center, open App registrations â New registration. Name it <code>Recast Cloud Patching Lab</code> and use the single-tenant account option for this lab.</p>
+<p>Under API permissions, add these Microsoft Graph application permissions and grant administrator consent:</p>
+<ul>
+<li><code>DeviceManagementApps.ReadWrite.All</code></li>
+<li><code>GroupMember.Read.All</code></li>
+<li><code>DeviceManagementConfiguration.Read.All</code></li>
+<li><code>Device.Read.All</code></li>
+</ul>
+<p>Create a client secret under Certificates &amp; secrets. Keep its value, the application client ID, and the directory tenant ID ready for the connection. The secret value is different from the secret ID. Recast documents this configuration in its <a href="https://docs.recastsoftware.com/help/patching-entra-id-setup">Entra ID setup guide</a>.</p>
+<p>Hint: Record the secret expiry and an owner for renewal. Keep the value out of documentation, screenshots, and tickets.</p>
+<p class="preserved-content"><span id="2-add-the-service-connection"></span></p>
+<h3 id="2-add-the-service-connection">2. Add the Service Connection</h3>
+<p>In Recast Cloud, open Administration â Service Connections and create a connection. In the inspected portal, the connection type was called AzureActiveDirectory, even though Microsoft now calls the directory product Entra ID.</p>
+<p>Enter a recognizable connection name, tenant ID, client ID, and client secret. Complete the Confirmed acknowledgement and submit the form. In this cloud lab, Use a Recast Proxy to connect was off. Treat that as the configuration of this lab; use the connection requirements for your own architecture.</p>
+<p><img alt="Recast Cloud service connection form with private identifiers blacked out" decoding="async" fetchpriority="auto" src="assets/1319a075ce9018de/img_2.webp"/></p>
+<p><em>The labels and controls are preserved. Private field values are blacked out; no secret is shown.</em></p>
+<p class="preserved-content"><span id="3-create-the-patching-environment"></span></p>
+<h3 id="3-create-the-patching-environment">3. Create the Patching Environment</h3>
+<p>Open Patching â Settings â Add Environment, choose the Intune connection, and follow the setup wizard. In this preview, selecting Intune removed the UNC input from the wizard, and the distribution-point-group step was skipped.</p>
+<p>For an initial evaluation, choose the review option âNo, Iâll manually start the process when Iâm ready.â Complete the wizard and check the environment list. Mine showed Ready, type Intune, and zero deployment processes.</p>
+<p><img alt="Recast Cloud Intune environment showing Ready with the environment identity redacted" decoding="async" fetchpriority="auto" src="assets/1319a075ce9018de/img_3.webp"/></p>
+<p>I also verified app-only read access to the Graph devices, groups, mobile applications, and device configurations endpoints. Each returned HTTP 200. Those checks validate authentication and those reads. They do not test package upload, assignments, or endpoint installation.</p>
+<p>Note: Ready is the setup state shown by the portal. Also run the integration test and resolve its result before treating the environment as ready for an operational deployment. The error from my lab is covered below.</p>
+<p class="preserved-content"><span id="how-do-i-deploy-the-first-application"></span></p>
+<h2 id="how-do-i-deploy-the-first-application">How Do I Deploy the First Application?</h2>
+<p>Start with a normal deployment process when the goal is to install an application on a device that might not have it yet.</p>
+<p class="preserved-content"><span id="1-choose-the-application-and-architecture"></span></p>
+<h3 id="1-choose-the-application-and-architecture">1. Choose the Application and Architecture</h3>
+<p>Open Patching â Applications and search for <code>7-Zip</code>. The catalog showed separate x64, ARM64, and x86 entries. All three displayed version 26.03 during this inspection. That is a dated observation; check the version shown when you run your test.</p>
+<p><img alt="Recast Cloud application catalog showing the 7-Zip architecture variants and Deploy buttons" decoding="async" fetchpriority="auto" src="assets/1319a075ce9018de/img_4.webp"/></p>
+<p>Match the architecture to the pilot device. I selected 7-Zip (x64). One app is enough to learn the workflow.</p>
+<p class="preserved-content"><span id="2-walk-through-the-deployment-wizard"></span></p>
+<h3 id="2-walk-through-the-deployment-wizard">2. Walk Through the Deployment Wizard</h3>
+<p>Open Patching â Deployment Processes â Add Deployment Process. The inspected Intune wizard had five steps:</p>
+<ol>
+<li>Select Environment: choose the Intune environment. Leave Create as update process at <strong>No</strong> for the first-install scenario.</li>
+<li>Select Applications: select the checkbox for 7-Zip (x64).</li>
+<li>Name the Deployment Process: use a name such as <code>Lab 7-Zip install</code>.</li>
+<li>Select Events: for a controlled initial evaluation, turn New Version Available off.</li>
+<li>Select Group: search for and select the dedicated pilot group.</li>
+</ol>
+<p><img alt="Deployment wizard with New Version Available switched off for a controlled first test" decoding="async" fetchpriority="auto" src="assets/1319a075ce9018de/img_5.webp"/></p>
+<p>Note: Turning this event off controls that trigger. It is not a guarantee that saving a new process will leave it idle. Recast documents an initial run for newly created scheduled processes. Prepare the pilot scope and settings before saving. <a href="https://docs.recastsoftware.com/help/patching-events">Source: Recast events</a>.</p>
+<p>The group screenshot below deliberately shows No groups selected. It documents the selection screen before an assignment was made. For your own test, select the named pilot group and verify the selection before the final save.</p>
+<p><img alt="Intune group selection screen before a pilot group is selected" decoding="async" fetchpriority="auto" src="assets/1319a075ce9018de/img_6.webp"/></p>
+<p>I would avoid All Devices and All Users for the first test. A dedicated group keeps the checks and troubleshooting focused.</p>
+<p class="preserved-content"><span id="3-review-installation-and-notification-settings"></span></p>
+<h3 id="3-review-installation-and-notification-settings">3. Review Installation and Notification Settings</h3>
+<p>Open the environment settings using the gear icon under Patching â Settings. In Deployments â Basic, the inspected environment used Required and Show all as toast notifications.</p>
+<div class="preserved-content"><table>
+<thead>
+<tr>
+<th>Deployment Type</th>
+<th>Behavior Shown in the Portal</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Required</td>
+<td>Application installation is forced.</td>
+</tr>
+<tr>
+<td>Available</td>
+<td>Users can choose to install the application.</td>
+</tr>
+<tr>
+<td>Uninstall</td>
+<td>Application uninstallation is forced.</td>
+</tr>
+</tbody>
+</table></div>
+<p><img alt="Recast Cloud deployment settings showing Required, Available, Uninstall, and user notifications" decoding="async" fetchpriority="auto" src="assets/1319a075ce9018de/img_7.webp"/></p>
+<p>For a controlled installation test, I would use Required on the pilot group and keep notifications visible. Review inherited settings as well as any process-specific overrides. Recast explains the available controls in its <a href="https://docs.recastsoftware.com/help/patching-intune-deployment-settings">Intune deployment settings documentation</a>.</p>
+<p class="preserved-content"><span id="4-save-run-and-verify-the-result"></span></p>
+<h3 id="4-save-run-and-verify-the-result">4. Save, Run, and Verify the Result</h3>
+<p>After the integration test passes and the pilot scope is reviewed, save the process. If its status is Pending run, use the process action menu and select Run. Open View Details to follow its progress. These actions are documented in <a href="https://docs.recastsoftware.com/help/patching-deployment-processes">Deployment Processes</a>; I did not execute them in this lab.</p>
+<p>Then open Intune and check the resulting application, its version, and its assignments. Finally, verify installation on the pilot device. An application appearing in Intune is an intermediate result, not proof that its installer completed.</p>
+<p class="preserved-content"><span id="how-do-i-patch-an-installed-application"></span></p>
+<h2 id="how-do-i-patch-an-installed-application">How Do I Patch an Installed Application?</h2>
+<p>For patching, create a separate process with Create as update process â Yes. The portal tooltip explains that update applications apply when a previous version of the same application is present. It also explains that the process and imported application names receive an Update prefix.</p>
+<p><img alt="Recast Cloud Create as update process switch set to Yes" decoding="async" fetchpriority="auto" src="assets/1319a075ce9018de/img_8.webp"/></p>
+<p>I may want 7-Zip installed for one audience, while updating existing installations for another. A patching process should not become a new installation policy for everyone.</p>
+<p><img alt="Decision guide for a normal first-install process versus an existing-app update process" decoding="async" fetchpriority="auto" src="assets/1319a075ce9018de/img_9.webp"/></p>
+<p><em>Conceptual guide, based on the inspected update-mode explanation.</em></p>
+<p>Follow the same wizard: select the environment, enable update mode, choose 7-Zip (x64), and name the process clearly. In Select Events, enable New Version Available if you want new catalog versions to trigger it. Select the patch pilot group and review the final settings before saving.</p>
+<p><img alt="Recast Cloud update process with New Version Available enabled" decoding="async" fetchpriority="auto" src="assets/1319a075ce9018de/img_10.webp"/></p>
+<p>Recast documents the workflow and applicability in <a href="https://docs.recastsoftware.com/help/patching-run-deployment-process-in-update-mode">Run a deployment process in update mode</a>.</p>
+<p>For an acceptance test, I would prepare these three cases:</p>
+<div class="preserved-content"><table>
+<thead>
+<tr>
+<th>Pilot Device</th>
+<th>What I Would Verify</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Older matching 7-Zip version installed</td>
+<td>The update applies and the installed version changes.</td>
+</tr>
+<tr>
+<td>Target version already installed</td>
+<td>No unnecessary reinstall or version regression occurs.</td>
+</tr>
+<tr>
+<td>7-Zip absent</td>
+<td>The update process does not install it as a new application.</td>
+</tr>
+</tbody>
+</table></div>
+<p>These are test criteria, not results from this lab. Check the installed version and launch the app to confirm it remains usable.</p>
+<p class="preserved-content"><span id="how-do-i-control-when-updates-run"></span></p>
+<h2 id="how-do-i-control-when-updates-run">How Do I Control When Updates Run?</h2>
+<p>Recast Cloud exposes an Events page as well as the event selection inside each process. I inspected the Add Event dialog and its Patch Tuesday option.</p>
+<p>To prepare a monthly window, open Patching â Events â Add Event, enter a clear name, choose Patch Tuesday, set the delay, and enter the time. The preview dialog showed a delay range of 0â14 days and explicitly labelled the time as UTC.</p>
+<p><img alt="Recast Cloud Patch Tuesday event dialog showing a one-day delay and UTC time" decoding="async" fetchpriority="auto" src="assets/1319a075ce9018de/img_11.webp"/></p>
+<p><em>Unsaved example. The displayed time is the dialog value, not a recommended deployment time.</em></p>
+<p>Save the event when its schedule is correct, then attach and activate it for the intended deployment process. Active events are additive: a scheduled event does not replace an active new-version event. If the process should run only on the schedule, disable the new-version trigger. <a href="https://docs.recastsoftware.com/help/patching-events">Source: Recast events</a>.</p>
+<p>Hint: Convert the chosen UTC time to your local maintenance window and account for daylight-saving changes. Also remember that this controls the process trigger; it is not proof that every device installs at that exact time.</p>
+<p>For a first rollout, I would use a small pilot and promote manually after checking the results. Later, I would consider a broader ring with a delay. Recast supports delays between process steps, described in <a href="https://docs.recastsoftware.com/help/patching-deployment-processes">Deployment Processes</a>. A delay provides time for observation; it is not a human approval gate.</p>
+<p class="preserved-content"><span id="how-do-i-check-success-and-troubleshoot"></span></p>
+<h2 id="how-do-i-check-success-and-troubleshoot">How Do I Check Success and Troubleshoot?</h2>
+<p>I would check three places: the Recast process, the Intune assignment, and the device itself.</p>
+<p>In Recast, use View Details to inspect the process timeline and application status. Check for Updates can check for newer versions and run the process when an update is available. Treat that as an action, rather than a harmless refresh. Recast also notes that pausing a process does not stop deployments already running in Intune, and deleting a process does not remove the Intune application. <a href="https://docs.recastsoftware.com/help/patching-deployment-processes">Source: Deployment Processes</a>.</p>
+<p>In Intune, open Apps â All Apps â the application â Device install status. Review the status, status details, and last check-in. Microsoft documents these fields in <a href="https://learn.microsoft.com/en-us/intune/app-management/monitor-assignments">Monitor app information and assignments</a>.</p>
+<p>On the device, confirm the version and launch the app. For failures, keep the error code, time, and installation log together. <a href="https://errorhunter.msnugget.com/">ErrorHunter</a> can help explain codes, and <a href="https://cmtrace.dev/">cmtrace.dev</a> can help read the logs.</p>
+<p class="preserved-content"><span id="the-integration-error-in-my-lab"></span></p>
+<h3 id="the-integration-error-in-my-lab">The Integration Error in My Lab</h3>
+<p>The environment action Test Integration returned:</p>
+<p><code>Unc path is not configured.</code></p>
+<p><img alt="Recast Cloud integration test warning: Unc path is not configured" decoding="async" fetchpriority="auto" src="assets/1319a075ce9018de/img_12.webp"/></p>
+<p>The Intune wizard had removed the UNC field, and I did not find one in the environmentâs General settings. The environment still showed Ready. I could not determine the cause from the available screens.</p>
+<p>I would raise this with Recast before continuing: include the preview version, environment type, error, and missing UNC input. I would not invent a path or switch connection architecture to clear the message.</p>
+<p>This is the validation state of this tour:</p>
+<div class="preserved-content"><table>
+<thead>
+<tr>
+<th>Check</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Entra application and consent</td>
+<td>Configured</td>
+</tr>
+<tr>
+<td>App-only Graph read checks</td>
+<td>Four endpoints returned HTTP 200</td>
+</tr>
+<tr>
+<td>Recast Intune environment</td>
+<td>Ready displayed</td>
+</tr>
+<tr>
+<td>Catalog and deployment/update wizard</td>
+<td>Inspected</td>
+</tr>
+<tr>
+<td>Integration test</td>
+<td>UNC configuration error remains open</td>
+</tr>
+<tr>
+<td>Saved deployment, app publication, or assignment</td>
+<td>Not performed</td>
+</tr>
+<tr>
+<td>Device installation or patch</td>
+<td>Not tested</td>
+</tr>
+</tbody>
+</table></div>
+<p>For the wider operating model, see <a href="/easy-and-effective-app-management-in-intune/">my Intune app lifecycle guide</a>. If delivery fails, use the <a href="/intune-troubleshooting-guide/">Intune troubleshooting guide</a> to separate assignment, installation and device evidence.</p>
+<p class="preserved-content"><span id="what-would-i-test-next"></span></p>
+<h2 id="what-would-i-test-next">What Would I Test Next?</h2>
+<p>My next step is to resolve the integration error and complete one small pilot:</p>
+<ol>
+<li>Confirm the pilot group contains only the intended test devices.</li>
+<li>Save the normal 7-Zip process and check publication, assignment, and installation.</li>
+<li>Test the update process against an older installation and an app-absent device.</li>
+<li>Validate the chosen event and schedule before expanding the target group.</li>
+</ol>
+<p>Recast Cloud provides the screens to configure that workflow. For me, the useful evaluation result will be evidence that a new version reaches the intended devices and leaves the application working. I hope this tour makes the first setup and those checks easier to follow.</p></div></div></div>
+</article>
+</body>
+</html>
