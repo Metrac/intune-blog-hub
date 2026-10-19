@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Microsoft Intune Ends Support for CNAME Auto-Discovery in Windows MDM-Only Enrollment</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">HTMD / Anoop C Nair</span>
+    <span class="date">October 19, 2026</span>
+  </div>
+  <h1>Microsoft Intune Ends Support for CNAME Auto-Discovery in Windows MDM-Only Enrollment</h1>
+  <div class="orig">Saved for offline reading · <a href="https://www.anoopcnair.com/intune-ends-support-for-cname-auto-discovery/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text"><p class="code-block code-block-6">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><h2 class="wp-block-heading" id="key-takeaways"><strong>Key Takeaways</strong></h2><ul class="wp-block-list has-medium-font-size"><li>Microsoft Intune will end support for CNAME auto-discovery in Windows MDM-only enrollment starting<strong> January 15, 2027</strong>, or soon after.</li><li>The change affects organizations that rely on the <strong>EnterpriseEnrollment</strong> DNS CNAME record to discover the enrollment service.</li><li>Users may need to manually enter the <strong>Microsoft enrollment</strong> server URL during enrollment.</li><li>Windows <strong>MDM-only enrollment </strong>will continue to be supported, but CNAME-based auto-discovery will no longer be available.</li></ul><p class="wp-block-paragraph">In this post, we are discussing Microsoft Intune Ends Support for CNAME Auto-Discovery in Windows MDM-Only Enrollment. Microsoft recently announced that Microsoft Intune will end support for DNS CNAME-based auto-discovery in<strong> Windows</strong> MDM-only<strong> <a href="https://www.anoopcnair.com/intune-to-stop-automatic-mdm-enrollment-when/" rel="noreferrer noopener" target="_blank">enrollment</a></strong><a href="https://www.anoopcnair.com/intune-to-stop-automatic-mdm-enrollment-when/" rel="noreferrer noopener" target="_blank"> </a>scenarios starting<strong> January 15, 2027,</strong> or soon after. This change affects organizations that use DNS CNAME records to automatically discover the Microsoft enrollment service during <strong>Windows </strong>device enrollment.</p><details class="wp-block-details has-contrast-3-background-color has-background is-layout-flow wp-block-details-is-layout-flow"><summary><strong>Table of Contents</strong></summary>
+</details><h2 class="wp-block-heading" id="microsoft-intune-ends-support-for-cname-auto-discovery-in-windows-mdm-only-enrollment"><strong>Microsoft Intune Ends Support for CNAME Auto-Discovery in Windows MDM-Only Enrollment</strong></h2><p class="wp-block-paragraph">Currently, organizations can configure an <strong>Enterprise Enrollment </strong>DNS CNAME record to help Windows devices automatically locate the Microsoft enrollment service. This allows users to begin the enrollment process without manually entering the enrollment server <strong>URL</strong>. This change does not affect existing enrolled devices or Windows MDM-only enrollment itself. Organizations using Microsoft Entra join,<strong> Microsoft Entra hybrid join,</strong> and other enrollment methods that do not depend on <strong>CNAME </strong>discovery are also unaffected. Administrators should review their enrollment configurations and update their documentation before the change takes effect.</p><h2 class="wp-block-heading" id="what-is-changing-in-windows-mdm-only-enrollment"><strong>What Is Changing in Windows MDM-Only Enrollment?</strong></h2><p class="wp-block-paragraph">Microsoft Intune allows administrators to check their DNS CNAME records using the <strong>CNAME Validation </strong>option. This helps confirm that the records are configured correctly fo<strong>r Windows MDM</strong>-only enrollment. To access this option, go to <strong><a href="https://intune.microsoft.com/" rel="noreferrer noopener nofollow" target="_blank">Microsoft Intune admin center</a></strong> &gt; Devices &gt; Enrollment &gt; Windows &gt; CNAME Validation. Starting January 15, 2027, or soon after, Intune will stop supporting CNAME-based auto-discovery for Windows MDM-only enrollment. If the enrollment URL is not provided <strong>automatically</strong>, users will need to enter it manually.</p><div class="wp-block-image"><figure class="aligncenter size-full"><img alt="Microsoft Intune Ends Support for CNAME Auto-Discovery in Windows MDM-Only Enrollment- Fig.1" class="wp-image-383260" data-lazyloaded="1" data-sizes="(max-width: 962px) 100vw, 962px" decoding="async" src="assets/a76be7d6008af9b6/img_0.avif" title="Microsoft Intune Ends Support for CNAME Auto-Discovery in Windows MDM-Only Enrollment 2"/><figcaption class="wp-element-caption">Microsoft Intune Ends Support for CNAME Auto-Discovery in Windows MDM-Only Enrollment- Fig.1</figcaption></figure></div><h2 class="wp-block-heading" id="how-the-user-experience-will-change"><strong>How the User Experience will Change</strong></h2><p class="wp-block-paragraph">Currently, <strong>Windows </strong>can automatically find the Microsoft enrollment service during Windows MDM-only enrollment by using a DNS CNAME record. After<strong> January 15, 2027</strong>, or soon after, this method will no longer be supported. If the enrollment server <strong>URL </strong>is not provided automatically, users will need to enter it manually to continue the <strong>enrollment</strong> process.<a href="https://techcommunity.microsoft.com/blog/intunecustomersuccess/preparing-for-end-of-support-for-cname-auto-discovery-in-windows-mdm-only-enroll/4564973#community-4564973-toc-hId--441224041" rel="nofollow noopener" target="_blank"></a></p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><figure class="wp-block-table aligncenter"><table class="has-contrast-3-background-color has-background has-fixed-layout"><thead><tr><th>Who This Change Affects</th></tr></thead><tbody><tr><td>You use <strong>Windows MDM-only enrollment.</strong></td></tr><tr><td>You have configured an <strong>EnterpriseEnrollment</strong> DNS CNAME record.</td></tr><tr><td>Your enrollment process depends on<strong> DNS record to automatically </strong>discover the enrollment service.</td></tr><tr><td><strong>Microsoft Entra join enrollment</strong></td></tr><tr><td>Microsoft Entra <strong>hybrid join enrollment</strong></td></tr><tr><td>Other enrollment methods that don’t rely on <strong>EnterpriseEnrollment</strong> CNAME discovery</td></tr></tbody></table><figcaption class="wp-element-caption">Microsoft Intune Ends Support for CNAME Auto-Discovery in Windows MDM-Only Enrollment- Table.1</figcaption></figure><div class="wp-block-image"><figure class="aligncenter size-full"><img alt="Microsoft Intune Ends Support for CNAME Auto-Discovery in Windows MDM-Only Enrollment- Fig.2 Creds to MS" class="wp-image-383251" data-lazyloaded="1" data-sizes="(max-width: 920px) 100vw, 920px" decoding="async" src="assets/a76be7d6008af9b6/img_1.avif" title="Microsoft Intune Ends Support for CNAME Auto-Discovery in Windows MDM-Only Enrollment 3"/><figcaption class="wp-element-caption">Microsoft Intune Ends Support for CNAME Auto-Discovery in Windows MDM-Only Enrollment- Fig.2 Creds to MS</figcaption></figure></div><h2 class="wp-block-heading" id="need-further-assistance-or-have-technical-questions"><strong>Need Further Assistance or Have Technical Questions?</strong></h2><p class="has-contrast-3-background-color has-background wp-block-paragraph">Join the <a href="https://www.linkedin.com/company/how-to-manage-devices/" rel="nofollow noopener" target="_blank"><strong>LinkedIn Page</strong></a> and <a href="https://t.me/+Q9lE6G1_BO_bGq97" rel="nofollow"><strong>Telegram group</strong></a> to get the latest step-by-step guides and news updates. Join our <a href="https://www.meetup.com/htmd-community-meetup-group/" rel="nofollow noopener" target="_blank"><strong>Meetup Page</strong></a> to participate in User group meetings. Also, join the <a href="https://htmd.in/WACM2" rel="nofollow noopener" target="_blank"><strong>WhatsApp Community</strong></a>  and the <a href="https://htmd.in/whatsapp_channel" rel="nofollow noopener" target="_blank"><strong>Whatsapp channel</strong></a> to get the latest news on Microsoft Technologies. We are there on <a href="https://www.reddit.com/r/ImpMSNews/" rel="nofollow noopener" target="_blank"><strong>Reddit</strong></a> as well.</p><h2 class="wp-block-heading" id="author"><strong>Author</strong></h2><p class="wp-block-paragraph"><a href="https://www.linkedin.com/in/anoopcnair/" rel="nofollow noopener" target="_blank"><strong>Anoop C Nair</strong></a>  is Workplace Technology solution architect with 25+ years of experience in global enterprise organizations such as JP Morgan, Capgemini, etc. He is Microsoft Certified Trainer. Microsoft MVP from 2015 onwards for consecutive 11 years! He also conducts Intune and modern workplace tech training for enterprise organizations. He is Blogger, Speaker, and Founder of HTMD Community and HTMD Conference. His focus is on Device Management technologies such as Intune, Windows, Cloud PC. He writes about technologies like Intune, SCCM, Windows, Cloud PC, Windows, Entra, Microsoft Security.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins> </p><p class="code-block code-block-8">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="1286776600" data-full-width-responsive="true"></ins> </p><p class="code-block code-block-9">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="8125570634" data-full-width-responsive="true"></ins> </p></div></div></div>
+</article>
+</body>
+</html>
