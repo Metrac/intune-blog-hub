@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Foundry Egress Audit: Why Observe-Only Can Change Requests</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">October 20, 2026</span>
+  </div>
+  <h1>Foundry Egress Audit: Why Observe-Only Can Change Requests</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/foundry-egress-audit-transform-rewrite/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="prose" data-article-body=""><p>Foundry egress audit sounds like a safe way to observe traffic without changing it. For hosted-agent egress controls, I would first ask: <strong>which actions are in the policy?</strong></p>
+<p>Audit changes how <strong>Deny</strong> behaves. It does not make <strong>Transform</strong> and <strong>Rewrite</strong> passive. A policy intended for observation can therefore still change headers or redirect a request.</p>
+<p>I opened the current Foundry portal in my Modern Device Management tenant, checked the actual rule editor and prepared a small offline review tool. The portal screenshots below are real; the example rules were not saved or assigned to an agent.</p>
+<p class="preserved-content"><span id="the-first-thing-i-checked-which-workload-is-covered"></span></p>
+<h2 id="the-first-thing-i-checked-which-workload-is-covered">The first thing I checked: which workload is covered?</h2>
+<p>In my project, the entry point was <strong>Build â Guardrails â Create â Network â Egress rules â Add rules</strong>.</p>
+<p>The page explicitly says that these network controls apply to <strong>hosted agents</strong>, not prompt-based agents or model deployments. That scope matters before discussing any rule outcome.</p>
+<p><img alt="Foundry egress audit context: Network controls apply to hosted agents only" decoding="async" fetchpriority="auto" src="assets/3cf0d7a8f6ee45e5/img_0.webp"/></p>
+<p>I also inspected the existing <strong>Operate â Compliance â Guardrails</strong> view. It listed model-deployment guardrails. I would not use that table as evidence that a hosted agentâs outbound traffic has an egress policy attached.</p>
+<p>A model filter, a hosted-agent policy attachment and the requests emitted by the runtime are different objects. If the test record cannot name which one it refers to, it is too vague to be useful.</p>
+<p class="preserved-content"><span id="audit-is-a-decision-mode-not-a-universal-dry-run"></span></p>
+<h2 id="how-foundry-egress-audit-handles-deny-transform-and-rewrite">How Foundry Egress Audit Handles Deny, Transform and Rewrite</h2>
+<p>The current Microsoft documentation states that a denied request is logged rather than blocked in Audit. It also states that <strong>Transform and Rewrite run in both modes</strong>. The feature is in preview. <a href="https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/add-hosted-agent-guardrails#network-egress-controls-preview">Hosted-agent egress controls</a>.</p>
+<p><img alt="Foundry egress audit action matrix: which actions still change requests" decoding="async" fetchpriority="auto" src="assets/3cf0d7a8f6ee45e5/img_1.webp"/></p>
+<p>My takeaway is not âAudit is unsafe.â It is that the change review must inspect the <strong>action</strong>, not just the mode label. An Audit policy containing only allow/deny decisions has a different operational effect from one that rewrites destinations.</p>
+<p>This is exactly the sort of distinction I want in a pull request. âAudit onlyâ should not be accepted as a substitute for reading the policy.</p>
+<p class="preserved-content"><span id="what-the-portal-actually-lets-you-configure"></span></p>
+<h2 id="what-the-portal-actually-lets-you-configure">What the portal actually lets you configure</h2>
+<p>For the screenshot, I selected <strong>Audit</strong>, then <strong>Transform</strong>, and entered a fictional host plus a harmless marker header:</p>
+<ul>
+<li>Host match: <code>api.demo.invalid</code></li>
+<li>Header: <code>X-Demo-Route</code></li>
+<li>Operation: <code>Set</code></li>
+<li>Static value: <code>audit-check</code></li>
+</ul>
+<p><img alt="Foundry egress audit with Transform selected and a harmless marker header" decoding="async" fetchpriority="auto" src="assets/3cf0d7a8f6ee45e5/img_2.webp"/></p>
+<p>The <code>.invalid</code> names are deliberate placeholders, not endpoints I called. This view proves the editor exposes that combination. The documentation establishes its runtime semantics; I did not send traffic through a deployed rule.</p>
+<p>I then selected <strong>Rewrite</strong> with another fictional destination:</p>
+<p><img alt="Foundry egress audit with Rewrite selected and a fictional destination" decoding="async" fetchpriority="auto" src="assets/3cf0d7a8f6ee45e5/img_3.webp"/></p>
+<p>That second screenshot is the reason I would review Audit changes as carefully as other routing changes. If the request goes to a different receiver, an unchanged agent answer is not enough to tell me what happened underneath.</p>
+<p class="preserved-content"><span id="my-example-a-service-that-returns-its-request-marker"></span></p>
+<h2 id="my-example-a-service-that-returns-its-request-marker">My example: a service that returns its request marker</h2>
+<p>I would validate this with a tiny <strong>owned lab echo service</strong>, not a customer API. The service returns a non-sensitive test marker and records which route reached it. It must not reflect or log authentication headers.</p>
+<p>The experiment has two independent questions:</p>
+<ol>
+<li>Did the runtime let the request continue or stop it?</li>
+<li>Did the request that reached the service retain its original destination and marker?</li>
+</ol>
+<p>A test that checks only the agentâs final answer can miss the second question. The model may summarize an unexpected response convincingly.</p>
+<p>I would give each test a unique <code>X-Test-Case</code> value and a UTC timestamp. At the receiver, retain only the test case, safe marker, route and status. There is no reason to collect bearer tokens or user content to validate routing.</p>
+<p><img alt="Foundry egress audit contract test: baseline, one rule change, receiver-side comparison" decoding="async" fetchpriority="auto" src="assets/3cf0d7a8f6ee45e5/img_4.webp"/></p>
+<p class="preserved-content"><span id="the-four-cases-i-would-run-in-a-lab"></span></p>
+<h2 id="the-four-cases-i-would-run-in-a-lab">The four cases I would run in a lab</h2>
+<p>The table is a proposed acceptance test, not results from my tenant session. It assumes a supported hosted-agent setup and an approved test endpoint.</p>
+<div class="preserved-content"><table>
+<thead>
+<tr>
+<th>Case</th>
+<th>Policy action</th>
+<th>What to compare</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>Audit with a matching Deny</td>
+<td>Does the call continue, and is the would-deny decision recorded?</td>
+</tr>
+<tr>
+<td>B</td>
+<td>Audit with Transform</td>
+<td>Does the owned receiver see the intended marker change?</td>
+</tr>
+<tr>
+<td>C</td>
+<td>Audit with Rewrite</td>
+<td>Which owned receiver gets the call, and which route does it see?</td>
+</tr>
+<tr>
+<td>D</td>
+<td>Enforced with the same Deny</td>
+<td>Is the request prevented from reaching the receiver?</td>
+</tr>
+</tbody>
+</table></div>
+<p>Keep the request body and identity stable between cases. Otherwise you can end up attributing an authentication failure or a code change to the egress rule.</p>
+<p>Before Case C, establish that both test receivers have compatible authentication and no real data. A redirect is not just another filter setting: it changes where the request goes.</p>
+<p class="preserved-content"><span id="read-the-policy-before-deploying-it"></span></p>
+<h2 id="read-the-policy-before-deploying-it">Read the policy before deploying it</h2>
+<p>The RAI-policy resource contains separate content-safety and egress settings. Do not infer the egress mode from the top-level <code>properties.mode</code>. The documented egress API uses <code>properties.egressPolicy</code>, including its own mode and ordered rules. The ARM example uses <code>Enforced</code>, although the portal label is âEnforce.â <a href="https://learn.microsoft.com/en-us/azure/templates/microsoft.cognitiveservices/2026-05-15-preview/accounts/raipolicies">RAI-policy resource reference</a>.</p>
+<p>For an existing exported JSON policy, this is the minimum offline check I would start with:</p>
+<p>If you use Azure CLI, the read-only export can be made from the exact policy resource ID. Sign in to the intended test subscription first; do not use a write or deployment command for this step:</p>
+<pre class="astro-code github-dark" data-language="bash" tabindex="0"><code><span class="line"><span># POLICY_ID is the full ARM resource ID of your existing RAI policy.</span></span>
+<span class="line"><span>az</span><span> rest</span><span> --method</span><span> get</span><span> \</span></span>
+<span class="line"><span>  --url</span><span> "https://management.azure.com${</span><span>POLICY_ID</span><span>}?api-version=2026-05-15-preview"</span><span> \</span></span>
+<span class="line"><span>  --output</span><span> json</span><span> &gt;</span><span> policy.json</span></span></code></pre>
+<p>The export reads the serviceâs current document. Save the collection timestamp with it. A locally edited file with the same name is not evidence of the currently deployed configuration.</p>
+<pre class="astro-code github-dark" data-language="python" tabindex="0"><code><span class="line"><span>import</span><span> json</span></span>
+<span class="line"><span>from</span><span> pathlib </span><span>import</span><span> Path</span></span>
+<span class="line"></span>
+<span class="line"><span>policy </span><span>=</span><span> json.loads(Path(</span><span>"policy.json"</span><span>).read_text())</span></span>
+<span class="line"><span>egress </span><span>=</span><span> policy.get(</span><span>"properties"</span><span>, {}).get(</span><span>"egressPolicy"</span><span>)</span></span>
+<span class="line"><span>if</span><span> not</span><span> isinstance</span><span>(egress, </span><span>dict</span><span>):</span></span>
+<span class="line"><span>    raise</span><span> SystemExit</span><span>(</span><span>"No egress policy found; do not infer one from content safety."</span><span>)</span></span>
+<span class="line"></span>
+<span class="line"><span>if</span><span> egress.get(</span><span>"mode"</span><span>) </span><span>==</span><span> "Audit"</span><span>:</span></span>
+<span class="line"><span>    for</span><span> rule </span><span>in</span><span> egress.get(</span><span>"rules"</span><span>, []):</span></span>
+<span class="line"><span>        action </span><span>=</span><span> rule.get(</span><span>"action"</span><span>, {}).get(</span><span>"actionType"</span><span>)</span></span>
+<span class="line"><span>        if</span><span> action </span><span>in</span><span> {</span><span>"Transform"</span><span>, </span><span>"Rewrite"</span><span>}:</span></span>
+<span class="line"><span>            print</span><span>(</span><span>f</span><span>"REVIEW: </span><span>{</span><span>rule.get(</span><span>'name'</span><span>)</span><span>}</span><span>: </span><span>{</span><span>action</span><span>}</span><span> still runs in Audit"</span><span>)</span></span></code></pre>
+<p>This does not emulate Azure, validate the complete schema or establish that the policy is attached. It catches one specific review mistake before it becomes a runtime surprise.</p>
+<p>I also prepared a fuller local checker with six unit tests. Those tests passed against a synthetic fixture: Audit mutations, mode changes, simple ordering, missing policy data, path-constrained rules and preservation of the input document. That is evidence about the checker, not evidence that a cloud policy has been enforced.</p>
+<p class="preserved-content"><span id="first-match-wins-the-other-easy-mistake"></span></p>
+<h2 id="first-match-wins-the-other-easy-mistake">First match wins: the other easy mistake</h2>
+<p>Rules are evaluated in order, and the first matching rule applies. The portal states this next to the editor. A broad allow ahead of a narrow deny can therefore defeat your intended exception. <a href="https://devblogs.microsoft.com/foundry/egress-controls-hosted-agent/">Microsoftâs egress walkthrough</a>.</p>
+<p>Consider this deliberately incomplete review fixture, not a deployable resource:</p>
+<pre class="astro-code github-dark" data-language="json" tabindex="0"><code><span class="line"><span>[</span></span>
+<span class="line"><span>  {</span><span>"name"</span><span>: </span><span>"broad-allow"</span><span>, </span><span>"host"</span><span>: </span><span>"*.demo.invalid"</span><span>, </span><span>"action"</span><span>: </span><span>"Allow"</span><span>},</span></span>
+<span class="line"><span>  {</span><span>"name"</span><span>: </span><span>"specific-deny"</span><span>, </span><span>"host"</span><span>: </span><span>"api.demo.invalid"</span><span>, </span><span>"action"</span><span>: </span><span>"Deny"</span><span>}</span></span>
+<span class="line"><span>]</span></span></code></pre>
+<p>For the <code>api.demo.invalid</code> request, I would inspect the earlier broad rule before trusting the later exception. Reordering deserves the same review as changing the action itself.</p>
+<p>The local checker intentionally handles only simple overlap patterns. It does not guess how every wildcard, path or normalization case behaves. For anything more complex, the exact request belongs in the runtime acceptance test.</p>
+<p class="preserved-content"><span id="a-policy-exists-is-it-attached-to-this-agent-version"></span></p>
+<h2 id="a-policy-exists-is-it-attached-to-this-agent-version">A policy exists. Is it attached to this agent version?</h2>
+<p>I would keep four identifiers together: Foundry resource, policy resource ID, hosted-agent name and agent version. A screenshot of the policy editor proves neither attachment nor effect.</p>
+<p>Microsoftâs attachment guidance uses <code>rai_config.rai_policy_name</code> on the hosted-agent definition. The useful verification is to read the agent version back and inspect that value. <a href="https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/add-hosted-agent-guardrails">Attach and verify a hosted-agent guardrail</a>.</p>
+<p>Then I would compare the policy returned by the service with the reviewed policy file. If they differ, I would stop the test and explain the mismatch rather than collect a convenient result from the wrong revision.</p>
+<p>This is especially important when a team keeps a previous agent version running while editing a new one. An âall greenâ request can simply have used the older deployment.</p>
+<p class="preserved-content"><span id="rollback-should-restore-a-known-route"></span></p>
+<h2 id="rollback-should-restore-a-known-route">Rollback should restore a known route</h2>
+<p>My rollback plan would be written before adding the first Transform or Rewrite. Preserve the prior policy document and attachment, identify the known-good agent version, and define the small test that proves normal routing is restored.</p>
+<p>I would not make âturn everything offâ the default response. That can remove protections unrelated to the failed change. Reverting one reviewed revision is easier to reason about than manually flipping several controls under pressure.</p>
+<p>For the same reason, change only one dimension at a time: mode, host matching, action or destination. If all four change together, a failed call tells you very little.</p>
+<p class="preserved-content"><span id="foundry-egress-audit-common-questions"></span></p>
+<h2 id="foundry-egress-audit-common-questions">Foundry Egress Audit: Common Questions</h2>
+<p class="preserved-content"><span id="does-audit-leave-every-request-unchanged"></span></p>
+<h3 id="does-audit-leave-every-request-unchanged">Does Audit leave every request unchanged?</h3>
+<p>No. For the documented hosted-agent network controls, Audit changes how Deny is enforced. Transform and Rewrite can still modify a matching request. Inspect the configured action before treating the policy as observation-only.</p>
+<p class="preserved-content"><span id="how-can-i-check-a-foundry-egress-audit-policy-safely"></span></p>
+<h3 id="how-can-i-check-a-foundry-egress-audit-policy-safely">How can I check a Foundry egress audit policy safely?</h3>
+<p>First review the rules with the offline checker. Then use synthetic marker data and an approved echo endpoint to compare the original and received request. The four-case test matrix above distinguishes baseline, deny, transform and rewrite. The local checks in this article are not a substitute for that live test.</p>
+<p class="preserved-content"><span id="what-other-controls-belong-beside-egress-policies"></span></p>
+<h3 id="what-other-controls-belong-beside-egress-policies">What other controls belong beside egress policies?</h3>
+<p>Use <a href="/secure-microsoft-foundry/">Foundry network and identity controls</a> for the broader boundary, and <a href="/microsoft-foundry-tracing-evaluation-video/">agent tracing and evaluation</a> to investigate a run. These answer different questions from a receiver-side egress test.</p>
+<p class="preserved-content"><span id="what-i-would-require-before-leaving-the-pilot"></span></p>
+<h2 id="what-i-would-require-before-leaving-the-pilot">What I would require before leaving the pilot</h2>
+<div class="preserved-content"><table>
+<thead>
+<tr>
+<th>Question</th>
+<th>Evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Is the workload in scope?</td>
+<td>Hosted-agent definition, not only a model deployment</td>
+</tr>
+<tr>
+<td>Is the correct policy attached?</td>
+<td>Read-back of the intended agent version and policy ID</td>
+</tr>
+<tr>
+<td>Does the rule match the intended request?</td>
+<td>Exact host/path case with an identifiable test marker</td>
+</tr>
+<tr>
+<td>Does Audit mutate anything?</td>
+<td>Receiver-side comparison for Transform and Rewrite</td>
+</tr>
+<tr>
+<td>Does the deny enforce as intended?</td>
+<td>Correlated result and absence of receiver execution</td>
+</tr>
+<tr>
+<td>Can we reverse the change?</td>
+<td>Recorded rollback and repeated baseline test</td>
+</tr>
+</tbody>
+</table></div>
+<p>If you are starting with a code-created agent, my <a href="/microsoft-foundry-python-agents-video/">Foundry Python agent walkthrough</a> covers that earlier step. Here the focus is the boundary around its outbound requests.</p>
+<p>The useful lesson is small enough to remember: <strong>Audit is not a promise that the request stays unchanged. Read the action, then inspect what reaches the receiver.</strong></p></div></div></div>
+</article>
+</body>
+</html>
