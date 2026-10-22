@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent 365 MCP Governance: Prove the Block, Not the Badge</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">October 22, 2026</span>
+  </div>
+  <h1>Agent 365 MCP Governance: Prove the Block, Not the Badge</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/agent-365-apim-mcp-governance/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="prose" data-article-body=""><p>A blocked tool in an admin portal looks reassuring. My next question is less comfortable: can the same agent still call the underlying service directly?</p>
+<p>That is the practical question behind Agent 365 MCP governance and the new Azure API Management integration. Not whether an MCP server appears in a list. Whether the control stops the action on the route the agent actually uses.</p>
+<p>I opened my Modern Device Management tenant to check the current experience. There is useful functionality here, but also a clear difference between a visible tool, an editable policy and proven runtime enforcement. This guide separates those three things and gives you an acceptance plan for your own pilot.</p>
+<p class="preserved-content"><span id="what-i-could-actually-see-in-the-tenant"></span></p>
+<h2 id="what-i-could-actually-see-in-the-tenant">What I could actually see in the tenant</h2>
+<p>Under <strong>Microsoft 365 admin center â Agents â Tools</strong>, the registry exposes MCP servers and their tool details. In the Work IQ entry, I could inspect actions such as <code>ask</code>, <code>fetch</code>, <code>create</code>, <code>update</code> and <code>delete</code>.</p>
+<p>That is already a better conversation than âour agent has access to Microsoft 365.â A reader and a writer are not the same capability. Nor is a tool description an authorization policy.</p>
+<p><img alt="Agent 365 MCP governance: actual Work IQ tool list in the Modern Device Management tenant" decoding="async" fetchpriority="auto" src="assets/6774054626e17e14/img_0.webp"/></p>
+<p><em>Captured on 12 October 2026. This is the Work IQ tool inventory, not an APIM integration success screen. The individual switches were disabled in this session; I did not change them.</em></p>
+<p>The <strong>Agents â Settings</strong> page in this tenant did not show the <strong>Gateways</strong> entry described in Microsoftâs setup guide. I will not guess whether that is a rollout, entitlement or configuration issue. It means I cannot honestly present this tenant as a completed gateway onboarding demo.</p>
+<p><img alt="Agent 365 settings in the demo tenant, without a Gateways entry" decoding="async" fetchpriority="auto" src="assets/6774054626e17e14/img_1.webp"/></p>
+<p><em>The missing entry is a concrete readiness gap for this walkthrough, not proof that the feature is unavailable in every tenant.</em></p>
+<p>This matters for the rest of the article: the following integration steps are a documented setup path and my proposed validation design. They are not a claim that I enabled the connection or ran blocking tests here.</p>
+<p class="preserved-content"><span id="what-changed-with-the-apim-integration"></span></p>
+<h2 id="what-agent-365-mcp-governance-adds-to-api-management">What Agent 365 MCP Governance Adds to API Management</h2>
+<p>Microsoftâs 9 October announcement connects Agent 365âs governance decisions with enforcement at supported APIM gateways. APIM v2 supports server-level controls; the preview AI Gateway tier adds finer tool controls, activity observability and threat-protection capabilities. This is a <strong>public-preview integration</strong>, not a universal capability of every APIM tier. <a href="https://techcommunity.microsoft.com/blog/integrationsonazureblog/microsoft-agent-365-and-azure-api-management-integration-for-mcp-governance/4563335">Microsoftâs integration announcement</a>.</p>
+<p>My architectural reading is simple: the control needs an enforcement point in the request path. I would therefore put two routes on the whiteboard before touching any toggle.</p>
+<p><img alt="Agent 365 MCP governance: governed gateway path and separate direct backend path" decoding="async" fetchpriority="auto" src="assets/6774054626e17e14/img_2.webp"/></p>
+<p>The first route is the intended one: agent, gateway, backend. The second is the one people forget: agent, backend. A gateway cannot reject a request it never receives. Whether that second route exists is an environment-specific question, not something a catalog badge answers.</p>
+<p>This is not an argument against the integration. It is the acceptance criterion that makes the integration useful.</p>
+<p class="preserved-content"><span id="start-with-one-tool-and-one-business-action"></span></p>
+<p>I would not onboard the entire tool estate as the first pilot. Pick one low-risk service and separate two operations:</p>
+<ul>
+<li><code>get_ticket</code>: reads a synthetic ticket.</li>
+<li><code>close_ticket</code>: changes only that synthetic ticketâs state.</li>
+</ul>
+<p>Those names are an example contract, not existing Work IQ operations. Keep the data fictional and give the test a dedicated identity. Write down the MCP endpoint, backend endpoint, expected audience and permitted operation. Keep credentials out of the worksheet.</p>
+<p>My success condition would be: reading still works, closing is rejected for the restricted identity, and no equivalent direct route lets that identity close the ticket.</p>
+<p>This forces an important design choice. If your MCP server exposes one broad <code>execute</code> tool that accepts arbitrary commands, a tool-level allowlist may be less useful than it looks. The permission boundary is the operation the backend actually authorizes, not how friendly the toolâs name sounds.</p>
+<p class="preserved-content"><span id="the-onboarding-sequence-i-would-use"></span></p>
+<h2 id="the-onboarding-sequence-i-would-use">The onboarding sequence I would use</h2>
+<p class="preserved-content"><span id="1-check-the-product-path-before-requesting-consent"></span></p>
+<h3 id="1-check-the-product-path-before-requesting-consent">1. Check the product path before requesting consent</h3>
+<p>Confirm the gateway tier, registered MCP server, administrative role and the presence of the documented <strong>Gateways</strong> setting. Microsoftâs flow uses a Global Administrator to grant tenant-wide consent, then discovers servers registered in the connected gateway. It does not discover every MCP server on the internet. <a href="https://learn.microsoft.com/en-us/microsoft-365/admin/manage/manage-tools-gateway?view=o365-worldwide">Manage Tools Gateway</a>.</p>
+<p>In my tenant, I stopped at the missing entry. I did not try random admin URLs, grant unrelated permissions or provision a different service just to make the screenshot look complete.</p>
+<p>For a real pilot, I would capture consent approval in the change record: who approved it, which tenant, which application, which permissions and why. âSomeone clicked Accept during the demoâ is not an operating model.</p>
+<p class="preserved-content"><span id="2-match-the-discovered-object-to-the-actual-endpoint"></span></p>
+<h3 id="2-match-the-discovered-object-to-the-actual-endpoint">2. Match the discovered object to the actual endpoint</h3>
+<p>Once the connection is available and approved, inspect the discovered server in <strong>Agents â Tools</strong>. Compare its identity and endpoint with the gateway configuration and the agentâs actual connection settings.</p>
+<p>Do not match only by display name. âHelpdesk MCPâ can exist in development, test and production at the same time. The test record should name the environment unambiguously.</p>
+<p>I would also record the source of the entry. The Work IQ screen above proves the general tool-inspection experience. It does not prove that my own gateway-managed server was discovered.</p>
+<p class="preserved-content"><span id="3-inspect-tool-granularity-before-choosing-the-control"></span></p>
+<p>Where supported, the <strong>Tools</strong> tab allows individual operations to be controlled. Microsoftâs documentation explicitly limits granular control to supported server types and rollout availability. If discovery is unsupported, you may only have a server-level decision. <a href="https://learn.microsoft.com/en-us/microsoft-365/admin/manage/manage-plugins-skills-mcp-servers">Manage MCP servers and individual tools</a>.</p>
+<p>If I cannot control the write operation separately, I would either split the service contract or accept that blocking the whole server also removes its read capability. I would not call that âleast privilegeâ without explaining the trade-off.</p>
+<p class="preserved-content"><span id="4-apply-the-decision-only-in-the-approved-pilot"></span></p>
+<h3 id="4-apply-the-decision-only-in-the-approved-pilot">4. Apply the decision only in the approved pilot</h3>
+<p>Make one change at a time. Record its timestamp, server or tool identifier, actor and policy revision. Then invoke the exact operation through the expected route with the test identity.</p>
+<p>The key question is not simply âdid the client show an error?â An expired credential can also create an error. I want evidence that the intended control caused the rejection.</p>
+<p class="preserved-content"><span id="six-tests-before-i-would-call-it-governed"></span></p>
+<h2 id="six-tests-before-i-would-call-it-governed">Six tests before I would call it governed</h2>
+<p>This is my proposed test matrix. It deliberately includes a positive control and a bypass check. No row below is a measured result from this tenant.</p>
+<div class="preserved-content"><table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Request</th>
+<th>What I would require as evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Allowed read</td>
+<td>Read the synthetic ticket through the gateway</td>
+<td>Expected response and a matching gateway event</td>
+</tr>
+<tr>
+<td>Restricted write</td>
+<td>Close the same ticket through the gateway</td>
+<td>Policy rejection, with no corresponding backend mutation</td>
+</tr>
+<tr>
+<td>Sibling tool</td>
+<td>Call the allowed read after restricting the write</td>
+<td>Read still works; the control is not an accidental whole-service outage</td>
+</tr>
+<tr>
+<td>Direct backend route</td>
+<td>Attempt the equivalent operation using the same effective permissions</td>
+<td>Backend/network authorization prevents the unintended route, or the gap is explicitly recorded</td>
+</tr>
+<tr>
+<td>Different identity</td>
+<td>Repeat with the approved operator identity</td>
+<td>The result matches the intended identity policy, not a shared overprivileged credential</td>
+</tr>
+<tr>
+<td>Change reversal</td>
+<td>Restore the pilot setting through the approved change process</td>
+<td>Intended capability returns and the audit trail remains understandable</td>
+</tr>
+</tbody>
+</table></div>
+<p>The direct-route test deserves care. Do not broaden an identityâs rights to make the test possible. If no equivalent credential or route exists, record that fact and its reason. Do not replace it with an artificial bypass that your architecture never permitted.</p>
+<p><img alt="Three evidence layers for Agent 365 MCP governance validation" decoding="async" fetchpriority="auto" src="assets/6774054626e17e14/img_3.webp"/></p>
+<p>For each test I would keep a correlation marker, UTC time, effective identity, gateway result and backend result. Never put bearer tokens, subscription keys or full business payloads into the evidence file.</p>
+<p class="preserved-content"><span id="before-the-call-and-after-the-call-are-different-protections"></span></p>
+<h2 id="before-the-call-and-after-the-call-are-different-protections">Before the call and after the call are different protections</h2>
+<p>The announced threat-protection capability can evaluate a tool request before invocation and its result afterwards. A pre-invocation block can prevent execution; post-invocation screening can stop an unsafe result reaching the agent. <a href="https://techcommunity.microsoft.com/blog/integrationsonazureblog/microsoft-agent-365-and-azure-api-management-integration-for-mcp-governance/4563335">Microsoftâs integration announcement</a>.</p>
+<p>My practical consequence: I would never use result filtering as my only control for an irreversible write. If a tool has already sent an email, deleting text from its response does not unsend it. The same reasoning applies to closing a ticket or changing a permission.</p>
+<p>For read tools, output inspection has a different value: it can reduce what flows back into the agent. For write tools, I still want authorization and any required approval before the operation. These are complementary controls, not interchangeable labels.</p>
+<p class="preserved-content"><span id="a-small-incident-record-beats-a-large-dashboard"></span></p>
+<h2 id="a-small-incident-record-beats-a-large-dashboard">A small incident record beats a large dashboard</h2>
+<p>Imagine the helpdesk team reports that the agent closed a ticket it should only have summarized. My first investigation would be a short chain of questions:</p>
+<ol>
+<li>Which operation changed the ticket, and under which identity?</li>
+<li>Did that request pass through the governed gateway?</li>
+<li>Which policy revision applied at that time?</li>
+<li>Was the decision a pre-call block, a post-call result block or no block?</li>
+<li>Did the backend authorize a broader action than the MCP tool contract suggested?</li>
+</ol>
+<p>That record is more actionable than a screenshot showing âBlockedâ today. Todayâs setting does not establish yesterdayâs execution path.</p>
+<p>I would give the AI administrator ownership of the governance decision, the platform team ownership of gateway routing and the service owner ownership of backend authorization. The incident process needs all three. Otherwise each team can honestly report that its own part looks fine while the action still happened.</p>
+<p class="preserved-content"><span id="agent-365-mcp-governance-common-questions"></span></p>
+<h2 id="agent-365-mcp-governance-common-questions">Agent 365 MCP Governance: Common Questions</h2>
+<p class="preserved-content"><span id="does-an-agent-365-registry-entry-enforce-access-by-itself"></span></p>
+<h3 id="does-an-agent-365-registry-entry-enforce-access-by-itself">Does an Agent 365 registry entry enforce access by itself?</h3>
+<p>No. Inventory shows an object; enforcement must happen on the request path. For Agent 365 MCP governance with API Management, confirm the supported integration, the policy decision and the resulting gateway behaviour separately.</p>
+<p class="preserved-content"><span id="what-is-the-difference-between-registering-an-agent-and-governing-its-tools"></span></p>
+<p><a href="/agent-365-registration-python-video/">Registering an agent with Python and Entra</a> makes its identity and registry entry visible. It does not prove that every tool request passes through the gateway. The six acceptance tests above address that second question.</p>
+<p class="preserved-content"><span id="where-does-api-management-fit"></span></p>
+<h3 id="where-does-api-management-fit">Where does API Management fit?</h3>
+<p>My <a href="/azure-api-management-mcp-control-plane/">API Management MCP control-plane guide</a> explains the gateway boundary. Test the direct backend path too: a blocked gateway route is not sufficient if the same action remains available elsewhere.</p>
+<p class="preserved-content"><span id="my-decision-sheet"></span></p>
+<h2 id="my-decision-sheet">My decision sheet</h2>
+<div class="preserved-content"><table>
+<thead>
+<tr>
+<th>Situation</th>
+<th>My next step</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>No Gateways setting, like this tenant</td>
+<td>Resolve availability and prerequisites; do not claim onboarding is complete</td>
+</tr>
+<tr>
+<td>Server visible, tool toggles unavailable</td>
+<td>Confirm supported control granularity before designing tool-specific restrictions</td>
+</tr>
+<tr>
+<td>Gateway rejects, backend still accepts a direct equivalent</td>
+<td>Fix the backend/network authorization boundary</td>
+</tr>
+<tr>
+<td>Client fails, no correlated enforcement evidence</td>
+<td>Treat the test as inconclusive</td>
+</tr>
+<tr>
+<td>Restricted write fails and allowed read still succeeds</td>
+<td>Good pilot signal; repeat with the real identity and representative workload</td>
+</tr>
+</tbody>
+</table></div>
+<p>For the registration side of the story, my <a href="/microsoft-foundry-python-agents-video/">Foundry Python agent walkthrough</a> is a useful starting point. Registration tells you what the agent is. This validation tells you what it can actually do.</p>
+<p>The new integration is interesting because it can bring governance closer to execution. My bar for calling an agent governed remains straightforward: <strong>show me the request that was stopped, and show me that the backend action did not happen.</strong></p></div></div></div>
+</article>
+</body>
+</html>
