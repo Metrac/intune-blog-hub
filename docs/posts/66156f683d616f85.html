@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Google Harness²: Test Self-Improving Agents Locally</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">October 25, 2026</span>
+  </div>
+  <h1>Google Harness²: Test Self-Improving Agents Locally</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/google-harness2-self-improving-agents/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="prose" data-article-body=""><p>Googleâs HarnessÂ² release raises a useful engineering question: what if an agent improves the code and instructions around its model, while the model itself stays unchanged?</p>
+<p>I started with the local demo rather than a cloud benchmark. It is small enough to inspect every input, generated change and result. Below is the reproducible run, what I found in its artifacts, and how I would use the idea in a Microsoft Foundry workflow.</p>
+<p>The local run described here was checked on 20 October 2026. It used deterministic editors and made no model API calls. That boundary matters when interpreting the result.</p>
+<h2 id="what-harness-changes">What HarnessÂ² changes</h2>
+<p>A harness is the software around a model: instructions, tool interfaces, working context and execution logic. HarnessÂ² explores changes to that surrounding system. Its paper distinguishes task-level refinement from retaining useful experience for later tasks; it does not describe updating the model weights. <a href="https://arxiv.org/abs/2610.14224">HarnessÂ² paper</a></p>
+<p>For a helpdesk agent, a harness change might replace an ambiguous tool description, add a source check before an answer, or change how a script reads a report. Each change can affect the result even when the model deployment stays the same.</p>
+<p>That is why I would version more than the prompt. My release record would include the model, tool schemas, retrieval configuration, code revision and evaluation data. Otherwise, âthe same agentâ can mean several different systems.</p>
+<p>The repository offers parallel and sequential refinement modes. Parallel refinement explores alternative candidates; sequential refinement carries changes through successive steps. Neither label is a guarantee that an adopted change will work on a different business process. <a href="https://github.com/google-research/harness2/blob/1cfe254e8d25b15f37048c3730134686abe60335/docs/EXPERIMENTS.md">Experiment guide</a></p>
+<h2 id="run-the-local-example-at-a-fixed-revision">Run the local example at a fixed revision</h2>
+<p>Use a disposable working directory and Python 3.13. The commands below run the repositoryâs local example, not its model-backed benchmark commands:</p>
+<pre class="astro-code github-dark" data-language="bash" tabindex="0"><code><span class="line"><span>git</span><span> clone</span><span> https://github.com/google-research/harness2.git</span></span>
+<span class="line"><span>cd</span><span> harness2</span></span>
+<span class="line"><span>git</span><span> checkout</span><span> 1cfe254e8d25b15f37048c3730134686abe60335</span></span>
+<span class="line"><span>python3.13</span><span> -m</span><span> venv</span><span> .venv</span></span>
+<span class="line"><span>.venv/bin/python</span><span> -m</span><span> harness2.cli.demo</span><span> --output</span><span> runs/local-check</span><span> --k</span><span> 2</span></span></code></pre>
+<p>The checked run completed with:</p>
+<pre class="astro-code github-dark" data-language="text" tabindex="0"><code><span class="line"><span>Local demo: 2 tasks completed; 0 failed.</span></span></code></pre>
+<p>The demo uses real Python executions but a programmed editor and selector. It needs no model credentials. Full benchmark execution has different dependencies and can incur cloud costs; follow the separate <a href="https://github.com/google-research/harness2/blob/1cfe254e8d25b15f37048c3730134686abe60335/docs/SETUP.md">setup guide</a> for that path.</p>
+<p>Keeping the revision fixed makes the example inspectable later. If you try a newer revision, record its commit and use a new output directory. Mixing artifacts from different revisions makes a comparison needlessly difficult.</p>
+<h2 id="inspect-the-calculation-before-trusting-the-summary">Inspect the calculation before trusting the summary</h2>
+<figure class="technical-figure"><a href="/media/2026/10/reddit-guides/captures/originals/harness2-capture.png"><img alt="Original HarnessÂ² demo code on GitHub. The highlighted starting script sums only positive amounts. Source: Google Research, demo.py, lines 30â37." src="assets/66156f683d616f85/img_0.webp"/></a><figcaption>Original HarnessÂ² demo code on GitHub. The highlighted starting script sums only positive amounts. Source: Google Research, demo.py, lines 30â37.</figcaption></figure>
+<p>The example contains two small ledgers with positive and negative amounts. Its starting script sums only positive values. The programmed improvement removes that filter.</p>
+<p>For the first ledger, the difference is easy to verify without an AI judge:</p>
+<table>
+<thead>
+<tr>
+<th>Evidence</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Input amounts</td>
+<td>100.25, â20.10, 5.00</td>
+</tr>
+<tr>
+<td>Starting scriptâs total</td>
+<td>105.25</td>
+</tr>
+<tr>
+<td>Sum including the negative amount</td>
+<td>85.15</td>
+</tr>
+</tbody>
+</table>
+<p>Read the input CSV, the starting script and the generated script. Then compare their saved output files. A success count in a summary is less useful than understanding the specific defect that changed.</p>
+<p>The recorded <code>demo.json</code> also contained these counts:</p>
+<pre class="astro-code github-dark" data-language="json" tabindex="0"><code><span class="line"><span>{</span></span>
+<span class="line"><span>  "n_tasks"</span><span>: </span><span>2</span><span>,</span></span>
+<span class="line"><span>  "done"</span><span>: </span><span>2</span><span>,</span></span>
+<span class="line"><span>  "failed"</span><span>: </span><span>0</span><span>,</span></span>
+<span class="line"><span>  "execution_count"</span><span>: </span><span>28</span><span>,</span></span>
+<span class="line"><span>  "editor_calls"</span><span>: </span><span>32</span></span>
+<span class="line"><span>}</span></span></code></pre>
+<p>Those are local execution and scripted-editor counts. They are not 28 model calls, a quality percentage or a measured productivity improvement. The example demonstrates the refinement workflow; it does not establish that a model independently discovered the bug.</p>
+<p>That distinction is especially useful when reading the <a href="https://www.reddit.com/r/LocalLLaMA/comments/1x9gfnb/google_open_sources_harness2_for_self_improving/">current Reddit discussion</a>. âSelf-improvingâ can refer to a changed prompt, a repaired tool or new model weights. Ask which one was actually tested.</p>
+<h2 id="separate-proposing-a-change-from-accepting-it">Separate proposing a change from accepting it</h2>
+<p>For an enterprise agent, I would keep the improvement loop away from the production release decision. A candidate should first run against examples it did not use while proposing its change.</p>
+<p>For a policy assistant, my small evaluation set would include:</p>
+<ol>
+<li>A question with a clear, current source.</li>
+<li>A question whose source was replaced yesterday.</li>
+<li>A request for a document the caller cannot access.</li>
+<li>A tool timeout with no reliable result.</li>
+<li>A plausible question that the available sources cannot answer.</li>
+</ol>
+<p>The candidate must preserve the access boundary and abstain correctly, not merely produce nicer answers to the easy questions. I would also compare total calls, input size and execution time. A more elaborate harness can improve an answer while making every request too expensive for the intended workload.</p>
+<p>Keep the acceptance rule outside the candidateâs editable files. Record the baseline, candidate revision, test-set version, failures and reviewer decision together. If the agent can silently change its own pass criteria, the resulting green report tells you very little.</p>
+<h2 id="use-foundry-to-review-evidence-then-make-a-normal-release">Use Foundry to review evidence, then make a normal release</h2>
+<p>Foundry Insights is a separate Microsoft feature in public preview. It can turn recurring trace behavior into findings and proposed actions. It is not a native HarnessÂ² integration and does not prove that a proposed change is correct. <a href="https://learn.microsoft.com/en-us/azure/foundry/observability/how-to/agent-insights">Insights documentation</a></p>
+<p>I would use the two ideas in a straightforward workflow:</p>
+<ul>
+<li>Collect representative traces with a stable agent/version identity.</li>
+<li>Select one observed failure, such as repeated retrieval after an empty result.</li>
+<li>Let a development agent propose a small, reviewable change in a branch.</li>
+<li>Run the fixed evaluation set and inspect failures, cost and access behavior.</li>
+<li>Approve and release the candidate through the existing deployment process.</li>
+</ul>
+<p>This can start with ordinary source control and tests. You do not need an autonomous system that edits production prompts to get value from agent-assisted improvement.</p>
+<p>My <a href="/microsoft-foundry-agent-evaluations/">Foundry evaluation guide</a> covers the evaluation layer. The <a href="/microsoft-foundry-observability/">observability guide</a> explains where execution evidence comes from. Keep those responsibilities visible when adding an improvement loop.</p>
+<h2 id="what-i-would-require-before-a-pilot">What I would require before a pilot</h2>
+<p>Start with one read-only task and a fixed cost allowance. Give the experiment an owner and an end date. Use synthetic or approved test data, and retain enough artifacts to reproduce the decision without keeping unnecessary customer content.</p>
+<p>Before promoting a candidate, I would want to answer four questions from the saved files: what changed, which held-out cases improved, which cases regressed, and how to restore the previous version.</p>
+<p>The local ledger example is a good first exercise because the answer can be checked independently. Once that is clear, use an actual failure from your own agent and make the acceptance test equally concrete.</p></div></div></div>
+</article>
+</body>
+</html>
