@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intune STIG Audit: What Happens After You Click Create</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Call4Cloud (Rudy Ooms)</span>
+    <span class="date">October 26, 2026</span>
+  </div>
+  <h1>Intune STIG Audit: What Happens After You Click Create</h1>
+  <div class="orig">Saved for offline reading · <a href="https://patchmypc.com/blog/intune-stig-audit-what-happens-after-you-click-create/?utm_term=rss" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="post-content">
+<p class="wp-block-paragraph">A security baseline normally tells Windows how it should be configured. The STIG Audit baseline asks a different question: how is this device configured right now?</p>
+<p class="wp-block-paragraph">It compares the device against the DISA benchmark and reports the results in Intune. It does not change the settings it checks. That makes it an assessment, not another hardening policy. </p>
+<p class="wp-block-paragraph">The feature is now showing up in commercial tenants too, including mine. Creating the profile is straightforward. I wanted to see what happened afterwards: how the audit reaches Windows, which component runs the checks, and how the results make their way back to Intune.</p>
+<h2 class="wp-block-heading" id="h-what-is-stig">What is STIG?<span class="clth-copy-icon" data-heading-id="h-what-is-stig"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">STIG stands for Security Technical Implementation Guide. DISA, the Defense Information Systems Agency, publishes these guides to define security requirements for products such as Windows. The Windows 11 STIG covers areas including account policies, encryption, audit logging, services, user rights and security options.</p>
+<p class="wp-block-paragraph">Think of it as a set of checks against a defined security standard. Does the device meet the required configuration? If it does not, which requirement is missing? Rules have reference IDs and severity categories. CAT I is high severity, CAT II is medium and CAT III is low. Those references let you connect a finding in the report to the requirement it represents.</p>
+<p class="wp-block-paragraph">The automated assessment uses a SCAP benchmark, the machine readable content used to run the checks. Not every STIG requirement can be assessed automatically. Manual requirements still need a separate review. </p>
+<h2 class="wp-block-heading" id="h-what-the-intune-stig-baseline-actually-does">What the Intune Stig baseline actually does<span class="clth-copy-icon" data-heading-id="h-what-the-intune-stig-baseline-actually-does"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The baseline compares the expected configuration in the benchmark with the configuration found on the device. Windows performs the local evaluation, and Intune provides the resulting report.</p>
+<p class="wp-block-paragraph">DISA benchmark + Current Windows configuration<br/>↓<br/>Local STIG evaluation<br/>↓<br/>Intune Audit report</p>
+<p class="wp-block-paragraph">For example, a rule can check whether a required security setting is enabled. If the setting does not meet the requirement, the audit reports a finding. It does not enable the setting for you. Configuration changes still belong in Settings Catalog or another suitable management policy. </p>
+<p class="wp-block-paragraph">That is the distinction to keep in mind throughout this process: <strong>the audit checks Windows; it does not harden Windows.</strong></p>
+<h2 class="wp-block-heading" id="h-creating-the-stig-audit-profile">Creating the STIG audit profile<span class="clth-copy-icon" data-heading-id="h-creating-the-stig-audit-profile"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">In the Intune admin center, open <strong>Endpoint security → Security baselines</strong> and select <strong>Microsoft Windows 11 STIG SCAP Benchmark</strong>. Choose <strong>Create profile</strong> and give it a useful name, such as Windows 11 STIG audit. </p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/10/image-36-1024x194.png"><picture class="wp-image-199005" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/10/image-36-1024x194.png.webp 1024w, https://patchmypc.com/app/uploads/2026/10/image-36-300x57.png.webp 300w, https://patchmypc.com/app/uploads/2026/10/image-36-766x145.png.webp 766w, https://patchmypc.com/app/uploads/2026/10/image-36.png.webp 1336w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/10/image-36-1024x194.png 1024w, https://patchmypc.com/app/uploads/2026/10/image-36-300x57.png 300w, https://patchmypc.com/app/uploads/2026/10/image-36-766x145.png 766w, https://patchmypc.com/app/uploads/2026/10/image-36.png 1336w" decoding="async" src="assets/86445310be3c9533/img_0.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">The Configuration settings page is different from a normal baseline. There are no individual rules to choose or expected values to change. The profile enables auditing of the settings included in the baseline. </p>
+<p class="wp-block-paragraph">Add scope tags where needed, select the device groups under Assignments, and finish with Review + create. I would start with a small group so there are fewer devices and findings to follow during the first run. </p>
+<figure class="wp-block-image size-full is-resized"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/10/image-7.jpg"><picture class="wp-image-198998" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/10/image-7.jpg.webp 821w, https://patchmypc.com/app/uploads/2026/10/image-7-300x94.png.webp 300w, https://patchmypc.com/app/uploads/2026/10/image-7-766x239.png.webp 766w" sizes="(max-width: 821px) 100vw, 821px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 821px) 100vw, 821px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/10/image-7.jpg 821w, https://patchmypc.com/app/uploads/2026/10/image-7-300x94.png 300w, https://patchmypc.com/app/uploads/2026/10/image-7-766x239.png 766w" decoding="async" src="assets/86445310be3c9533/img_1.jpg"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">Create the profile, assign devices, then open the Audit report. There are no individual audit rules to configure. Once the profile exists, open <strong>Audit report</strong> and select <strong>Generate</strong>. That is the admin setup. It is not a sign that the device has already finished the assessment. </p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/10/image-37.png"><picture class="wp-image-199006" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/10/image-37.png.webp 865w, https://patchmypc.com/app/uploads/2026/10/image-37-300x106.png.webp 300w, https://patchmypc.com/app/uploads/2026/10/image-37-766x272.png.webp 766w" sizes="(max-width: 865px) 100vw, 865px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 865px) 100vw, 865px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/10/image-37.png 865w, https://patchmypc.com/app/uploads/2026/10/image-37-300x106.png 300w, https://patchmypc.com/app/uploads/2026/10/image-37-766x272.png 766w" decoding="async" src="assets/86445310be3c9533/img_2.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">The next part happens on Windows.</p>
+<h2 class="wp-block-heading" id="h-what-happens-after-you-created-the-stig-audit">What happens after you created the Stig Audit?<span class="clth-copy-icon" data-heading-id="h-what-happens-after-you-created-the-stig-audit"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The flow I captured was: Intune delivers the audit definition, Windows hands it to the <strong><a href="https://patchmypc.com/blog/windows-registry-data-is-coming-to-intune-device-inventory/">Device Inventory Agent,</a></strong> the agent evaluates the rules, and Windows returns the status during a later management session. </p>
+<p class="wp-block-paragraph">The examples below come from separate lab captures. They show the same components and operations, but their timestamps should not be combined into one continuous run.</p>
+<figure class="wp-block-image size-full is-resized"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/10/image-34.png"><picture class="wp-image-199001" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/10/image-34.png.webp 828w, https://patchmypc.com/app/uploads/2026/10/image-34-300x266.png.webp 300w, https://patchmypc.com/app/uploads/2026/10/image-34-767x679.png.webp 767w" sizes="(max-width: 828px) 100vw, 828px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 828px) 100vw, 828px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/10/image-34.png 828w, https://patchmypc.com/app/uploads/2026/10/image-34-300x266.png 300w, https://patchmypc.com/app/uploads/2026/10/image-34-767x679.png 767w" decoding="async" src="assets/86445310be3c9533/img_3.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">The full flow from profile assignment to the Audit report. The numbered headings below follow the same nine steps. </p>
+<h3 class="wp-block-heading" id="h-steps-1-and-2-from-stig-assignment-to-notification">Steps 1 and 2: From STIG assignment to notification<span class="clth-copy-icon" data-heading-id="h-steps-1-and-2-from-stig-assignment-to-notification"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">In the delivery trace, Windows received a WNS notification. The DeviceManagement event log recorded the notification being parsed, followed by the start of an OMA DM management session with PushRouterOrigin 0x7. This was the MMP C path used in the capture.</p>
+<p class="wp-block-paragraph">The notification did not contain the STIG benchmark. It prompted Windows to contact Intune. The management session then retrieved the work waiting for the device. </p>
+<p class="wp-block-paragraph">That is the first separation: notifying the device is not the same as running the audit.</p>
+<h3 class="wp-block-heading" id="h-step-3-windc-accepts-the-audit-stig-documents">Step 3: WinDC accepts the audit  STIG documents<span class="clth-copy-icon" data-heading-id="h-step-3-windc-accepts-the-audit-stig-documents"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">The commands targeted <a href="https://learn.microsoft.com/en-us/windows/client-management/declared-configuration"><strong>Windows Declared Configuration</strong>, or <strong>WinDC</strong></a>. Two document paths were involved: one for the complete configuration and one for the inventory request. </p>
+<p class="wp-block-paragraph">./Device/Vendor/MSFT/DeclaredConfiguration/Host/Complete/Documents/&lt;DocId&gt;/Document<br/>./Device/Vendor/MSFT/DeclaredConfiguration/Host/Inventory/Documents/&lt;DocId&gt;/Document</p>
+<p class="wp-block-paragraph">In this audit, the Complete document carried the signed audit definition. The Inventory document identified the setting reports Intune wanted Windows to return.</p>
+<p class="wp-block-paragraph">Microsoft documents that the Declared Configuration stack validates the document and processes it asynchronously. It can return control to the management session before the requested work has finished. So a successful response at this point means Windows accepted the document. <strong>It does not mean all STIG checks have completed.</strong></p>
+<h3 class="wp-block-heading" id="h-step-4-the-device-inventory-agent-takes-over">Step 4: The Device Inventory Agent takes over<span class="clth-copy-icon" data-heading-id="h-step-4-the-device-inventory-agent-takes-over"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">The next useful evidence was in <strong>InventoryAdaptor.log</strong>. The adaptor parsed the settings, connected to the Inventory Service and called NotifyPolicyChange. The captured operation completed successfully. </p>
+<p class="wp-block-paragraph">Parsed 216 Settings<br/>Connecting to InventoryService pipe<br/>NotifyPolicyChange call succeeded<br/>Operation=SET  Result=0x00000000  MIResult=0x00000000</p>
+<p class="wp-block-paragraph">The component evaluating the rules was the <strong>Microsoft Device Inventory Agent</strong>. WinDC delivered the audit work to it; the agent performed the collection and validation. [5]</p>
+<p class="wp-block-paragraph">That also explains why the name Inventory appears throughout the trace. This is not an app installation. The agent is collecting security configuration and comparing it with the audit definition.</p>
+<h3 class="wp-block-heading" id="h-step-5-the-local-stig-collection-runs-separately">Step 5: The local STIG collection runs separately<span class="clth-copy-icon" data-heading-id="h-step-5-the-local-stig-collection-runs-separately"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">In one collection trace, about four minutes passed between the completed management command and the start of the collection. The harvester then recorded a PolicyChange trigger. [5]</p>
+<p class="wp-block-paragraph">Starting collection run due to trigger event PolicyChange</p>
+<p class="wp-block-paragraph">A request for results before that collection had finished could still read the previous cached state. Receiving the policy and evaluating it were separate operations. [5]</p>
+<figure class="wp-block-image size-full is-resized"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/10/image-33.png"><picture class="wp-image-199000" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/10/image-33.png.webp 828w, https://patchmypc.com/app/uploads/2026/10/image-33-300x228.png.webp 300w, https://patchmypc.com/app/uploads/2026/10/image-33-768x584.png.webp 768w" sizes="(max-width: 828px) 100vw, 828px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 828px) 100vw, 828px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/10/image-33.png 828w, https://patchmypc.com/app/uploads/2026/10/image-33-300x228.png 300w, https://patchmypc.com/app/uploads/2026/10/image-33-768x584.png 768w" decoding="async" src="assets/86445310be3c9533/img_4.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">A separate device trace: policy acceptance, local collection and result retrieval happen at different times. These are capture timestamps, not fixed service intervals.</p>
+<p class="wp-block-paragraph">In that trace, pressing Sync did not immediately rerun secedit and auditpol. The management session read the cached result, while the Inventory Agent handled the collection separately. That is what the capture showed, rather than a promise about every possible trigger or agent version. </p>
+<h3 class="wp-block-heading" id="h-step-5-continued-what-the-agent-reads-on-windows">Step 5 continued: What the agent reads on Windows<span class="clth-copy-icon" data-heading-id="h-step-5-continued-what-the-agent-reads-on-windows"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">The audit definition describes how each setting should be collected and validated. In the captured run, the agent used registry reads, WMI, a local security policy export and an audit policy query. </p>
+<figure class="wp-block-image size-full is-resized"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/10/image-32.png"><picture class="wp-image-198999" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/10/image-32.png.webp 828w, https://patchmypc.com/app/uploads/2026/10/image-32-300x163.png.webp 300w, https://patchmypc.com/app/uploads/2026/10/image-32-767x418.png.webp 767w" sizes="(max-width: 828px) 100vw, 828px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 828px) 100vw, 828px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/10/image-32.png 828w, https://patchmypc.com/app/uploads/2026/10/image-32-300x163.png 300w, https://patchmypc.com/app/uploads/2026/10/image-32-767x418.png 767w" decoding="async" src="assets/86445310be3c9533/img_5.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">The four collection sources and the local status cache. The 36 fail / 20 error split is a local interpretation of the 56 validation failures in this capture, not a separate Intune report count. </p>
+<p class="wp-block-paragraph">Registry reads and WMI supplied Windows settings and device state. For local security policy, the agent invoked secedit. For advanced audit policy, it invoked auditpol: </p>
+<p class="wp-block-paragraph">secedit /export /cfg &lt;temporary file&gt;<br/>auditpol /get /category:*</p>
+<p class="wp-block-paragraph">It did not start a new process for every rule that needed the same information. In this run, the agent reused cached command output. One secedit export and one auditpol query supplied the command based checks. </p>
+<p class="wp-block-paragraph">At the end, the audit portion of the log reported: </p>
+<p class="wp-block-paragraph">Audit: 150 Success, 56 Validation Failure, 10 Not Applicable</p>
+<p class="wp-block-paragraph">Those are the harvester’s categories for 216 processed settings. They are not a count of compliant devices. The Validation Failure entries included both failed comparisons and problems parsing or evaluating collected data. That distinction matters when troubleshooting. A rule finding a value that does not meet the benchmark is different from a rule that could not be evaluated reliably.</p>
+<h3 class="wp-block-heading" id="h-step-6-windows-keeps-the-result-until-intune-asks-for-it">Step 6: Windows keeps the result until Intune asks for it<span class="clth-copy-icon" data-heading-id="h-step-6-windows-keeps-the-result-until-intune-asks-for-it"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">The device stores the status locally before it is returned to Intune. In this lab, the local report entries were under: HKLM\SOFTWARE\Microsoft\DeviceInventory\Reports</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/10/image-38.png"><img alt="" class="wp-image-199011" data-lazy-sizes="(max-width: 807px) 100vw, 807px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/10/image-38.png 807w, https://patchmypc.com/app/uploads/2026/10/image-38-300x121.png 300w, https://patchmypc.com/app/uploads/2026/10/image-38-767x310.png 767w" decoding="async" src="assets/86445310be3c9533/img_6.png"/></a></figure>
+<p class="wp-block-paragraph">The STIG entries used the same setting identifiers seen in Graph, with status information for the adaptor, harvester and uploader. This is an observed implementation detail, not something administrators need to export or modify to use the baseline.  The important part is that the result already exists on Windows. Intune can retrieve that cached status during a later management session.</p>
+<h3 class="wp-block-heading" id="h-steps-7-and-8-the-status-returns-through-windc">Steps 7 and 8: The status returns through WinDC<span class="clth-copy-icon" data-heading-id="h-steps-7-and-8-the-status-returns-through-windc"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">The STIG return path in the capture was different from the agent’s normal hardware and application inventory upload. Intune requested the Declared Configuration inventory result document through the management channel. </p>
+<p class="wp-block-paragraph">GET ./Device/Vendor/MSFT/DeclaredConfiguration/Host/Inventory/Results/&lt;DocId&gt;/Document</p>
+<p class="wp-block-paragraph">The device returned a successful SyncML response and a payload containing the setting identifiers together with AdapterStatus, HarvesterStatus and UploaderStatus. </p>
+<p class="wp-block-paragraph">This is why I would not troubleshoot an empty STIG report solely by looking at the ordinary inventory upload. In the captured flow, the audit status came back through the WinDC result document. The device has now returned its result. There is still one more stage before it becomes useful in the portal.</p>
+<figure class="wp-block-image size-full is-resized"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/10/image-31.png"><picture class="wp-image-199002" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/10/image-31.png.webp 828w, https://patchmypc.com/app/uploads/2026/10/image-31-300x93.png.webp 300w, https://patchmypc.com/app/uploads/2026/10/image-31-767x239.png.webp 767w" sizes="(max-width: 828px) 100vw, 828px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 828px) 100vw, 828px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/10/image-31.png 828w, https://patchmypc.com/app/uploads/2026/10/image-31-300x93.png 300w, https://patchmypc.com/app/uploads/2026/10/image-31-767x239.png 767w" decoding="async" src="assets/86445310be3c9533/img_7.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">Local status returns through the management channel. Intune reporting can make the data visible later. </p>
+<h3 class="wp-block-heading" id="h-step-9-give-intune-reporting-time">Step 9: Give Intune reporting time<span class="clth-copy-icon" data-heading-id="h-step-9-give-intune-reporting-time"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph"><strong>Returned to Intune does not mean immediately visible in the Audit report.</strong> The result still has to become available to the reporting service. Microsoft allows up to 24 hours for initial results; later updates can lag by one or two device checkin cycles. </p>
+<p class="wp-block-paragraph">In my portal test, I created the profile at 12:30 UTC on 13 October 2026. The report was still empty at 18:52 UTC. When I checked again the following morning, at 08:48 CEST on 14 October, it showed 216 items. </p>
+<p class="wp-block-paragraph">That is roughly 18 hours from profile creation to my populated report check, not proof of an 18 hour processing delay. I did not observe the exact moment the data became available. It appeared between the last empty check and the next morning’s check.</p>
+<figure class="wp-block-image size-full is-resized"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/10/image-35.png"><picture class="wp-image-199003" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/10/image-35.png.webp 822w, https://patchmypc.com/app/uploads/2026/10/image-35-300x205.png.webp 300w, https://patchmypc.com/app/uploads/2026/10/image-35-768x524.png.webp 768w" sizes="(max-width: 822px) 100vw, 822px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 822px) 100vw, 822px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/10/image-35.png 822w, https://patchmypc.com/app/uploads/2026/10/image-35-300x205.png 300w, https://patchmypc.com/app/uploads/2026/10/image-35-768x524.png 768w" decoding="async" src="assets/86445310be3c9533/img_8.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">The Intune Audit report on 14 October 2026, showing 216 items. This screenshot establishes that the rule table populated; it does not show the device result details.</p>
+<p class="wp-block-paragraph">Generate again refreshes the report from the latest available reporting data. It does not start a new local audit or make a recent device result appear instantly. The practical point is simple: after Windows has returned the audit status, allow time for the data to become visible and accessible in Intune. An initially empty report is not, by itself, evidence that the device failed to run the audit.</p>
+<h2 class="wp-block-heading" id="h-reading-the-audit-report">Reading the Audit report<span class="clth-copy-icon" data-heading-id="h-reading-the-audit-report"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The summary lists each rule, its reference ID, severity and Success devices count. That count is for the individual check, not the whole baseline. Open a rule’s device count to inspect device results. Pass, Fail, Not applicable and Error have different meanings; Unknown means no result has been reported yet. The report does not display the underlying device value.</p>
+<p class="wp-block-paragraph">Use the findings to decide which configuration needs attention. The assessment tells you where to investigate; applying the appropriate configuration is a separate task. </p>
+<p class="wp-block-paragraph">One detail from this tenant is worth keeping separate from the setup instructions. Its active template exposed 216 settings and the report showed 216 items. Microsoft Learn still lists 197. The captured setting IDs reference Win11STIGV2R7, but I do not have a verified explanation for the count difference.</p>
+<h2 class="wp-block-heading" id="h-where-to-look-when-the-report-is-empty">Where to look when the report is empty<span class="clth-copy-icon" data-heading-id="h-where-to-look-when-the-report-is-empty"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Start with the profile’s <strong>Device assignment status</strong>. Then follow the device evidence: did Windows receive the work, did the adaptor hand it to the Inventory Service, and did the harvester run the checks? </p>
+<p class="wp-block-paragraph">The useful sources in this investigation were the <strong>DeviceManagement Enterprise Diagnostics Provider</strong> event logs, <strong>InventoryAdaptor.log</strong>, and <strong>IntuneInventoryHarvesterLog</strong>. The adaptor log showed the policy handoff. </p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/10/image-39.png"><picture class="wp-image-199012" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/10/image-39.png.webp 731w, https://patchmypc.com/app/uploads/2026/10/image-39-300x116.png.webp 300w" sizes="(max-width: 731px) 100vw, 731px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 731px) 100vw, 731px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/10/image-39.png 731w, https://patchmypc.com/app/uploads/2026/10/image-39-300x116.png 300w" decoding="async" src="assets/86445310be3c9533/img_9.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">The harvester log showed the collection and validation. The later management trace showed the result being returned. </p>
+<p class="wp-block-paragraph">Keep the policy ID with the evidence. Recreating a profile gives it a new ID, while a local snapshot can still contain status from an earlier evaluation. Do not assume an old cached result belongs to the profile currently open in the portal.</p>
+<p class="wp-block-paragraph">Once the device has returned a result for the policy you are checking, reporting latency is a separate consideration. Repeatedly pressing Generate cannot replace the device evaluation or the processing that follows it.</p>
+<h2 class="wp-block-heading" id="h-create-is-the-start-not-the-finish">Create is the start, not the finish<span class="clth-copy-icon" data-heading-id="h-create-is-the-start-not-the-finish"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The visible setup is short: create the STIG audit profile, assign devices and open the report. Underneath that, Windows receives the work, WinDC passes the audit definition to the Device Inventory Agent, and the agent checks the current configuration. A later management session returns the cached status. </p>
+<p class="wp-block-paragraph">The report comes afterwards. Keeping those stages separate makes it much easier to understand an empty table and to find the right logs when something genuinely goes wrong.</p>
+<p class="wp-block-paragraph"><strong>STIG Audit tells you how Windows compares with the benchmark. It does not change Windows, and finishing the local audit does not make the report appear immediately.</strong></p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
