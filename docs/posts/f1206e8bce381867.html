@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Foundry Agent Costs: Bound Tokens, Retries and Spend</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">October 29, 2026</span>
+  </div>
+  <h1>Foundry Agent Costs: Bound Tokens, Retries and Spend</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/foundry-agent-costs-budget-limits/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="prose" data-article-body=""><p>A cheap model call can become an expensive agent run. The agent retries a failed tool, sends the growing conversation again and asks another model to check the result. The individual calls look reasonable; the completed task does not.</p>
+<p>The recent discussion about <a href="https://www.reddit.com/r/AI_Agents/comments/1x9gssy/accenture_just_capped_claude_spend_at_29person/">per-user AI spending limits</a> captures a real operational question: where does the system actually stop? I would answer that before negotiating a cheaper token price.</p>
+<p>This guide separates Azure billing alerts, gateway token quotas and application-level admission. The local example uses fictional amounts and no model calls. Product references were checked on 20 October 2026.</p>
+<h2 id="measure-the-cost-of-an-accepted-result">Measure the cost of an accepted result</h2>
+<p>Start with a business unit that a person can evaluate: one correctly resolved ticket, one reviewed report or one document processed within the required quality threshold. A successful HTTP response is not that unit.</p>
+<p>For a support workflow, I would record the total model usage, retrieval/tool costs, processing time, retries and final acceptance outcome under one task ID. An unresolved task still belongs in the cost numerator.</p>
+<pre class="astro-code github-dark" data-language="text" tabindex="0"><code><span class="line"><span>Cost per accepted result =</span></span>
+<span class="line"><span>  costs of all attempts in the period / accepted results in the period</span></span></code></pre>
+<p>Do not divide only the successful callsâ cost by successful calls. That hides the waste you need to investigate. Also keep fixed and capacity-based charges separate from per-request estimates. Foundryâs cost documentation covers several billing components; a token estimate is not a complete invoice. <a href="https://learn.microsoft.com/en-us/azure/foundry/concepts/manage-costs">Foundry cost management</a></p>
+<h2 id="give-each-control-a-specific-job">Give each control a specific job</h2>
+<figure class="technical-figure"><a href="/media/2026/10/reddit-guides/captures/originals/agent-costs-capture.png"><img alt="Actual TPM quota and deployment allocations in the demo tenant. This view controls throughput and capacity; it is not a currency budget for one agent run." src="assets/f1206e8bce381867/img_0.webp"/></a><figcaption>Actual TPM quota and deployment allocations in the demo tenant. This view controls throughput and capacity; it is not a currency budget for one agent run.</figcaption></figure>
+<table>
+<thead>
+<tr>
+<th>Control</th>
+<th>Useful for</th>
+<th>What I would not assume</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Azure Cost Management budget</td>
+<td>Financial reporting, forecasts and notifications</td>
+<td>Immediate request blocking</td>
+</tr>
+<tr>
+<td>APIM token quota</td>
+<td>Bounding model traffic through a particular gateway path</td>
+<td>An exact currency limit across every model and region</td>
+</tr>
+<tr>
+<td>Application run budget</td>
+<td>Deciding whether another step may start</td>
+<td>Coverage of calls that bypass the application</td>
+</tr>
+<tr>
+<td>Step count and deadline</td>
+<td>Stopping loops and abandoned work</td>
+<td>A substitute for tracking actual usage</td>
+</tr>
+</tbody>
+</table>
+<p>Azure budgets do not stop consumption automatically. Cost data and budget evaluation also have delay, so they cannot be the last control before an expensive request. Keep the alert, but attach it to a clear owner and response procedure. <a href="https://learn.microsoft.com/en-us/azure/cost-management-billing/costs/tutorial-acm-create-budgets">Azure budget behavior</a></p>
+<p>Foundry also has a Cost Control CLI surface in preview. Verify the exact action, scope and enforcement behavior of the API version you use. A saved alert or audit rule is not evidence of a blocking limit. <a href="https://learn.microsoft.com/en-us/cli/azure/cognitiveservices/account/costcontrol?view=azure-cli-latest">Cost Control reference</a></p>
+<h2 id="reserve-budget-before-calling-the-model">Reserve budget before calling the model</h2>
+<p>A check against completed spend misses concurrent requests. Two workers can both see the same remaining balance and both start work.</p>
+<p>I would reserve a conservative amount before dispatch, then settle it against reported usage. The estimate needs the actual input, permitted output size and the serving optionâs current prices. Include a separate allowance for tools that can charge independently.</p>
+<p>Here is the core of a local admission example. All amounts are fictional USD values; the class does not calculate a provider price:</p>
+<pre class="astro-code github-dark" data-language="python" tabindex="0"><code><span class="line"><span>from</span><span> decimal </span><span>import</span><span> Decimal</span></span>
+<span class="line"><span>from</span><span> threading </span><span>import</span><span> Lock</span></span>
+<span class="line"><span>from</span><span> uuid </span><span>import</span><span> uuid4</span></span>
+<span class="line"></span>
+<span class="line"><span>class</span><span> Budget</span><span>:</span></span>
+<span class="line"><span>    def</span><span> __init__</span><span>(self, limit):</span></span>
+<span class="line"><span>        self</span><span>.limit </span><span>=</span><span> Decimal(limit)</span></span>
+<span class="line"><span>        if</span><span> not</span><span> self</span><span>.limit.is_finite() </span><span>or</span><span> self</span><span>.limit </span><span>&lt;=</span><span> 0</span><span>:</span></span>
+<span class="line"><span>            raise</span><span> ValueError</span><span>(</span><span>"invalid limit"</span><span>)</span></span>
+<span class="line"><span>        self</span><span>.spent </span><span>=</span><span> Decimal(</span><span>"0"</span><span>)</span></span>
+<span class="line"><span>        self</span><span>.pending </span><span>=</span><span> {}</span></span>
+<span class="line"><span>        self</span><span>.halted </span><span>=</span><span> False</span></span>
+<span class="line"><span>        self</span><span>.lock </span><span>=</span><span> Lock()</span></span>
+<span class="line"></span>
+<span class="line"><span>    def</span><span> reserve</span><span>(self, amount):</span></span>
+<span class="line"><span>        amount </span><span>=</span><span> Decimal(amount)</span></span>
+<span class="line"><span>        if</span><span> not</span><span> amount.is_finite() </span><span>or</span><span> amount </span><span>&lt;=</span><span> 0</span><span>:</span></span>
+<span class="line"><span>            raise</span><span> ValueError</span><span>(</span><span>"invalid reservation"</span><span>)</span></span>
+<span class="line"><span>        with</span><span> self</span><span>.lock:</span></span>
+<span class="line"><span>            if</span><span> self</span><span>.halted </span><span>or</span><span> self</span><span>.spent </span><span>+</span><span> sum</span><span>(</span><span>self</span><span>.pending.values()) </span><span>+</span><span> amount </span><span>&gt;</span><span> self</span><span>.limit:</span></span>
+<span class="line"><span>                raise</span><span> RuntimeError</span><span>(</span><span>"stop before calling the model"</span><span>)</span></span>
+<span class="line"><span>            key </span><span>=</span><span> str</span><span>(uuid4())</span></span>
+<span class="line"><span>            self</span><span>.pending[key] </span><span>=</span><span> amount</span></span>
+<span class="line"><span>            return</span><span> key</span></span>
+<span class="line"></span>
+<span class="line"><span>    def</span><span> settle</span><span>(self, key, actual):</span></span>
+<span class="line"><span>        actual </span><span>=</span><span> Decimal(actual)</span></span>
+<span class="line"><span>        if</span><span> not</span><span> actual.is_finite() </span><span>or</span><span> actual </span><span>&lt;</span><span> 0</span><span>:</span></span>
+<span class="line"><span>            raise</span><span> ValueError</span><span>(</span><span>"invalid cost"</span><span>)</span></span>
+<span class="line"><span>        with</span><span> self</span><span>.lock:</span></span>
+<span class="line"><span>            reserved </span><span>=</span><span> self</span><span>.pending.pop(key)</span></span>
+<span class="line"><span>            self</span><span>.spent </span><span>+=</span><span> actual</span></span>
+<span class="line"><span>            if</span><span> actual </span><span>&gt;</span><span> reserved:</span></span>
+<span class="line"><span>                self</span><span>.halted </span><span>=</span><span> True</span></span>
+<span class="line"><span>                raise</span><span> RuntimeError</span><span>(</span><span>"estimate exceeded; reconcile before resuming"</span><span>)</span></span>
+<span class="line"></span>
+<span class="line"><span>budget </span><span>=</span><span> Budget(</span><span>"5.00"</span><span>)</span></span>
+<span class="line"><span>first </span><span>=</span><span> budget.reserve(</span><span>"2.00"</span><span>)</span></span>
+<span class="line"><span>budget.reserve(</span><span>"2.00"</span><span>)</span></span>
+<span class="line"><span>try</span><span>:</span></span>
+<span class="line"><span>    budget.reserve(</span><span>"2.00"</span><span>)</span></span>
+<span class="line"><span>except</span><span> RuntimeError</span><span>:</span></span>
+<span class="line"><span>    print</span><span>(</span><span>"third request blocked"</span><span>)</span></span>
+<span class="line"><span>budget.settle(first, </span><span>"1.25"</span><span>)</span></span>
+<span class="line"><span>assert</span><span> budget.spent </span><span>+</span><span> sum</span><span>(budget.pending.values()) </span><span>==</span><span> Decimal(</span><span>"3.25"</span><span>)</span></span></code></pre>
+<p>The third reservation is rejected before a model call can start. The other pending reservation remains counted until it is resolved. If a timeout leaves the providerâs result unknown, do not simply refund it and launch the same work again.</p>
+<p>The lock only coordinates threads in one process. A production service with multiple replicas needs a durable, atomic reservation store and reconciliation after restarts. This example is a test of the admission rule, not an Azure-wide spending guarantee.</p>
+<h2 id="add-a-token-boundary-on-the-gateway-route">Add a token boundary on the gateway route</h2>
+<p>For a shared pilot counter, an APIM policy can look like this:</p>
+<pre class="astro-code github-dark" data-language="xml" tabindex="0"><code><span class="line"><span>&lt;</span><span>llm-token-limit</span></span>
+<span class="line"><span>  counter-key</span><span>=</span><span>"support-pilot-v1"</span></span>
+<span class="line"><span>  tokens-per-minute</span><span>=</span><span>"6000"</span></span>
+<span class="line"><span>  token-quota</span><span>=</span><span>"60000"</span></span>
+<span class="line"><span>  token-quota-period</span><span>=</span><span>"Daily"</span></span>
+<span class="line"><span>  estimate-prompt-tokens</span><span>=</span><span>"true"</span><span> /&gt;</span></span></code></pre>
+<p>Those are example token limits, not recommended production values. Every request using this fixed key shares the same pilot counter. For tenant-specific limits, derive the key from a validated identity or trusted server-side mapping, not a header a caller can choose freely.</p>
+<p>APIM documents different responses for rate and quota exhaustion, estimation behavior and possible overshoot with concurrent calls. Counters are also gateway-scoped. Test streaming and concurrency instead of treating the policy as an exact monetary cap. <a href="https://learn.microsoft.com/en-us/azure/api-management/llm-token-limit-policy">Token-limit policy</a></p>
+<p>The <a href="/azure-ai-gateway-apim-video/">AI gateway guide</a> covers the routing layer. This control only helps when the calls actually pass through that gateway.</p>
+<h2 id="bound-retries-across-the-entire-task">Bound retries across the entire task</h2>
+<p>Three attempts in the SDK, three in a tool wrapper and three in the outer agent loop can permit up to 27 attempts for one operation. That is an illustrative worst case, but it shows why I would count attempts centrally.</p>
+<p>For each retry, check the remaining deadline, step count, reserved budget and whether repeating the operation is safe. Authentication failures need configuration changes, not repeated model reasoning. A persistent quota error should stop the run. A transient error can justify a bounded delay and another attempt if the task still has room.</p>
+<p>Keep write operations out of blind retries. If a tool created a ticket but the acknowledgment was lost, check the business record or idempotency key before sending the create request again.</p>
+<h2 id="test-the-stop-not-only-the-alert">Test the stop, not only the alert</h2>
+<p>My local tests admitted only three of thirty one-unit reservation attempts against a three-unit budget, using a pool of ten workers. They also checked negative inputs, settlement and an underestimated request that pauses further admission. These are tests of the local example, not provider billing behavior.</p>
+<p>Before a pilot, I would additionally test:</p>
+<ul>
+<li>A long input with the maximum allowed output.</li>
+<li>Several simultaneous requests near the remaining limit.</li>
+<li>A tool timeout after the backend has accepted work.</li>
+<li>A client disconnect while processing continues.</li>
+<li>A direct-backend request that should not bypass the gateway.</li>
+<li>A cost estimate that no longer matches the serving price.</li>
+</ul>
+<p>Finally, compare estimates with actual cost data and include abandoned and unsuccessful runs. That gives you a useful discussion about model choice: which configuration delivers the required result within the budget, including the work needed to correct it?</p></div></div></div>
+</article>
+</body>
+</html>

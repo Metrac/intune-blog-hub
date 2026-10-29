@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AgentDome Review: AI Cost Analysis and Optimization</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">October 29, 2026</span>
+  </div>
+  <h1>AgentDome Review: AI Cost Analysis and Optimization</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/agentdome-ai-cost-optimization/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="prose" data-article-body=""><p>In AgentDome, I can follow an AI cost to the employee, agent, tool and model behind it. From there, I can open an optimization recommendation and inspect the proposed change.</p>
+<p>For this review, I worked through the FinOps interface and checked existing cache-configuration packages in my Intune demo tenant. I wanted to see how the recommendation, endpoint change and later usage report fit together.</p>
+<p><strong>Disclosure:</strong> I am a member of AgentDomeâs advisory board. Its screenshots use staging data, including identities, amounts, dates and evaluations. They are not customer results or an independent savings benchmark. The Intune screenshots show existing demo-tenant packages; I did not deploy a new policy or run a remediation for this review.</p>
+<p>I checked the interface and the two available public product articles on 20 October 2026. The pilot steps below are recommendations, not a report of a completed rollout.</p>
+<h2 id="what-agentdome-does">What AgentDome does</h2>
+<p>The interface covers cost attribution, recommendations and policies:</p>
+<div aria-label="AgentDome responsibilities and outcomes" class="technical-table" role="region" tabindex="0"><table>
+<thead>
+<tr>
+<th>Work</th>
+<th>What the product shows</th>
+<th>What a team can do with it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Attribute consumption</td>
+<td>Tools, models, people, agents, departments and projects</td>
+<td>Find an owner for a cost instead of stopping at a provider invoice</td>
+</tr>
+<tr>
+<td>Identify a change</td>
+<td>Model, context, tool and caching recommendations</td>
+<td>Review a specific configuration decision</td>
+</tr>
+<tr>
+<td>Apply and review</td>
+<td>Automation targets, MDM integration and reporting</td>
+<td>Roll out a scoped change and compare subsequent results</td>
+</tr>
+</tbody>
+</table></div>
+<p>AgentDome describes a collector in the customerâs environment, with connectors to the AI platforms. According to its security article, sensitive content is processed locally and required metadata goes to the central platform. Ask which fields are included, particularly if you plan to collect prompts or responses. <a href="https://www.agentdome.io/how-it-works">Deployment model</a> Â· <a href="https://www.agentdome.io/blog/how-we-built-security-into-agentdome">Security architecture</a></p>
+<p>The implementation depends on the workload. Intune can distribute supported settings to a local coding client. Changing a model deployment in Microsoft Foundry or an AWS agent runtime belongs with that workloadâs owner.</p>
+<h2 id="follow-the-cost-to-a-person-or-an-agent">Follow the cost to a person or an agent</h2>
+<p>I started in <strong>Dashboard â General</strong>. The page separates total consumption, potential savings, spend by tool, organizational attribution and reported realized savings.</p>
+<figure class="technical-figure"><a href="/media/2026/10/agentdome/originals/dashboard-capture.png" rel="noreferrer" target="_blank"><img alt="General dashboard: consumption, potential savings and attribution. All amounts and identities shown in AgentDome are demo data." decoding="async" src="assets/b0a370db0c7fb399/img_0.webp"/></a><figcaption>General dashboard: consumption, potential savings and attribution. All amounts and identities shown in AgentDome are demo data.</figcaption></figure>
+<p>The tool breakdown includes Claude Code, Codex, Cursor, Microsoft Foundry, AWS Bedrock and Copilot Cowork. There is also an unattributed bucket. I would keep that visible: assigning unknown spend to a department without evidence creates a tidy chart and unreliable chargeback.</p>
+<p>A team lead can filter by department, search for a person or switch between business units and the manager hierarchy. The mapping depends on maintained identity data. Shared credentials and missing owners still need to be resolved.</p>
+<h3 id="people-and-service-principals-need-different-ownership">People and service principals need different ownership</h3>
+<p>The example <strong>Motor Loans Processing Agent</strong> has a service-principal identity and Microsoft Foundry consumption. Its card links to model rightsizing, unused MCP servers and deferred tool loading. You can move from an agentâs total to the recommendation that explains it.</p>
+<figure class="technical-figure"><a href="/media/2026/10/agentdome/originals/agent-card-capture.png" rel="noreferrer" target="_blank"><img alt="The demo agent card connects a service-principal identity, Microsoft Foundry spend and individual recommendations." decoding="async" src="assets/b0a370db0c7fb399/img_1.webp"/></a><figcaption>The demo agent card connects a service-principal identity, Microsoft Foundry spend and individual recommendations.</figcaption></figure>
+<p>The employee card shows the same information for a person. The demo employee is mapped through Okta and uses both Cursor and Claude Code. Review those costs together before deciding which tool or setting to change.</p>
+<figure class="technical-figure"><a href="/media/2026/10/agentdome/originals/employee-card-capture.png" rel="noreferrer" target="_blank"><img alt="A separate employee card attributes use of multiple AI tools to one identity and department. Demo identity and costs." decoding="async" src="assets/b0a370db0c7fb399/img_2.webp"/></a><figcaption>A separate employee card attributes use of multiple AI tools to one identity and department. Demo identity and costs.</figcaption></figure>
+<p>Record a technical owner and a budget owner. A service principal alone does not tell Finance who can approve a model change or explain an unusual run.</p>
+<h3 id="use-the-graph-to-inspect-the-path">Use the graph to inspect the path</h3>
+<p><strong>Cost Graph</strong>, marked beta, expands from people or autonomous agents to tools, platforms and models. Nodes can be expanded, collapsed and moved. Here I followed the demo agent through Microsoft Foundry to its model.</p>
+<figure class="technical-figure"><a href="/media/2026/10/agentdome/originals/cost-graph-capture.png" rel="noreferrer" target="_blank"><img alt="The beta cost graph follows a demo autonomous agent through Microsoft Foundry to its model." decoding="async" src="assets/b0a370db0c7fb399/img_3.webp"/></a><figcaption>The beta cost graph follows a demo autonomous agent through Microsoft Foundry to its model.</figcaption></figure>
+<p>A model node may combine several incoming paths. Check those connections before comparing its total with one agentâs cost, and record the period and workload alongside the screenshot.</p>
+<h2 id="finance-and-engineering-get-different-views">Finance and engineering get different views</h2>
+<p>The <strong>CFO</strong> tab shows forecasts, budget variance, business-unit ROI and vendor commitment utilization. A lower bill can still leave an annual commitment underused. A higher bill might accompany more completed work.</p>
+<figure class="technical-figure"><a href="/media/2026/10/agentdome/originals/cfo-capture.png" rel="noreferrer" target="_blank"><img alt="The CFO view combines forecast, budget variance, ROI and vendor commitments. The periods and values belong to the staging example." decoding="async" src="assets/b0a370db0c7fb399/img_4.webp"/></a><figcaption>The CFO view combines forecast, budget variance, ROI and vendor commitments. The periods and values belong to the staging example.</figcaption></figure>
+<p>The <strong>Engineering</strong> tab shows project costs and budget goals together. I also found budget controls, which I left unchanged. Before using its ROI figures or forecasts for a decision, agree how the baseline is calculated.</p>
+<figure class="technical-figure"><a href="/media/2026/10/agentdome/originals/engineering-capture.png" rel="noreferrer" target="_blank"><img alt="Engineering view with project spend, budget goals and ROI. These are illustrative metrics, not a measured productivity study." decoding="async" src="assets/b0a370db0c7fb399/img_5.webp"/></a><figcaption>Engineering view with project spend, budget goals and ROI. These are illustrative metrics, not a measured productivity study.</figcaption></figure>
+<p><strong>Seat Based Licensing</strong> is separate from <strong>Usage Billing</strong>. The demo shows activity in Copilot Outlook, Teams, Office and Loop alongside licensed users. The displayed zero additional usage cost must not be read as a zero license price. Fixed subscriptions and metered consumption belong in separate lines of the cost model.</p>
+<figure class="technical-figure"><a href="/media/2026/10/agentdome/originals/seat-licensing-capture.png" rel="noreferrer" target="_blank"><img alt="Seat Based Licensing separates session activity from consumption charges. The displayed zero is not a claim that Microsoft 365 Copilot licenses are free." decoding="async" src="assets/b0a370db0c7fb399/img_6.webp"/></a><figcaption>Seat Based Licensing separates session activity from consumption charges. The displayed zero is not a claim that Microsoft 365 Copilot licenses are free.</figcaption></figure>
+<h2 id="six-kinds-of-savings-recommendation">Six kinds of savings recommendation</h2>
+<p><strong>Saving Opportunities</strong> groups findings by the proposed change. Open a recommendation to see the affected workload, its reasoning and the estimated saving.</p>
+<figure class="technical-figure"><a href="/media/2026/10/agentdome/originals/opportunities-capture.png" rel="noreferrer" target="_blank"><img alt="Saving Opportunities groups recommendations by optimization type and estimated impact. Demo amounts." decoding="async" src="assets/b0a370db0c7fb399/img_7.webp"/></a><figcaption>Saving Opportunities groups recommendations by optimization type and estimated impact. Demo amounts.</figcaption></figure>
+<div aria-label="AI optimization recommendations and checks" class="technical-table" role="region" tabindex="0"><table>
+<thead>
+<tr>
+<th>Category in the interface</th>
+<th>Proposed change</th>
+<th>What I would verify</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Model rightsizing</td>
+<td>Use a less expensive model for a suitable workload</td>
+<td>Completion, correctness, latency and retries on representative tasks</td>
+</tr>
+<tr>
+<td>Unused MCP tools</td>
+<td>Remove unneeded tool definitions</td>
+<td>Whether those definitions are sent and whether rare workflows still need them</td>
+</tr>
+<tr>
+<td>Unused MCP servers</td>
+<td>Disable unused connections</td>
+<td>Ownership, exceptional use and a quick way to restore them</td>
+</tr>
+<tr>
+<td>CLI alternatives</td>
+<td>Use a suitable CLI for a repeatable operation</td>
+<td>Permissions, output, errors and functional equivalence</td>
+</tr>
+<tr>
+<td>Deferred tool loading</td>
+<td>Load definitions when required</td>
+<td>Client support, discovery success and actual context reduction</td>
+</tr>
+<tr>
+<td>Prompt caching</td>
+<td>Reuse a repeated prefix under suitable cache settings</td>
+<td>Reuse intervals, cache writes, cache reads and total cost</td>
+</tr>
+</tbody>
+</table></div>
+<p>Review these changes separately. Changing a default model or clearing a session can affect the answer or remove context the user still needs. An approval to remove an unused connection should not automatically cover either change.</p>
+<h3 id="read-the-evaluation-behind-a-model-recommendation">Read the evaluation behind a model recommendation</h3>
+<p>The rightsizing example proposes a cheaper model for the Motor Loans agent. The <strong>Reasoning</strong> tab includes a Microsoft Foundry evaluation target and a comparison table.</p>
+<figure class="technical-figure"><a href="/media/2026/10/agentdome/originals/model-evaluation-capture.png" rel="noreferrer" target="_blank"><img alt="Reasoning for a model recommendation: the demo evaluation includes different task-completion scores, despite the lower projected price." decoding="async" src="assets/b0a370db0c7fb399/img_8.webp"/></a><figcaption>Reasoning for a model recommendation: the demo evaluation includes different task-completion scores, despite the lower projected price.</figcaption></figure>
+<p>I read the evaluation before judging the price difference. Groundedness is equal in the demo, but task completion drops from 0.80 to 0.70, coherence drops from 4.90 to 4.60, and customer satisfaction rises. Calling the performance similar is not enough to approve the switch.</p>
+<p>For a loan-processing workflow, the owner needs to define acceptable error rates and cases that require review before switching. Include retries in the cost comparison. The model names and dollar amounts here are staging examples, not current model-price advice.</p>
+<p>The <strong>Cost graph</strong> tab lets you compare the current and optimized scenario. Switching that view changes the visualization; it is not evidence that the Foundry deployment has changed. For a separate guide to evaluating agent changes, see <a href="/microsoft-foundry-tracing-evaluation-video/">tracing and evaluation in Microsoft Foundry</a>.</p>
+<h3 id="some-findings-belong-to-the-runtime-owner">Some findings belong to the runtime owner</h3>
+<p>The caching detail for the <strong>Refund Processing Agent</strong> describes repeated context in an AWS workload. Its proposed implementation involves the runtime, rather than a laptop configuration.</p>
+<figure class="technical-figure"><a href="/media/2026/10/agentdome/originals/cache-detail-capture.png" rel="noreferrer" target="_blank"><img alt="A caching recommendation for the demo Refund Processing Agent points to a runtime change, not an endpoint policy." decoding="async" src="assets/b0a370db0c7fb399/img_9.webp"/></a><figcaption>A caching recommendation for the demo Refund Processing Agent points to a runtime change, not an endpoint policy.</figcaption></figure>
+<p>Intune can distribute settings to managed endpoints. This hosted agent needs a change in its own runtime, so its owner must confirm the supported controls and apply them there.</p>
+<h2 id="saving-automation-turns-a-recommendation-into-a-targeted-policy">Saving Automation turns a recommendation into a targeted policy</h2>
+<p>The <strong>Coding Agents</strong> tab contains seven policy types. Each row includes an enabled state, expected savings, developer-experience impact, a target and an <strong>Enforce</strong> or <strong>Inform</strong> action.</p>
+<figure class="technical-figure"><a href="/media/2026/10/agentdome/originals/automation-capture.png" rel="noreferrer" target="_blank"><img alt="Coding-agent automation: seven policies with impact, target and Enforce/Inform actions. The screenshot records existing settings; nothing was changed." decoding="async" src="assets/b0a370db0c7fb399/img_10.webp"/></a><figcaption>Coding-agent automation: seven policies with impact, target and Enforce/Inform actions. The screenshot records existing settings; nothing was changed.</figcaption></figure>
+<p>The policies cover caching, context cleanup, default-model rightsizing, CLI alternatives, deferred tool loading, unused MCP servers and unused MCP tools. The example rates context cleanup as having a high impact on developer experience and default-model rightsizing as medium. Check those ratings with the affected developers.</p>
+<p>The interface describes <strong>Inform</strong> as notifying developers through email, Teams or Slack, while <strong>Enforce</strong> applies the policy. For changes that affect ongoing work, my starting point would be Inform, followed by a reviewed policy in a test group.</p>
+<p>For default-model rightsizing, a developer can choose another model for an individual session. New sessions return to the recommended default, according to the policy description. Keep those overrides and their cost visible to the owner.</p>
+<h3 id="target-the-existing-management-groups">Target the existing management groups</h3>
+<p>Opening the caching ruleâs target picker exposes <strong>MDM â Microsoft Intune</strong>, <strong>MDM â Jamf Pro</strong> and <strong>Custom</strong> tabs. The Intune tab lists groups and membership counts; the demo selects Developer workstations.</p>
+<figure class="technical-figure"><a href="/media/2026/10/agentdome/originals/intune-target-capture.png" rel="noreferrer" target="_blank"><img alt="The target picker exposes Microsoft Intune device groups for an automation policy. Group membership and counts are demo data." decoding="async" src="assets/b0a370db0c7fb399/img_11.webp"/></a><figcaption>The target picker exposes Microsoft Intune device groups for an automation policy. Group membership and counts are demo data.</figcaption></figure>
+<p>Jamf Pro has its own group list; I did not test a macOS deployment. The Custom tab mentions tagging and developer-assignment expressions, but I could not inspect a complete configuration for that option.</p>
+<figure class="technical-figure"><a href="/media/2026/10/agentdome/originals/jamf-target-capture.png" rel="noreferrer" target="_blank"><img alt="Jamf Pro groups are available as an alternative target. This review did not test deployment to macOS." decoding="async" src="assets/b0a370db0c7fb399/img_12.webp"/></a><figcaption>Jamf Pro groups are available as an alternative target. This review did not test deployment to macOS.</figcaption></figure>
+<p>The <strong>Autonomous Agents</strong> and <strong>Coworker Agents</strong> tabs had no active policies in this tenant, so there was no configured example to inspect for those workloads.</p>
+<h2 id="the-intune-connection-with-an-existing-script-package">The Intune connection, with an existing script package</h2>
+<p>For a managed coding client, the steps are to identify a costly pattern, choose a supported setting, deploy it to a group and check the result. Use the later usage report to compare consumption for similar work.</p>
+<p>AgentDomeâs <a href="https://www.agentdome.io/blog/dynamic-prompt-caching-ttl-optimization-mdm">MDM article</a> describes this approach for prompt-cache settings. It uses existing device management to distribute client configuration rather than installing a separate AgentDome endpoint agent. Existing MDM components and the client configuration still have to be present.</p>
+<p>In my Modern Device Management demo tenant, I found two existing packages under <strong>Devices â Scripts and remediations</strong>:</p>
+<ul>
+<li><code>Claude Code cache TTL - 1 hour</code></li>
+<li><code>Claude Code cache TTL - 5 min</code></li>
+</ul>
+<figure class="technical-figure"><a href="/media/2026/10/agentdome/originals/intune-packages-capture.png" rel="noreferrer" target="_blank"><img alt="Existing demo-tenant packages for one-hour and five-minute cache TTL. The one-hour package was already active before this review." decoding="async" src="assets/b0a370db0c7fb399/img_13.webp"/></a><figcaption>Existing demo-tenant packages for one-hour and five-minute cache TTL. The one-hour package was already active before this review.</figcaption></figure>
+<p>The one-hour package was already active. It contains detection and remediation scripts, runs in 64-bit PowerShell without the logged-on userâs credentials, and is assigned hourly to <strong>R&amp;D Beta testers</strong>. AgentDomeâs screenshot selects Developer workstations. These are separate examples, not a verified synchronized assignment.</p>
+<figure class="technical-figure"><a href="/media/2026/10/agentdome/originals/intune-properties-capture.png" rel="noreferrer" target="_blank"><img alt="The existing Intune package contains detection and remediation scripts and uses the machine execution context." decoding="async" src="assets/b0a370db0c7fb399/img_14.webp"/></a><figcaption>The existing Intune package contains detection and remediation scripts and uses the machine execution context.</figcaption></figure>
+<h3 id="1-detection-checks-the-configured-state">1. Detection checks the configured state</h3>
+<p>The existing detection script reads a machine-level environment variable named <code>CLAUDE_CODE_PROMPT_CACHE_TTL</code> and compares it with <code>1h</code>. A matching value returns exit code 0; a missing or different value returns 1.</p>
+<p>The relevant read operation is:</p>
+<pre class="astro-code github-dark" data-language="powershell" tabindex="0"><code><span class="line"><span># Read-only inspection of the setting used by this demo package.</span></span>
+<span class="line"><span>[</span><span>Environment</span><span>]::GetEnvironmentVariable(</span></span>
+<span class="line"><span>    "CLAUDE_CODE_PROMPT_CACHE_TTL"</span><span>,</span></span>
+<span class="line"><span>    "Machine"</span></span>
+<span class="line"><span>)</span></span></code></pre>
+<p>Microsoft documents that a remediation runs when detection returns <code>exit 1</code>. The package should therefore distinguish a real mismatch from a failed inspection. The exampleâs error handler also returns 1; I would review that behavior before using it beyond the demo. <a href="https://learn.microsoft.com/en-us/intune/device-management/tools/deploy-remediations">Intune Remediations</a></p>
+<p>The existing remediation uses <code>SetEnvironmentVariable</code> at machine scope, reads the value back and broadcasts <code>WM_SETTINGCHANGE</code>. That establishes whether Windows stored the desired value. It does not establish whether an already running coding process has picked it up.</p>
+<figure class="technical-figure"><a href="/media/2026/10/agentdome/originals/intune-scripts-capture.png" rel="noreferrer" target="_blank"><img alt="Read-only inspection through the script editor shows the environment-variable check and update. The editor was closed without saving." decoding="async" src="assets/b0a370db0c7fb399/img_15.webp"/></a><figcaption>Read-only inspection through the script editor shows the environment-variable check and update. The editor was closed without saving.</figcaption></figure>
+<p>I read the scripts without saving changes. Their presence in Intune does not establish that AgentDome created them.</p>
+<p>I could not find <code>CLAUDE_CODE_PROMPT_CACHE_TTL</code> in the public Claude Code environment-variable reference. Treat it as the setting used by this demo, not a verified recipe for other clients. Before copying it, confirm support for your client version and provider, then check what the running client sends. <a href="https://code.claude.com/docs/en/env-vars">Claude Code environment variables</a></p>
+<h3 id="3-read-the-device-result-precisely">3. Read the device result precisely</h3>
+<p>The latest reported device row shows <strong>Without issues</strong> for detection and <strong>Not run</strong> for remediation.</p>
+<figure class="technical-figure"><a href="/media/2026/10/agentdome/originals/intune-status-capture.png" rel="noreferrer" target="_blank"><img alt="Actual demo-tenant status: Without issues for detection, Not run for remediation. This is not proof of a newly executed fix or reduced token cost." decoding="async" src="assets/b0a370db0c7fb399/img_16.webp"/></a><figcaption>Actual demo-tenant status: Without issues for detection, Not run for remediation. This is not proof of a newly executed fix or reduced token cost.</figcaption></figure>
+<p>The detection passed at the last reported check. This does not show a new remediation run, a changed API request or reduced cost.</p>
+<p>For a pilot, collect three separate results:</p>
+<ol>
+<li><strong>Configuration:</strong> did the target device receive the intended value, without changing unrelated settings?</li>
+<li><strong>Client behavior:</strong> does a fresh process use the supported configuration, and do request or usage records show the intended cache behavior?</li>
+<li><strong>Work outcome:</strong> did comparable tasks cost less without extra failures, delays or manual correction?</li>
+</ol>
+<p>Use Intune to check configuration and execution, AgentDome to review consumption, and the task owner to assess the answer or completed work.</p>
+<h3 id="targeting-and-rollback">Targeting and rollback</h3>
+<p>Machine scope affects users of that device. A per-developer recommendation therefore needs a deliberate mapping to user settings or device groups, especially on shared machines. A SYSTEM script must not accidentally inspect the SYSTEM accountâs user profile when it is meant to change a developerâs settings.</p>
+<p>Save the previous value, including whether the variable was absent, and test restoring it. Running terminals may retain inherited environment values, so check the launch path developers use. A device that has not reported back stays pending.</p>
+<p>Before deployment, confirm supported Windows enrollment, the Remediations license entitlement and the required Intune role. Do not treat a visible Create button as a license check. <a href="https://learn.microsoft.com/en-us/intune/device-management/tools/deploy-remediations#prerequisites">Prerequisites and permissions</a></p>
+<h2 id="why-a-longer-cache-ttl-can-help-or-waste-money">Why a longer cache TTL can help, or waste money</h2>
+<p>A longer cache lifetime is worth considering when a developer returns to the same context after a pause. An agent sending unrelated prompts on each call has a different reuse pattern.</p>
+<p>Anthropic documents a default five-minute cache lifetime and an optional one-hour lifetime with a higher cache-write cost. The longer option can help with reuse after five minutes; it is not a universal discount. <a href="https://platform.claude.com/docs/en/build-with-claude/prompt-caching">Prompt caching</a></p>
+<p>For a comparison, hold the task mix and model stable and measure cache creation, cache reads, uncached input and output. Check that the same prefix is actually eligible for reuse. Changing the prompt every time can defeat the intended optimization even if a setting has been deployed correctly.</p>
+<p>I would compare <strong>cost per accepted completed task</strong>, including extra attempts and human corrections.</p>
+<h2 id="budgets-packages-and-alerts">Budgets, packages and alerts</h2>
+<p><strong>Budgets &amp; Limits</strong> contains separate controls for departments, people and tools. The shared header shows the monthly budget, spend, utilization and active alerts.</p>
+<h3 id="department-defaults-and-reusable-packages">Department defaults and reusable packages</h3>
+<p>The department view connects each departmentâs membership to a default package, monthly cap and current consumption. A default is useful for onboarding; exceptional workloads need a recorded reason and owner.</p>
+<figure class="technical-figure"><a href="/media/2026/10/agentdome/originals/department-budgets-capture.png" rel="noreferrer" target="_blank"><img alt="Department budgets combine a default package with a monthly allocation and utilization. Staging data." decoding="async" src="assets/b0a370db0c7fb399/img_17.webp"/></a><figcaption>Department budgets combine a default package with a monthly allocation and utilization. Staging data.</figcaption></figure>
+<p><strong>Budget Packages</strong> defines reusable allocations across tools. The displayed Standard, Pro and higher tiers are examples of internal allocations. They are not AgentDome product prices and should not be quoted as such.</p>
+<figure class="technical-figure"><a href="/media/2026/10/agentdome/originals/budget-packages-capture.png" rel="noreferrer" target="_blank"><img alt="Reusable budget packages allocate tool budgets. Their dollar amounts are internal demo allocations, not AgentDome subscription prices." decoding="async" src="assets/b0a370db0c7fb399/img_18.webp"/></a><figcaption>Reusable budget packages allocate tool budgets. Their dollar amounts are internal demo allocations, not AgentDome subscription prices.</figcaption></figure>
+<h3 id="user-overrides-and-client-limits">User overrides and client limits</h3>
+<p><strong>User Budgets &amp; Allocation</strong> lets you inspect inherited allocations, assign packages and make individual overrides. This avoids changing a whole departmentâs default to accommodate one workload, but requires periodic review of the exceptions.</p>
+<figure class="technical-figure"><a href="/media/2026/10/agentdome/originals/user-budgets-capture.png" rel="noreferrer" target="_blank"><img alt="User allocations support inherited packages and individual overrides. Demo identities." decoding="async" src="assets/b0a370db0c7fb399/img_19.webp"/></a><figcaption>User allocations support inherited packages and individual overrides. Demo identities.</figcaption></figure>
+<p><strong>Client Tool Limits</strong> shows budgets for tools such as Claude Code, Codex and Cursor, with an option to add custom tools.</p>
+<figure class="technical-figure"><a href="/media/2026/10/agentdome/originals/client-limits-capture.png" rel="noreferrer" target="_blank"><img alt="Client Tool Limits adds a tool-level budget view. A visible cap alone does not prove a provider-side request block." decoding="async" src="assets/b0a370db0c7fb399/img_20.webp"/></a><figcaption>Client Tool Limits adds a tool-level budget view. A visible cap alone does not prove a provider-side request block.</figcaption></figure>
+<h3 id="notifications-are-not-automatically-a-hard-stop">Notifications are not automatically a hard stop</h3>
+<p><strong>Policy &amp; Alert Rules</strong> includes warning and exceeded thresholds, cooldowns, channels and recipients. The visible description of Automated Spend Threshold Enforcement talks about continuous checks and Slack notifications.</p>
+<figure class="technical-figure"><a href="/media/2026/10/agentdome/originals/alert-rules-capture.png" rel="noreferrer" target="_blank"><img alt="Alert policy controls include threshold notifications. No test notification or policy change was sent during this review." decoding="async" src="assets/b0a370db0c7fb399/img_21.webp"/></a><figcaption>Alert policy controls include threshold notifications. No test notification or policy change was sent during this review.</figcaption></figure>
+<p>This screen does not establish that the next model request will be rejected at the budget limit. Check each integration: does it send a notification, change a client setting or enforce a provider-side cap? Also check the delay between usage ingestion and the policy check.</p>
+<p>The <strong>Alert Feed</strong> had no active items in the staging example. I did not send a test notification. In a pilot, I would validate warning, exceeded, cooldown and recovery behavior with the people expected to receive the messages.</p>
+<figure class="technical-figure"><a href="/media/2026/10/agentdome/originals/alert-feed-capture.png" rel="noreferrer" target="_blank"><img alt="The alert feed is empty in this staging environment; delivery was not tested." decoding="async" src="assets/b0a370db0c7fb399/img_22.webp"/></a><figcaption>The alert feed is empty in this staging environment; delivery was not tested.</figcaption></figure>
+<h2 id="ask-a-finops-question-then-inspect-the-result">Ask a FinOps question, then inspect the result</h2>
+<p>The <strong>AI Chat</strong> provides suggested starting points for usage trends, heavy tasks, consumers, active tools and savings. I selected the savings question. It returned a short explanation and a table of candidate changes, with PDF, Excel and CSV actions.</p>
+<figure class="technical-figure"><a href="/media/2026/10/agentdome/originals/chat-capture.png" rel="noreferrer" target="_blank"><img alt="The FinOps chat returns recommendations and offers PDF, Excel and CSV exports. The model names and estimates are part of its demo response." decoding="async" src="assets/b0a370db0c7fb399/img_23.webp"/></a><figcaption>The FinOps chat returns recommendations and offers PDF, Excel and CSV exports. The model names and estimates are part of its demo response.</figcaption></figure>
+<p>Take the answer to the corresponding recommendation and check its period and evaluation. The older model names in this demo response are not current model recommendations.</p>
+<p>For each proposed change, record the workload, owner, evidence and next test. A phrase such as âzero quality lossâ needs supporting test results.</p>
+<h2 id="compare-savings-against-a-baseline">Compare savings against a baseline</h2>
+<p><strong>Reporting</strong> has weekly and monthly views, a spend trend against a baseline, realized-savings summaries and applied recommendations. Categories include model rightsizing, caching, routing, MCP context pruning and budget limits. The table connects changes with their scope, date and reported effect.</p>
+<figure class="technical-figure"><a href="/media/2026/10/agentdome/originals/reporting-capture.png" rel="noreferrer" target="_blank"><img alt="Reporting compares spend and baseline and lists applied recommendations. Savings and dates shown here are illustrative staging data." decoding="async" src="assets/b0a370db0c7fb399/img_24.webp"/></a><figcaption>Reporting compares spend and baseline and lists applied recommendations. Savings and dates shown here are illustrative staging data.</figcaption></figure>
+<p>The detail of an applied caching recommendation includes before-and-after configuration, cache-hit information and quality labels. I would attach that record to the change ticket. The figures here are staging data.</p>
+<figure class="technical-figure"><a href="/media/2026/10/agentdome/originals/applied-cache-capture.png" rel="noreferrer" target="_blank"><img alt="An applied-recommendation detail combines configuration, claimed savings and quality checks. These figures are demo data, not independently verified outcomes." decoding="async" src="assets/b0a370db0c7fb399/img_25.webp"/></a><figcaption>An applied-recommendation detail combines configuration, claimed savings and quality checks. These figures are demo data, not independently verified outcomes.</figcaption></figure>
+<p>A quieter week can reduce cost without any optimization. More successful tasks can increase total cost while lowering unit cost. For an assessment, I would compare similar tasks over defined periods and include:</p>
+<ul>
+<li>Provider consumption and cache writes as well as reads.</li>
+<li>Accepted completions, retries and failed runs.</li>
+<li>Latency and human correction effort.</li>
+<li>Fixed licenses, platform fees and collector operation.</li>
+<li>The cost of implementing and maintaining the change.</li>
+</ul>
+<p>Keep <strong>estimated</strong>, <strong>applied</strong> and <strong>measured</strong> separate in reports. A recommendationâs projected saving becomes a measured result only after the relevant usage and outcome data arrive.</p>
+<h2 id="data-sources-privacy-and-operating-settings">Data sources, privacy and operating settings</h2>
+<p>The settings screen lists OpenAI, Anthropic, Cursor, Microsoft Foundry, AWS Bedrock, LiteLLM and Microsoft Copilot as connected in the demo. Identity sources include Okta and Microsoft Entra ID; Google Workspace is available but not connected in this session.</p>
+<figure class="technical-figure"><a href="/media/2026/10/agentdome/originals/integrations-capture.png" rel="noreferrer" target="_blank"><img alt="Connected provider and platform entries in Settings. Access is explicitly view-only in this session." decoding="async" src="assets/b0a370db0c7fb399/img_26.webp"/></a><figcaption>Connected provider and platform entries in Settings. Access is explicitly view-only in this session.</figcaption></figure>
+<p>Other controls cover SSO, reporting currency, retention, recommendation aggressiveness, default caps and a weekly digest. This session had view-only access.</p>
+<figure class="technical-figure"><a href="/media/2026/10/agentdome/originals/system-settings-capture.png" rel="noreferrer" target="_blank"><img alt="Identity providers, SSO, retention and recommendation aggressiveness are visible in Settings. Values shown belong to the staging environment." decoding="async" src="assets/b0a370db0c7fb399/img_27.webp"/></a><figcaption>Identity providers, SSO, retention and recommendation aggressiveness are visible in Settings. Values shown belong to the staging environment.</figcaption></figure>
+<p>AgentDome describes local processing of sensitive content and onward transmission of required metadata. Ask for the field list and deployment diagram to confirm what stays local and what leaves the network. <a href="https://www.agentdome.io/blog/how-we-built-security-into-agentdome">AgentDome security article</a></p>
+<p>For Claude Code, OpenTelemetry can provide usage information; prompt-content collection has its own controls. Decide what is needed for attribution and optimization before enabling content collection. <a href="https://code.claude.com/docs/en/monitoring-usage">Claude Code monitoring</a></p>
+<p>Check collector egress, data location, connector permissions, secret rotation, retention, deletion and access to individual usage. Review Intune write permissions separately from read-only access to the AI providers.</p>
+<h2 id="how-i-would-run-the-first-pilot">How I would run the first pilot</h2>
+<p>I would start with one coding client, one accountable team and one reversible change. That keeps the comparison understandable and gives developers a clear place to report a regression.</p>
+<ol>
+<li><strong>Agree on the task.</strong> Select recurring work with an acceptance criterion, rather than measuring arbitrary chat activity.</li>
+<li><strong>Establish attribution.</strong> Map identities, tools and billing records; investigate unattributed usage.</li>
+<li><strong>Record a baseline.</strong> Capture representative task cost, completion, latency and correction effort.</li>
+<li><strong>Review one recommendation.</strong> Confirm client support and evaluation results before choosing the target group.</li>
+<li><strong>Prepare delivery and rollback.</strong> Review the script, execution context, previous values, schedule and exceptions.</li>
+<li><strong>Apply to a test ring.</strong> Require device evidence and an effective-client check; do not count offline devices as successful.</li>
+<li><strong>Compare and decide.</strong> Expand only if completed work is cheaper at an acceptable quality level. Otherwise restore the prior configuration and investigate.</li>
+</ol>
+<p>Before adding the next group, review the finding, approved change, device result and later task cost with the workload owner.</p></div></div></div>
+</article>
+</body>
+</html>
