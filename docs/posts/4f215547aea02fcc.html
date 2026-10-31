@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Doctor DO – A Delivery Optimization Troubleshooting Solution</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">MSEndpointMgr</span>
+    <span class="date">October 30, 2026</span>
+  </div>
+  <h1>Doctor DO – A Delivery Optimization Troubleshooting Solution</h1>
+  <div class="orig">Saved for offline reading · <a href="https://msendpointmgr.com/2026/10/31/doctor-do-a-delivery-optimization-troubleshooting-solution/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#doctordo-where-did-that-update-actually-come-from" id="doctordo-where-did-that-update-actually-come-from"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a><strong>DoctorDO: where did that update actually come from?</strong></h3>
+<p class="wp-block-paragraph" data-block-type="core">If you manage Windows updates and Win32 apps at any scale, someone has asked you “Is peering working?” The honest answer is usually “probably”, followed by a look at Activity Monitor on the nearest laptop.</p>
+<p class="wp-block-paragraph" data-block-type="core">Delivery Optimization pulls content from the Microsoft CDN, from peers and from a Connected Cache server if you have one, in parallel, a megabyte at a time. When it works, you save a lot of bandwidth. When it doesn’t, it falls back to the CDN without complaint, which is fine for the user and no help at all to whoever has to work out why.</p>
+<p class="wp-block-paragraph" data-block-type="core">This very fact that admins don’t always know what to do to ensure is Delivery Optimization functioning is why I have built some thing called DoctorDO. The aim is clear, help admins understand all of the settings applied to the device, ensure it can reach the required endpoints, and visualise where data is coming from. You can run the PowerShell module on any device today, free and without Azure. </p>
+<p class="wp-block-paragraph" data-block-type="core">The full solution is in private preview, and I’ll be clear which bits are which.</p>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#why-delivery-optimization-is-hard-to-see-into" id="why-delivery-optimization-is-hard-to-see-into"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a><strong>Why Delivery Optimization is hard to see into</strong></h3>
+<p class="wp-block-paragraph" data-block-type="core">Microsoft gives you a few ways in, and each gets you part of the way.</p>
+<p class="wp-block-paragraph" data-block-type="core">On a single device there’s Activity Monitor, and cmdlets such as `Get-DeliveryOptimizationStatus` and `Get-DeliveryOptimizationPerfSnapThisMonth` ([Monitor Delivery Optimization](https://learn.microsoft.com/windows/deployment/do/waas-delivery-optimization-monitor)). They tell you how many bytes came from where. They don’t tell you why the peer column is zero. </p>
+<p class="wp-block-paragraph" data-block-type="core">Microsoft’s own DeliveryOptimizationTroubleshooter script (<a href="https://learn.microsoft.com/windows/deployment/do/delivery-optimization-troubleshoot" rel="noopener" target="_blank">https://learn.microsoft.com/windows/deployment/do/delivery-optimization-troubleshoot</a>), is a good first check on a device, with health checks for peering and Connected Cache and a log bundle you can collect. What it doesn’t give you is a readable report to hand to someone, or a view across the estate.</p>
+<p class="wp-block-paragraph" data-block-type="core">Across the estate there’s the Delivery Optimization report in <a href="https://learn.microsoft.com/windows/deployment/update/wufb-reports-do" rel="noreferrer noopener" target="_blank">https://learn.microsoft.com/windows/deployment/update/wufb-reports-do</a>, which gives you a 28-day rolling picture by content type. It’s good for “how are we doing”, less so for “which site is broken, and what do I change”.</p>
+<p class="wp-block-paragraph" data-block-type="core">And Intune will happily tell you your Delivery Optimization profile applied. It has no opinion on whether a firewall policy or Wi-Fi client isolation means that profile achieves nothing. The answer is spread across the DO logs, the firewall, the registry, DHCP options and the network, and nobody has time to stitch that together by hand.</p>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#what-doctordo-answers" id="what-doctordo-answers"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a><strong>What DoctorDO answers</strong></h3>
+<p class="wp-block-paragraph" data-block-type="core">DoctorDO reads what Windows already records about DO and answers two questions per device: where did the bytes come from, and why didn’t more come from somewhere local?</p>
+<p class="wp-block-paragraph" data-block-type="core">It works to a few rules. Findings come from deterministic rules, not AI guesses, and every recommendation cites the evidence the device reported. An error code DoctorDO doesn’t recognise is shown as unknown, not given a plausible-sounding explanation. Anything it couldn’t collect is shown as not collected, never quietly counted as a pass. It also never changes anything: the module touches no Delivery Optimization, firewall, proxy or service setting.</p>
+<p class="wp-block-paragraph" data-block-type="core">One thing to know before you read a report: <strong>**delivery efficiency**</strong> in DoctorDO counts bytes from LAN peers, Group peers and your own Connected Cache. Since collector 1.2.0, an ISP’s Connected Cache isn’t counted as local, because those bytes still cross your internet link (WUfB reports doesn’t count them either).</p>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#run-it-on-one-device-right-now" id="run-it-on-one-device-right-now"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a><strong>Run it on one device, right now</strong></h3>
+<p class="wp-block-paragraph" data-block-type="core">The PowerShell module is on the PowerShell Gallery – <a href="https://www.powershellgallery.com/packages/DoctorDO" rel="noopener" target="_blank">https://www.powershellgallery.com/packages/DoctorDO</a>. It works on Windows 10 2004 or Windows 11 and later, under Windows PowerShell 5.1 or PowerShell 7. The `DoctorDO` package is a small name module that installs `DoctorDO.Collector`, which holds the commands.</p>
+<p class="wp-block-paragraph" data-block-type="core">From an elevated PowerShell window:</p>
+<p class="wp-block-paragraph" data-block-type="core"><strong>Install-Module -Name DoctorDO -Scope CurrentUser</strong></p>
+<p class="wp-block-paragraph" data-block-type="core">A report of this device, written to your temp folder and opened in your browser</p>
+<p class="wp-block-paragraph" data-block-type="core"><strong>New-DoctorDODeviceReport</strong></p>
+<p class="wp-block-paragraph" data-block-type="core">One you can share: no host name or device IDs, as a page and a PDF</p>
+<p class="wp-block-paragraph" data-block-type="core"><strong>New-DoctorDODeviceReport -OutputPath C:\Temp -Anonymise -Format Html,Pdf</strong></p>
+<p class="wp-block-paragraph" data-block-type="core">Just the connectivity checks, in the console</p>
+<p class="wp-block-paragraph" data-block-type="core"><strong>Test-DOConnectivity</strong></p>
+<p class="wp-block-paragraph" data-block-type="core"><strong>Test-DOConnectivity -Detailed</strong></p>
+<p class="wp-block-paragraph" data-block-type="core">On a fresh Windows PowerShell 5.1 box, `Install-Module` will ask to install the NuGet provider and whether to trust PSGallery; say yes to both. If the execution policy is still the Windows client default (Restricted), the module won’t load. You can temporarily bypass the restrictions by using the following command;</p>
+<p class="wp-block-paragraph" data-block-type="core">PowerShell.exe -executionpolicy bypass</p>
+<p class="wp-block-paragraph" data-block-type="core"><strong>Code Signing</strong><br/>The module isn’t code-signed yet, so if you enforce AllSigned through Group Policy, or App Control for Business with script enforcement, that won’t help, and you’ll need to re-sign the module with your own certificate. The collector README covers how.</p>
+<p class="wp-block-paragraph" data-block-type="core"><strong>Running Elevated</strong><br/>Elevation matters. Without it, the module can’t read the DO logs or some settings, and the report lists what it couldn’t read instead of guessing. You’ll see that in a moment.</p>
+<p class="wp-block-paragraph" data-block-type="core">The output is a single HTML file that makes no network requests, so you can attach it to a ticket or email it to someone who’s never heard of DoctorDO. Nothing leaves the device unless you send it.</p>
+<p class="wp-block-paragraph" data-block-type="core">`-Anonymise` strips the host name, the Entra, tenant and Intune device IDs, the ConfigMgr site code and the AD site, with hashes salted per report so they can’t be matched to your fleet. Subnets and your Connected Cache host stay, because the diagnosis depends on them. `Invoke-DoctorDOCollector -WhatIfRedaction` prints the full redaction profile without collecting anything.</p>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#a-worked-example-my-own-laptop" id="a-worked-example-my-own-laptop"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a><strong>A worked example: my own laptop</strong></h3>
+<p class="wp-block-paragraph" data-block-type="core">Here’s a real run from my own XPS, collector 1.2.1, deliberately <em>*not*</em> elevated, with `-Anonymise`. It took 63 seconds and wrote a 927 KB report. Fifteen facts weren’t collected because I wasn’t elevated, and a banner at the top says as much.</p>
+<figure class="wp-block-image size-large wp-lightbox-container" data-block-type="core" data-wp-context='{"imageId":"6ae5c6562f5a6"}' data-wp-interactive="core/image" data-wp-key="6ae5c6562f5a6"><img alt="" class="wp-image-27125" data-wp-class--hide="state.isContentHidden" data-wp-class--show="state.isContentVisible" data-wp-init="callbacks.setButtonStyles" data-wp-on--click="actions.showLightbox" data-wp-on--load="callbacks.setButtonStyles" data-wp-on--pointerdown="actions.preloadImage" data-wp-on--pointerenter="actions.preloadImageWithDelay" data-wp-on--pointerleave="actions.cancelPreload" data-wp-on-window--resize="callbacks.setButtonStyles" decoding="async" src="assets/4f215547aea02fcc/img_0.png"/><button aria-haspopup="dialog" class="lightbox-trigger" data-wp-bind--aria-label="state.thisImage.triggerButtonAriaLabel" data-wp-init="callbacks.initTriggerButton" data-wp-on--click="actions.showLightbox" data-wp-style--right="state.thisImage.buttonRight" data-wp-style--top="state.thisImage.buttonTop" type="button">
+<svg fill="none" viewbox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+<path d="M2 0a2 2 0 0 0-2 2v2h1.5V2a.5.5 0 0 1 .5-.5h2V0H2Zm2 10.5H2a.5.5 0 0 1-.5-.5V8H0v2a2 2 0 0 0 2 2h2v-1.5ZM8 12v-1.5h2a.5.5 0 0 0 .5-.5V8H12v2a2 2 0 0 1-2 2H8Zm2-12a2 2 0 0 1 2 2v2h-1.5V2a.5.5 0 0 0-.5-.5H8V0h2Z" fill="#fff"></path>
+</svg>
+</button></figure>
+<p class="wp-block-paragraph" data-block-type="core"><em>*The top of the device report. One critical problem, and the evidence for it, before you scroll.*</em></p>
+<p class="wp-block-paragraph" data-block-type="core">The headline is the bit I’d have spent an afternoon finding by hand: <strong>**inbound firewall rule for TCP 7680 is off, so peers cannot connect.**</strong></p>
+<p class="wp-block-paragraph" data-block-type="core">The DO service registers and opens TCP 7680 itself (<a href="https://learn.microsoft.com/windows/deployment/do/delivery-optimization-configure" rel="noreferrer noopener" target="_blank">https://learn.microsoft.com/windows/deployment/do/delivery-optimization-configure</a>). The rule was there. It was even enabled. <br/></p>
+<figure class="wp-block-image size-full wp-lightbox-container" data-block-type="core" data-wp-context='{"imageId":"6ae5c6562f929"}' data-wp-interactive="core/image" data-wp-key="6ae5c6562f929"><img alt="" class="wp-image-27141" data-wp-class--hide="state.isContentHidden" data-wp-class--show="state.isContentVisible" data-wp-init="callbacks.setButtonStyles" data-wp-on--click="actions.showLightbox" data-wp-on--load="callbacks.setButtonStyles" data-wp-on--pointerdown="actions.preloadImage" data-wp-on--pointerenter="actions.preloadImageWithDelay" data-wp-on--pointerleave="actions.cancelPreload" data-wp-on-window--resize="callbacks.setButtonStyles" decoding="async" src="assets/4f215547aea02fcc/img_1.png"/><button aria-haspopup="dialog" class="lightbox-trigger" data-wp-bind--aria-label="state.thisImage.triggerButtonAriaLabel" data-wp-init="callbacks.initTriggerButton" data-wp-on--click="actions.showLightbox" data-wp-style--right="state.thisImage.buttonRight" data-wp-style--top="state.thisImage.buttonTop" type="button">
+<svg fill="none" viewbox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+<path d="M2 0a2 2 0 0 0-2 2v2h1.5V2a.5.5 0 0 1 .5-.5h2V0H2Zm2 10.5H2a.5.5 0 0 1-.5-.5V8H0v2a2 2 0 0 0 2 2h2v-1.5ZM8 12v-1.5h2a.5.5 0 0 0 .5-.5V8H12v2a2 2 0 0 1-2 2H8Zm2-12a2 2 0 0 1 2 2v2h-1.5V2a.5.5 0 0 0-.5-.5H8V0h2Z" fill="#fff"></path>
+</svg>
+</button></figure>
+<p class="wp-block-paragraph" data-block-type="core"><br/>But its status was Inactive, and the check gives two reasons. The firewall policy has local rule merging turned off, and “Delivery Optimization (TCP-In)” is a local rule. And the rule’s profile isn’t the one that’s active. The Windows Firewall rules (<a href="https://learn.microsoft.com/windows/security/operating-system-security/network-security/windows-firewall/rules#local-policy-merge-and-application-rules" rel="noreferrer noopener" target="_blank">https://learn.microsoft.com/windows/security/operating-system-security/network-security/windows-firewall/rules#local-policy-merge-and-application-rules</a>) on Learn spells out the first: with local policy merge disabled, any app that needs inbound connectivity needs its rule deployed centrally. DO is one of those apps, and nothing in Intune will tell you.</p>
+<p class="wp-block-paragraph" data-block-type="core">The fix the report gives is to stop relying on the local rule and deliver an inbound allow rule for TCP 7680 from the same place that turned merging off. If that’s Intune, add it to a Windows Firewall Rules profile under endpoint security firewall policy (<a href="https://learn.microsoft.com/intune/device-configuration/endpoint-security/firewall" rel="noreferrer noopener" target="_blank">https://learn.microsoft.com/intune/device-configuration/endpoint-security/firewall</a>); if it’s Group Policy, add it to that GPO.</p>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#scroll-down-and-the-data-flow-shows-the-effect" id="scroll-down-and-the-data-flow-shows-the-effect"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>Scroll down and the data flow shows the effect:</h3>
+<figure class="wp-block-image size-large wp-lightbox-container" data-block-type="core" data-wp-context='{"imageId":"6ae5c6562fc2a"}' data-wp-interactive="core/image" data-wp-key="6ae5c6562fc2a"><img alt="" class="wp-image-27126" data-wp-class--hide="state.isContentHidden" data-wp-class--show="state.isContentVisible" data-wp-init="callbacks.setButtonStyles" data-wp-on--click="actions.showLightbox" data-wp-on--load="callbacks.setButtonStyles" data-wp-on--pointerdown="actions.preloadImage" data-wp-on--pointerenter="actions.preloadImageWithDelay" data-wp-on--pointerleave="actions.cancelPreload" data-wp-on-window--resize="callbacks.setButtonStyles" decoding="async" src="assets/4f215547aea02fcc/img_2.png"/><button aria-haspopup="dialog" class="lightbox-trigger" data-wp-bind--aria-label="state.thisImage.triggerButtonAriaLabel" data-wp-init="callbacks.initTriggerButton" data-wp-on--click="actions.showLightbox" data-wp-style--right="state.thisImage.buttonRight" data-wp-style--top="state.thisImage.buttonTop" type="button">
+<svg fill="none" viewbox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+<path d="M2 0a2 2 0 0 0-2 2v2h1.5V2a.5.5 0 0 1 .5-.5h2V0H2Zm2 10.5H2a.5.5 0 0 1-.5-.5V8H0v2a2 2 0 0 0 2 2h2v-1.5ZM8 12v-1.5h2a.5.5 0 0 0 .5-.5V8H12v2a2 2 0 0 1-2 2H8Zm2-12a2 2 0 0 1 2 2v2h-1.5V2a.5.5 0 0 0-.5-.5H8V0h2Z" fill="#fff"></path>
+</svg>
+</button></figure>
+<p class="wp-block-paragraph" data-block-type="core"><em>*Every byte DO still lists came from the CDN. This month’s counters tell the same story over 22.2 GB.*</em></p>
+<p class="wp-block-paragraph" data-block-type="core">For the 21 downloads DO still lists, 2.5 GB came in and 0 B was kept local: 0% efficiency. The monthly counters, which include content that has aged out of the cache, say 22.2 GB, 87% from the CDN, 13% from an ISP’s Connected Cache (not counted as local, as above), nothing from peers. And the peer sources on the download side say “Not collected” instead of zero, because I wasn’t elevated and the report won’t guess.</p>
+<p class="wp-block-paragraph" data-block-type="core">`Test-DOConnectivity` gives the same diagnosis in the console, which is handy over a remote session:</p>
+<figure class="wp-block-image size-large wp-lightbox-container" data-block-type="core" data-wp-context='{"imageId":"6ae5c6562ff11"}' data-wp-interactive="core/image" data-wp-key="6ae5c6562ff11"><img alt="" class="wp-image-27138" data-wp-class--hide="state.isContentHidden" data-wp-class--show="state.isContentVisible" data-wp-init="callbacks.setButtonStyles" data-wp-on--click="actions.showLightbox" data-wp-on--load="callbacks.setButtonStyles" data-wp-on--pointerdown="actions.preloadImage" data-wp-on--pointerenter="actions.preloadImageWithDelay" data-wp-on--pointerleave="actions.cancelPreload" data-wp-on-window--resize="callbacks.setButtonStyles" decoding="async" src="assets/4f215547aea02fcc/img_3.png"/><button aria-haspopup="dialog" class="lightbox-trigger" data-wp-bind--aria-label="state.thisImage.triggerButtonAriaLabel" data-wp-init="callbacks.initTriggerButton" data-wp-on--click="actions.showLightbox" data-wp-style--right="state.thisImage.buttonRight" data-wp-style--top="state.thisImage.buttonTop" type="button">
+<svg fill="none" viewbox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+<path d="M2 0a2 2 0 0 0-2 2v2h1.5V2a.5.5 0 0 1 .5-.5h2V0H2Zm2 10.5H2a.5.5 0 0 1-.5-.5V8H0v2a2 2 0 0 0 2 2h2v-1.5ZM8 12v-1.5h2a.5.5 0 0 0 .5-.5V8H12v2a2 2 0 0 1-2 2H8Zm2-12a2 2 0 0 1 2 2v2h-1.5V2a.5.5 0 0 0-.5-.5H8V0h2Z" fill="#fff"></path>
+</svg>
+</button></figure>
+<figure class="wp-block-image size-full wp-lightbox-container" data-block-type="core" data-wp-context='{"imageId":"6ae5c65630157"}' data-wp-interactive="core/image" data-wp-key="6ae5c65630157"><img alt="" class="wp-image-27139" data-wp-class--hide="state.isContentHidden" data-wp-class--show="state.isContentVisible" data-wp-init="callbacks.setButtonStyles" data-wp-on--click="actions.showLightbox" data-wp-on--load="callbacks.setButtonStyles" data-wp-on--pointerdown="actions.preloadImage" data-wp-on--pointerenter="actions.preloadImageWithDelay" data-wp-on--pointerleave="actions.cancelPreload" data-wp-on-window--resize="callbacks.setButtonStyles" decoding="async" src="assets/4f215547aea02fcc/img_4.png"/><button aria-haspopup="dialog" class="lightbox-trigger" data-wp-bind--aria-label="state.thisImage.triggerButtonAriaLabel" data-wp-init="callbacks.initTriggerButton" data-wp-on--click="actions.showLightbox" data-wp-style--right="state.thisImage.buttonRight" data-wp-style--top="state.thisImage.buttonTop" type="button">
+<svg fill="none" viewbox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+<path d="M2 0a2 2 0 0 0-2 2v2h1.5V2a.5.5 0 0 1 .5-.5h2V0H2Zm2 10.5H2a.5.5 0 0 1-.5-.5V8H0v2a2 2 0 0 0 2 2h2v-1.5ZM8 12v-1.5h2a.5.5 0 0 0 .5-.5V8H12v2a2 2 0 0 1-2 2H8Zm2-12a2 2 0 0 1 2 2v2h-1.5V2a.5.5 0 0 0-.5-.5H8V0h2Z" fill="#fff"></path>
+</svg>
+</button></figure>
+<p class="wp-block-paragraph" data-block-type="core">The two failures are the firewall story. As for the warnings: DoSvc not listening on 7680 isn’t treated as a fault, because the service stops listening when it’s idle, as the Delivery Optimization FAQ (<a href="https://learn.microsoft.com/windows/deployment/do/waas-delivery-optimization-faq" rel="noreferrer noopener" target="_blank">https://learn.microsoft.com/windows/deployment/do/waas-delivery-optimization-faq</a>) describes. </p>
+<p class="wp-block-paragraph" data-block-type="core">The LocalPolicyMerge warning is the sneaky one: with merging off, the DHCP client can fail to pick up option 235, so the same policy can quietly break Connected Cache discovery as well. And the DNS warning for `emdl.ws.microsoft.com` is DoctorDO declining to accuse your firewall of blocking a name Microsoft may simply have retired. I’d rather a tool admit that than send someone off to raise a change request against the network team.</p>
+<p class="wp-block-paragraph" data-block-type="core"><strong>Through Intune with Collect diagnostics, no Azure needed</strong></p>
+<p class="wp-block-paragraph" data-block-type="core">When you want reports from a problem site without asking anyone to run PowerShell, there’s a route that uses nothing but Intune. Collect diagnostics (<a href="https://learn.microsoft.com/intune/device-management/actions/collect-diagnostics" rel="noopener" target="_blank">https://learn.microsoft.com/intune/device-management/actions/collect-diagnostics</a>) gathers everything in `%ProgramData%\Microsoft\IntuneManagementExtension\Logs` into the zip you download from the admin center. So if a remediation writes the DoctorDO report into that folder, it comes back with the device’s other logs.</p>
+<p class="wp-block-paragraph" data-block-type="core">The detection script checks for a report from the last 24 hours:</p>
+<pre class="wp-block-code" data-block-type="core"><code># Detect-DoctorDOReport.ps1: is there a DoctorDO report from the last 24 hours?
+$report = Join-Path $env:ProgramData 'Microsoft\IntuneManagementExtension\Logs\DoctorDO-DeviceReport.html'
+$file = Get-Item -LiteralPath $report -ErrorAction SilentlyContinue
+if ($file -and $file.LastWriteTime -gt (Get-Date).AddHours(-24)) 
+{ 
+ Write-Output "Report present: $($file.LastWriteTime)"; exit 0
+}
+Write-Output 'No DoctorDO report from the last 24 hours'
+exit 1</code></pre>
+<p class="wp-block-paragraph" data-block-type="core">And the remediation installs the module if needed and writes the report with a fixed name, so each run replaces the last one:</p>
+<pre class="wp-block-code" data-block-type="core"><code># Remediate-DoctorDOReport.ps1: write a fresh report where Collect diagnostics looks.
+# Runs as SYSTEM. The report is never opened here (-NoOpen says so plainly).
+$ErrorActionPreference = 'Stop'
+$logs = Join-Path $env:ProgramData 'Microsoft\IntuneManagementExtension\Logs'
+try {
+    # -FileName needs version 0.7.0 or later.
+    if (-not (Get-Module -ListAvailable -Name DoctorDO.Collector | Where-Object { $_.Version -ge [version]'0.7.0' })) {
+        # From the PowerShell Gallery; or deploy it as a Win32 app instead.
+        Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force | Out-Null
+        Install-Module -Name DoctorDO.Collector -MinimumVersion 0.7.0 -Scope AllUsers -Force
+    }
+    Import-Module -Name DoctorDO.Collector -MinimumVersion 0.7.0
+    # One fixed name, so each run replaces the last report and the folder keeps one.
+    $r = New-DoctorDODeviceReport -OutputPath $logs -FileName 'DoctorDO-DeviceReport' -Format Html -NoOpen
+    Write-Output ('Report written: {0} ({1:N0} KB)' -f (Split-Path -Path $r.Path -Leaf), ($r.Bytes / 1KB))
+    exit 0
+} catch {
+    Write-Output "DoctorDO report failed: $($_.Exception.Message)"
+    exit 1
+}</code></pre>
+<p class="wp-block-paragraph" data-block-type="core">Add both as a script package under <strong>**Devices &gt; Scripts and remediations**</strong>, with “Run this script using the logged-on credentials” set to No, “Enforce script signature check” set to No (unless you sign the scripts yourself) and “Run script in 64-bit PowerShell” set to Yes. Schedule it Daily to match the 24-hour look-back. I’m still testing this route across more estates, so treat the scripts as a starting point: try them on one device with its <strong>**Run remediation (preview)**</strong> action, then a small group, before going wider.</p>
+<p class="wp-block-paragraph" data-block-type="core">When you want a report, run <strong>**Collect diagnostics**</strong> on the device (or in bulk, up to 25 at a time), download the zip from <strong>**Monitor &gt; Device diagnostics**</strong> and open `DoctorDO-DeviceReport.html` from the IME logs.</p>
+<p class="wp-block-paragraph" data-block-type="core">Remediations (<a href="https://learn.microsoft.com/intune/device-management/tools/deploy-remediations" rel="noreferrer noopener" target="_blank">https://learn.microsoft.com/intune/device-management/tools/deploy-remediations</a>) need Entra-joined or hybrid-joined devices, and users licensed for Windows Enterprise E3 or E5, Education A3 or A5, or VDA. Collect diagnostics only works on corporate-owned Windows devices and needs Help Desk Operator or a custom role with Remote tasks/Collect diagnostics. These reports aren’t anonymised by default, and Microsoft says its personnel may access device diagnostics, so add `-Anonymise` to the report line if the reports shouldn’t name the device.</p>
+<p class="wp-block-paragraph" data-block-type="core"><strong>The full solution: every device, every site, in your own Azure</strong></p>
+<p class="wp-block-paragraph" data-block-type="core">Everything above is available today. The full solution is in <strong>**private preview**</strong>.</p>
+<p class="wp-block-paragraph" data-block-type="core">It deploys into your own Azure subscription: a Static Web App for the portal, Function Apps, Service Bus, storage, PostgreSQL, Key Vault and monitoring. Sign-in is Entra ID, your tenant only. An Intune remediation installs the module and runs it daily as SYSTEM, and each device signs its report with its Entra device certificate key. Graph access is read-only: `Device.Read.All` and `DeviceManagementManagedDevices.Read.All`.</p>
+<p class="wp-block-paragraph" data-block-type="core">These screenshots are from the live demo at <a href="https://www.doctor-do.com" rel="noopener" target="_blank">https://www.doctor-do.com</a>: ContosoAI, a fictitious company with 46,000 devices at 41 sites in 16 countries, plus remote workers.</p>
+<p class="wp-block-paragraph" data-block-type="core">The DoctorDO portal Overview for the ContosoAI demo tenant shows 49% delivery efficiency against a 60% goal, 328.5 TB kept local of 664.1 TB downloaded, 2 critical fixes and 10 kinds of device problem.</p>
+<figure class="wp-block-image size-large wp-lightbox-container" data-block-type="core" data-wp-context='{"imageId":"6ae5c6563064e"}' data-wp-interactive="core/image" data-wp-key="6ae5c6563064e"><img alt="" class="wp-image-27127" data-wp-class--hide="state.isContentHidden" data-wp-class--show="state.isContentVisible" data-wp-init="callbacks.setButtonStyles" data-wp-on--click="actions.showLightbox" data-wp-on--load="callbacks.setButtonStyles" data-wp-on--pointerdown="actions.preloadImage" data-wp-on--pointerenter="actions.preloadImageWithDelay" data-wp-on--pointerleave="actions.cancelPreload" data-wp-on-window--resize="callbacks.setButtonStyles" decoding="async" src="assets/4f215547aea02fcc/img_5.png"/><button aria-haspopup="dialog" class="lightbox-trigger" data-wp-bind--aria-label="state.thisImage.triggerButtonAriaLabel" data-wp-init="callbacks.initTriggerButton" data-wp-on--click="actions.showLightbox" data-wp-style--right="state.thisImage.buttonRight" data-wp-style--top="state.thisImage.buttonTop" type="button">
+<svg fill="none" viewbox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+<path d="M2 0a2 2 0 0 0-2 2v2h1.5V2a.5.5 0 0 1 .5-.5h2V0H2Zm2 10.5H2a.5.5 0 0 1-.5-.5V8H0v2a2 2 0 0 0 2 2h2v-1.5ZM8 12v-1.5h2a.5.5 0 0 0 .5-.5V8H12v2a2 2 0 0 1-2 2H8Zm2-12a2 2 0 0 1 2 2v2h-1.5V2a.5.5 0 0 0-.5-.5H8V0h2Z" fill="#fff"></path>
+</svg>
+</button></figure>
+<p class="wp-block-paragraph" data-block-type="core"><em>*The Overview: where the estate’s bytes came from, against the goal you set.*</em></p>
+<p class="wp-block-paragraph" data-block-type="core">Most of the Overview tiles link through to the detail. The Ask Doctor-DO button you’ll spot is an optional briefing from your own Azure OpenAI deployment, off unless you turn it on. It summarises the findings; it doesn’t make them, and it never sees device names, addresses or site names.</p>
+<p class="wp-block-paragraph" data-block-type="core">Below the tiles, the trend marks each DO policy change and compares the seven days either side.</p>
+<p class="wp-block-paragraph" data-block-type="core">A trend chart of delivery efficiency over 30 days with five policy changes marked; one change, a Connected Cache host set for Singapore, is marked Improved, and the others No clear change.</p>
+<figure class="wp-block-image size-large wp-lightbox-container" data-block-type="core" data-wp-context='{"imageId":"6ae5c65630960"}' data-wp-interactive="core/image" data-wp-key="6ae5c65630960"><img alt="" class="wp-image-27128" data-wp-class--hide="state.isContentHidden" data-wp-class--show="state.isContentVisible" data-wp-init="callbacks.setButtonStyles" data-wp-on--click="actions.showLightbox" data-wp-on--load="callbacks.setButtonStyles" data-wp-on--pointerdown="actions.preloadImage" data-wp-on--pointerenter="actions.preloadImageWithDelay" data-wp-on--pointerleave="actions.cancelPreload" data-wp-on-window--resize="callbacks.setButtonStyles" decoding="async" src="assets/4f215547aea02fcc/img_6.png"/><button aria-haspopup="dialog" class="lightbox-trigger" data-wp-bind--aria-label="state.thisImage.triggerButtonAriaLabel" data-wp-init="callbacks.initTriggerButton" data-wp-on--click="actions.showLightbox" data-wp-style--right="state.thisImage.buttonRight" data-wp-style--top="state.thisImage.buttonTop" type="button">
+<svg fill="none" viewbox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+<path d="M2 0a2 2 0 0 0-2 2v2h1.5V2a.5.5 0 0 1 .5-.5h2V0H2Zm2 10.5H2a.5.5 0 0 1-.5-.5V8H0v2a2 2 0 0 0 2 2h2v-1.5ZM8 12v-1.5h2a.5.5 0 0 0 .5-.5V8H12v2a2 2 0 0 1-2 2H8Zm2-12a2 2 0 0 1 2 2v2h-1.5V2a.5.5 0 0 0-.5-.5H8V0h2Z" fill="#fff"></path>
+</svg>
+</button></figure>
+<p class="wp-block-paragraph" data-block-type="core"><em>*Policy changes on the trend. It only calls something an improvement when the movement beats day-to-day variation.*</em></p>
+<p class="wp-block-paragraph" data-block-type="core">Four of the five changes say “No clear change”, and the page states that it shows association, not cause: Patch Tuesday moves efficiency too. The topology view lays out every site by region, shaded against your goal. In this example it shows a map of every site grouped by region, each site card shaded red or green against the 60% goal with device counts and flags.</p>
+<figure class="wp-block-image size-large wp-lightbox-container" data-block-type="core" data-wp-context='{"imageId":"6ae5c65630c14"}' data-wp-interactive="core/image" data-wp-key="6ae5c65630c14"><img alt="" class="wp-image-27136" data-wp-class--hide="state.isContentHidden" data-wp-class--show="state.isContentVisible" data-wp-init="callbacks.setButtonStyles" data-wp-on--click="actions.showLightbox" data-wp-on--load="callbacks.setButtonStyles" data-wp-on--pointerdown="actions.preloadImage" data-wp-on--pointerenter="actions.preloadImageWithDelay" data-wp-on--pointerleave="actions.cancelPreload" data-wp-on-window--resize="callbacks.setButtonStyles" decoding="async" src="assets/4f215547aea02fcc/img_7.png"/><button aria-haspopup="dialog" class="lightbox-trigger" data-wp-bind--aria-label="state.thisImage.triggerButtonAriaLabel" data-wp-init="callbacks.initTriggerButton" data-wp-on--click="actions.showLightbox" data-wp-style--right="state.thisImage.buttonRight" data-wp-style--top="state.thisImage.buttonTop" type="button">
+<svg fill="none" viewbox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+<path d="M2 0a2 2 0 0 0-2 2v2h1.5V2a.5.5 0 0 1 .5-.5h2V0H2Zm2 10.5H2a.5.5 0 0 1-.5-.5V8H0v2a2 2 0 0 0 2 2h2v-1.5ZM8 12v-1.5h2a.5.5 0 0 0 .5-.5V8H12v2a2 2 0 0 1-2 2H8Zm2-12a2 2 0 0 1 2 2v2h-1.5V2a.5.5 0 0 0-.5-.5H8V0h2Z" fill="#fff"></path>
+</svg>
+</button></figure>
+<p class="wp-block-paragraph" data-block-type="core"><em>*The estate map: every site, shaded against a 60% goal.*</em></p>
+<p class="wp-block-paragraph" data-block-type="core">Open a site and you get its subnets. This is usually where it gets interesting.</p>
+<p class="wp-block-paragraph" data-block-type="core">The Dublin HQ site panel showing how its subnets share: one subnet of 2,778 devices flagged “blocked, isolation suspected” with 71 of 22,224 offered peers reached, while the other subnets reach most of their peers.</p>
+<figure class="wp-block-image size-large wp-lightbox-container" data-block-type="core" data-wp-context='{"imageId":"6ae5c65630f84"}' data-wp-interactive="core/image" data-wp-key="6ae5c65630f84"><img alt="" class="wp-image-27130" data-wp-class--hide="state.isContentHidden" data-wp-class--show="state.isContentVisible" data-wp-init="callbacks.setButtonStyles" data-wp-on--click="actions.showLightbox" data-wp-on--load="callbacks.setButtonStyles" data-wp-on--pointerdown="actions.preloadImage" data-wp-on--pointerenter="actions.preloadImageWithDelay" data-wp-on--pointerleave="actions.cancelPreload" data-wp-on-window--resize="callbacks.setButtonStyles" decoding="async" src="assets/4f215547aea02fcc/img_8.png"/><button aria-haspopup="dialog" class="lightbox-trigger" data-wp-bind--aria-label="state.thisImage.triggerButtonAriaLabel" data-wp-init="callbacks.initTriggerButton" data-wp-on--click="actions.showLightbox" data-wp-style--right="state.thisImage.buttonRight" data-wp-style--top="state.thisImage.buttonTop" type="button">
+<svg fill="none" viewbox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+<path d="M2 0a2 2 0 0 0-2 2v2h1.5V2a.5.5 0 0 1 .5-.5h2V0H2Zm2 10.5H2a.5.5 0 0 1-.5-.5V8H0v2a2 2 0 0 0 2 2h2v-1.5ZM8 12v-1.5h2a.5.5 0 0 0 .5-.5V8H12v2a2 2 0 0 1-2 2H8Zm2-12a2 2 0 0 1 2 2v2h-1.5V2a.5.5 0 0 0-.5-.5H8V0h2Z" fill="#fff"></path>
+</svg>
+</button></figure>
+<p class="wp-block-paragraph" data-block-type="core"><em>*One subnet at Dublin HQ reaches 71 of 22,224 offered peers. Its neighbours reach most of theirs.*</em></p>
+<p class="wp-block-paragraph" data-block-type="core">Their firewalls let DO in, the service offers them peers, and the connections still fail. That points at something between the devices, typically wireless client isolation, and DoctorDO raises it once for the subnet, not once per device.</p>
+<p class="wp-block-paragraph" data-block-type="core">Each device gets the same data flow as my local report, over the whole period:</p>
+<figure class="wp-block-image size-large wp-lightbox-container" data-block-type="core" data-wp-context='{"imageId":"6ae5c6563127e"}' data-wp-interactive="core/image" data-wp-key="6ae5c6563127e"><img alt="" class="wp-image-27131" data-wp-class--hide="state.isContentHidden" data-wp-class--show="state.isContentVisible" data-wp-init="callbacks.setButtonStyles" data-wp-on--click="actions.showLightbox" data-wp-on--load="callbacks.setButtonStyles" data-wp-on--pointerdown="actions.preloadImage" data-wp-on--pointerenter="actions.preloadImageWithDelay" data-wp-on--pointerleave="actions.cancelPreload" data-wp-on-window--resize="callbacks.setButtonStyles" decoding="async" src="assets/4f215547aea02fcc/img_9.png"/><button aria-haspopup="dialog" class="lightbox-trigger" data-wp-bind--aria-label="state.thisImage.triggerButtonAriaLabel" data-wp-init="callbacks.initTriggerButton" data-wp-on--click="actions.showLightbox" data-wp-style--right="state.thisImage.buttonRight" data-wp-style--top="state.thisImage.buttonTop" type="button">
+<svg fill="none" viewbox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+<path d="M2 0a2 2 0 0 0-2 2v2h1.5V2a.5.5 0 0 1 .5-.5h2V0H2Zm2 10.5H2a.5.5 0 0 1-.5-.5V8H0v2a2 2 0 0 0 2 2h2v-1.5ZM8 12v-1.5h2a.5.5 0 0 0 .5-.5V8H12v2a2 2 0 0 1-2 2H8Zm2-12a2 2 0 0 1 2 2v2h-1.5V2a.5.5 0 0 0-.5-.5H8V0h2Z" fill="#fff"></path>
+</svg>
+</button></figure>
+<p class="wp-block-paragraph" data-block-type="core"><em>*A healthy device for comparison: 84% from your own cache and LAN peers.*</em></p>
+<p class="wp-block-paragraph" data-block-type="core">Then there’s Fixes: each finding with its scope, evidence, the exact change and the Microsoft source;</p>
+<figure class="wp-block-image size-large wp-lightbox-container" data-block-type="core" data-wp-context='{"imageId":"6ae5c65631546"}' data-wp-interactive="core/image" data-wp-key="6ae5c65631546"><img alt="" class="wp-image-27132" data-wp-class--hide="state.isContentHidden" data-wp-class--show="state.isContentVisible" data-wp-init="callbacks.setButtonStyles" data-wp-on--click="actions.showLightbox" data-wp-on--load="callbacks.setButtonStyles" data-wp-on--pointerdown="actions.preloadImage" data-wp-on--pointerenter="actions.preloadImageWithDelay" data-wp-on--pointerleave="actions.cancelPreload" data-wp-on-window--resize="callbacks.setButtonStyles" decoding="async" src="assets/4f215547aea02fcc/img_10.png"/><button aria-haspopup="dialog" class="lightbox-trigger" data-wp-bind--aria-label="state.thisImage.triggerButtonAriaLabel" data-wp-init="callbacks.initTriggerButton" data-wp-on--click="actions.showLightbox" data-wp-style--right="state.thisImage.buttonRight" data-wp-style--top="state.thisImage.buttonTop" type="button">
+<svg fill="none" viewbox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+<path d="M2 0a2 2 0 0 0-2 2v2h1.5V2a.5.5 0 0 1 .5-.5h2V0H2Zm2 10.5H2a.5.5 0 0 1-.5-.5V8H0v2a2 2 0 0 0 2 2h2v-1.5ZM8 12v-1.5h2a.5.5 0 0 0 .5-.5V8H12v2a2 2 0 0 1-2 2H8Zm2-12a2 2 0 0 1 2 2v2h-1.5V2a.5.5 0 0 0-.5-.5H8V0h2Z" fill="#fff"></path>
+</svg>
+</button></figure>
+<p class="wp-block-paragraph" data-block-type="core"><em>*A finding with its evidence, the change and a before-and-after picture of the network.*</em></p>
+<p class="wp-block-paragraph" data-block-type="core">Where the fix is a DO setting, you get a settings catalog JSON file to <a href="https://learn.microsoft.com/intune/device-configuration/settings-catalog/#import-and-export-a-profile" rel="noreferrer noopener" target="_blank">https://learn.microsoft.com/intune/device-configuration/settings-catalog/#import-and-export-a-profile</a> and assign yourself; DoctorDO never writes to Intune. Where it isn’t, like the client isolation one above, it says so and points at the cause.</p>
+<p class="wp-block-paragraph" data-block-type="core">Network design starts from what devices report. Add a Connected Cache (<a href="https://learn.microsoft.com/windows/deployment/do/mcc-ent-edu-overview" rel="noreferrer noopener" target="_blank">https://learn.microsoft.com/windows/deployment/do/mcc-ent-edu-overview</a>) server at a site, or change peering, and it models the effect on CDN traffic and your slowest Patch Tuesday wave;</p>
+<figure class="wp-block-image size-large wp-lightbox-container" data-block-type="core" data-wp-context='{"imageId":"6ae5c65631824"}' data-wp-interactive="core/image" data-wp-key="6ae5c65631824"><img alt="" class="wp-image-27133" data-wp-class--hide="state.isContentHidden" data-wp-class--show="state.isContentVisible" data-wp-init="callbacks.setButtonStyles" data-wp-on--click="actions.showLightbox" data-wp-on--load="callbacks.setButtonStyles" data-wp-on--pointerdown="actions.preloadImage" data-wp-on--pointerenter="actions.preloadImageWithDelay" data-wp-on--pointerleave="actions.cancelPreload" data-wp-on-window--resize="callbacks.setButtonStyles" decoding="async" src="assets/4f215547aea02fcc/img_11.png"/><button aria-haspopup="dialog" class="lightbox-trigger" data-wp-bind--aria-label="state.thisImage.triggerButtonAriaLabel" data-wp-init="callbacks.initTriggerButton" data-wp-on--click="actions.showLightbox" data-wp-style--right="state.thisImage.buttonRight" data-wp-style--top="state.thisImage.buttonTop" type="button">
+<svg fill="none" viewbox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+<path d="M2 0a2 2 0 0 0-2 2v2h1.5V2a.5.5 0 0 1 .5-.5h2V0H2Zm2 10.5H2a.5.5 0 0 1-.5-.5V8H0v2a2 2 0 0 0 2 2h2v-1.5ZM8 12v-1.5h2a.5.5 0 0 0 .5-.5V8H12v2a2 2 0 0 1-2 2H8Zm2-12a2 2 0 0 1 2 2v2h-1.5V2a.5.5 0 0 0-.5-.5H8V0h2Z" fill="#fff"></path>
+</svg>
+</button></figure>
+<p class="wp-block-paragraph" data-block-type="core"><em>*Connected Cache placement, site by site. An estimate from your inputs, labelled as one.*</em></p>
+<p class="wp-block-paragraph" data-block-type="core">Reporting puts DoctorDO’s figures next to WUfB reports if you connect that workspace, and explains the gap. It saves as a PDF for anyone who wants it in an email;</p>
+<figure class="wp-block-image size-large wp-lightbox-container" data-block-type="core" data-wp-context='{"imageId":"6ae5c65631ac0"}' data-wp-interactive="core/image" data-wp-key="6ae5c65631ac0"><img alt="" class="wp-image-27134" data-wp-class--hide="state.isContentHidden" data-wp-class--show="state.isContentVisible" data-wp-init="callbacks.setButtonStyles" data-wp-on--click="actions.showLightbox" data-wp-on--load="callbacks.setButtonStyles" data-wp-on--pointerdown="actions.preloadImage" data-wp-on--pointerenter="actions.preloadImageWithDelay" data-wp-on--pointerleave="actions.cancelPreload" data-wp-on-window--resize="callbacks.setButtonStyles" decoding="async" src="assets/4f215547aea02fcc/img_12.png"/><button aria-haspopup="dialog" class="lightbox-trigger" data-wp-bind--aria-label="state.thisImage.triggerButtonAriaLabel" data-wp-init="callbacks.initTriggerButton" data-wp-on--click="actions.showLightbox" data-wp-style--right="state.thisImage.buttonRight" data-wp-style--top="state.thisImage.buttonTop" type="button">
+<svg fill="none" viewbox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+<path d="M2 0a2 2 0 0 0-2 2v2h1.5V2a.5.5 0 0 1 .5-.5h2V0H2Zm2 10.5H2a.5.5 0 0 1-.5-.5V8H0v2a2 2 0 0 0 2 2h2v-1.5ZM8 12v-1.5h2a.5.5 0 0 0 .5-.5V8H12v2a2 2 0 0 1-2 2H8Zm2-12a2 2 0 0 1 2 2v2h-1.5V2a.5.5 0 0 0-.5-.5H8V0h2Z" fill="#fff"></path>
+</svg>
+</button></figure>
+<p class="wp-block-paragraph" data-block-type="core"><em>*Two views of the same estate, with the differences between them spelled out.*</em></p>
+<p class="wp-block-paragraph" data-block-type="core">Connectivity shows the endpoint, port and proxy checks from every device, and where devices that ought to agree don’t. When half a site passes “outbound to peers” and half fails, their subnets usually hold the answer;</p>
+<figure class="wp-block-image size-large" data-block-type="core"><img alt="" class="wp-image-27135" decoding="async" src="assets/4f215547aea02fcc/img_13.png"/></figure>
+<p class="wp-block-paragraph" data-block-type="core"><em>*Connectivity across the estate. The same symptom as my laptop, peers refused on TCP 7680, on 1,863 demo devices.*</em></p>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#privacy-and-what-stays-in-your-tenant" id="privacy-and-what-stays-in-your-tenant"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a><strong>Privacy, and what stays in your tenant</strong></h3>
+<p class="wp-block-paragraph" data-block-type="core">The local module sends nothing. In the full solution everything lives in your subscription, and the DoctorDO project receives no device data.</p>
+<p class="wp-block-paragraph" data-block-type="core">Fleet runs anonymise by default: the host name goes, and things like the gateway and group ID are hashed. The Entra device, tenant and Intune IDs still travel, because ingest has to prove which enrolled device is sending, and subnets and AD sites stay readable, because that’s what the site analysis is built on. The device’s serial number is never sent, only a salted hash. The data page (<a href="https://www.doctor-do.com/data/" rel="noopener" target="_blank">https://www.doctor-do.com/data/</a>) goes through what the collector reads, what it sends and what it hashes or leaves out. Send it to your DPO before you start.</p>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#licence" id="licence"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a><strong>Licence</strong></h3>
+<p class="wp-block-paragraph" data-block-type="core">DoctorDO is source-available under the PolyForm Shield License 1.0.0: free to use, change and share, except to build a competing product. The Intune scripts in `collector/intune` are MIT.</p>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#links" id="links"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a><strong>Links</strong></h3>
+<p class="wp-block-paragraph" data-block-type="core">If the module tells you something you didn’t expect, or something wrong, tell me on LinkedIn (<a href="https://www.linkedin.com/in/mauricedaly/" rel="noopener" target="_blank">https://www.linkedin.com/in/mauricedaly/</a>), or raise an issue in GitHub.</p>
+<p class="wp-block-paragraph" data-block-type="core"></p>
+<p class="post-views content-post post-27123 entry-meta pvc-container pvc-views load-static" data-pvc-id="27123" data-pvc-metric="views" data-pvc-period="total" data-pvc-server-formatted="true" data-pvc-type="post"><span aria-hidden="true" class="pvc-icon"></span> <span class="post-views-label pvc-label">Views:</span> <span class="post-views-count pvc-count">20</span></p>
+<p class="entry-tags">
+<a href="https://msendpointmgr.com/tag/delivery-optimization/" rel="tag">Delivery Optimization</a> <a href="https://msendpointmgr.com/tag/troubleshooting/" rel="tag">Troubleshooting</a> </p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intune New Elevation System Settings Policy in EPM to Enable Network Changes Without Admin Privileges</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">HTMD / Anoop C Nair</span>
+    <span class="date">October 30, 2026</span>
+  </div>
+  <h1>Intune New Elevation System Settings Policy in EPM to Enable Network Changes Without Admin Privileges</h1>
+  <div class="orig">Saved for offline reading · <a href="https://www.anoopcnair.com/intune-elevation-system-settings-policy-in-epm/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text"><p class="code-block code-block-6">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins>
+</p><h2 class="wp-block-heading"><strong>Key Takeaways</strong></h2><ul class="wp-block-list has-medium-font-size"><li>Administrators can configure network changes using an <strong>Elevation System</strong> Settings policy.</li><li>Microsoft Intune <strong>EPM</strong> now supports approved network configuration changes for standard users.</li><li>Users can modify <strong>IPv4</strong>, IPv6, and <strong>DNS server</strong> settings without receiving local administrator rights.</li><li>Users can perform approved network changes through <strong>Company Portal.</strong></li></ul><p class="wp-block-paragraph">In this post we are discussing how to Intune New Elevation System Settings Policy in EPM to Enable Network Changes Without Admin Privileges. Microsoft recently introduced a new capability in<strong> <a href="https://www.anoopcnair.com/elevate-as-current-user-epm-rules-intune/" rel="noreferrer noopener" target="_blank">Endpoint Privilege Management</a> </strong>(EPM) that allows users to make approved <strong>network </strong>configuration changes without requiring local administrator rights. This enhancement helps organizations provide users with more <strong>flexibility </strong>while maintaining security and restricting unnecessary administrative privileges.</p><h2 class="wp-block-heading"><strong>Intune New Elevation System Settings Policy in EPM to Enable Network Changes Without Admin Privileges</strong></h2><p class="wp-block-paragraph">Previously, changing network settings such as <strong>IP addresses </strong>and <strong>DNS server values</strong> required administrator <strong>permissions</strong>. Because of this, standard users had to contact the IT administrator or help desk whenever they needed to make these changes, even for simple <strong>network configuration </strong>tasks. With this new capability, Microsoft Intune allows administrators to configure an Elevation System Settings policy through Endpoint Privilege Management.</p><p class="wp-block-paragraph">Using this policy, standard users can change IPv4, IPv6, and <strong>DNS server values</strong> on their device’s network adapters without requiring local administrator rights. Users can access this dedicated <strong>network settings </strong>experience through the <strong>Company Portal.</strong></p><h2 class="wp-block-heading"><strong>What’s New</strong></h2><p class="wp-block-paragraph">The new capability in Intune <strong>Endpoint Privilege Management</strong> allows standard users to perform approved network configuration changes without requiring full administrator permissions. Using the <strong>Elevation System</strong> <strong>Settings policy</strong>, administrators can control which network settings users are allowed to modify. This includes IPv4, IPv6, and DNS server values on network adapters.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins>
+</p><figure class="wp-block-table aligncenter is-style-regular"><table class="has-contrast-3-background-color has-background has-fixed-layout"><thead><tr><th>Feature</th><th>Details</th></tr></thead><tbody><tr><td>Microsoft Intune <strong>EPM</strong></td><td>Supported Settings- <strong>IPv4</strong>, IPv6, and <strong>DNS</strong></td></tr><tr><td><strong>Elevation </strong>Options</td><td>Automatic and User <strong>Confirmed</strong></td></tr></tbody></table><figcaption class="wp-element-caption">Intune New Elevation System Settings Policy in EPM to Enable Network Changes Without Admin Privileges -Table.1</figcaption></figure><h2 class="wp-block-heading"><strong>Navigate to Endpoint Privilege Management</strong></h2><p class="wp-block-paragraph">With this enhancement, EPM provides a controlled elevation experience that allows standard users to make IT-approved changes. Open the <strong><a href="https://intune.microsoft.com/" rel="noreferrer noopener nofollow" target="_blank">Microsoft Intune admin center </a></strong>and navigate to<strong> Endpoint security.</strong> From the available options, select <strong>Endpoint Privilege Management</strong> to access the EPM configuration page. <strong> Endpoint security</strong>&gt;<strong>Endpoint Privilege Management</strong>.</p><div class="wp-block-image"><figure class="aligncenter size-full"><img alt="Intune New Elevation System Settings Policy in EPM to Enable Network Changes Without Admin Privileges -Fig.1" class="wp-image-384492" data-lazyloaded="1" data-sizes="(max-width: 454px) 100vw, 454px" decoding="async" src="assets/46b941e3d18a1ad3/img_0.avif" title="Intune New Elevation System Settings Policy in EPM to Enable Network Changes Without Admin Privileges 2"/><figcaption class="wp-element-caption">Intune New Elevation System Settings Policy in EPM to Enable Network Changes Without Admin Privileges -Fig.1</figcaption></figure></div><p class="wp-block-paragraph">In the<strong> Endpoint Privilege Management </strong>section, click <strong>+ Create</strong>. In the Create a profile window, select Windows as the platform. Under the Profile dropdown, select <strong>Elevation system settings </strong>policy to create a new policy for managing network settings without granting users full administrator rights. In profile type you can also see options like Elevation rules policy, Elevation settings policy,Elevation system settings policy.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins>
+</p><div class="wp-block-image"><figure class="aligncenter size-full"><img alt="Intune New Elevation System Settings Policy in EPM to Enable Network Changes Without Admin Privileges -Fig.2" class="wp-image-384495" data-lazyloaded="1" data-sizes="(max-width: 752px) 100vw, 752px" decoding="async" src="assets/46b941e3d18a1ad3/img_1.avif" title="Intune New Elevation System Settings Policy in EPM to Enable Network Changes Without Admin Privileges 3"/><figcaption class="wp-element-caption">Intune New Elevation System Settings Policy in EPM to Enable Network Changes Without Admin Privileges -Fig.2</figcaption></figure></div><h2 class="wp-block-heading"><strong>Need Further Assistance or Have Technical Questions?</strong></h2><p class="has-contrast-3-background-color has-background wp-block-paragraph">Join the <a href="https://www.linkedin.com/company/how-to-manage-devices/" rel="nofollow noopener" target="_blank"><strong>LinkedIn Page</strong></a> and <a href="https://t.me/+Q9lE6G1_BO_bGq97" rel="nofollow"><strong>Telegram group</strong></a> to get the latest step-by-step guides and news updates. Join our <a href="https://www.meetup.com/htmd-community-meetup-group/" rel="nofollow noopener" target="_blank"><strong>Meetup Page</strong></a> to participate in User group meetings. Also, join the <a href="https://htmd.in/WACM2" rel="nofollow noopener" target="_blank"><strong>WhatsApp Community</strong></a>  and the <a href="https://htmd.in/whatsapp_channel" rel="nofollow noopener" target="_blank"><strong>Whatsapp channel</strong></a> to get the latest news on Microsoft Technologies. We are there on <a href="https://www.reddit.com/r/ImpMSNews/" rel="nofollow noopener" target="_blank"><strong>Reddit</strong></a> as well.</p><p class="wp-block-paragraph"><strong>Author</strong></p><p class="wp-block-paragraph"><a href="https://www.linkedin.com/in/anoopcnair/" rel="nofollow noopener" target="_blank"><strong>Anoop C Nair</strong></a>  is Workplace Technology solution architect with 25+ years of experience in global enterprise organizations such as JP Morgan, Capgemini, etc. He is Microsoft Certified Trainer. Microsoft MVP from 2015 onwards for consecutive 11 years! He also conducts Intune and modern workplace tech training for enterprise organizations. He is Blogger, Speaker, and Founder of HTMD Community and HTMD Conference. His focus is on Device Management technologies such as Intune, Windows, Cloud PC. He writes about technologies like Intune, SCCM, Windows, Cloud PC, Windows, Entra, Microsoft Security.</p><p class="code-block code-block-8">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="1286776600" data-full-width-responsive="true"></ins>
+</p><p class="code-block code-block-9">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="8125570634" data-full-width-responsive="true"></ins>
+</p></div></div></div>
+</article>
+</body>
+</html>
