@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Foundry Routines: Schedule Agents Without Duplicate Work</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">November 1, 2026</span>
+  </div>
+  <h1>Foundry Routines: Schedule Agents Without Duplicate Work</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/foundry-routines-reliable-scheduled-agents/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="prose" data-article-body=""><p>A report arrives twice on Monday morning. Both messages are correct. The automation still failed, because someone now has to determine whether the second message contains new work.</p>
+<p>Foundry Routines make scheduled agents easier to start. The work around the schedule still needs a job identity, a clear permission boundary and a record of what was delivered. I would build those around a small read-only report before scheduling anything that changes a device or contacts a customer.</p>
+<p>This guide combines the current Routines setup path with a locally tested SQLite example. The Azure configuration below is a prepared example, not a routine enabled in my tenant. References were checked on 20 October 2026.</p>
+<h2 id="decide-what-the-routine-starts">Decide what the routine starts</h2>
+<p>Routines are generally available in the September Foundry release. They can start an agent from a schedule, timer or supported event. The agentâs own reminder tool remains a separate preview feature. <a href="https://devblogs.microsoft.com/foundry/whats-new-in-microsoft-foundry-september-2026/">Release note</a></p>
+<p>My example is a daily report for an Intune pilot group. The agent reads the permitted groupâs evidence, produces a draft and records any coverage gaps. Sending the report is a separate decision.</p>
+<p>Keep three identifiers separate:</p>
+<table>
+<thead>
+<tr>
+<th>Record</th>
+<th>Example</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Routine dispatch</td>
+<td>Platform-generated ID</td>
+<td>Find a particular invocation and its telemetry</td>
+</tr>
+<tr>
+<td>Business job</td>
+<td><code>pilot:2026-10-20:report-v1</code></td>
+<td>Recognize the same requested work after a retry</td>
+</tr>
+<tr>
+<td>Delivery</td>
+<td>Destination and message/receipt ID</td>
+<td>Establish whether a particular report was sent</td>
+</tr>
+</tbody>
+</table>
+<p>A new dispatch ID does not necessarily mean new business work. Conversely, reusing yesterdayâs business key for todayâs report would incorrectly suppress a valid job.</p>
+<h2 id="prepare-a-disabled-schedule-and-inspect-its-identity">Prepare a disabled schedule and inspect its identity</h2>
+<figure class="technical-figure"><a href="/media/2026/10/reddit-guides/captures/originals/routines-capture.png"><img alt="Actual routine setup dialog with an existing helpdesk agent, agent identity, prompt and recurring trigger. This was an unsaved form: no routine was created or started." src="assets/166498018c760307/img_0.webp"/></a><figcaption>Actual routine setup dialog with an existing helpdesk agent, agent identity, prompt and recurring trigger. This was an unsaved form: no routine was created or started.</figcaption></figure>
+<p>The documented prerequisites include a deployed prompt or hosted agent and the required project role. Check the current regional availability and encryption constraints before choosing Routines for a workload. Workflow agents are not a supported target; CMK requirements need particular attention. <a href="https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/use-routines#prerequisites">Routines prerequisites</a></p>
+<p>With the Azure Developer CLI routines extension, a prepared manifest can look like this:</p>
+<pre class="astro-code github-dark" data-language="yaml" tabindex="0"><code><span class="line"><span>name</span><span>: </span><span>pilot-device-report</span></span>
+<span class="line"><span>description</span><span>: </span><span>Prepare a read-only pilot report for review.</span></span>
+<span class="line"><span>enabled</span><span>: </span><span>false</span></span>
+<span class="line"><span>triggers</span><span>:</span></span>
+<span class="line"><span>  weekday-morning</span><span>:</span></span>
+<span class="line"><span>    type</span><span>: </span><span>schedule</span></span>
+<span class="line"><span>    cron</span><span>: </span><span>"0 8 * * 1-5"</span></span>
+<span class="line"><span>    time_zone</span><span>: </span><span>Europe/Berlin</span></span>
+<span class="line"><span>action</span><span>:</span></span>
+<span class="line"><span>  type</span><span>: </span><span>invoke_agent_responses_api</span></span>
+<span class="line"><span>  agent_name</span><span>: </span><span>pilot-report-agent</span></span>
+<span class="line"><span>  input</span><span>: </span><span>Prepare a draft report for the approved pilot group. Do not send messages.</span></span></code></pre>
+<p>Save it as <code>routine.yaml</code>. After reviewing the target project and agent, the documented creation command is:</p>
+<pre class="astro-code github-dark" data-language="bash" tabindex="0"><code><span class="line"><span>azd</span><span> extension</span><span> install</span><span> azure.ai.routines</span></span>
+<span class="line"><span>azd</span><span> ai</span><span> routine</span><span> create</span><span> --file</span><span> routine.yaml</span></span></code></pre>
+<p>This creates a cloud resource if you run it. Keep <code>enabled: false</code> until the acceptance checks pass. Inspect the saved schedule and time zone in the portal; a copied UTC schedule can shift the local business hour at daylight-saving changes.</p>
+<p>The manifest uses <code>cron</code>; the REST/SDK trigger field is <code>cron_expression</code>. Do not mix the two formats. Use the <a href="https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/use-routines">current Routines guide</a> for the client you selected.</p>
+<p>By default, dispatch uses the agent identity. Delegated tools can require an explicit creator-identity choice at creation. That refers to the routine creator, not whichever user later edits it. Event-connector authentication is another separate identity. Record all of these before granting a scheduled agent useful access. <a href="https://learn.microsoft.com/en-us/python/api/azure-ai-projects/azure.ai.projects.models.routineauthorization?view=azure-python">Routine authorization model</a></p>
+<h2 id="make-the-business-job-idempotent">Make the business job idempotent</h2>
+<p>Idempotent handling means repeating the same request does not repeat its effect. Distributed workers can receive work more than once, so the processing logic must recognize an already handled item. <a href="https://learn.microsoft.com/en-us/azure/architecture/patterns/competing-consumers">Competing-consumers pattern</a></p>
+<p>The following local example uses a unique key and a payload hash. Save it as <code>job_check.py</code>; run it with <code>python3 job_check.py</code>:</p>
+<pre class="astro-code github-dark" data-language="python" tabindex="0"><code><span class="line"><span>import</span><span> hashlib</span></span>
+<span class="line"><span>import</span><span> json</span></span>
+<span class="line"><span>import</span><span> sqlite3</span></span>
+<span class="line"><span>import</span><span> tempfile</span></span>
+<span class="line"><span>from</span><span> contextlib </span><span>import</span><span> closing</span></span>
+<span class="line"><span>from</span><span> pathlib </span><span>import</span><span> Path</span></span>
+<span class="line"></span>
+<span class="line"><span>def</span><span> accept</span><span>(path, key, payload):</span></span>
+<span class="line"><span>    digest </span><span>=</span><span> hashlib.sha256(json.dumps(payload, </span><span>sort_keys</span><span>=</span><span>True</span><span>).encode()).hexdigest()</span></span>
+<span class="line"><span>    with</span><span> closing(sqlite3.connect(path)) </span><span>as</span><span> db, db:</span></span>
+<span class="line"><span>        db.execute(</span><span>"CREATE TABLE IF NOT EXISTS jobs (key TEXT PRIMARY KEY, digest TEXT, state TEXT)"</span><span>)</span></span>
+<span class="line"><span>        db.execute(</span><span>"BEGIN IMMEDIATE"</span><span>)</span></span>
+<span class="line"><span>        row </span><span>=</span><span> db.execute(</span><span>"SELECT digest FROM jobs WHERE key=?"</span><span>, (key,)).fetchone()</span></span>
+<span class="line"><span>        if</span><span> row:</span></span>
+<span class="line"><span>            if</span><span> row[</span><span>0</span><span>] </span><span>!=</span><span> digest:</span></span>
+<span class="line"><span>                raise</span><span> ValueError</span><span>(</span><span>"same job key with changed inputs"</span><span>)</span></span>
+<span class="line"><span>            return</span><span> False</span></span>
+<span class="line"><span>        db.execute(</span><span>"INSERT INTO jobs VALUES (?, ?, 'accepted')"</span><span>, (key, digest))</span></span>
+<span class="line"><span>        return</span><span> True</span></span>
+<span class="line"></span>
+<span class="line"><span>with</span><span> tempfile.TemporaryDirectory() </span><span>as</span><span> folder:</span></span>
+<span class="line"><span>    path </span><span>=</span><span> Path(folder) </span><span>/</span><span> "jobs.db"</span></span>
+<span class="line"><span>    job </span><span>=</span><span> "pilot:2026-10-20:report-v1"</span></span>
+<span class="line"><span>    payload </span><span>=</span><span> {</span><span>"group"</span><span>: </span><span>"pilot"</span><span>, </span><span>"window"</span><span>: </span><span>"2026-10-20"</span><span>}</span></span>
+<span class="line"><span>    print</span><span>(accept(path, job, payload))</span></span>
+<span class="line"><span>    print</span><span>(accept(path, job, payload))</span></span></code></pre>
+<p>Expected output is <code>True</code>, then <code>False</code>. The second call represents the same job and is not accepted again. Reusing the key with a different payload raises an error instead of silently returning an unrelated previous result.</p>
+<p>Generate the business key from trusted scheduler/application data. Do not ask the language model to invent the key that protects the workflow from duplication. For a production database, retain the same uniqueness and transaction properties and define how long completed keys remain valid.</p>
+<h2 id="treat-delivery-as-another-operation">Treat delivery as another operation</h2>
+<p>For the report, I would use an application-owned state sequence:</p>
+<pre class="astro-code github-dark" data-language="text" tabindex="0"><code><span class="line"><span>accepted â running â ready â sending â delivered</span></span>
+<span class="line"><span>                                â uncertain</span></span></code></pre>
+<p>These are proposed application states, not Foundryâs native run statuses. If the messaging service accepts a message but the connection drops before a receipt returns, mark delivery uncertain. Do not blindly resend the report.</p>
+<p>Persist the report and its pending delivery record together. A transactional outbox is one way to avoid losing the handoff between storing a result and queuing its delivery. It still needs idempotent consumers and destination-specific handling. <a href="https://learn.microsoft.com/en-us/azure/architecture/databases/guide/transactional-out-box-cosmos">Transactional outbox pattern</a></p>
+<p>In my local tests, twenty competing acceptance attempts produced one accepted job. State-transition tests also refused a second claim and refused to replay a delivery marked uncertain. That does not prove exactly-once behavior in Teams or email; those destinations need their own receipt and retry checks.</p>
+<h2 id="review-the-failures-before-enabling-the-schedule">Review the failures before enabling the schedule</h2>
+<table>
+<thead>
+<tr>
+<th>Failure to inject</th>
+<th>Expected evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Same job starts twice</td>
+<td>One accepted business job</td>
+</tr>
+<tr>
+<td>Source read fails</td>
+<td>Draft identifies missing coverage; no fabricated complete report</td>
+</tr>
+<tr>
+<td>Creator loses required access</td>
+<td>Visible failure assigned to an owner</td>
+</tr>
+<tr>
+<td>Worker restarts after saving a draft</td>
+<td>Existing result is found rather than regenerated silently</td>
+</tr>
+<tr>
+<td>Delivery acknowledgment disappears</td>
+<td>Uncertain state and manual reconciliation</td>
+</tr>
+<tr>
+<td>Inputs change but the key is reused</td>
+<td>Conflict instead of a false duplicate success</td>
+</tr>
+</tbody>
+</table>
+<p>A completed routine run can mean that the downstream API accepted dispatch, while the agentâs background work is still running. Inspect both the platform run and the business result before calling the workflow successful. <a href="https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/use-routines#dispatch-behavior-and-retry-policy">Dispatch and retry behavior</a></p>
+<p>For the first cloud test, use the documented manual dispatch with no external sending. Check the saved draft, sources, job key and trace. Enable the recurring schedule only after that path works and the owner has approved its scope.</p>
+<p>The same approach fits an <a href="/get-an-daily-device-report-via-email-or-teams-with-logic-apps-step-by-step-guide/">Intune reporting workflow</a>. The choice between a deterministic scheduled report and an agent depends on whether interpretation is useful. If the output is a fixed query and table, keep it simple.</p></div></div></div>
+</article>
+</body>
+</html>
