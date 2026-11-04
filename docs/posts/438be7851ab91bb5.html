@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Migrating frontline mobile devices: Identity considerations for assigned and shared devices</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Intune Customer Success</span>
+    <span class="date">July 1, 2026</span>
+  </div>
+  <h1>Migrating frontline mobile devices: Identity considerations for assigned and shared devices</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/intune-customer-success/migrating-frontline-mobile-devices-identity-considerations-for/ba-p/4532671" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p><strong>By: Carol Burns - Principal Product Manager | Microsoft Intune and Sucheta Gawade, Microsoft MVP (Azure &amp; Security / Intune)</strong></p>
+<p><em>Practitioner perspective from Sucheta Gawade, Microsoft MVP (Azure &amp; Security / Intune), with deep experience in secure frontline mobility, including regulated healthcare environments.</em></p>
+<p>In previous articles in this series, we focused on <a class="lia-internal-link lia-internal-url lia-internal-url-content-type-blog" data-lia-auto-title="understanding the reality of your frontline device estate" data-lia-auto-title-active="0" href="https://techcommunity.microsoft.com/blog/intunecustomersuccess/migrating-frontline-mobile-devices-understanding-the-reality-of-your-estate/4511683" target="_blank">understanding the reality of your frontline device estate</a> and preparing for real-world testing through <a class="lia-internal-link lia-internal-url lia-internal-url-content-type-blog" data-lia-auto-title="stakeholder alignment" data-lia-auto-title-active="0" href="https://techcommunity.microsoft.com/blog/intunecustomersuccess/migrating-frontline-mobile-devices-aligning-stakeholders-before-real-world-testi/4516511" target="_blank">stakeholder alignment</a>. One of the most critical areas to get right during the testing phase is identity and security, particularly given the often fast-paced, shift-based nature of frontline work, where organizations must account for the distinct requirements and challenges of devices assigned to a single individual versus devices shared across multiple users or shifts.</p>
+<p>Identity decisions directly affect security posture, sign‑in experience, operational support overhead, and worker productivity. Getting them wrong is one of the most common reasons pilots stall or fail.</p>
+<p>This article explores how to think about identity on frontline devices by distinguishing between assigned and shared usage models, clarifying when individual sign-in is required, and highlighting patterns to avoid such as shared accounts and passwords.</p>
+<p>Frontline mobile devices generally fall into one of two broad categories.</p>
+<p>Assigned devices are issued to a specific individual, often for the duration of their role. These devices:</p>
+<ul>
+<li>Typically require persistent access to user‑specific data</li>
+<li>Align with user‑based identity, Microsoft Entra ID Conditional Access, and audit controls.</li>
+<li>Enable greater accountability and traceability by associating activity with an individual user rather than a shared credential.</li>
+</ul>
+<p>Common examples include:</p>
+<ul>
+<li>A doctor using an individually assigned clinical tablet, where uninterrupted access to patient data and clinical systems is essential and actions must always be attributable to a named identity</li>
+<li>A field engineer assigned a single device that retains configuration, credentials, and offline content across jobs and locations</li>
+<li>An inspector or supervisor using an assigned device for approvals, reporting, and decision‑making that requires traceability</li>
+</ul>
+<p>Shared devices are used by multiple people across shifts or tasks. These scenarios introduce additional identity complexity and generally fall into two distinct models.</p>
+<p>Some frontline devices exist to perform a narrow, often repetitive task and don’t require sign in with a user account.</p>
+<p>Typical examples include:</p>
+<ul>
+<li>Retail price-check devices used on the shop floor to scan an item and display its current price or stock availability, with no need for access to personal or user-specific information</li>
+<li>Environmental monitoring devices used to read and record temperature or humidity in a storage area, ward, or vehicle, where the task is simple, repetitive, and not tied to an individual user identity</li>
+<li>Warehouse or facility scanning devices used for a narrow operational task such as scanning an asset, bin, or location code to confirm status, location, or completion of a step in a process</li>
+</ul>
+<p>In these cases:</p>
+<ul>
+<li>Devices are locked down to a specific task</li>
+<li>No user-specific data is stored, and access is limited to the minimum required for the task<br/><br/></li>
+</ul>
+<p>“When a device is truly task-only, removing sign-in friction is a huge win, but only if we’re aware what data the device can access. When things like patient context or personalized tasks enter the picture, identity becomes required” - <em>Sucheta Gawade, Microsoft MVP</em></p>
+<p>Organizations are increasingly digitizing and modernizing frontline workflows end-to-end. Paper processes and simple apps give way to connected systems, manual handovers are replaced with digital task lists, and workers begin to rely on mobile devices as their primary interface from completing tasks.</p>
+<p>As roles evolve, workers are expected to:</p>
+<ul>
+<li>Receive tasks, schedules, and updates digitally</li>
+<li>Communicate with supervisors and peers using collaboration tools such as Microsoft Teams</li>
+<li>Capture information at the point of work rather than transcribing later</li>
+<li>Interact with workflows that are increasingly automated or assisted by AI, such as guided steps, data validation, or suggested actions</li>
+</ul>
+<p>This shift delivers clear productivity and quality benefits, but it also means access must now be tied to individual identity to protect sensitive data, support auditability, and prevent information from being carried over between users.</p>
+<p>Common scenarios include:</p>
+<ul>
+<li>Retail store associates rotating across shifts, moving from paper schedules and verbal handovers to digital task lists, real-time communications, and collaboration tools such as Microsoft Teams</li>
+<li>Nurses sharing mobile devices in a hospital ward, where paper notes and whiteboards are replaced with secure access to patient-linked applications, care coordination tools, and role-based alerts</li>
+<li>Logistics workers signing in to shared devices to complete role-based tasks, capture data at the point of work, and interact with AI-assisted workflows.</li>
+</ul>
+<p>Shared credentials may seem like a shortcut in frontline environments, but they undermine accountability and make policy enforcement and incident response significantly harder.</p>
+<p>“Shared credentials feel ‘efficient’ until your first incident. You lose auditability, Conditional Access becomes meaningless, and investigations turn into guesswork. Individual identity is the only scalable model.” <em>-Sucheta Gawade, Microsoft MVP</em></p>
+<p>If access involves corporate systems or sensitive data, each worker should use their individual credentials to sign in, even on a shared device.</p>
+<p>Use the checklist to validate identity choices and confirm that the overall security posture matches the way the device is used.</p>
+<div>
+<div class="styles_lia-table-wrapper__h6Xo9 styles_table-responsive__MW0lN"><table border="1"><thead><tr class="lia-background-color-custom-f2f4f7"><th class="lia-border-color-custom-dddddd lia-border-style-solid">Decision area</th><th class="lia-border-color-custom-dddddd lia-border-style-solid">Indicators</th></tr></thead><tbody><tr><td class="lia-border-color-custom-dddddd lia-border-style-solid">Use individual sign-in</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">
+<ul>
+<li>Users access personal or role-specific data.</li>
+<li>Auditability or compliance is required.</li>
+<li>Conditional Access or multifactor authentication (MFA) must be enforced.</li>
+<li>Applications rely on user identity.</li>
+</ul>
+</td></tr><tr class="lia-background-color-custom-fafafa"><td class="lia-border-color-custom-dddddd lia-border-style-solid">Use kiosk-style or device-only identity</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">
+<ul>
+<li>Devices perform a single task.</li>
+<li>No user-specific or sensitive organizational data is accessed.</li>
+<li>Workflows are entirely device-centric.</li>
+<li>Speed and simplicity outweigh personalization.</li>
+</ul>
+</td></tr><tr><td class="lia-border-color-custom-dddddd lia-border-style-solid">Avoid entirely</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">
+<ul>
+<li>Shared usernames or passwords.</li>
+<li>Reused local accounts across shifts.</li>
+<li>MFA exclusions that weaken security without compensating controls.</li>
+</ul>
+</td></tr></tbody><colgroup><col/><col/></colgroup></table></div>
+</div>
+<p>The challenge in frontline environments is balancing:</p>
+<ul>
+<li>Security requirements</li>
+<li>Speed of access</li>
+<li>Ease of use across shifts</li>
+</ul>
+<p>“Frontline setups may fail because the sign-in flow doesn’t match reality. If authentication takes 60 seconds and the worker has to do it 30 times a shift, they’ll find a workaround.”<strong><em> </em></strong><em>-Sucheta Gawade, Microsoft MVP</em></p>
+<p> </p>
+<p>Typing complex usernames and passwords repeatedly during a shift is often impractical on mobile devices. QR code authentication is one effective option for shared frontline devices, but it’s not the only supported approach. For other supported methods, see <a class="lia-external-url" href="https://learn.microsoft.com/entra/identity/authentication/overview-authentication" rel="noopener noreferrer" target="_blank">Microsoft Entra authentication methods overview.</a></p>
+<p><a class="lia-external-url" href="https://learn.microsoft.com/entra/identity/authentication/how-to-authentication-qr-code" rel="noopener noreferrer" target="_blank">Microsoft Entra QR code authentication</a> is designed for frontline workers to sign-in efficiently on shared Android and iOS/iPadOS devices without repeatedly entering usernames and passwords.</p>
+<p><strong>Note:</strong> <span class="tooltip" tabindex="0">For individually assigned devices, phishing-resistant, passwordless authentication methods are the recommended approach, such as <a class="lia-external-url" href="https://learn.microsoft.com/en-us/entra/identity/authentication/concept-authentication-passkeys-fido2" rel="noopener noreferrer" target="_blank">Passkeys</a>.</span></p>
+<p>QR code authentication enables workers to sign in using a unique QR code and a personal numeric PIN.</p>
+<p>This approach:</p>
+<ul>
+<li>Eliminates typed usernames and passwords</li>
+<li>Preserves individual identity</li>
+<li>Works well for shared devices with frequent user turnover</li>
+<li>Integration with Microsoft Intune, Managed Home Screen and Conditional Access</li>
+</ul>
+<p>QR code authentication should always be:</p>
+<ul>
+<li>Scoped to specific users and devices</li>
+<li>Combined with Conditional Access policies</li>
+<li>Evaluated during real‑world testing to ensure the right balance of usability and security</li>
+</ul>
+<p>Individual identity is a critical foundation for stronger security posture, but it’s not enough on its own. Frontline device security also depends on management, data and app protection, session handling, and access policies that reflect the actual usage model.</p>
+<p><a class="lia-external-url" href="https://learn.microsoft.com/entra/identity/conditional-access/overview" rel="noopener noreferrer" target="_blank">Conditional Access</a> is an important part of securing frontline environments, but its effectiveness depends on aligning policies to the actual device and identity model in use.</p>
+<p>To ensure that the <a class="lia-external-url" href="https://learn.microsoft.com/entra/identity/authentication/concept-authentication-qr-code" rel="noopener noreferrer" target="_blank">QR code authentication method</a> can only be used by the frontline workers it’s intended for, <a class="lia-external-url" href="https://learn.microsoft.com/entra/identity/authentication/concept-authentication-strength-advanced-options" rel="noopener noreferrer" target="_blank">create a custom authentication methods policy</a>, which you can use in a dedicated Conditional Access policy. That Conditional Access policy should then be scoped to the group of users (frontline workers) who should log on using the QR code authentication method, and have the <strong>Require authentication strength</strong> control configured, which targets the custom authentication strength for "QR Code" which was previously created.</p>
+<p>During real‑world testing:</p>
+<ul>
+<li>Validate that design and controls support the intended usage model</li>
+<li>Ensure policies don’t block legitimate workflows</li>
+<li>Confirm sessions, access, and user targeting behave as expected</li>
+</ul>
+<p>These decisions should also be validated in practice: can users sign in and out reliably across shifts, is personal data cleared between sessions, and does the chosen experience match the pace of frontline work?</p>
+<p>This article walks through how identity choices shape security, usability, and day-to-day success for frontline mobile devices. It explains the difference between assigned and shared devices, when individual sign-in is needed, and why shared credentials can create risk. It also highlights QR code authentication and Conditional Access as practical ways to keep each worker’s identity protected while making sign-in simple enough for fast-paced frontline workflows.</p>
+<p>In the next article, we’ll focus on Microsoft Intune enrollment models, exploring how different enrollment approaches support—or constrain—the identity and usage patterns discussed here, including their role in protecting session identity, enforcing the intended sign-in model, and preventing one user’s access or data from carrying over to the next.</p>
+<p>As always, we welcome your feedback and experience. If you’ve navigated identity decisions for shared or frontline devices, share your advice and lessons learned in the comments,  or reach out to us on X <a class="lia-external-url" href="https://aka.ms/IntuneSuppTeam" rel="noopener noreferrer" target="_blank">@IntuneSuppTeam</a>.</p>
+<p>For more guidance across frontline scenarios, explore our broader <a href="https://techcommunity.microsoft.com/blog/intunecustomersuccess/from-the-frontlines-frontline-worker-management-with-microsoft-intune/4387449" target="_blank"><em>From the Frontlines</em></a> series on frontline worker management with Microsoft Intune.</p>
+<p><em><strong>Join our community!</strong> Discuss real-world scenarios, get expert guidance, connect with peers, and influence the future of Microsoft Security products. Learn more at <a class="lia-external-url" data-outlook-id="b28472ac-e9ef-4c22-803d-2eabb395ee0c" href="https://aka.ms/JoinIntuneCommunity" rel="noopener noreferrer" target="_blank">aka.ms/JoinIntuneCommunity</a>.</em></p></div></div></div>
+</article>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Registry Inventory in Microsoft Intune: Verifying What’s on Your Devices</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Intune Customer Success</span>
+    <span class="date">July 28, 2026</span>
+  </div>
+  <h1>Registry Inventory in Microsoft Intune: Verifying What’s on Your Devices</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/intune-customer-success/registry-inventory-in-microsoft-intune-verifying-what-s-on-your/ba-p/4541312" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><h2 class="styles_text-body__F7QRV MessageIntroduction_lia-message-introduction___mMAN styles_h4__wlzOi">Windows registry data is coming to the properties catalog. Here's a first look at how IT admins can collect and query registry key inventory in Microsoft Intune.</h2><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p><strong>By: Madison Cooks, Product Manager | Microsoft Intune</strong></p>
+<p>IT admins need a reliable way to confirm how Windows devices are configured, especially when troubleshooting, validating compliance, or investigating security posture. Policy assignment alone doesn’t always show what’s present on the device and getting registry visibility at scale has often required custom discovery or remediation scripts that take time to build, test, and maintain.</p>
+<p>With Microsoft Intune’s July (2607) release, device inventory will include Windows registry data, helping IT admins verify a device’s actual configuration, not just the policy assigned. With a new Device inventory property for registry keys, you define the keys you care about in the properties catalog, and Intune collects them for you. There’s no collection logic to build or keep running.</p>
+<p>This makes registry-based configuration checks easier to operationalize across managed Windows devices, so teams can spend less time maintaining scripts and more time acting on the data.</p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image &lt;p&gt;&lt;em&gt;Figure 1: Microsoft Intune device inventory profile creation screen showing the Properties picker with the Registry category selected for inventory data collection.&lt;/em&gt;&lt;/p&gt;" aria-labelledby="JBlqvn_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/02d7fce45af5dd34/img_0.png"/></button><span class="lia-media-caption-text" id="JBlqvn_caption">
+<p><em>Figure 1: Microsoft Intune device inventory profile creation screen showing the Properties picker with the Registry category selected for inventory data collection.</em></p>
+</span></span>
+<p>Registry data collection is configured through the existing properties catalog. For each entry, provide a registry key path and, when needed, a value name. For every targeted device, the device agent attempts collection and reports:</p>
+<ul>
+<li>Registry key path</li>
+<li>Value name</li>
+<li>Value type</li>
+<li>Value data</li>
+</ul>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label='Enlarge Image &lt;em&gt;Figure 2: &lt;span data-mce-style="color: rgb(112, 112, 112);"&gt;Microsoft Intune device inventory profile configuration page showing registry key collection settings, including registry path, collection pattern options, and value name fields.&lt;/span&gt;&lt;/em&gt;' aria-labelledby="AtFI4P_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/02d7fce45af5dd34/img_1.png"/></button><span class="lia-media-caption-text" id="AtFI4P_caption"><em>Figure 2: <span data-mce-style="color: rgb(112, 112, 112);">Microsoft Intune device inventory profile configuration page showing registry key collection settings, including registry path, collection pattern options, and value name fields.</span></em></span></span>
+<p>The initial release supports the following collection patterns designed for common admin scenarios that use HKEY_LOCAL_MACHINE (HKLM) paths.</p>
+<p>Specify a registry path and value name to collect one value from that path. For example, collect Secure Boot certificate servicing status from HKLM\SYSTEM\CurrentControlSet\Control\SecureBoot by using values such as UEFICA2023Status, UEFICA2023Error, or UEFICA2023ErrorEvent.</p>
+<p>Specify a registry path to collect all values directly under that path. This pattern doesn't include subkeys. For example, collect values directly under a Windows Update configuration path to help validate expected settings.</p>
+<p>Specify a base registry key path and a value name to collect that value from each immediate subkey. For example, collect DHCP status across network interface subkeys under HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces.</p>
+<p>After collection, registry inventory data will be available in <strong>Device inventory</strong> at initial release. We’ll expand access to registry data in the coming months, including support in additional reporting and exploration experiences.</p>
+<p> </p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label='Enlarge Image &lt;em&gt;Figure 3: &lt;span data-mce-style="color: rgb(112, 112, 112);"&gt;Microsoft Intune Device Inventory page displaying collected Windows registry data for a device, including registry key paths, values, collection status, and timestamps.&lt;/span&gt;&lt;/em&gt;' aria-labelledby="mq9GM3_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/02d7fce45af5dd34/img_2.png"/></button><span class="lia-media-caption-text" id="mq9GM3_caption"><em>Figure 3: <span data-mce-style="color: rgb(112, 112, 112);">Microsoft Intune Device Inventory page displaying collected Windows registry data for a device, including registry key paths, values, collection status, and timestamps.</span></em></span></span>
+<p>This makes registry data available alongside other inventory signals, so admins can use familiar tools to investigate configuration, validate device state, and support troubleshooting without building separate collection scripts.</p>
+<p>You can collect registry data and view it per device in Device inventory - a verified record of each endpoint’s actual configuration and a key source of settings data on each endpoint. This helps answer questions like: Is a setting actually enabled on the device? Which app, version, or configuration is installed? Did a policy apply correctly? Why is this device behaving differently from the rest?</p>
+<p>Registry data collection in Device inventory is included with Microsoft Intune Plan 1.</p>
+<p>If a registry value exists but doesn’t contain data, collection succeeds and the value appears as empty. If the registry path or value name doesn’t exist on a device, that device reports <strong>Not found</strong> for the collection result. Collection continues for all other devices, so one missing value won’t block results from devices where the value exists.</p>
+<p>Registry inventory includes safeguards to keep collection focused and manageable. Each collected registry value is capped at <strong>6 KB</strong>, and each device can collect up to <strong>100 registry keys</strong>. If a value or device exceeds these limits, collection skips the excess data and reports the applicable result for that device. These limits help manage data volume, maintain service performance, and reduce the risk of over-collection.</p>
+<p>Registry inventory is designed for configuration visibility and troubleshooting, not for collecting sensitive or confidential data. Built-in heuristic detection helps identify and prevent ingestion of values that may contain secrets, credentials, authentication tokens, certificates, private keys, connection strings, or other data that could grant access if exposed. If a value is flagged as potentially sensitive, it<strong> isn’t </strong>collected.</p>
+<p>Collection is limited to HKEY_LOCAL_MACHINE (HKLM) paths. This keeps inventory focused on device-level configuration and avoids user-specific registry contexts.</p>
+<p>Registry inventory in Microsoft Intune helps admins collect Windows registry data in a native, declarative way. Instead of maintaining custom scripts for common inventory scenarios, admins can configure registry collection in the properties catalog and query the results through familiar Intune reporting experiences.</p>
+<p>Use registry inventory for configuration visibility and troubleshooting across managed Windows devices. As you plan your collection strategy, focus on device-level HKLM data, avoid sensitive values, and remember collection limits to keep inventory targeted and manageable.</p>
+<p>If you have any feedback or questions, leave a comment below or reach out to us on X <a class="lia-external-url" href="https://aka.ms/IntuneSuppTeam" rel="noopener noreferrer" target="_blank">@IntuneSuppTeam</a>.</p></div></div></div>
+</article>
+</body>
+</html>

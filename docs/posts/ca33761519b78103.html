@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to enable HTTPS support for Microsoft Connected Cache for Enterprise and Education</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Intune Customer Success</span>
+    <span class="date">June 18, 2026</span>
+  </div>
+  <h1>How to enable HTTPS support for Microsoft Connected Cache for Enterprise and Education</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/intune-customer-success/how-to-enable-https-support-for-microsoft-connected-cache-for/ba-p/4496173" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p><strong>By: Aditya Middha | Product Manager 2 - Microsoft Connected Cache<br/><br/></strong></p>
+<p>Starting on <strong>June 16<sup>th</sup>, 2026</strong>, or soon after, Intune will enforce HTTPS content delivery for customers using Microsoft Connected Cache for Enterprise and Education. To continue using Microsoft Connected Cache to localize Intune Win32 app downloads and reduce the bandwidth impact on your network, you’ll need to configure HTTPS on Connected Cache nodes. Without this configuration, devices will still fetch the requested content, but they’ll fall back to the Content Delivery Network (CDN) and lose the performance and bandwidth savings that Microsoft Connected Cache provides.</p>
+<p>This guide assumes you have already deployed a standalone Microsoft Connected Cache node in your environment. If not, please see the <a class="lia-external-url" href="https://learn.microsoft.com/windows/deployment/do/mcc-ent-create-resource-and-cache?tabs=portal" rel="noopener noreferrer" target="_blank">Create and configure Microsoft Connected Cache nodes</a> page.</p>
+<p>By the end of this walkthrough, you’ll be able to:</p>
+<ul>
+<li>Prepare the TLS certificate that your Connected Cache needs</li>
+<li>Enable HTTPS support on both Windows and Linux‑based Microsoft Connected Cache servers</li>
+<li>Validate that HTTPS is working end‑to‑end</li>
+<li>Diagnose the most common setup issues</li>
+</ul>
+<p>This guide mirrors the workflow described in Microsoft Connected Cache’s public documentation.  For further explanation of what HTTPS support changes for Microsoft Connected Cache review <a class="lia-external-url" href="https://learn.microsoft.com/windows/deployment/do/mcc-ent-https-overview?tabs=portal" rel="noopener noreferrer" target="_blank">HTTPS Support for Microsoft Connected Cache Overview</a>, then proceed to <a class="lia-external-url" href="https://learn.microsoft.com/windows/deployment/do/mcc-ent-https-windows-guide" rel="noopener noreferrer" target="_blank">Configure HTTPS on Windows</a> or <a class="lia-external-url" href="https://learn.microsoft.com/windows/deployment/do/mcc-ent-https-linux-guide" rel="noopener noreferrer" target="_blank">Configure HTTPS on Linux</a>.</p>
+<p>To keep this walkthrough easy to follow, the screenshots and command examples use a simple, reproducible environment that matches what most admins will see during their first HTTPS configuration. In this guide, the examples are based on:</p>
+<ul>
+<li>A single Connected Cache node deployment</li>
+<li>Windows 11, using a local user runtime account</li>
+<li>Public certificate authority (CA)-signed TLS certificate</li>
+</ul>
+<p>This baseline environment is only meant to make the screenshots and file paths predictable. Your own environment may look different, and that’s completely fine. Many customers run Microsoft Connected Cache on:</p>
+<ul>
+<li>Linux (Ubuntu or RHEL)</li>
+<li>Windows Server 2022 or Windows Server 2025</li>
+<li>Networks with outbound restrictions</li>
+</ul>
+<p>Most of the workflow is identical across these variations. The folder structure, log locations, and command flow will look nearly the same on any Windows host. If you’re running Microsoft Connected Cache on Linux, the workflow is the same, but simpler—bash scripts are ran directly instead of being invoked through PowerShell.</p>
+<p>If your environment includes proxies, make sure <a class="lia-external-url" href="https://learn.microsoft.com/windows/deployment/do/delivery-optimization-endpoints" rel="noopener noreferrer" target="_blank">all required endpoints</a> are allowed.</p>
+<p>Before generating a certificate signing request (CSR) or importing a certificate, there are a few quick checks to make sure your Connected Cache server can enable HTTPS successfully.</p>
+<p>First, visit the “Cache Node Management” tab on Azure portal. Under the “Software Version” column, verify that your cache node is running on software version 2.0.0.2112 or higher. If not, you will need to reinstall Connected Cache.</p>
+<p>Next, confirm the hostname or IP address your client devices use to reach your Connected Cache node—this value will be configured when you generate the CSR. Also, ake sure port 443 is free on the host; Microsoft Connected Cache needs to bind to it.</p>
+<p>Finally, if your network performs <strong>TLS-inspection</strong>, ensure the <a class="lia-external-url" href="https://learn.microsoft.com/windows/deployment/do/delivery-optimization-endpoints" rel="noopener noreferrer" target="_blank">required endpoints</a> are allowed. Intercepted HTTPS traffic will cause devices to reject Microsoft Connected Cache’s TLS certificate, even if everything else is configured correctly.</p>
+<p>Once these checks are done, your node is ready for the HTTPS workflow: generate the CSR on your Connected Cache host machine, sign it with your CA, and import the resulting certificate.</p>
+<p>For more details, refer to the documentation: <a class="lia-external-url" href="https://learn.microsoft.com/windows/deployment/do/mcc-ent-https-windows-guide" rel="noopener noreferrer" target="_blank">HTTPS on Windows Prerequisites</a>.</p>
+<p> </p>
+<p>The first step in enabling HTTPS support is generating a CSR directly on your Microsoft Connected Cache node. This step cannot be skipped. <strong>Microsoft Connected Cache must create the CSR itself</strong> so it can generate and retain the private key that will later be paired with your signed certificate during TLS negotiation.</p>
+<p>When configuring the parameters for the generateCsr script, the most important values to get right are the <strong>Subject</strong> and <strong>SAN</strong>. These must match exactly how your managed client devices connect to your Connected Cache node. If the client devices use FQDN, include that FQDN; if they connect via IP, include that IP. A mismatch here won’t break CSR generation, but it’ll cause clients to bypass Microsoft Connected Cache later since they won’t trust the certificate during the TLS negotiation.</p>
+<p>For parameter configuration guidance on your specific environment, review these documented <a class="lia-external-url" href="https://learn.microsoft.com/windows/deployment/do/mcc-ent-https-windows-reference#scenario-based-parameter-examples" rel="noopener noreferrer" target="_blank">scenario-based parameter examples</a>.</p>
+<p>After parameter configuration, you will need to locate the <strong>Installer scripts directory</strong>, the same as when you installed Microsoft Connected Cache originally. You can move directly to this path by running the following command in your terminal:</p>
+<pre class="lia-code-sample language-bash"><code>Push-Location (deliveryoptimization-cli mcc-get-scripts-path)</code></pre>
+<p>Once in the correct folder path, run the generateCsr command with your configured parameters. Running the command launches the CSR generation workflow inside the Microsoft Connected Cache-managed Windows Subsystem for Linux (WSL) distribution. The terminal output shows exactly what Connected Cache is doing: where it stores certificate files, where logs are written, which WSL distribution is being used, and the final location of the generated CSR. You’ll also see that Microsoft Connected Cache runs the CSR generation as a scheduled task inside WSL—this is expected and part of the normal flow.</p>
+<p>For example:</p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/ca33761519b78103/img_0.png"/></button></span>
+<p>This output confirms that Microsoft Connected Cache:</p>
+<ul>
+<li>Validated the CSR request</li>
+<li>Passed the Subject (Common Name) and SAN values to the internal script</li>
+<li>Generated the private key and CSR, stored both inside the container</li>
+<li>Wrote logs to the \Certificates\logs folder</li>
+<li>Created the CSR file in the Certificates folder</li>
+</ul>
+<p> </p>
+<p>When the process completes, you’ll see the timestamped CSR written to the Windows-side certificates folder (…\Certificates\certs). This is the file you’ll submit to your signing CA:</p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/ca33761519b78103/img_1.png"/></button></span>
+<p>Troubleshooting:</p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/ca33761519b78103/img_2.png"/></button></span>
+<p>Every time you run generateCsr, Microsoft Connected Cache writes a full log to a directory that ends with …\Certificates\logs. The terminal output shows you the exact path, and you can always return to this folder if you need to understand what happened during CSR generation. If you do need to troubleshoot, start by opening the most recent log file.</p>
+<p>The generateCsr log provides a detailed trace of each step. The following lines are checkpoints (in order) that you can look for in the more extensive log output:</p>
+<ul>
+<li><strong>“Algorithm validation passed / CSR name validation passed”</strong> - Microsoft Connected Cache accepted your inputs and is ready to generate the CSR.</li>
+<li><strong>“Subject Components: … / SAN Components: …”</strong> - Microsoft Connected Cache will embed these values into the CSR. If these don’t match your Connected Cache server hostname or IP address, regenerate the CSR.</li>
+<li><strong>“Attempting to call http://localhost:5000/csr”</strong> - Microsoft Connected Cache internal controller is generating the keypair and CSR inside the WSL container.</li>
+<li><strong>“Key verification succeeded”</strong> - Microsoft Connected Cache successfully generated and validated the private key.</li>
+<li><strong>“CSR verification successful”</strong> - OpenSSL has validated the CSR structure.</li>
+<li><strong>“Successfully copied logs to windowsCerts location” </strong>- The logs were written to the host machine directory.</li>
+<li><strong>“CSR generation completed successfully”</strong> - Completed end-to-end successfully.</li>
+</ul>
+<p> </p>
+<p>One thing to be aware of: during a <em>successful</em> run, you may still see messages like:</p>
+<pre class="lia-code-sample language-bash"><code>mkdir: cannot create directory '/keys': Permission denied chmod: cannot access '/keys': No such file or directory</code></pre>
+<p>These are <strong><u>not errors</u></strong>.</p>
+<p>The script checks for required folders before creating them, and if they already exist, those checks generate harmless warnings. As long as the script finishes with a success message and you see a .csr file in the certs folder, the run is successful.</p>
+<p> </p>
+<p>This step occurs outside of the scope of Microsoft Connected Cache. Signing your CSR will rely on the PKI that your organization has chosen to use. This may include an internal ADCS, other enterprise internal PKI, or an externally hosted PKI (DigiCert, Let’s Encrypt, etc.). Of note, Cloud PKI will not work with Connected Cache because it requires the CSR be generated via SCEP before signing.</p>
+<p>Ensure that your client devices will be able to trust the CA signature. For many customers, we recommend signing using a public CA that Windows client devices automatically trust. Please reference <a class="lia-external-url" href="https://learn.microsoft.com/windows/deployment/do/mcc-ent-https-windows-guide#sign-the-csr" rel="noopener noreferrer" target="_blank">documentation on signing the CSR</a> for more details.</p>
+<p>The only requirement on the Connected Cache side is that the certificate is in unencrypted .crt format. Microsoft Connected Cache cannot import password-protected certificate formats yet - including .pfx bundles - even if they contain the correct certificate. For now, make sure your signing CA gives you, or allows you to export, a plain X.509 .crt file.</p>
+<p><br/>After your CA signs the CSR, you’ll import the resulting certificate back to Microsoft Connected Cache. With the signed certificate in hand, place it in the same <strong>certs</strong> folder where your CSR was generated. Microsoft Connected Cache expects both files to live together so it can pair the returned certificate with the private key created earlier. A successful setup in the folder directory looks like this:</p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/ca33761519b78103/img_3.png"/></button></span>
+<p>If the certificate exists in the Certificates folder in .crt format, you’re ready to continue. Note: The CSR and .crt certificate do not have to have the same name.</p>
+<p>Before importing your certificate, remember that the CSR <strong>must</strong> have been generated on the same Microsoft Connected Cache node. You cannot skip directly to importing a certificate - Microsoft Connected Cache must have created the private key during CSR generation so it can pair the signed certificate with that key.</p>
+<p>After configuring the parameters referenced in the documentation to <a class="lia-external-url" href="https://learn.microsoft.com/windows/deployment/do/mcc-ent-https-windows-guide#import-signed-tls-certificate" rel="noopener noreferrer" target="_blank">import the signed TLS certificate</a>, run the importCert command from the same <strong>scripts directory</strong> used during CSR generation.</p>
+<p>When you start the import, Microsoft Connected Cache runs a full verification workflow inside its managed WSL distribution. The terminal output for this step is intentionally simple—it shows only that the certificate file passed basic validation, that the internal import script was invoked, and that the import is running as a scheduled task within the WSL distribution. You’ll also see that logging is active and that Microsoft Connected Cache has begun monitoring the process:</p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/ca33761519b78103/img_4.png"/></button></span>
+<p>Although the terminal output is brief, the full workflow is visible in the import logs. A successful import means Microsoft Connected Cache:</p>
+<ul>
+<li>Found your .crt file in the expected folder</li>
+<li>Ran cryptographic verification confirming the certificate, CSR, and private key all match</li>
+<li>Copied the certificate into the container and updated Microsoft Connected Cache internal configuration</li>
+<li>Restarted the container with the new certificate</li>
+<li>Enabled HTTPS for Microsoft Connected Cache’s Intune content endpoints</li>
+</ul>
+<p>Once these steps are complete, Microsoft Connected Cache is fully configured to serve HTTPS content. You usually won’t see new files added to the Windows certs folder after import as the changes occur inside the Connected Cache container. The final validation that import is successful is if the script exits successfully and the logs show that Microsoft Connected Cache restarted with the new certificate in place.</p>
+<p>Troubleshooting certificate import is similar to troubleshooting CSR generation: every run produces a detailed log in the ...\Certificates\logs folder. If import fails, these logs will show exactly which step did not complete. At this stage, SAN or hostname mismatches do <strong>not</strong> show up; those only appear later during client-side validation.</p>
+<p>The importCert script only ensures that your certificate, CSR, and private key match (stored inside container, not visible from Certificates folder) and that Microsoft Connected Cache can load them.</p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/ca33761519b78103/img_5.png"/></button></span>
+<p> </p>
+<p>To help interpret the log, below are the checkpoints you can reference (in order):</p>
+<ul>
+<li><strong>“Certificate file validation passed”</strong> - Microsoft Connected Cache found the .crt file in the <strong>certs </strong>folder and its .crt format is valid.</li>
+<li><strong>“Using CertName: … / CSR being used: …”</strong> - Microsoft Connected Cache matched the certificate to the CSR that generated the private key.</li>
+<li><strong>“SUCCESS: The CSR, certificate and private key cryptographic materials all match”</strong> - Microsoft Connected Cache verified the keypair, CSR, and certificate are a correct trio.</li>
+<li><strong>“Nginx restarted successfully with new certificates”</strong> - Microsoft Connected Cache is now configured to serve HTTPS on port 443 inside the container.</li>
+<li><strong>“Certificate import completed successfully”</strong> - The end-to-end import succeeded with no errors.</li>
+</ul>
+<p>Once the importCert script succeeds, your node is ready for validation.</p>
+<p>Once your certificate is imported, the final step is validating that Microsoft Connected Cache is now serving content over HTTPS. Detailed test commands are all documented in the <a class="lia-external-url" href="https://learn.microsoft.com/windows/deployment/do/mcc-ent-https-windows-validation" rel="noopener noreferrer" target="_blank">Validate HTTPS on Windows guide</a>. Complete the tests <strong>first on the Microsoft Connected Cache server, then on a client device</strong>. This order matters - server-side validation confirms Microsoft Connected Cache is listening on port 443 with its new TLS certificate; client-side validation confirms that client devices can trust and use that certificate.</p>
+<p>Start validation on the Microsoft Connected Cache host server. <a class="lia-external-url" href="https://learn.microsoft.com/windows/deployment/do/mcc-ent-https-windows-validation#service-side-validation" rel="noopener noreferrer" target="_blank">The server side tests</a> include HTTPS and HTTP health endpoint checks that confirm:</p>
+<ul>
+<li>Microsoft Connected Cache is successfully bound to port 443</li>
+<li>The TLS certificate loaded correctly</li>
+<li>The TLS certificate, private key, and CSR all correspond</li>
+<li>Microsoft Connected Cache can return its health endpoint over HTTPS</li>
+</ul>
+<p>If any of the server-side validation steps fail, check the generateCsr and importCert logs in the …\Certificates\logs folder. The validation guide includes <a class="lia-external-url" href="https://learn.microsoft.com/windows/deployment/do/mcc-ent-https-windows-validation#troubleshooting" rel="noopener noreferrer" target="_blank">troubleshooting tests</a> that help distinguish whether the issue is certificate-related, connectivity-related, or due to another process on the host.</p>
+<p>Only move on to client-side validation once the Microsoft Connected Cache server passes its own tests.</p>
+<p>After confirming the server is configured correctly, the next stage is validating HTTPS content delivery from a client device that is pointed to use Microsoft Connected Cache. The <a class="lia-external-url" href="https://learn.microsoft.com/windows/deployment/do/mcc-ent-https-windows-validation#client-side-validation" rel="noopener noreferrer" target="_blank">client-side tests</a> contain both browser-based and command line tests that help verify:</p>
+<ul>
+<li>The client trusts the issuing CA</li>
+<li>DNS resolves the Microsoft Connected Cache hostname correctly</li>
+<li>The device can complete a full TLS handshake with Microsoft Connected Cache</li>
+<li>The device is retrieving HTTPS content from Microsoft Connected Cache rather than falling back to CDN</li>
+</ul>
+<p>Once both server-side and client side-validation steps succeed, you can be confident that your Microsoft Connected Cache node is fully configured and ready to serve Intune content securely over HTTPS.</p>
+<p>Most customers will complete the HTTPS workflow without any problems, but there are a few known issues we want to call out proactively.</p>
+<p>These issues have been fully addressed with the release of the <a class="lia-external-url" href="https://learn.microsoft.com/windows/deployment/do/mcc-ent-release-notes#new-windows-hosted-deployment-application-version" rel="noopener noreferrer" target="_blank">new Windows-hosted deployment application</a> (v1.0.26.0) for Windows host machines, the <a class="lia-external-url" href="https://learn.microsoft.com/windows/deployment/do/mcc-ent-release-notes#new-linux-hosted-deployment-package-version" rel="noopener noreferrer" target="_blank">new Linux-hosted deployment package</a> (v1.10) for Linux host machines, and <a class="lia-external-url" href="https://learn.microsoft.com/windows/deployment/do/mcc-ent-release-notes#latest-release-ga-container-release-v2002124_e" rel="noopener noreferrer" target="_blank">the latest GA container release</a> (v2.0.0.2124_e) for all cache nodes.<br/><br/></p>
+<ol>
+<li><strong> ImportCert issues on Windows Server 2022/2025 using a gMSA account, and on Windows 11 using a local user runtime account</strong></li>
+</ol>
+<p class="lia-indent-padding-left-60px">If your Microsoft Connected Cache runtime account is a <strong>Group Managed Service Account (gMSA)</strong> on a Windows Server 2022 or Windows Server 2025 host machine, you may see failures when running importCert. In the importCert logs, this can show up as unsuccessful permissions access or indefinite logging.</p>
+<p class="lia-indent-padding-left-60px">The same importCert issues can also appear on Windows 11 if you are using a <strong>local user</strong> as the runtime account.</p>
+<p class="lia-indent-padding-left-60px"><strong>Status: RESOLVED</strong></p>
+<p class="lia-indent-padding-left-60px">Please download Windows-hosted deployment application v1.0.26.0 by running the following command in an elevated PowerShell window:</p>
+<p class="lia-indent-padding-left-60px"><em>Add-AppxPackage <a href="https://aka.ms/do-mcc-ent-windows-x64" rel="noopener noreferrer" target="_blank">https://aka.ms/do-mcc-ent-windows-x64</a></em></p>
+<p class="lia-indent-padding-left-60px">Then you may proceed to re-deploy your Connected Cache node, which will implement the necessary changes.</p>
+<p class="lia-indent-padding-left-60px">You can further verify that you are deploying with the correct application version. When run in the terminal, the copied “Cache Node deployment command” given in the Azure portal will run <em>deploymcconwsl.ps1</em> out of the folder path that looks like:</p>
+<p class="lia-indent-padding-left-60px"><em>C:\ProgramFiles\WindowsApps\Microsoft.DeliveryOptimization_<strong>1.0.26.0</strong>_neutral__8wekyb3d8bbwe\deliveryoptimization-cli</em></p>
+<ol start="2">
+<li><strong> ImportCert hangs on software version 2119_e (buffer bug)</strong></li>
+</ol>
+<p class="lia-indent-padding-left-60px">During the week of January 19<sup>th</sup>, 2026, we deployed container version <strong>2119_e</strong> to all customer cache nodes.<br/>We discovered a bug where the container’s internal buffer is not cleared during importCert, causing the import to run indefinitely. If you see this behavior and your Azure portal shows that your cache node is on version <strong>2119_e, </strong>this is likely the cause.</p>
+<p class="lia-indent-padding-left-60px"><strong>Status: RESOLVED</strong>:</p>
+<p class="lia-indent-padding-left-60px">On March 3<sup>rd</sup>, 2026, we pushed container version <strong>2124_e</strong> to all cache nodes on the “Fast Ring” update schedule.</p>
+<p class="lia-indent-padding-left-60px">If your cache node is on software version 2119_e today, you can change the update schedule configuration to the “Fast Ring”. Head to the 3<sup>rd</sup> tab (“Updates”) of the Cache Node Configuration on the Azure portal and configure the update ring. Container version 2124_e will be pushed to all “Slow Ring” nodes in early April 2026.</p>
+<p class="lia-indent-padding-left-60px">If your cache node is still not pulling down container version 2124_e after being configured on the Fast Ring, please reach out to us.<br/><br/></p>
+<p>The fixes for these issues have all been validated. Once ready for public release, the latest software version will be pushed to all cache nodes and the updated Windows installer will be available to download in Azure portal. Stay tuned to the <a class="lia-external-url" href="https://learn.microsoft.com/windows/deployment/do/mcc-ent-release-notes" rel="noopener noreferrer" target="_blank">Microsoft Connected Cache Release Notes</a><span> for up-to-date information.</span></p>
+<p>This guide walked through the setup of HTTPS using a Windows-based Microsoft Connected Cache host, since that’s what most customers deploy today. If you're running Microsoft Connected Cache on Linux, the overall steps are the same - generate a CSR on the node, sign it with your CA, and import the resulting .crt file - but a few details differ.</p>
+<p>For a Linux-hosted Microsoft Connected Cache nodes, shell scripts handle the entire process, specifically generateCsr.sh and importCert.sh. The <a class="lia-external-url" href="https://learn.microsoft.com/windows/deployment/do/mcc-ent-https-linux-guide" rel="noopener noreferrer" target="_blank">Enable HTTPS Support on Linux guide</a> documents these steps in detail, including the exact script parameters, file locations, and how to interpret the Linux-specific logs. The biggest differences on Linux are:</p>
+<ul>
+<li>You run the CSR and import scripts directly in bash (no WSL component).</li>
+<li>File paths and log locations follow the Linux directory structure (/var/mcc/...).</li>
+<li>Check port conflicts, firewall configuration, and TLS inspection using Linux tools (ss, iptables, proxy settings).</li>
+<li><a class="lia-external-url" href="https://learn.microsoft.com/windows/deployment/do/mcc-ent-https-linux-validation" rel="noopener noreferrer" target="_blank">Validation steps use Linux equivalents</a> of the server side tests documented in the Windows validation guide.</li>
+</ul>
+<p>Once your Microsoft Connected Cache node is serving content over HTTPS, the next thing to plan for is ongoing certificate maintenance. TLS certificates aren’t a onetime import - certificates expire, CA chains change, and your operational process needs to keep up. Microsoft Connected Cache will soon surface certificate details both through a command line script and directly in the Azure portal, but those capabilities are not available yet. Until then, verification and rotation rely on simple checks you perform on the Microsoft Connected Cache host.</p>
+<p>The easiest way to monitor your deployment today is to periodically check the <strong>Key Metrics</strong> chart in the Overview blade of your Microsoft Connected Cache resource in Azure. If Intune content is flowing through Microsoft Connected Cache, that’s a strong proxy signal that HTTPS is healthy.</p>
+<p>For the certificate itself, many admins perform a lightweight weekly or monthly review: ensuring the TLS certificate is still valid, not approaching expiration, and still matches the configuration you imported. Re-running the validation tests from our <a class="lia-external-url" href="https://learn.microsoft.com/windows/deployment/do/mcc-ent-https-windows-validation" rel="noopener noreferrer" target="_blank">public documentation</a> every so often is also a good way to catch any issues early.</p>
+<p>The updated Windows installer, as mentioned in Known Issues, will also have a PowerShell script that displays the status and expiration date of existing TLS certificates.</p>
+<p>When planning for renewal, we recommend starting at least 60 days before the certificate expires. Renewal is typically straightforward: either reuse the existing CSR (most common) or generate a new one, then have your CA resign it, convert it into .crt format, and test the renewed certificate on a test node if you have one. If your workflow doesn’t include a test Connected Cache node, you can still safely import the renewed certificate on your production node - if import fails, Microsoft Connected Cache simply keeps using the existing certificate until a valid one is applied, so you won’t break your environment.</p>
+<p>If your certificate management system has automation capabilities, you can script Microsoft Connected Cache’s certificate renewal workflow as well - for example, by using Secure Shell (SSH) to remotely to run the generateCSR or importCert scripts on the host machine.</p>
+<p>For larger or distributed environments, testing the signing and import processes on a non-production node first can help confirm SAN correctness, trust behavior, and chain completeness before touching production.</p>
+<p>We are actively working to streamline certificate monitoring and renewal inside Microsoft Connected Cache.</p>
+<p>HTTPS support for Microsoft Connected Cache will soon become a requirement for delivering Intune Win32 apps, and every Microsoft Connected Cache node must be configured for HTTPS by <strong>June 16, 2026</strong>. After the deadline, Intune Win32 apps will only be delivered via HTTPS. However, all other content – Windows updates, Office apps, etc – will continue to be served via HTTP after the June 16<sup>th</sup> enforcement date.</p>
+<p>This guide walked through the essentials: generating a CSR on your Microsoft Connected Cache node, submitting it to your CA, importing the signed certificate, and validating HTTPS from both the server and client devices. Along the way, you saw how to interpret the logs, verify Connected Cache is using your certificate correctly, and ensure that Teams and/or Intune content is  flowing over HTTPS instead of falling back to CDN.</p>
+<p>As you move forward, keep your workflow consistent - regenerate or reuse CSRs the same way each cycle, validate regularly, and renew certificates well before expiration. Even though improvements are coming soon, completing this setup now ensures your environment is ready long before Intune HTTPS enforcement begins. With your certificate in place, HTTPS validated, and a simple renewal process in hand, your Microsoft Connected Cache deployment is prepared for the June 16<sup>th</sup>, 2026 deadline and ready to deliver Intune content securely.</p>
+<ol>
+<li><strong> Do I really need HTTPS Support, and by when?</strong><br/>Yes. All Microsoft Connected Cache nodes serving Intune Win32 apps must deliver over HTTPS by <strong>June 16, 2026</strong>. If HTTPS isn’t configured, devices will fall back to CDN when requesting Intune win32 apps —content delivery still works, but you’ll lose caching benefits.</li>
+<li><strong> Why do I have to generate the CSR on the </strong><strong>Connected Cache</strong> <strong>node?</strong><br/>Since Microsoft Connected Cache must generate and retain the private key itself. Certificates signed from any other machine, keypair, or CSR cannot be imported. The CSR you generate on the node produces the only key that Microsoft Connected Cache will accept.</li>
+<li><strong> Can I reuse an existing certificate?</strong><br/>Only if it was originally issued from the <strong>CSR generated on the same </strong><strong>Microsoft Connected Cache node</strong>. If the certificate was created elsewhere (different machine, tooling, or CSR), Microsoft Connected Cache won’t accept it.</li>
+<li><strong> Can I reuse my CSR when renewing the certificate?</strong><br/>Yes. Many customers reuse the same CSR each cycle as long as the CA resigns it. Reusing the old certificate output is not supported.</li>
+<li><strong> Can I “bring my own certificate”?</strong><br/>Not yet. Microsoft Connected Cache only supports certificates created from its own CSR. Support for bringing an external certificate is coming soon; stay up to date by viewing the latest <a class="lia-external-url" href="https://learn.microsoft.com/windows/deployment/do/mcc-ent-release-notes" rel="noopener noreferrer" target="_blank">Microsoft Connected Cache Release Notes</a></li>
+<li><strong> Can I use a wildcard certificate?</strong><br/>Microsoft Connected Cache does not officially support them and they’re not recommended. Wildcards often involve shared private keys across systems, which creates operational and security risks.</li>
+<li><strong> What certificate formats does </strong><strong>Microsoft Connected Cache</strong> <strong>support?</strong><br/>Microsoft Connected Cache only supports unencrypted .crt files today. Password protected .pfx or .p12 formats cannot be imported.</li>
+<li><strong> What happens if I redeploy </strong><strong>Microsoft Connected Cache</strong> <strong>or the hostname changes?</strong><br/>If the hostname or connection path changes, you must request a new certificate that matches the new SAN parameters. If the hostname stays the same and the certificate came from the Connected Cache-generated CSR, you can continue using it.</li>
+</ol>
+<p>If you have any questions, leave a comment below or reach out to us on X <a class="lia-external-url" href="https://aka.ms/IntuneSuppTeam" rel="noopener noreferrer" target="_blank">@IntuneSuppTeam</a>!</p>
+<p> </p>
+<p><strong>Post Updates:</strong><br/><span>04/08/26: Updated the “Known issues with HTTPS Support Configuration” section to reflect that previously identified issues have been fully resolved in the latest deployment application and container releases, along with updated guidance for affected cache nodes.</span></p></div></div></div>
+</article>
+</body>
+</html>

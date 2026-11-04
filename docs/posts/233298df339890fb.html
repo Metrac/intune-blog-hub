@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>From hours to minutes: Rethinking Microsoft Intune compliance reporting with the Export API</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Intune Customer Success</span>
+    <span class="date">July 24, 2026</span>
+  </div>
+  <h1>From hours to minutes: Rethinking Microsoft Intune compliance reporting with the Export API</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/intune-customer-success/from-hours-to-minutes-rethinking-microsoft-intune-compliance/ba-p/4540554" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><h2 class="styles_text-body__F7QRV MessageIntroduction_lia-message-introduction___mMAN styles_h4__wlzOi">A case study in trading tens of thousands of operational Microsoft Graph calls for a single export job.</h2><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p><strong>By: Daniel Gerrity – Principal Product Manager | Microsoft Intune</strong></p>
+<p>If you manage a large device fleet with Microsoft Intune, you’ve almost certainly needed to get reporting data out of the service at scale — compliance state, device inventory, app status, endpoint analytics, or one of the many other reports admins rely on for operations and audit evidence. Intune supports this pattern through the <strong>export API</strong>, which generates supported reports as asynchronous export jobs instead of requiring you to retrieve the same data through thousands of operational Graph calls.</p>
+<p>You can see the full list of reports available through the export API in <a class="lia-external-url" href="https://learn.microsoft.com/intune/device-management/reports/ref-graph-available-reports" rel="noopener noreferrer" target="_blank">Intune reports and properties available using Graph API</a> documentation. In the illustrative scenario below, moving one nightly job from operational Graph reporting endpoints to the <strong>Intune export API (exportJobs)</strong> cuts the work from roughly <strong>100,000 API calls to about 15</strong> while producing the same report data. The runtime drops from <strong>~2.5 hours to ~15 minutes</strong>. Here’s how, and why the pattern holds up as your fleet grows.</p>
+<div>
+<p><span><strong>Note on the numbers</strong></span></p>
+<p>The figures below are a representative example for a hypothetical 50,000-device enterprise, “Contoso,” and are rounded for clarity. Your results may vary based on fleet size, policy count, and how many compliance settings you evaluate.</p>
+</div>
+<p>Contoso runs a nightly job that answers a deceptively simple question:</p>
+<div>
+<p>For each device, across every compliance policy assigned to it, what is the state of each individual setting?</p>
+</div>
+<p>This is a classic <strong>per-device, per-compliance-policy, per-setting</strong> state export. It’s the raw material behind compliance dashboards, audit evidence, remediation targeting, and “why is this device noncompliant” investigations. In Intune’s reporting catalog, this is the DeviceStatusSummaryByCompliancePolicySettingsReportV3 report.</p>
+<p>Contoso has <strong>~50,000 managed devices</strong>, and the job runs once a day.</p>
+<p>The intuitive approach treats compliance data as something you <em>fetch, per device, right now</em>. The script:</p>
+<ol>
+<li>Enumerates the fleet (managedDevices).</li>
+<li>Loops over every device, and for each one calls the operational reporting or setting-state endpoints (such as managedDevices detail and settingStates) to pull that device’s per-policy, per-setting results.</li>
+<li>Pages through the results in small JSON pages (often 50 rows at a time), reassembling everything client-side.</li>
+</ol>
+<p>It works. It just doesn’t scale because the <strong>number of calls is a function of the number of devices</strong>.</p>
+<p>At roughly two operational calls per device, 50,000 devices is on the order of <strong>~100,000 Graph calls per run</strong>. That volume brings its own tax:</p>
+<ul>
+<li><strong>Throttling. </strong>You hit service protection limits and have to implement retry/back-off logic.</li>
+<li><strong>Threading. </strong>To finish inside the window at all, you parallelize which means concurrency bugs, partial failures, and harder debugging.</li>
+<li><strong>Fragility. </strong>A run that makes 100,000 calls has 100,000 chances to fail, and a mid-run failure often means starting over.</li>
+<li><strong>Time. </strong>End<strong>=</strong>to<strong>-</strong>end, the job lands around ~2.5 hours.</li>
+</ul>
+<p>Every time Contoso onboards more devices, this job gets <em>slower and more expensive</em> - the worst possible scaling direction for something that runs every night.</p>
+<p>The export API flips the model. Instead of asking Graph to compute results device-by-device in real time, you ask Intune to <strong>generate the entire report once, server-side</strong>, and hand you back a single file.</p>
+<p>The flow is a short, asynchronous handshake:</p>
+<pre class="lia-code-sample language-bash"><code>1. POST  /deviceManagement/reports/exportJobs
+         { "reportName": "DeviceStatusSummaryByCompliancePolicySettingsReportV3",
+           "format": "csv", ...optional filter/select... }
+         → returns a jobId, status: "notStarted"
+
+2. GET   /deviceManagement/reports/exportJobs('{jobId}')
+         → poll until status: "completed"     (a handful of polls while it builds)
+         → response includes a short-lived download URL
+
+3. GET   {download URL}
+         → one zipped CSV containing every device × policy × setting row</code></pre>
+<p>That’s the whole pattern: <strong>request → poll → download → unzip → load</strong>. One report, one file, the entire fleet inside it.</p>
+<p>Count the calls: <strong>one</strong> POST to start the job, <strong>a handful</strong> of GET polls while Intune builds the file, and <strong>one</strong> GET to download it - call it <strong>~15 calls total</strong>. Not ~15 per device. ~15 for the whole 50,000-device run. And that number barely moves whether Contoso has 50,000 devices or 150,000.</p>
+<p>Runtime drops to about <strong>~15 minutes</strong>, most of which is simply <em>waiting</em> for the export to finish - cheap poll calls, not active compute.</p>
+<p>Most importantly, <strong>the output schema is identical</strong>. The CSV columns match what the old per-device loop assembled, so nothing downstream; dashboards, warehouse tables, alerting, has to change. You swap the <em>acquisition</em> layer and leave everything else alone.</p>
+<div>
+<div class="styles_lia-table-wrapper__h6Xo9 styles_table-responsive__MW0lN"><table border="1" class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><thead><tr><th class="lia-background-color-custom-f5f5f5" scope="col">Comparison</th><th class="lia-background-color-custom-0f6cbd" scope="col"><span class="lia-text-color-16">Operational Graph APIs</span></th><th class="lia-background-color-custom-fff4ce" scope="col"><span> Recommended </span> <br/>Export API (<code>exportJobs</code>)</th></tr></thead><tbody><tr><th class="lia-background-color-custom-fafafa" scope="row">Pattern</th><td>Per-device loop plus paging</td><td class="lia-background-color-custom-fffaf0">Async export → download one file</td></tr><tr><th class="lia-background-color-custom-fafafa" scope="row">API calls per run</th><td><strong>~100,000</strong></td><td class="lia-background-color-custom-fffaf0"><strong>~15</strong></td></tr><tr><th class="lia-background-color-custom-fafafa" scope="row">Calls scale with</th><td>Number of devices</td><td class="lia-background-color-custom-fffaf0">Nothing. The handshake remains fixed.</td></tr><tr><th class="lia-background-color-custom-fafafa" scope="row">Runtime</th><td><strong>~2.5 hours</strong></td><td class="lia-background-color-custom-fffaf0"><strong>~15 minutes</strong></td></tr><tr><th class="lia-background-color-custom-fafafa" scope="row">Concurrency</th><td>Threading required</td><td class="lia-background-color-custom-fffaf0">None needed</td></tr><tr><th class="lia-background-color-custom-fafafa" scope="row">Output schema</th><td>—</td><td class="lia-background-color-custom-fffaf0">Unchanged and drop-in compatible</td></tr><tr><th class="lia-background-color-custom-f0f6ff" scope="row">Net result</th><td class="lia-background-color-custom-f7f9fc">—</td><td class="lia-background-color-custom-dff6dd">~6,000× fewer API calls<br/>~10× faster runtime</td></tr></tbody><colgroup><col/><col/><col/></colgroup></table></div>
+</div>
+<p>Here’s the subtlety worth internalizing, because it’s easy to get wrong. There are <strong>two different costs</strong> in this job, and they scale on <strong>different axes</strong>:</p>
+<ol>
+<li><strong>The number of API calls</strong> - round-trips across the wire.</li>
+<li><strong>The volume of data</strong> - the actual compliance rows you move.</li>
+</ol>
+<p><strong>The data volume is the same either way. </strong>50,000 devices × N settings is 50,000 × N rows, whether you assemble them from 100,000 little paged responses or receive them in one CSV. The export doesn’t move <em>less</em> data - it moves the <em>same</em> data. And yes, that file grows with <strong>both</strong> device count and setting count. More devices, bigger file; more settings, bigger file.</p>
+<p>So the win isn’t fewer bytes. <strong>The win is fewer round-trips.</strong></p>
+<p>Every one of those 100,000 operational calls relies on authentication, TLS setup, network latency, and service-protection (throttling) accounting regardless of how much data it returns. Multiply that fixed overhead by 100,000 and it dominates everything. The export only pays that tax <strong>twice</strong>: once to start the job, once to download the file. Intune does the assembly server-side and streams you the result in a single bulk transfer.</p>
+<p>That reframes the scaling story:</p>
+<ul>
+<li><strong>Call count</strong> is essentially constant - it doesn’t grow with devices or settings. It’s one job and one download.</li>
+<li><strong>Data volume</strong> grows with devices and settings but a bigger CSV is a bigger <em>single download</em>, not more calls. Bulk transfer is exactly what HTTP is good at.</li>
+<li><strong>Runtime</strong> has a mild data dependency: a larger fleet takes Intune a little longer to build the file. But you absorb that as a few extra seconds of poll-waiting, not as thousands of extra calls you have to orchestrate, retry, and throttle-manage.</li>
+</ul>
+<p>Beyond the raw speed, here’s the value that shows up in day-to-day operations:</p>
+<ul>
+<li><strong>Your maintenance window comes back. </strong>A 15-minute job leaves room for everything else.</li>
+<li><strong>Fewer moving parts to maintain. </strong>No custom throttling handler, no thread pool, no resumability logic. Less code is less to break at 2 a.m.</li>
+<li><strong>Reliability by design. </strong>Two roundtrips means two failure points, and the server does the heavy lifting of assembling a consistent snapshot.</li>
+<li><strong>Lower cost and lower service impact. </strong>Eliminating ~100,000 calls is easier on your tenant’s throttling limits and a better citizen for the Intune service overall.</li>
+<li><strong>Room to grow. </strong>Because call count is decoupled from device count, doubling the fleet doesn’t double the job, you just download a somewhat larger file.</li>
+<li><strong>No downstream disruption. </strong>Same schema for the output means the migration is contained to the ingestion step which is a low-risk swap, not a re-platforming.</li>
+</ul>
+<p>The export API isn’t a universal replacement, it’s best used for <strong>bulk, point-in-time snapshots</strong>:</p>
+<ul>
+<li><strong>Reach for exportJobs</strong> when you need the whole fleet’s state (or a large, filtered slice) on a schedule such as nightly compliance loads, audit exports, warehouse hydration.</li>
+<li><strong>Stick with the operational endpoints</strong> when you need a single device <em>right now</em>, an interactive “check this one device” lookup, or a real-time remediation trigger where waiting on an async job doesn’t make sense.</li>
+</ul>
+<p>The two are complementary. The mistake isn’t using the operational APIs, it’s using them <em>in a loop</em> to reconstruct something the export API will hand you in one file.</p>
+<p>The per-device loop feels natural because it mirrors how we think about devices, one at a time. But at fleet scale, the question isn’t “what’s the state of this device?” a hundred thousand times over. It’s “give me the state of everything,” once. The export API is built for exactly that question, and answering it the right way turned a multi-hour nightly grind into a coffee break - <strong>from ~100,000 calls to about 15, ~10× faster, with zero downstream changes.</strong></p>
+<p>If you have any questions, leave a comment below or reach out to us on X: <a class="lia-external-url" href="https://aka.ms/IntuneSuppTeam" rel="noopener noreferrer" target="_blank">@IntuneSuppTeam</a>!</p></div></div></div>
+</article>
+</body>
+</html>

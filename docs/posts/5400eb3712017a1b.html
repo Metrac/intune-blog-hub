@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>New Platform SSO with registration during Automated Device Enrollment on macOS</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Intune Customer Success</span>
+    <span class="date">June 22, 2026</span>
+  </div>
+  <h1>New Platform SSO with registration during Automated Device Enrollment on macOS</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/intune-customer-success/new-platform-sso-with-registration-during-automated-device/ba-p/4519846" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p><strong>By Iris Yuning Ye, Product Manager – Microsoft Intune &amp; Justin Ploegert, Principal Product Manager – Microsoft Entra</strong></p>
+<p>A new setting ‘Enable Registration During Setup’ for Platform single sign-on (PSSO) during Automated Device Enrollment (ADE) is now generally available for macOS devices in Microsoft Intune. With this new setting and a compatible version of the Intune Company Portal (5.2604.0 and newer), this feature enables users sign in with their Microsoft Entra account during Setup Assistant, complete device registration before reaching the desktop, and get immediate access to work resources and ready to be productive sooner.</p>
+<p>Previously, Platform SSO registration occurred only after users completed Setup Assistant and reached the desktop. They then had to notice and act on a separate notification to finish Platform SSO registration. When Platform SSO registration isn't completed, it can cause issues with app authentication or lead to noncompliance, delaying users from getting started on the device:</p>
+<ul>
+<li><strong>Missed notifications</strong> - Users dismiss or ignore the post-enrollment PSSO prompt, leaving devices in an incomplete device registration state.</li>
+<li><strong>Broken app authentication</strong> - Apps like Microsoft Outlook could fail to authenticate because SSO isn’t fully configured.</li>
+<li><strong>Compliance gaps</strong> - Devices are flagged as noncompliant in the Intune Company Portal because Platform SSO registration isn’t completed.</li>
+<li><strong>Helpdesk burden</strong> - IT teams field repeated tickets for issues that should have been handled automatically during provisioning.</li>
+<li><strong>Migration blocker</strong> - Incomplete Platform SSO setup slows down migrating macOS devices to Intune.</li>
+</ul>
+<p>Platform SSO during ADE with EnableRegistrationDuringSetup key eliminates these issues. Device registration, identity bootstrap, and credential setup all happen inline during Setup Assistant before the user ever reaches the desktop.</p>
+<div>
+<div class="styles_lia-table-wrapper__h6Xo9 styles_table-responsive__MW0lN"><table border="1"><thead><tr class="lia-background-color-custom-f2f4f7"><th class="lia-border-color-custom-dddddd lia-border-style-solid">Capability</th><th class="lia-border-color-custom-dddddd lia-border-style-solid">Details</th></tr></thead><tbody><tr><td class="lia-border-color-custom-dddddd lia-border-style-solid">Microsoft Entra device registration during ADE</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">The device registers with Microsoft Entra ID before the user reaches the desktop. A hardware-bound Workplace Join certificate is issued and stored securely on the device.</td></tr><tr class="lia-background-color-custom-fafafa"><td class="lia-border-color-custom-dddddd lia-border-style-solid">Early device identity</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Device identity is established early in the provisioning process, enabling immediate access to apps and resources protected by Conditional Access.</td></tr><tr><td class="lia-border-color-custom-dddddd lia-border-style-solid">Platform SSO credentials during initial setup</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">When configured with Secure Enclave, Platform SSO credentials are stored in the device’s Secure Enclave, providing hardware-bound, phishing-resistant protection aligned with Zero Trust principles.</td></tr><tr class="lia-background-color-custom-fafafa"><td class="lia-border-color-custom-dddddd lia-border-style-solid">Minimized setup delays</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Users arrive at the desktop already signed in and ready to work, with fewer authentication prompts, less policy wait time, and fewer setup-related app access issues.</td></tr></tbody><colgroup><col/><col/></colgroup></table></div>
+</div>
+<p>This feature requires three policies that work together. All three must be configured correctly <strong>before </strong>enrollment starts and assigned to the same static user groups:</p>
+<ol>
+<li>A Platform SSO settings catalog policy with “Enable Registration During Setup” configured to <strong>Enabled</strong>.</li>
+<li>Intune Company Portal (version 5.2604 or newer) deployed as a line-of-business (LOB) app, which provides the Microsoft Enterprise SSO extension.</li>
+<li>An ADE enrollment profile configured with <strong>Setup Assistant with modern authentication</strong> and <strong>Await final configuration = Yes</strong>.</li>
+</ol>
+<p>When a device enrolls with these three policies in place, here's what happens:</p>
+<ol>
+<li>The device powers on and begins the ADE enrollment flow.</li>
+<li>Intune delivers the Platform SSO settings catalog policy with Enable Registration During Setup enabled.</li>
+<li>Intune Company Portal is installed automatically as a LOB app, providing the Microsoft Enterprise SSO plug-in.</li>
+<li>During Setup Assistant, the user signs in with their Microsoft Entra credentials. This first sign-in starts the regular enrollment process.</li>
+<li>A second sign-in authenticates the identity in Intune Company Portal and fetches the SSO extension.</li>
+<li>The device registers with Microsoft Entra ID, and a Microsoft Entra device registration certificate is issued.</li>
+<li>The user arrives at the desktop fully authenticated, with SSO active and Conditional Access satisfied.</li>
+</ol>
+<p><strong>Note:</strong> During enrollment, users are prompted to enter their Microsoft Entra credentials at least twice. We're working on improvements to reduce the number of sign-ins in a future update.</p>
+<div>
+<div class="styles_lia-table-wrapper__h6Xo9 styles_table-responsive__MW0lN"><table border="1"><thead><tr class="lia-background-color-custom-f2f4f7"><th class="lia-border-color-custom-dddddd lia-border-style-solid">Requirement</th><th class="lia-border-color-custom-dddddd lia-border-style-solid">Details</th></tr></thead><tbody><tr><td class="lia-border-color-custom-dddddd lia-border-style-solid">macOS version</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">macOS 26 or later.</td></tr><tr class="lia-background-color-custom-fafafa"><td class="lia-border-color-custom-dddddd lia-border-style-solid">Enrollment method</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Automated Device Enrollment (ADE) through Apple Business Manager.</td></tr><tr><td class="lia-border-color-custom-dddddd lia-border-style-solid">Intune Company Portal</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Version <code>5.2604.0</code> or later, deployed as a line-of-business (LOB) app. Download it from <a class="lia-external-url" href="https://go.microsoft.com/fwlink/?linkid=853070" rel="noopener noreferrer" target="_blank"> Microsoft Download Center </a>.</td></tr><tr class="lia-background-color-custom-fafafa"><td class="lia-border-color-custom-dddddd lia-border-style-solid">Intune role for configuration</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">An administrator account with, at minimum, the built-in <strong>Policy and Profile Manager</strong> role.</td></tr><tr><td class="lia-border-color-custom-dddddd lia-border-style-solid">Group type</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Assigned (static) user groups only. Dynamic groups and device groups are not supported.</td></tr></tbody><colgroup><col/><col/></colgroup></table></div>
+</div>
+<p class="styles_lia-table-wrapper__h6Xo9 styles_table-responsive__MW0lN"> </p>
+<p><strong>Important:</strong> Review the full Platform SSO prerequisites in the <a class="lia-external-url" href="https://learn.microsoft.com/intune/device-configuration/settings-catalog/configure-platform-sso-macos" rel="noopener noreferrer" target="_blank">Platform SSO configuration guide</a> before you begin.<br/>High level step-by-step configuration<br/><br/></p>
+<p><strong>Step 1: Create or update the Platform SSO settings catalog policy</strong></p>
+<ol>
+<li>In the <strong>Microsoft Intune admin center</strong>, go to <strong>Devices &gt; Manage devices &gt; Configuration</strong>. If this is your first time configuring Platform SSO, follow the full <a class="lia-external-url" href="https://learn.microsoft.com/intune/device-configuration/settings-catalog/configure-platform-sso-macos" rel="noopener noreferrer" target="_blank">Platform SSO configuration guide</a>.</li>
+<li>Add and configure the following setting:<br/>
+<div>
+<div class="styles_lia-table-wrapper__h6Xo9 styles_table-responsive__MW0lN"><table border="1"><thead><tr class="lia-background-color-custom-f2f4f7"><th class="lia-border-color-custom-dddddd lia-border-style-solid">Setting</th><th class="lia-border-color-custom-dddddd lia-border-style-solid">Value</th><th class="lia-border-color-custom-dddddd lia-border-style-solid">Description</th></tr></thead><tbody><tr><td class="lia-border-color-custom-dddddd lia-border-style-solid">Authentication &gt; Extensible Single Sign On &gt; Platform SSO &gt; Enable Registration During Setup</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Enabled</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Enables the Platform SSO registration process during Setup Assistant.</td></tr></tbody><colgroup><col/><col/><col/></colgroup></table></div>
+</div>
+</li>
+<li>
+<div class="styles_lia-table-wrapper__h6Xo9 styles_table-responsive__MW0lN"><p>If using the <a class="lia-external-url" href="https://learn.microsoft.com/intune/device-configuration/settings-catalog/configure-platform-sso-macos#option-3---password" rel="noopener noreferrer" target="_blank">Password</a> authentication method, it’s recommended to add for password sync function:</p>
+<div>
+<div class="styles_lia-table-wrapper__h6Xo9 styles_table-responsive__MW0lN"><table border="1"><thead><tr class="lia-background-color-custom-f2f4f7"><th class="lia-border-color-custom-dddddd lia-border-style-solid">Setting</th><th class="lia-border-color-custom-dddddd lia-border-style-solid">Value</th><th class="lia-border-color-custom-dddddd lia-border-style-solid">Description</th></tr></thead><tbody><tr><td class="lia-border-color-custom-dddddd lia-border-style-solid">Authentication &gt; Extensible Single Sign On &gt; Platform SSO &gt; Enable Create First User During Setup</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Enabled</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Enables the password synchronization experience during Setup Assistant. This configuration is recommended when using the <strong>Password</strong> authentication method.</td></tr></tbody><colgroup><col/><col/><col/></colgroup></table></div>
+</div>
+</div>
+</li>
+</ol>
+<p><strong>Tip:</strong> Microsoft recommends using <strong>Secure Enclave</strong> as the authentication method for the strongest hardware-backed security.</p>
+<p>Assign the policy to your static user groups. Filter is also supported with correct static group setting.</p>
+<p> </p>
+<p><strong>Step 2: Install Intune Company Portal as a LOB app</strong></p>
+<ol>
+<li>Download the Company Portal for macOS PKG from the <a class="lia-external-url" href="https://go.microsoft.com/fwlink/?linkid=853070" rel="noopener noreferrer" target="_blank">Microsoft Download Center</a>.</li>
+<li>In the Intune admin center, go to <strong>Apps &gt; All Apps &gt; Create</strong>.</li>
+<li>Add Intune Company Portal as a macOS LOB app.</li>
+<li>Make it a required app and assign it to the same groups as the Platform SSO policy from Step 1.</li>
+</ol>
+<p><strong>Important:</strong> Company Portal <strong>5.2604.0 and newer</strong> is required. If you install an older version, Platform SSO fails. When Intune detects Company Portal as a deployed policy, it sends it with priority during enrollment.</p>
+<p>And clean up the App bundle ID that are not related to Company Portal, make sure only com.microsoft.CompanyPortalMac as the relevant App bundle ID is kept.</p>
+<span class="lia-media-object lia-media-is-center" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image &lt;em&gt;Figure 1: Microsoft Intune admin center Add App screen for a macOS line-of-business app, showing CompanyPortal-Installer.pkg details, macOS Tahoe 26.0 minimum OS, ignore app version enabled, install as managed disabled, and included app bundle ID com.microsoft.CompanyPortalMac version 5.26040.&lt;/em&gt;" aria-labelledby="OymfK6_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/5400eb3712017a1b/img_0.png"/></button><span class="lia-media-caption-text" id="OymfK6_caption"><em>Figure 1: Microsoft Intune admin center Add App screen for a macOS line-of-business app, showing CompanyPortal-Installer.pkg details, macOS Tahoe 26.0 minimum OS, ignore app version enabled, install as managed disabled, and included app bundle ID com.microsoft.CompanyPortalMac version 5.26040.</em></span></span>
+<p><strong>Step 3: Set up the enrollment profile</strong></p>
+<ol>
+<li>In the Intune admin center, go to <strong>Devices &gt; Device onboarding &gt; Enrollment &gt; Apple </strong>tab.</li>
+<li>Create or edit an Automated Device Enrollment profile with these Management settings:<br/>
+<div>
+<div class="styles_lia-table-wrapper__h6Xo9 styles_table-responsive__MW0lN"><table border="1"><thead><tr class="lia-background-color-custom-f2f4f7"><th class="lia-border-color-custom-dddddd lia-border-style-solid">Setting</th><th class="lia-border-color-custom-dddddd lia-border-style-solid">Value</th></tr></thead><tbody><tr><td class="lia-border-color-custom-dddddd lia-border-style-solid">User affinity</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Enroll with User Affinity</td></tr><tr class="lia-background-color-custom-fafafa"><td class="lia-border-color-custom-dddddd lia-border-style-solid">Authentication</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Setup Assistant with modern authentication</td></tr><tr><td class="lia-border-color-custom-dddddd lia-border-style-solid">Await final configuration</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Yes</td></tr><tr class="lia-background-color-custom-fafafa"><td class="lia-border-color-custom-dddddd lia-border-style-solid">Locked enrollment</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Yes</td></tr></tbody><colgroup><col/><col/></colgroup></table></div>
+</div>
+</li>
+<li>Assign the profile to the <strong>devices afflicated with the users targeted</strong><span> as Steps 1 and 2.</span></li>
+</ol>
+<p><strong>Critical:</strong> You must assign all three policies to the <strong>devices afflicated with the users targeted</strong>. If any policy is assigned to a different group, or if any step is misconfigured, enrollment will fail. In that case, wipe the device and re-enroll with all steps correctly configured.</p>
+<p> </p>
+<p><strong>Key things to remember</strong></p>
+<ul>
+<li>✅ <strong>Three policies, one group:</strong> Settings catalog, Company Portal LOB app, and ADE enrollment profile, all assigned to the same static groups or devices/users affliated with the groups.</li>
+<li>✅ <strong>Static groups only:</strong> This feature does not work with device groups or dynamic groups.</li>
+<li>✅ <strong>One SSO policy per device:</strong> If you already have a Platform SSO policy assigned to enrolled devices, make sure device is wiped appropriately before kicking of enrollment with new PSSO flow.</li>
+<li>✅ <strong>Latest Intune Company Portal:</strong> Version 5.2604.0 or newer is required.</li>
+<li>✅ <strong>macOS 26 required:</strong> This feature is supported on macOS 26 and newer.</li>
+<li>✅ <strong>Secure Enclave recommended:</strong> For the strongest hardware-backed credential protection.</li>
+</ul>
+<p>For more details, refer to <a class="lia-external-url" href="https://learn.microsoft.com/intune/device-configuration/settings-catalog/configure-platform-sso-during-enrollment" rel="noopener noreferrer" target="_blank">Configure Platform Single Sign-On (PSSO) during Automated Device Enrollment for macOS devices</a>.</p>
+<p>Signing in multiple times during enrollment isn't the ideal experience, and we're actively working to streamline it with a new enrollment setting that enables users to complete both Intune enrollment and Platform SSO device registration with a single sign-in. This will further simplify the onboarding experience, reduce friction for users, and bring macOS enrollment closer to a truly seamless, zero-touch provisioning flow. Stay tuned to <a class="lia-external-url" href="https://aka.ms/IntuneWN" rel="noopener noreferrer" target="_blank">What’s new in Intune</a> for the release.</p>
+<p> </p>
+<p>As always, we'd love your feedback. If you've piloted Platform SSO during Setup Assistant, share your tips and lessons learned in the comments below or reach out to us on X <a class="lia-external-url" href="https://aka.ms/IntuneSuppTeam" rel="noopener noreferrer" target="_blank">@IntuneSuppTeam</a>.</p>
+<p> </p>
+<p><strong>Post Updates:</strong><br/>6/8/26: Refreshed guidance recommending this configuration for the Password authentication method and clearer targeting language around devices and users affiliated with the groups targeted.</p></div></div></div>
+</article>
+</body>
+</html>

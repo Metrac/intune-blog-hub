@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Build a patch strategy for today’s threat pace with Microsoft</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Intune Customer Success</span>
+    <span class="date">July 10, 2026</span>
+  </div>
+  <h1>Build a patch strategy for today’s threat pace with Microsoft</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/intune-customer-success/build-a-patch-strategy-for-today-s-threat-pace-with-microsoft/ba-p/4535115" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><h2 class="styles_text-body__F7QRV MessageIntroduction_lia-message-introduction___mMAN styles_h4__wlzOi">How to operationalize patching in 3 stages, as AI accelerates vulnerability response timelines.</h2><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p>AI-accelerated vulnerability discovery and remediation are changing how organizations manage risk. As discussed in Pavan Davuluri’s recent <a class="lia-external-url" href="https://blogs.windows.com/windowsexperience/2026/07/09/evolving-windows-vulnerability-management-to-meet-the-speed-of-ai-powered-discovery" rel="noopener nofollow noreferrer" target="_blank">blog</a>,<strong> </strong>Microsoft is investing across the vulnerability lifecycle to help organizations identify, validate, and respond faster.</p>
+<p>For IT and security teams, one challenge lies downstream: deploying fixes quickly across endpoints to reduce exposure. Each update needs to be evaluated, piloted, monitored, and enforced across a mixed fleet of devices and apps. Some parts of the estate can move quickly; others cannot because of compliance requirements, approved change windows, and business-critical dependencies.</p>
+<p>As organizations adopt AI tools and agents across their environment, maintaining a current and hardened endpoint estate becomes increasingly important. In this context, patching becomes an ongoing operational discipline that combines OS, app, and driver updates with compliance enforcement, access control, and security baseline hardening.</p>
+<p>To keep pace, organizations need a patch strategy that helps in 3 stages:</p>
+<ol>
+<li><strong>Mitigate</strong>: automate updates that can move quickly</li>
+<li><strong>Assess</strong>: prioritize risk based on exposure and severity</li>
+<li><strong>Contain</strong>: enforce compliance and limit exposure</li>
+</ol>
+<p>Operationalizing a patch strategy requires coordinated capabilities across endpoint management and security tools. Microsoft Intune brings these capabilities together in a single admin center, alongside the broader Microsoft security ecosystem, and is available with qualifying Microsoft 365 subscriptions<sup>1</sup>.</p>
+<p>In this post, we show how organizations can use these capabilities to build a patch strategy that helps reduce the time between update release and deployment across their endpoint estate.</p>
+<p>A patch strategy is not about pushing every update everywhere at once. It’s about identifying the parts of your estate that can move quickly, then using automation, rings, monitoring, and enforcement to help those updates move with confidence. Regulations, approved change windows, validation needs, and business dependencies will shape what’s possible, but the strategy starts by separating repeatable update work from the exceptions that need deeper review.</p>
+<p>For OS, app, and driver updates that can move quickly, modern tools can help shorten the time between update release and deployment; without manual rollouts, ticket-driven packaging, or reboot disruption.</p>
+<p> </p>
+<p><strong>Operationalize in Intune</strong></p>
+<ul>
+<li><a class="lia-external-url" href="https://learn.microsoft.com/windows/deployment/windows-autopatch/manage/windows-autopatch-groups-policies" rel="noopener noreferrer" target="_blank">Windows Autopatch</a> orchestrates ring-based update rollouts to reduce manual effort and keep Windows devices current. To help monitor risk, the Autopatch report visualizes how quickly devices apply updates based on the configured deployment cadence. In this report, devices are categorized as current within three days of update release, at risk between three and seven days, and at critical risk beyond seven days, based on the reporting model used by Windows Autopatch. Learn more about <a class="lia-external-url" href="https://learn.microsoft.com/windows/deployment/windows-autopatch/manage/windows-autopatch-groups-policies" rel="noopener noreferrer" target="_blank">ring-based rollout updates</a> or how to <a class="lia-internal-link lia-internal-url lia-internal-url-content-type-blog" data-lia-auto-title="reassess Windows OS updates" data-lia-auto-title-active="0" href="https://techcommunity.microsoft.com/blog/windows-itpro-blog/protect-your-estate-reassess-your-windows-update-policies/4515228" target="_blank">reassess Windows OS updates</a> using this report.<br/><br/></li>
+<li><a class="lia-external-url" href="https://learn.microsoft.com/windows/deployment/windows-autopatch/manage/windows-autopatch-hotpatch-updates" rel="noopener noreferrer" target="_blank">Hotpatch</a> (enabled by default for 24H2+ in Intune) applies critical updates without requiring a reboot, helping reduce security gaps while keeping users productive.<br/><br/></li>
+<li><a class="lia-external-url" href="https://learn.microsoft.com/intune/app-management/deployment/enterprise-app-management" rel="noopener noreferrer" target="_blank">Intune Enterprise App Management</a> (EAM) supports keeping Windows apps current through auto-updates, including the <a class="lia-external-url" href="https://learn.microsoft.com/intune/app-management/deployment/update-enterprise-supersedence" rel="noopener noreferrer" target="_blank">guided upgrade supersedence</a> reporting, which surfaces outdated versions or version changes. EAM auto-updates are now generally available; details are included in the <a class="lia-external-url" href="http://aka.ms/IntuneWN2606" rel="noopener noreferrer" target="_blank">June Intune What’s new blog</a>.<br/><br/>
+<p class="lia-clear-both"> </p>
+</li>
+<li><a class="lia-external-url" href="https://learn.microsoft.com/intune/app-management/deployment/enhanced-app-inventory" rel="noopener noreferrer" target="_blank">The enhanced application inventory</a> in the All apps page shows the app version installed on each managed Windows device, refreshed multiple times per day on most active devices, helping teams target app-specific vulnerabilities and confirming when fixes have been applied.<br/><br/></li>
+<li><a class="lia-external-url" href="https://learn.microsoft.com/intune/copilot/agents/vulnerability-remediation-agent" rel="noopener noreferrer" target="_blank">The Vulnerability Remediation Agent</a> in Security Copilot uses data from Defender Vulnerability Management to prioritize Common Vulnerabilities and Exposures (CVEs) across Intune-managed Windows devices and apps, and provides recommended remediation actions within Intune. The Vulnerability Remediation Agent is<strong> </strong>currently in public preview, <a class="lia-external-url" href="http://aka.ms/Intune/VRA-blog" rel="noopener noreferrer" target="_blank">read the blog to learn more</a>.<br/><br/>
+<p class="lia-clear-both"> </p>
+</li>
+</ul>
+<p><strong>Extend across your endpoint estate</strong></p>
+<p>The first step is reducing exposure across the parts of your estate that can move quickly. But not every system, application, or vulnerability can be addressed through broad update deployment. Teams also need a way to determine which risks require immediate action and which ones can be addressed over time.</p>
+<p class="">A calendar-based approach can treat every CVE equally. However, it doesn’t account for severity, exposure, or business impact. As AI accelerates vulnerability discovery, this can lead to effort being spent on lower-risk updates while higher-risk updates remain unaddressed.</p>
+<p>Risk-based service level objectives (SLOs) help bring prioritization to address this challenge. Instead of patching on a fixed schedule, IT and security teams can align response timeframes by severity, moving quickly on actively exploited or critical vulnerabilities, and applying a more measured approach where risk or impact is lower.</p>
+<p>This stage creates a clearer prioritization of remediation and helps bridge the view between the security teams that identify threats and the IT teams that act on them.</p>
+<p> </p>
+<p><strong>Operationalize in Intune and Microsoft Defender</strong></p>
+<ul>
+<li>The <a class="lia-external-url" href="https://aka.ms/Intune" rel="noopener noreferrer" target="_blank">security update status dashboard in Intune</a> provides an aggregated view of update compliance across Windows clients, Windows servers, and Microsoft 365 Apps. It shows overall counts of devices in different states across Intune-endpoints and helps teams identify where remediation should be focused. These status categories reflect how quickly devices apply updates based on a configured deployment cadence and internal SLOs.<br/><br/><span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image &lt;p&gt;&lt;em&gt;Figure 4: Security update dashboard showing patch status for Windows clients, servers, and Microsoft 365 apps.&lt;/em&gt;&lt;/p&gt;" aria-labelledby="dt4gUO_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/13df0faa4f91ebf2/img_0.png"/></button><span class="lia-media-caption-text" id="dt4gUO_caption">
+<p><em>Figure 4: Security update dashboard showing patch status for Windows clients, servers, and Microsoft 365 apps.</em></p>
+</span></span></li>
+<li><a class="lia-external-url" href="https://learn.microsoft.com/defender-vulnerability-management/defender-vulnerability-management" rel="noopener noreferrer" target="_blank">Microsoft Defender Vulnerability Management</a> surfaces CVEs, affected devices, vulnerable software, and recommended remediation actions, offering a shared view of risk and progress across IT and security teams.<br/><br/></li>
+<li>Translate Defender recommendations into targeted Intune actions described in the mitigate section, such as updating software or moving devices through expedited remediation workflows so teams can focus on vulnerabilities that are actively exploited or most likely to affect an organization.<br/><br/></li>
+</ul>
+<p><strong>Extend across your endpoint estate</strong></p>
+<p>Even with automated deployments and prioritized triage, gaps can remain. Some devices are unsupported, fall behind, operate on slower deployment rings, and others can’t be patched quickly. A patch strategy needs to focus on including containment for those surfaces.</p>
+<p>Compliance controls, conditional access, and device hardening act as an always-on safety net that limits risks that can fall through gaps. Compliance policies and Conditional Access can use a patch state as a signal for resource access, preventing non-compliant devices from accessing corporate resources. Security baselines reduce the attack surface by limiting risky defaults and common attack patterns. Together, these controls shift enforcement from a periodic activity to a continuous condition across a fleet.</p>
+<p> </p>
+<p><strong>Operationalize in Intune and Defender</strong></p>
+<ul>
+<li>Use <a class="lia-external-url" href="https://learn.microsoft.com/intune/device-security/compliance/overview" rel="noopener noreferrer" target="_blank">compliance policies</a> in Intune to define what "current" means, including minimum OS build, required update levels, risk status, and encryption state.<br/><br/></li>
+<li>Use <a class="lia-external-url" href="https://learn.microsoft.com/intune/device-security/conditional-access-integration/overview" rel="noopener noreferrer" target="_blank">Conditional Access</a> (managed in Microsoft Entra, accessible from the Intune admin center) to control access to company resources based on user and device health. Combined with threat signals from Microsoft Defender, these policies help prevent non-compliant devices from accessing corporate resources.<br/><br/></li>
+<li>Use Microsoft Defender Vulnerability Management and <a class="lia-external-url" href="https://learn.microsoft.com/security-exposure-management/microsoft-security-exposure-management" rel="noopener noreferrer" target="_blank">Microsoft Security Exposure Management</a> insights to identify exposed assets, prioritize remediation, and apply recommended protections where patching must move more slowly.<br/><br/></li>
+<li>Apply Intune <a class="lia-external-url" href="https://learn.microsoft.com/intune/device-security/security-baselines/overview" rel="noopener noreferrer" target="_blank">security baselines</a> to establish Microsoft-recommended configurations on Windows devices, such as disabling risky defaults, blocking common attack techniques, and reducing configuration drift. Watch this <a class="lia-external-url" href="https://www.youtube.com/watch?v=V-QBO2cJn4E" rel="noopener nofollow noreferrer" target="_blank">demo on security baselines</a> being applied in the <a class="lia-external-url" href="https://zerotrust.microsoft.com/" rel="noopener noreferrer" target="_blank">Zero Trust workshop</a>.<br/><br/></li>
+<li>Use <a class="lia-external-url" href="https://learn.microsoft.com/intune/device-configuration/endpoint-security/attack-surface-reduction" rel="noopener noreferrer" target="_blank">attack surface reduction policies in Intune</a> to deploy Microsoft Defender for Endpoint protections, such as ASR rules and network protection, that help block common attack techniques on devices that can't be patched right away.<br/><br/></li>
+</ul>
+<p> </p>
+<p><strong>Extend across your endpoint estate</strong></p>
+<ul>
+<li>Compliance policies and Conditional Access controls apply across Windows, macOS, iOS/iPadOS, and Android.<br/><br/></li>
+<li>Intune <a class="lia-external-url" href="https://learn.microsoft.com/intune/app-management/protection/overview" rel="noopener noreferrer" target="_blank">app protection policies</a> extend compliance requirements and data protections to managed apps used for work on personal devices and add an additional layer of data protection on corporate devices.<br/><br/></li>
+<li>Use the <a class="lia-external-url" href="https://learn.microsoft.com/intune/device-configuration/settings-catalog" rel="noopener noreferrer" target="_blank">settings catalog</a> and configuration profiles to apply the same hardening intent on macOS, iOS/iPadOS, and Android, reducing configuration drift across platforms.<br/><br/></li>
+</ul>
+<p>As vulnerability discovery and response continue to accelerate, organizations need an operational strategy that balances speed, risk, and resilience. By automating updates where possible, prioritizing remediation based on exposure, and limiting exposure through compliance and security controls, teams can reduce risk across their endpoint estate.</p>
+<p>Intune helps simplify this approach by bringing these capabilities together alongside the rest of your Microsoft security tools and ecosystem.</p>
+<hr/>
+<div>
+<p><sup>1</sup> <strong>Licensing and requirements</strong></p>
+<p>Feature availability and included capabilities vary by Microsoft 365 subscription plan and feature. Some Microsoft capabilities referenced in this post may require specific licenses or additional enablement.</p>
+<p>Advanced Microsoft Intune capabilities are now included <a class="lia-internal-link lia-internal-url lia-internal-url-content-type-blog" data-lia-auto-title="in Microsoft 365 E5, with select capabilities available in Microsoft 365 E3" data-lia-auto-title-active="0" href="https://techcommunity.microsoft.com/blog/microsoftintuneblog/advanced-microsoft-intune-capabilities-now-available-in-microsoft-365-e3-and-e5/4529335" target="_blank">in Microsoft 365 E5, with select capabilities available in Microsoft 365 E3</a> as part of updates effective July 1, 2026. Existing customers will receive a 30-day notice in the Microsoft Admin Center prior to availability, with access beginning by August 2026.</p>
+<p>Microsoft Security Copilot and related AI capabilities may require separate licensing, <a class="lia-external-url" href="https://aka.ms/SecurityCopilotPricing" rel="noopener noreferrer" target="_blank">learn more here</a>.</p>
+</div>
+<p> </p>
+<p><em>Stay up to date! Bookmark the </em><a class="lia-internal-link lia-internal-url lia-internal-url-content-type-blog" data-lia-auto-title="Microsoft Intune Blog" data-lia-auto-title-active="0" href="https://techcommunity.microsoft.com/category/microsoftintune/blog/microsoftintuneblog" target="_blank">Microsoft Intune Blog</a><em> and follow us on LinkedIn or <a class="lia-external-url" href="https://aka.ms/MSIntune" rel="noopener noreferrer" target="_blank">@MSIntune</a> and <a class="lia-external-url" href="https://aka.ms/IntuneSuppTeam" rel="noopener noreferrer" target="_blank">@IntuneSuppTeam</a> on X to continue the conversation.</em></p></div></div></div>
+</article>
+</body>
+</html>

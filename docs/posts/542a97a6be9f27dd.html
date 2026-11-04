@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Moving from Windows Autopilot to Windows Autopilot device preparation</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Intune Customer Success</span>
+    <span class="date">September 16, 2026</span>
+  </div>
+  <h1>Moving from Windows Autopilot to Windows Autopilot device preparation</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/intune-customer-success/moving-from-windows-autopilot-to-windows-autopilot-device/ba-p/4557269" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p><strong>By: Maggie Dakeva, Senior Product Manager - Microsoft Intune</strong></p>
+<p>Organizations have spent years refining Windows Autopilot deployments. Profiles, Enrollment Status Page settings, group tags, dynamic groups, application assignments, and support processes all work together to deliver a familiar provisioning experience.</p>
+<p>Windows Autopilot device preparation is a re-architecture of Windows Autopilot designed around the customer asks we hear most often: simpler configuration, faster and more reliable setup, clearer progress for users, and near real-time deployment reporting for administrators. A single <a class="lia-external-url" href="https://learn.microsoft.com/autopilot/device-preparation/tutorial/user-driven/entra-join-autopilot-policy" rel="noopener noreferrer" target="_blank">device preparation policy</a> brings deployment and the out-of-box experience (OOBE) settings together, <a class="lia-external-url" href="https://learn.microsoft.com/intune/device-enrollment/setup-time-grouping" rel="noopener noreferrer" target="_blank">enrollment time grouping (ETG)</a> places devices into the right security group during enrollment, and granular application and PowerShell script status makes troubleshooting easier.</p>
+<p>Autopilot device preparation is now the recommended solution for user-driven scenarios. Future engineering investments will focus on Windows Autopilot device preparation, enabling organizations to benefit from ongoing improvements to provisioning, reliability, reporting, and support. Moving eligible deployments positions your organization to benefit from those ongoing improvements while reducing the complexity of provisioning and support.</p>
+<p>So how do you move without disrupting devices that are already working - or forcing every deployment scenario to transition at once?</p>
+<p>The answer is a phased approach.</p>
+<p><a class="lia-external-url" href="https://learn.microsoft.com/autopilot/device-preparation/compare" rel="noopener noreferrer" target="_blank">Windows Autopilot and Windows Autopilot device preparation</a> can coexist in the same organization. You can move eligible user-driven Microsoft Entra join populations in controlled waves, validate the full experience, and keep scenarios that still require Windows Autopilot on their existing path.</p>
+<p>The result is a practical way to adopt a simpler provisioning model while protecting the investments and workflows your organization still depends on.</p>
+<p>Windows Autopilot device preparation brings enrollment settings, OOBE, device naming, required applications, PowerShell scripts, and enrollment-time targeting into a more coherent policy flow. The device preparation page, which replaces the Enrollment status page, gives users clearer progress and gives administrators more detailed deployment status for troubleshooting.</p>
+<p>Windows Autopilot device preparation includes two complementary capabilities:</p>
+<ul>
+<li><strong>Device preparation policy</strong> defines the deployment experience, including OOBE settings, applications, scripts, naming, and ETG.</li>
+<li><a class="lia-external-url" href="https://learn.microsoft.com/autopilot/device-preparation/device-association/overview" rel="noopener noreferrer" target="_blank">Device association</a> optionally binds a physical device to your organization before enrollment. It can establish corporate ownership and tenant affinity, enable associated-device OOBE settings, and support direct per-device policy assignment.</li>
+</ul>
+<p>Based on organizational needs, customers can choose to use device preparation policy, device association, or both. Device preparation policy provides the deployment configuration and experience, while device association adds pre-enrollment device affinity and device-based capabilities. Organizations can adopt each capability where it adds value to their provisioning model.</p>
+<p>But moving to that model shouldn't mean recreating every Windows Autopilot object exactly as it exists today.</p>
+<p>Instead, begin with the outcome each device population needs. Identify the required OOBE behavior, applications, scripts, naming, assignments, and support experience. Then design the device preparation policy and ETG model that delivers that outcome.</p>
+<p>This approach reduces inherited complexity and helps ensure that the new deployment is designed for Windows Autopilot device preparation and not constrained by the architecture it replaces.</p>
+<p>Windows Autopilot device preparation is the recommended path for eligible user-driven provisioning scenarios, including:</p>
+<ul>
+<li>Corporate-owned Windows 11 devices</li>
+<li>User-driven Microsoft Entra join</li>
+<li>Windows 365</li>
+</ul>
+<p>Continue using Windows Autopilot for scenarios that aren't supported or recommended for transition, including:</p>
+<p>This isn't an all-or-nothing decision. The right transition plan deliberately separates eligible populations from valid exceptions.</p>
+<p>Several familiar Windows Autopilot concepts have a corresponding role in Windows Autopilot device preparation:</p>
+<div class="styles_lia-table-wrapper__h6Xo9 styles_table-responsive__MW0lN"><table border="1"><thead><tr class="lia-background-color-custom-0078d4"><th class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><span class="lia-text-color-22">Windows Autopilot Concept</span></th><th class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><span class="lia-text-color-22">Windows Autopilot Device Preparation Model</span></th></tr></thead><tbody><tr><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">Deployment profile</td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">Device preparation policy</td></tr><tr class="lia-background-color-custom-f8f9fa"><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">Enrollment Status Page profile</td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">Device preparation policy</td></tr><tr><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">Enrollment Status Page in OOBE</td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">Device preparation page in OOBE</td></tr><tr class="lia-background-color-custom-f8f9fa"><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">
+<p>Windows Autopilot registration</p>
+</td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">Optional device association</td></tr><tr><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">Profile and dynamic group-based targeting based on group tags</td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">Granular device preparation policy assignment with enrollment time grouping (ETG) using Microsoft Entra static security groups</td></tr><tr class="lia-background-color-custom-f8f9fa"><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">Device name template defined in the Autopilot deployment profile</td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">Device name template defined in the device preparation policy</td></tr><tr><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">Windows Autopilot deployments report</td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">Windows Autopilot device preparation deployments report</td></tr></tbody><colgroup><col/><col/></colgroup></table></div>
+<p>The goal is to preserve the required customer and administrator experience - not every historical configuration object.</p>
+<p>A controlled transition can follow eight steps:</p>
+<ol>
+<li><strong>Define the eligible population:</strong> Start with corporate-owned Windows 11 devices using user-driven Microsoft Entra join. Exclude scenarios that should remain on Windows Autopilot.</li>
+<li><strong>Design enrollment time grouping (ETG):</strong> Create assigned, static Microsoft Entra security groups for populations that genuinely differ by location, role, device type, or required configuration. Don't build the new design around a group tag or a device object that must exist before enrollment.</li>
+<li><strong>Create device preparation policy equivalents:</strong> Inventory each deployment profile and Enrollment Status Page pairing. Map the required OOBE settings, naming, applications, PowerShell scripts, blocking requirements, and dependencies into the new device preparation policy.</li>
+<li><strong>Evaluate whether device association is required for all scenarios.</strong> For user-targeted deployments that don't need pre-enrollment tenant affinity or per-device policy selection, the organization can use the device preparation policy without device association and simplify the setup and management of device onboarding. For devices that need automatic corporate ownership, OOBE customization settings, or stronger pre-enrollment trust, continue with step 5.</li>
+<li><strong>Pre-associate eligible devices.</strong> For existing registered or enrolled devices, collect the pre-association information by <a class="lia-external-url" href="https://learn.microsoft.com/autopilot/device-preparation/tutorial/user-driven/entra-join-device-association#export-device-information-from-oobe" rel="noopener noreferrer" target="_blank">collecting the diagnostics logs</a>, then exporting the DeviceLink CSV file found in the logs. Upload the CSV in the Associated devices blade in Intune and assign a device preparation policy to the device. Assignment can be done during the CSV upload process or after. Confirm that the device reaches the <strong>Pre-associated</strong> state before its planned reset or refresh.</li>
+</ol>
+<ol start="6">
+<li><strong>Pilot the complete OOBE experience.</strong> Start with new devices or reset a small, representative set of devices. Validate policy selection, ETG placement, applications, scripts, naming, progress reporting.</li>
+<li><strong>Expand and pre-associate remaining devices.</strong> Pre-associate additional populations in controlled waves. You do not need to force resets to all existing enrolled devices but simply pre-associate to prepare them so they enroll via the Windows Autopilot device preparation flow whenever each device next undergoes a natural or required reset.</li>
+<li><strong>Retire registered flows. </strong>Retire deployment profiles, Enrollment Status Page profiles, groups, registrations, and processes only after reporting confirms that no active or planned population still depends on them.</li>
+</ol>
+<p>Pre-association doesn’t reset the device or disrupt its current use. The device remains enrolled and productive until its next natural or required reset, when Windows Autopilot device preparation takes effect.</p>
+<p class="lia-indent-padding-left-30px"><strong>Don't remove the Windows Autopilot registration early.</strong> Doing so can remove Autopilot properties and affect dynamic-group membership that supports the device's current configuration.</p>
+<p>The next time the device enters OOBE, Windows recognizes the association and follows the Windows Autopilot device preparation path. If a device is both registered and associated, association takes precedence. Plan the pilot around this behavior rather than expecting an automatic fallback to Windows Autopilot.</p>
+<p class="lia-indent-padding-left-30px"><strong>OEM and partner note:</strong> Device association uploads are currently only supported through Intune. OEM and partner pre-association scenarios aren't supported yet, but they’re on the roadmap.</p>
+<ul>
+<li>You can prepare existing devices for transition while they remain enrolled and in use.</li>
+<li>You can move one eligible population at a time instead of committing to an organization-wide cutover.</li>
+<li>You can preserve Windows Autopilot for scenarios that still require it.</li>
+<li>You can use the transition to simplify assignment and provisioning logic rather than carry every legacy object forward.</li>
+<li>You can retire the old configuration gradually - after validation and dependency checks confirm that nothing still relies on it.</li>
+</ul>
+<p>Consider a multinational organization, Contoso, that uses group tags to distinguish devices in the United Kingdom and Germany and to identify different device use cases. Dynamic groups use those tags to determine which deployment profile, Enrollment Status Page configuration, applications, policies, scope tags, and naming rules apply. The organization wants to move its eligible user-driven Windows 11 populations to Windows Autopilot device preparation without reproducing the same pre-created record and dynamic-group dependencies.</p>
+<p>The Contoso deployment team transitions to Autopilot device preparation with the following steps:</p>
+<ol>
+<li><strong>Create static security groups for each required configuration.</strong> The team creates assigned Microsoft Entra security groups such as <strong>User Devices UK</strong> and <strong>User Devices Germany</strong>. It creates separate groups only when location, role, device type, scope, or required configuration differs.<br/><br/></li>
+<li><strong>Create a device preparation policy for each population.</strong> The team creates a policy such as <strong>User Devices UK DPP</strong> and <strong>User Devices Germany DPP</strong>. Each policy contains the required OOBE settings, applications, PowerShell scripts, blocking behavior, and device name template, and identifies the corresponding enrollment time grouping (ETG) security group.<br/><br/></li>
+<li><strong>Assign the device preparation policies to each population.</strong> The team assigns each device preparation policy to the respective sets of devices at time of pre-association or later. During enrollment, the device joins the group selected by the device preparation policy. For example, devices assigned the <strong>User Devices UK DPP</strong> join the <strong>User Devices UK</strong> group and receive the apps and policies assigned to that group.<br/><br/></li>
+<li><strong>Configure scope through the static groups.</strong> The team assigns the appropriate regional scope tag to each ETG security group. The device receives the associated scope tag when it joins the group during enrollment.<br/><br/></li>
+<li><strong>Set a naming template for each device preparation policy.</strong> The organization uses a naming convention where devices start with a prefix indicating their location. The team sets <code>UK-%SERIAL%</code> in <strong>User Devices UK DPP</strong> and <code>DE-%SERIAL%</code> in <strong>User Devices Germany DPP</strong>.<br/><br/></li>
+<li><strong>Pre-associate pilot devices without disruption.</strong> Selected devices can be pre-associated while they remain enrolled and in use. The team collects diagnostics logs via script, extracts the DeviceLink CSV files, imports them in Intune, confirms the devices reach the <strong>Pre-associated</strong> state, and keeps the Windows Autopilot registration in place until the approved reset or refresh window.<br/><br/></li>
+<li><strong>Validate the end-to-end experience with representative devices.</strong> The admin team uses test devices representing each target population to verify policy assignment, static group membership, scope tags, naming, applications, scripts, reporting, and successful completion of the device preparation flow. Existing devices can remain in service until their next natural or required reset.<br/><br/></li>
+</ol>
+<span class="lia-media-object lia-media-is-center" data-image-alt=""><button aria-haspopup="true" aria-label='Enlarge Image &lt;em&gt;Figure 1: &lt;span data-mce-style="color: rgb(112, 112, 112);"&gt;Seven-step regional Windows Autopilot device preparation rollout workflow, from creating security groups and device preparation policies through regional configuration, pilot association, and device validation.&lt;/span&gt;&lt;/em&gt;' aria-labelledby="AxxNur_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/542a97a6be9f27dd/img_0.png"/></button><span class="lia-media-caption-text" id="AxxNur_caption"><em>Figure 1: <span data-mce-style="color: rgb(112, 112, 112);">Seven-step regional Windows Autopilot device preparation rollout workflow, from creating security groups and device preparation policies through regional configuration, pilot association, and device validation.</span></em></span></span>
+<p>This scenario is illustrative, not a completed deployment or a measured customer outcome. It shows the transition pattern: define the supported scope, replace group-tag dependencies with ETG, move Enrollment Status Page and deployment profile settings to the device preparation policy, decide where device association adds value, validate end to end, and expand in controlled waves.</p>
+<p>Begin with one eligible user-driven Microsoft Entra join population. Map its current Windows Autopilot outcomes to enrollment time grouping (ETG) and a device preparation policy. Pre-associate a representative pilot, validate the complete reset-to-desktop experience, and expand only when the results meet your deployment and support criteria.</p>
+<p>Moving to Windows Autopilot device preparation doesn't require a forced cutover. It requires a clear boundary, a deliberately redesigned assignment model, and evidence from each wave.</p>
+<p>That gives IT a controlled path toward simpler provisioning while keeping every device population on the experience that supports it best.</p>
+<p> </p>
+<p><em>We’d love to hear your feedback! Share your thoughts in the comments below, follow us on <a class="lia-external-url" href="https://aka.ms/IntuneLinked" rel="noopener noreferrer" target="_blank">LinkedIn</a> or reach out to us on X <a class="lia-external-url" href="https://aka.ms/IntuneSuppTeam" rel="noopener noreferrer" target="_blank">@IntuneSuppTeam</a> or <a class="lia-external-url" href="https://aka.ms/MSIntune" rel="noopener noreferrer" target="_blank">@MSIntune</a>.</em></p></div></div></div>
+</article>
+</body>
+</html>

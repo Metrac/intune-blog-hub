@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How Enterprise App Management secures your App Catalog from ingestion to device</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Intune Customer Success</span>
+    <span class="date">June 19, 2026</span>
+  </div>
+  <h1>How Enterprise App Management secures your App Catalog from ingestion to device</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/intune-customer-success/how-enterprise-app-management-secures-your-app-catalog-from/ba-p/4528361" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p><strong>By: Joe Lurie, Sr. Product Manager | Microsoft Intune</strong></p>
+<p>One of the most common questions I get from customers when I talk about Enterprise App Management is some version of: <em>"Okay, but how do I know these apps are safe?"</em></p>
+<p>It's a fair question. You're trusting a catalog of pre-packaged Win32 apps to land on thousands of managed devices across your organization. If you're responsible for endpoint security, you should be asking that question. This post explains how Enterprise App Management works behind the scenes, how apps get into the catalog, what happens before they're visible to your tenant, and why the architecture matters for your security posture.</p>
+<p>An important design decision with Enterprise App Management is that it's not a separate app delivery system. It's an extension of the existing <a class="lia-external-url" href="https://learn.microsoft.com/intune/app-management/deployment/app-management-win32" rel="noopener noreferrer" target="_blank">Intune Win32 app architecture</a>.</p>
+<p>From the admin perspective, everything starts in the Intune admin center. But behind the scenes, there's a clean separation between the control plane and the data plane:</p>
+<ul>
+<li><strong>Control plane</strong>: For each app being added to the Enterprise App Management catalog, Intune curates app metadata, including app version, install commands, uninstall commands, detection logic, requirements, and supported configurations. This metadata is validated and normalized before it shows up in your tenant. That's why catalog apps behave consistently whether you're deploying to 50 devices or 50,000.</li>
+<li><strong>Data plane</strong>: Once an app is assigned by an admin, it flows through the same Win32 app delivery and enforcement pipeline you already rely on. Your devices don't know they're installing an "Enterprise App Management app" - they're enforcing a Win32 app with well-defined intent. Same Enrollment Status Page support, same reporting, same retry logic, same Intune Management Extension. No new agent. No new runtime. And finally, Enterprise App Management apps have the same support for <a class="lia-external-url" href="https://learn.microsoft.com/windows/security/application-security/application-control/app-control-for-business/design/configure-authorized-apps-deployed-with-a-managed-installer" rel="noopener noreferrer" target="_blank">App Control for Business with Managed Installer</a> which can automatically tag the apps as safe.</li>
+</ul>
+<p>This is important because it means Enterprise App Management inherits all the trust and operational maturity of Win32 app management in Intune. Curated content is delivered through established, reliable infrastructure.</p>
+<p>This section walks through what happens from the moment an app is sourced to the moment it appears in your catalog.</p>
+<p>It starts with the catalog. Microsoft receives app metadata, including install and uninstall commands, version info, and download URLs. The data is then ingested, flattened, transformed, and Microsoft's own identifiers are applied. After the data lands in the database, eligibility and filtering gates are applied through allow and deny lists. Apps on the allow list are permitted to download content from controlled internet locations. This process handles both net-new apps and version updates to apps already in the catalog.</p>
+<p>This is the part that answers the "how do I know it's safe?" question. Once content ingestion is complete, every app is submitted for security and functional validation. This is a queue-driven service that runs two parallel tracks:</p>
+<ul>
+<li>
+<p><strong>Static malware detection</strong> scans the installer and related artifacts for malicious content, assigning a VirusTotal score. If an app receives a non-zero score, it's blocked from proceeding, full stop. Static scanning is about establishing baseline trust before deployment. It validates that binaries are intact, that they originate from trusted sources, and they don't carry known indicators of malware or tampering. This process catches embedded malicious payloads, corrupted binaries, and known bad signatures before they can impact any device.</p>
+</li>
+<li><strong>Dynamic analysis (detonation)</strong> runs in parallel. The app is installed and uninstalled inside a VM detonation chamber, producing install results, logs, and artifacts. This is about validating behavior, not just files. Modern threats don't always look malicious at rest; some issues only surface when an installer or application runs or interacts with the system. Dynamic evaluation catches unexpected system changes, unsafe persistence mechanisms, and activity inconsistent with enterprise deployment expectations.</li>
+</ul>
+<p>If an app fails automatic validation, it goes through manual validation by Intune engineering.</p>
+<p>Both layers are required. Static scanning provides speed and broad coverage, while dynamic scanning provides depth and behavioral assurance.</p>
+<p>The security story doesn't end at publication. Apps already in the catalog are periodically re-scanned. If a version that previously passed validation is later found to fail a malware scan, it's flagged and removed from the catalog. This is a critical detail - the catalog isn't a snapshot-in-time trust decision. It's a continuously validated inventory.</p>
+<p>Once a new app version is received, the target is to have it available in the catalog within 24 hours. Around 80–90% of apps hit that timeline. The remainder are apps that don't pass automatic validation and require manual review, which takes longer. But the pipeline processes updates through the exact same ingestion and validation flow as new apps - no shortcuts.</p>
+<p>If you've been following Microsoft's <a class="lia-external-url" href="https://learn.microsoft.com/security/zero-trust/zero-trust-overview" rel="noopener noreferrer" target="_blank">Zero Trust model</a>, this pipeline should feel familiar. Zero Trust is built on three principles: <strong>verify explicitly</strong>, <strong>use least-privilege access</strong>, and <strong>assume breach</strong>. EAM's validation pipeline maps directly to these:</p>
+<ul>
+<li><strong>Verify explicitly</strong>: Every app is verified through multiple independent signals, including source integrity, static malware scanning, and dynamic behavioral analysis, before it's ever exposed to a tenant. No app gets a pass based on reputation or publisher name alone. Trust is earned through evidence, every time.</li>
+<li><strong>Use least-privilege access</strong>: Enterprise App Management catalog apps ship with prefilled, scoped install and uninstall commands, detection rules, and requirements. You're not handing an installer broad system access and hoping for the best. The deployment surface is defined and constrained by design.</li>
+<li><strong>Assume breach</strong>: This is why the pipeline doesn't stop at initial validation. Ongoing re-scanning means that even apps that previously cleared every check are continuously re-evaluated. If an app that was clean six months ago is later found to carry a risk, it's flagged and pulled from the catalog. The system assumes that trust is perishable, exactly the way Zero Trust says it should be.</li>
+</ul>
+<p>In practice, this means Enterprise App Management gives you an app lifecycle that's not just convenient - it follows the same security framework your organization is likely already adopting for identity, network, and device access. The app layer is often the last piece to catch up, and Enterprise App Management closes that gap.</p>
+<p>Here's the ingestion flow that shows how all of this fits together:</p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image &lt;em&gt;Figure 1: &lt;/em&gt;
+&lt;em&gt;The Enterprise App Management ingestion pipeline: from source metadata through content ingestion, static and dynamic security validation, manual review for failures, periodic re-scanning, and finally publication to the catalog.&lt;/em&gt;" aria-labelledby="qAKaWY_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/25fab905782c1c15/img_0.png"/></button><span class="lia-media-caption-text" id="qAKaWY_caption"><em>Figure 1: </em><em>The Enterprise App Management ingestion pipeline: from source metadata through content ingestion, static and dynamic security validation, manual review for failures, periodic re-scanning, and finally publication to the catalog.</em></span></span>
+<p>If you're evaluating Enterprise App Management or explaining it to your security team, here's what I'd suggest that you land on:</p>
+<ol>
+<li><strong>Enterprise App Management reduces the packaging tax.</strong> Pre-packaged apps with prefilled install details, detection rules, requirements, and restart behavior mean you spend less time building the same scaffolding repeatedly and more time on policy and rollout strategy.</li>
+<li><strong>Patching becomes more predictable.</strong> Guided update flows using supersedence and a documented expectation of 24-hour update availability give you a cadence you can plan around, not react to.</li>
+<li><strong>The security model is layered and continuous.</strong> Static scanning, dynamic detonation, manual review fallback, and ongoing re-scanning mean the catalog maintains a high trust bar - not just at ingestion, but over time. And it's all built on the same Win32 delivery infrastructure that you and your devices already trust.</li>
+</ol>
+<p>The bottom line: Enterprise App Management isn’t just about convenience. It shifts the app lifecycle from a manual, error-prone process to one with built-in security validation, operational consistency, and governance you can defend to your security team. Rather than manually sourcing installers and creating detection rules, use this approach to streamline the process.</p>
+<p>If you have any questions, leave a comment below or reach out to us on X <a class="lia-external-url" href="https://aka.ms/IntuneSuppTeam" rel="noopener noreferrer" target="_blank">@IntuneSuppTeam</a>!</p>
+<p><em>Want to go deeper? Check out the </em><a class="lia-external-url" href="https://learn.microsoft.com/intune/app-management/deployment/enterprise-app-management" rel="noopener noreferrer" target="_blank">Enterprise App Management documentation</a><em> and keep an eye out for upcoming changes to </em><a class="lia-external-url" href="https://learn.microsoft.com/intune/fundamentals/add-ons" rel="noopener noreferrer" target="_blank">Intune Suite licensing</a><em> that will make Enterprise App Management available in the Microsoft 365 plans you may already own. And as always, drop feedback at </em><a class="lia-external-url" href="https://aka.ms/IntuneFeedback" rel="noopener noreferrer" target="_blank">aka.ms/IntuneFeedback</a><em>.</em></p>
+<p><em><strong>Join our community!</strong> Discuss real-world scenarios, get expert guidance, connect with peers, and influence the future of Microsoft Security products. Learn more at <a class="lia-external-url" data-outlook-id="b28472ac-e9ef-4c22-803d-2eabb395ee0c" href="https://aka.ms/JoinIntuneCommunity" rel="noopener noreferrer" target="_blank">aka.ms/JoinIntuneCommunity</a> .</em></p></div></div></div>
+</article>
+</body>
+</html>

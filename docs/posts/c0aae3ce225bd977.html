@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Microsoft Intune and Apple OS 27: New settings, support, and platform changes</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Intune Customer Success</span>
+    <span class="date">September 24, 2026</span>
+  </div>
+  <h1>Microsoft Intune and Apple OS 27: New settings, support, and platform changes</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/intune-customer-success/microsoft-intune-and-apple-os-27-new-settings-support-and/ba-p/4559764" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p>With Apple's release of OS 27, we’ve been working hard to ensure that Microsoft Intune provides support for Apple’s latest operating systems (OS) so that existing features work as expected, and adding support for new features that were introduced at WWDC.</p>
+<p>We’ll continue to upgrade our service and release new capabilities that integrate elements of the new OS versions.</p>
+<p>With continued investments in the Intune data-driven infrastructure that powers the settings catalog, we’re able to provide day zero support for new OS settings as they’re released by Apple. We’ve updated the settings catalog to support newly released iOS/iPadOS and macOS settings for both declarative device management (DDM) and mobile device management (MDM) to empower your IT teams to have devices ready for the latest OS release. Configurations that have been updated include:</p>
+<p> </p>
+<p><strong>App settings (DDM)</strong></p>
+<p>Control which apps can launch on supervised iPhone, iPad, Apple TV, and Apple Vision Pro devices and which binaries can run on supervised Macs using allow and deny rules. Define organization-suggested privacy permission defaults for apps - including camera, microphone, Bluetooth, location, local network, dictation, and accessibility - to present users with a single consolidated consent prompt.</p>
+<p> </p>
+<p><strong>Intelligence settings (DDM)</strong></p>
+<p>Control Apple Intelligence capabilities, including Visual Intelligence, Writing Tools, Genmoji, Image Playground, app-specific features in Mail, Notes, and Safari, and requirements for on-device dictation and translation.</p>
+<p> </p>
+<p><strong>Accessibility settings </strong><strong>(DDM)</strong></p>
+<p>Configure organization-defined accessibility preferences - such as display, text, motion, audio, and interaction options - so supported settings can be applied consistently on managed devices.</p>
+<p> </p>
+<p><strong>Safari settings </strong><strong>(DDM)</strong></p>
+<p>Manage Safari behavior and privacy, including cookies, fraud warnings, history clearing, JavaScript, pop-ups, private browsing, summaries, new-tab start pages, and website camera or microphone permission defaults.</p>
+<p> </p>
+<p><strong>Siri settings </strong><strong>(DDM)</strong></p>
+<p>Control Siri availability and behavior, including Siri AI features, user-generated content, access while the device is locked, profanity filtering, and reduction of sensitive content.</p>
+<p> </p>
+<p><strong>Content caching </strong><strong>(DDM)</strong></p>
+<p>Configure the macOS Content Caching service to store Apple-distributed software and iCloud content locally, define the clients and networks it serves, and optimize parent, peer, storage, and network behavior to reduce internet bandwidth use.</p>
+<p> </p>
+<p><strong>DNS Proxy </strong><strong>(DDM)</strong></p>
+<p>Configure a DNS proxy network extension to handle device DNS traffic, including the provider app and its vendor-defined settings, so name-resolution requests can be routed through an organization-approved service.</p>
+<p> </p>
+<p><strong>Web content filter </strong><strong>(DDM)</strong></p>
+<p>Configure a plug-in-based web content filter to inspect and control network traffic using an approved filtering app, with provider, authentication, and filtering settings appropriate to the organization.</p>
+<p> </p>
+<p><strong>Login window (MDM)</strong></p>
+<p>Customize the macOS login window and sign-in experience, including the information shown to users and the login options and controls available on managed Macs. Located under the <strong>Login Window</strong> category.</p>
+<p> </p>
+<p>More information on configuring these new settings using the settings catalog is available at <a class="lia-external-url" href="https://learn.microsoft.com/mem/intune/configuration/settings-catalog?tabs=sc-search-filter%2Csc-reporting" rel="noopener noreferrer" target="_blank">create a policy using settings catalog in Microsoft Intune</a>.</p>
+<p>We recently added our new enrollment policies experience based on data-driven infrastructure that powers the settings catalog. This enables Intune to quickly and easily add new Skip Keys such as Liquid Glass and Accessibility Appearance. A list of Setup Assistant panes that can be managed is available in our <a class="lia-external-url" href="https://learn.microsoft.com/intune/device-enrollment/apple/setup-automated-ios#setup-assistant-screen-reference" rel="noopener noreferrer" target="_blank">Setup Assistant screen reference</a>.</p>
+<p>Microsoft Intune now supports Apple's Enhanced Logging device action on supported supervised devices running a compatible OS release. Administrators can start an AppleCare diagnostic-log collection session using an AppleCare-provided token and monitor device-reported status through DDM, reducing the need to coordinate manual log collection with the device user. More information is available in our device actions documentation for <a class="lia-external-url" href="https://learn.microsoft.com/intune/device-management/actions/apple-enhanced-logging" rel="noopener noreferrer" target="_blank">Enhanced logging</a>.</p>
+<p>As more workloads are shifting to DDM, Apple is ending support for the following legacy MDM commands and payloads, which means they’ll no longer be updated or supported. You should instead manage these workloads using DDM through the settings catalog, which contains the latest settings.</p>
+<p>MDM payloads that are now deprecated with OS 27 include:</p>
+<ul>
+<li>Content caching service</li>
+<li>DNS settings</li>
+<li>DNS proxy</li>
+<li>Parental controls application restrictions</li>
+<li>Privacy preferences policy control</li>
+<li>Passcode</li>
+</ul>
+<p>Multiple settings have been deprecated in the MDM Restrictions payload, and we recommend using the equivalent DDM configuration to manage these features. The table below provides the new DDM location for these deprecated settings.</p>
+<div class="styles_lia-table-wrapper__h6Xo9 styles_table-responsive__MW0lN"><table border="1"><thead><tr class="lia-background-color-custom-0078d4"><th class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><span class="lia-text-color-22">DDM Configuration</span></th><th class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><span class="lia-text-color-22">Deprecated MDM Settings</span></th></tr></thead><tbody><tr><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid"><strong>App Settings</strong></td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">
+<ul>
+<li>Allow Listed App Bundle IDs</li>
+<li>Blocked App Bundle IDs</li>
+</ul>
+</td></tr><tr class="lia-background-color-custom-f8f9fa"><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid"><strong>External Intelligence Settings</strong></td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">
+<ul>
+<li>Allowed External Intelligence Workspace IDs</li>
+<li>Allow External Intelligence Integrations</li>
+<li>Allow External Intelligence Integrations Sign In</li>
+</ul>
+</td></tr><tr><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid"><strong>Intelligence Settings</strong></td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">
+<ul>
+<li>Allow Apple Intelligence Report</li>
+<li>Allow Genmoji</li>
+<li>Allow Image Playground</li>
+<li>Allow Image Wand</li>
+<li>Allow Personalized Handwriting Results</li>
+<li>Allow Visual Intelligence Summary</li>
+<li>Allow Writing Tools</li>
+<li>Force On Device Only Dictation</li>
+<li>Force On Device Only Translation</li>
+<li>Allow Mail Smart Replies</li>
+<li>Allow Mail Summary</li>
+<li>Allow Notes Transcription</li>
+<li>Allow Notes Transcription Summary</li>
+<li>Allow Safari Summary</li>
+</ul>
+</td></tr><tr class="lia-background-color-custom-f8f9fa"><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid"><strong>Keyboard Settings</strong></td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">
+<ul>
+<li>Allow Auto Correction</li>
+<li>Allow Continuous Path Keyboard</li>
+<li>Allow Definition Lookup</li>
+<li>Allow Dictation</li>
+<li>Allow Keyboard Shortcuts</li>
+<li>Allow Predictive Keyboard</li>
+<li>Allow Spell Check</li>
+</ul>
+</td></tr><tr><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid"><strong>Siri Settings</strong></td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">
+<ul>
+<li>Allow Assistant</li>
+<li>Allow Assistant User Generated Content</li>
+<li>Allow Assistant While Lock</li>
+<li>Force Assistant Profanity Filter</li>
+</ul>
+</td></tr></tbody><colgroup><col/><col/></colgroup></table></div>
+<p>Apple previously ended support for MDM device configuration templates, and software update commands and settings. These have been removed from OS 27, and you should use DDM for these instead. To align with this change, starting with the October (2610) release, Intune will remove the following legacy workloads from the Microsoft Intune admin center:</p>
+<ul>
+<li>iOS/iPadOS update policies</li>
+<li>macOS update policies</li>
+<li>macOS software updates report (per-device)</li>
+<li>iOS update installation failures</li>
+<li>macOS update installation failures</li>
+</ul>
+<p>More information on this change is available in the support tip: <a class="lia-internal-link lia-internal-url lia-internal-url-content-type-blog" data-lia-auto-title="Move to declarative device management for Apple software updates" data-lia-auto-title-active="0" href="https://techcommunity.microsoft.com/blog/intunecustomersuccess/support-tip-move-to-declarative-device-management-for-apple-software-updates/4432177" target="_blank">Move to declarative device management for Apple software updates</a>.</p>
+<p>As new operating system updates are released throughout the year by Apple, Intune plans to support critical functionality that comes with each new OS version. With the release of iOS/iPadOS and macOS 26, we’ll continue with our existing model for enrolling user-less devices for supported and allowed OS versions to keep enrolled devices secure and efficient.</p>
+<p>This includes devices enrolling without user affinity (user-less devices), such as shared iPads and devices enrolling through Automated Device Enrollment (ADE) without user affinity. We highly recommend updating your organization’s devices to the most recent Apple OS version publicly available to keep your devices secure and up to date.</p>
+<p> </p>
+<p><strong>Supported</strong> OS versions means that user-less devices running the three most recent iOS/iPadOS versions are fully supported by Intune. Devices running iOS/iPadOS 26.x, 18.x, and 17.x can enroll and take advantage of all Intune MDM functionality that is applicable to user-less devices, and all new eligible features will work on these devices. Allowed OS versions let you enroll user-less devices running an unsupported iOS/iPadOS version within the three versions of the supported range. These devices can use eligible Intune features supported by the MDM protocol, but OS changes, bugs, or other issues might affect functionality. Devices enrolled with user affinity or apps that rely on user sign-in will continue to not be supported.</p>
+<p> </p>
+<p><strong>User-less enrollment and feature support</strong></p>
+<div class="styles_lia-table-wrapper__h6Xo9 styles_table-responsive__MW0lN"><table border="1"><thead><tr class="lia-background-color-custom-0078d4"><th class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><span class="lia-text-color-22">Capability</span></th><th class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><span class="lia-text-color-22">Supported</span></th><th class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><span class="lia-text-color-22">Allowed</span></th></tr></thead><tbody><tr><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid"><strong>Applicable Versions</strong></td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Three most recent versions (N-2):
+<ul>
+<li>iOS/iPadOS 18.x and later</li>
+<li>macOS 15.x and later</li>
+</ul>
+</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Up to three versions below the supported version (N-5):
+<ul>
+<li>iOS/iPadOS 16.x and later</li>
+<li>macOS 13.x and later</li>
+</ul>
+</td></tr><tr class="lia-background-color-custom-f8f9fa"><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><strong>Can Enroll</strong></td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">Yes</td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">Yes</td></tr><tr><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid"><strong>User-less Eligible Intune MDM Features</strong></td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Yes</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Yes. May be impacted by breaking OS features, bugs, or issues.</td></tr><tr class="lia-background-color-custom-f8f9fa"><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><strong>User Affinity Enrollment</strong></td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">Yes</td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">No</td></tr><tr><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><strong>Apps That Require User Sign-In</strong></td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">Yes</td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">No</td></tr></tbody><colgroup><col/><col/><col/></colgroup></table></div>
+<p>For more details, review our blog <a class="lia-internal-link lia-internal-url lia-internal-url-content-type-blog" data-lia-auto-title="Support statement for supported versus allowed versions for user-less Apple devices" data-lia-auto-title-active="0" href="https://techcommunity.microsoft.com/blog/intunecustomersuccess/support-statement-for-supported-versus-allowed-versions-for-user-less-apple-devi/3484657" target="_blank">Support statement for supported versus allowed versions for user-less Apple devices</a> to learn more.</p>
+<p>As you plan for the new features and changes with the latest OS release, we wanted to highlight additions with the latest Intune App SDK. With Intune App SDK for iOS v21.8.0 or later, organizations can take advantage of the following Intune MAM updates. Apps must be integrated with SDK v21.8.0 or later to support the experiences described below. As always, we recommend keeping apps updated with the latest SDK.</p>
+<p>We’ve modernized the Intune app protection experience on iOS to make policy interactions clearer and more intuitive. The refreshed experience includes updated prompts and full-screen messaging, clearer account context on conditional launch screens such as the MAM PIN screen, and a <strong>Remove Account</strong> option that lets users remove a blocked managed account and its organizational data from the app. This is a user experience update only, with no changes to app functionality or app protection policies.</p>
+<p>The <strong>Screen capture</strong> <a class="lia-external-url" href="https://learn.microsoft.com/intune/app-management/protection/ref-settings-ios#functionality" rel="noopener noreferrer" target="_blank">app protection policy setting</a> now controls whether Siri onscreen awareness can access work or school data.</p>
+<p>Set <strong>Screen capture</strong> to <strong>Block</strong> to prevent the <strong>Ask Siri</strong> option from appearing in the context menu for organizational data. If the setting remains <strong>Allow</strong>, which is the default value, users can share organizational data through Siri onscreen awareness.</p>
+<p>The updates require apps to use the Intune App SDK for iOS version <strong>21.8.0 or later</strong>.</p>
+<p> </p>
+<p><em>Bookmark the <a data-lia-auto-title="Microsoft Intune Blog" data-lia-auto-title-active="0" href="https://techcommunity.microsoft.com/category/microsoftintune/blog/microsoftintuneblog" target="_blank">Microsoft Intune Blog</a> and follow us on <a href="https://www.linkedin.com/company/microsoft-intune-product" rel="nofollow noopener noreferrer" target="_blank">LinkedIn </a> or <a href="https://twitter.com/MSIntune" rel="nofollow noopener noreferrer" target="_blank">@MSIntune </a>and <a href="https://x.com/IntuneSuppTeam" rel="nofollow noopener noreferrer" target="_blank">@IntuneSuppTeam </a>on X to continue the conversation. </em>Stay tuned to <a class="lia-external-url" href="https://aka.ms/IntuneWN" rel="noopener noreferrer" target="_blank">What’s new in Intune</a> for additional settings and capabilities that will soon be available.</p></div></div></div>
+</article>
+</body>
+</html>

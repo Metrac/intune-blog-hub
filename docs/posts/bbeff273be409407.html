@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Create historical reports using Azure Log Analytics and Microsoft Intune diagnostic data</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Intune Customer Success</span>
+    <span class="date">April 7, 2026</span>
+  </div>
+  <h1>Create historical reports using Azure Log Analytics and Microsoft Intune diagnostic data</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/intune-customer-success/create-historical-reports-using-azure-log-analytics-and/ba-p/4508971" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p><strong><span data-contrast="auto">By: Janusz Gal – Sr Product Manager | Microsoft Intune</span></strong></p>
+<p>Azure Log Analytics gives Intune admins a flexible way to create custom reports from diagnostic data, especially when you need longer history or tailored calculations that go beyond what the Microsoft Intune admin center’s built-in reports provide. By using the Intune diagnostic data you’re already collecting, you can customize reporting for your organization’s unique requirements. In this post, you’ll walk through the steps to create a 30-day device compliance trend report. The resultant report can be run automatically, used in dashboards, or even further customized for a longer period or with additional data.</p>
+<p>Before we begin, if you haven’t configured a Log Analytics workspace in your tenant, review the following detailed information on the pre-requisites and costs on Microsoft Learn: <a class="lia-external-url" href="https://learn.microsoft.com/intune/intune-service/fundamentals/review-logs-using-azure-monitor" rel="noopener noreferrer" target="_blank">Route logs to Azure Monitor using Microsoft Intune</a>.</p>
+<p>In the Microsoft Intune admin center, navigate to <strong>Reports &gt; Diagnostic settings</strong>, and add a new Diagnostic setting policy to send data to a Log Analytics workspace.<br/><br/></p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image &lt;p&gt;Figure 1 Reports &amp;gt; Diagnostic settings, used to configure new or existing diagnostic settings.&lt;/p&gt;" aria-labelledby="r5t9TZ_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/bbeff273be409407/img_0.png"/></button><span class="lia-media-caption-text" id="r5t9TZ_caption">
+<p>Figure 1 Reports &gt; Diagnostic settings, used to configure new or existing diagnostic settings.</p>
+</span></span>
+<p>For a device compliance trend report, ensure the <strong>Devices</strong> log category is selected:</p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image &lt;p&gt;Figure 2 Reports &amp;gt; Diagnostic settings &amp;gt; Selected configuration; Devices log selected.&lt;/p&gt;" aria-labelledby="I3OTRx_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/bbeff273be409407/img_1.png"/></button><span class="lia-media-caption-text" id="I3OTRx_caption">
+<p>Figure 2 Reports &gt; Diagnostic settings &gt; Selected configuration; Devices log selected.</p>
+</span></span>
+<p>After configuring the setting, navigate to <strong>Reports &gt;</strong> under Azure monitor, <strong>Log Analytics.</strong></p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image &lt;p&gt;Figure 3 Reports &amp;gt; Log Analytics; used to query log Analytics workspaces.&lt;/p&gt;" aria-labelledby="lXCdv1_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/bbeff273be409407/img_2.png"/></button><span class="lia-media-caption-text" id="lXCdv1_caption">
+<p>Figure 3 Reports &gt; Log Analytics; used to query log Analytics workspaces.</p>
+</span></span>
+<p>In the <strong>New Query </strong>window, enter the following query:</p>
+<pre class="lia-code-sample language-json"><code>IntuneDevices
+| where TimeGenerated &gt; ago(30d)
+| summarize
+    Total = count(),
+    Compliant = countif(CompliantState == "Compliant"),
+    NonCompliant = countif(CompliantState == "Noncompliant"),
+    InGracePeriod = countif(CompliantState == "InGracePeriod"),
+    NotEvaluated = countif(CompliantState == "Not Evaluated" or CompliantState == ""),
+    ConfigManager = countif(CompliantState == "ConfigManager")
+    by bin(TimeGenerated, 1d)
+| extend ComplianceRate = round(100.0 * Compliant / Total, 2)
+| order by TimeGenerated asc</code></pre>
+<p> </p>
+<p>This query will return daily device compliance trends over the past 30 days, from the IntuneDevice table.</p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image &lt;p&gt;Figure 4 Reports &amp;gt; Log Analytics; results after running query.&lt;/p&gt;" aria-labelledby="eJgMW7_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/bbeff273be409407/img_3.png"/></button><span class="lia-media-caption-text" id="eJgMW7_caption">
+<p>Figure 4 Reports &gt; Log Analytics; results after running query.</p>
+</span></span>
+<p>Select <strong>Chart</strong> <strong>&gt; Chart type &gt; Stacked Area </strong>to show a visual of the trending device state over time.</p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image &lt;p&gt;Figure 5 Reports &amp;gt; Log Analytics &amp;gt; Chart &amp;gt; Stacked Area.&lt;/p&gt;" aria-labelledby="0Hd8Hj_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/bbeff273be409407/img_4.png"/></button><span class="lia-media-caption-text" id="0Hd8Hj_caption">
+<p>Figure 5 Reports &gt; Log Analytics &gt; Chart &gt; Stacked Area.</p>
+</span></span>
+<p>If you’d like to create other reports but aren’t sure of the schema, one trick you can use is to run the following query in the above Log Analytics workspace to get all the column names:</p>
+<pre class="lia-code-sample language-json"><code>IntuneDevices
+| getschema
+</code></pre>
+<p> </p>
+<p>Then to get all the values from those columns, you can modify the query to return the distinct values from a specific column such as <em>CompliantState</em>:</p>
+<pre class="lia-code-sample language-json"><code>IntuneDevices
+| distinct CompliantState</code></pre>
+<p> </p>
+<p>Now that you have the query created in Log Analytics, you can save it to run anytime, pin it to a dashboard, or even create a new alert rule to let you know if compliance has gone below a certain threshold.</p>
+<p> </p>
+<p>To pin it as a dashboard, on the Query pane select the ellipsis (<strong>…</strong>)<strong> &gt; Pin to &gt; Azure dashboard.</strong></p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image &lt;p&gt;Figure 6 Reports &amp;gt; Log Analytics; pin query to dashboard flow.&lt;/p&gt;" aria-labelledby="1RX3nB_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/bbeff273be409407/img_5.png"/></button><span class="lia-media-caption-text" id="1RX3nB_caption">
+<p>Figure 6 Reports &gt; Log Analytics; pin query to dashboard flow.</p>
+</span></span>
+<p>Then select the dashboard you’d like to use.</p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image &lt;p&gt;Figure 7 Reports &amp;gt; Log Analytics; select dashboard to pin.&lt;/p&gt;" aria-labelledby="fMZJ49_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/bbeff273be409407/img_6.png"/></button><span class="lia-media-caption-text" id="fMZJ49_caption">
+<p>Figure 7 Reports &gt; Log Analytics; select dashboard to pin.</p>
+</span></span>
+<p>Once pinned, simply navigate to <strong>Dashboard </strong>within the Intune admin center, and you’ll see the query pinned on the selected dashboard.</p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image &lt;p&gt;Figure 8 Dashboard showing Log Analytics query.&lt;/p&gt;" aria-labelledby="KNJl2v_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/bbeff273be409407/img_7.png"/></button><span class="lia-media-caption-text" id="KNJl2v_caption">
+<p>Figure 8 Dashboard showing Log Analytics query.</p>
+</span></span>
+<p>To show more than the past 24-hours, select the <strong>Customize Tile </strong>button and select <strong>Override the dashboard time settings at the tile level, </strong>with <strong>Timespan </strong>set to <strong>Past 30 days.</strong></p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image &lt;p&gt;Figure 9 Dashboard &amp;gt; Selected Query &amp;gt; Customize Tile button.&lt;/p&gt;" aria-labelledby="T20zBO_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/bbeff273be409407/img_8.png"/></button><span class="lia-media-caption-text" id="T20zBO_caption">
+<p>Figure 9 Dashboard &gt; Selected Query &gt; Customize Tile button.</p>
+</span></span>
+<p>If you’d like to always see the data in a chart form, select the <strong>edit</strong> icon on the pinned dashboard item and append the following to the end of the query:</p>
+<pre class="lia-code-sample language-json"><code>| render areachart with (kind=stacked)</code></pre>
+<p> </p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image &lt;p&gt;Figure 10 Dashboard &amp;gt; Selected query &amp;gt; Edit &amp;gt; modified query to show chart.&lt;/p&gt;" aria-labelledby="QN3vls_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/bbeff273be409407/img_9.png"/></button><span class="lia-media-caption-text" id="QN3vls_caption">
+<p>Figure 10 Dashboard &gt; Selected query &gt; Edit &gt; modified query to show chart.</p>
+</span></span>
+<p>After clicking <strong>Apply</strong>, the dashboard shows the following:</p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image &lt;p&gt;Figure 11 Dashboard showing updated historical device compliance query as a stacked area chart.&lt;/p&gt;" aria-labelledby="941Vsz_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/bbeff273be409407/img_10.png"/></button><span class="lia-media-caption-text" id="941Vsz_caption">
+<p>Figure 11 Dashboard showing updated historical device compliance query as a stacked area chart.</p>
+</span></span>
+<p>You’ve now seen end-to-end how to turn Intune diagnostic data into a 30-day device compliance trend report with diagnostic data and Log Analytics. From here, the next step is to operationalize it - save the query, extend the timeframe, join in additional diagnostic tables, or set an alert so you’re notified when compliance drops below your threshold. Better yet, see if you can pick one reporting gap your team is living with today and build it using this pattern. With the right tooling, Intune data can be shaped into views and insights that reflect your organization’s unique needs.</p>
+<p> </p>
+<p>Let us know if you have any questions by leaving a comment below or reach out on X <a class="lia-external-url" href="https://aka.ms/IntuneSuppTeam" rel="noopener noreferrer" target="_blank">@IntuneSuppTeam</a>!</p></div></div></div>
+</article>
+</body>
+</html>

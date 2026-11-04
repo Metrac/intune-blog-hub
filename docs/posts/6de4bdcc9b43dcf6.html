@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Configure Delivery Optimization for Windows to save bandwidth and speed up deployments</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Intune Customer Success</span>
+    <span class="date">August 18, 2026</span>
+  </div>
+  <h1>Configure Delivery Optimization for Windows to save bandwidth and speed up deployments</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/intune-customer-success/configure-delivery-optimization-for-windows-to-save-bandwidth/ba-p/4547592" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p><strong>By: Carlos Diaz - Sr. Product Manager and Jason Sandys - Principal Product Manager | Microsoft Intune<br/><br/></strong></p>
+<p><a class="lia-external-url" href="https://learn.microsoft.com/windows/deployment/do/waas-delivery-optimization" rel="noopener noreferrer" target="_blank">Delivery Optimization</a> is built into Windows and can help reduce bandwidth usage during app and update deployments. Instead of downloading content from the internet every time, devices can download it from nearby devices or a local cache when available.</p>
+<p>Many organizations leave Delivery Optimization at its default settings or disable it entirely. As a result, they may miss opportunities to reduce network traffic, improve deployment performance, and make better use of existing network resources.</p>
+<p>This article focuses on the Delivery Optimization scenarios and the common configurations that Intune admins use most often: large-scale patching, Windows Autopilot provisioning, branch office bandwidth management, and Microsoft Connected Cache for scenarios where peer-to-peer sharing alone isn't enough.</p>
+<p>Delivery Optimization is an HTTP downloader with built-in peer-to-peer capabilities available in supported versions of <a class="lia-external-url" href="https://learn.microsoft.com/windows/deployment/do/waas-delivery-optimization#requirements" rel="noopener noreferrer" target="_blank">Windows</a>. It helps distribute Windows updates, Microsoft 365 Apps updates, Microsoft Defender definition updates, Microsoft Store apps, Intune Win32 apps package and other supported <a class="lia-external-url" href="https://learn.microsoft.com/windows/deployment/do/waas-delivery-optimization#types-of-download-content-supported-by-delivery-optimization" rel="noopener noreferrer" target="_blank">content</a>. Delivery Optimization checks local sources before falling back to internet content caches.</p>
+<p>The most important Delivery Optimization policy setting is <strong>Download Mode</strong>, which determines how devices discover peers.<br/><br/></p>
+<div class="styles_lia-table-wrapper__h6Xo9 styles_table-responsive__MW0lN"><table border="1" class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><thead><tr class="lia-background-color-custom-0078d4"><th class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><span class="lia-text-color-22">Mode</span></th><th class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><span class="lia-text-color-22">Description</span></th></tr></thead><tbody><tr class="lia-background-color-22"><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">Mode 1 (LAN)</td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">Devices share content with peers behind the same IP/NAT boundary.</td></tr><tr class="lia-background-color-custom-f8f9fa"><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">Mode 2 (Group)</td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">Devices share content within a defined group, such as an Active Directory site, domain, or custom group ID. <br/><br/><strong>Recommended</strong> for environments with multiple VLANs or segmented networks.</td></tr><tr class="lia-background-color-22"><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">Mode 3 (Internet)</td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">Devices can share content with internet peers outside the organization. <br/><br/>This mode is <strong>rarely used</strong> in enterprise environments.</td></tr></tbody><colgroup><col/><col/></colgroup></table></div>
+<p> </p>
+<p>Delivery Optimization checks sources in this order:</p>
+<ol>
+<li>LAN or group peers and, if configured, Microsoft Connected Cache in<strong> </strong>parallel.</li>
+<li>Internet peers, if allowed in the Download Mode setting</li>
+<li>Internet content caches, which are always available as the final fallback</li>
+</ol>
+<p>Regardless of the mode you choose, the goal is to keep content download traffic local whenever possible.</p>
+<p>Before configuring Delivery Optimization, it's worth addressing a few common misunderstandings we’ve heard from customers.</p>
+<div>
+<p><strong>"Does Delivery Optimization use my bandwidth to upload content to the internet?"</strong></p>
+<p>In <strong>Mode 1 (LAN)</strong>, peer sharing is restricted to your local subnet. Content is only shared with other devices on the same network segment, and no content leaves your LAN. Additionally, you have full control over upload usage through the <a class="lia-external-url" href="https://learn.microsoft.com/windows/deployment/do/waas-delivery-optimization-reference#monthly-upload-data-cap" rel="noopener noreferrer" target="_blank"> Monthly upload data cap setting</a>.</p>
+</div>
+<div>
+<p><strong>"Is Delivery Optimization the same as BranchCache?"</strong></p>
+<p>While both technologies help reduce bandwidth usage, they are built on different architectures and support different scenarios. <strong>BranchCache</strong> relies on BranchCache-enabled content servers to cache and distribute content, whereas <strong>Delivery Optimization</strong> is built directly into Windows and is designed to work natively with cloud-delivered content, including Windows updates, Microsoft Store apps, and Microsoft 365 Apps.</p>
+</div>
+<div>
+<p><strong>"We disabled Delivery Optimization years ago. Is there any reason to revisit it?"</strong></p>
+<p>Yes. Delivery Optimization has evolved significantly and now offers extensive management capabilities through the Intune Settings Catalog. Administrators can configure download modes, define group boundaries, control bandwidth usage, set cache sizes, and limit uploads. If Delivery Optimization was disabled in the past, it may be worth reevaluating your configuration. When properly configured, it can help reduce bandwidth consumption, improve content distribution efficiency, and accelerate update and application deployments.</p>
+</div>
+<p>The following settings, available in the settings catalog under Delivery Optimization, provide you a strong starting point:</p>
+<div class="styles_lia-table-wrapper__h6Xo9 styles_table-responsive__MW0lN"><table border="1"><thead><tr class="lia-background-color-custom-0078d4"><th class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><span class="lia-text-color-22">Setting</span></th><th class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><span class="lia-text-color-22">Default Value*</span></th><th class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><span class="lia-text-color-22">Recommended Value</span></th><th class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><span class="lia-text-color-22">What It Does</span></th></tr></thead><tbody><tr><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><strong>DODownloadMode</strong></td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">1 (LAN)</td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><strong>1 (LAN)</strong></td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">Keeps peer-to-peer sharing within your subnet or Delivery Optimization group.</td></tr><tr class="lia-background-color-custom-f8f9fa"><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><strong>DORestrictPeerSelectionBy</strong></td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">1</td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><strong>1</strong></td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">Devices discover and peer with others on the same subnet.</td></tr><tr><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><strong>DOMaxCacheSize</strong></td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">20%</td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><strong>20% to 30%</strong></td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">Amount of local disk space allocated to the Delivery Optimization cache.</td></tr><tr class="lia-background-color-custom-f8f9fa"><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><strong>DOMinFileSizeToCache</strong></td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">50 MB</td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><strong>5 MB</strong></td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">Minimum file size eligible for caching and peer-to-peer distribution.</td></tr><tr><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><strong>DOMaxCacheAge</strong></td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">259,200 seconds (3 days)</td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><strong>1,209,600 seconds (14 days)</strong></td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">Determines how long cached content remains available before cleanup.</td></tr><tr class="lia-background-color-custom-f8f9fa"><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><strong>DOMonthlyUploadDataCap</strong></td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">20 GB</td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><strong>20 GB</strong></td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">Limits the total amount of data a device can upload to peers each month.</td></tr></tbody><colgroup><col/><col/><col/><col/></colgroup></table></div>
+<p>*The default values in this table are for Windows 11.<br/><br/></p>
+<p>The table above lists common Delivery Optimization settings, their default values, and recommended starting values. However, the best configuration depends on your network topology, device count, update cadence, and whether you’re using Microsoft Connected Cache. Use the scenario guidance below to tune from the baseline. for the full policy reference review:  <a class="lia-external-url" href="https://aka.ms/ConfigureDO" rel="noopener noreferrer" target="_blank">Configure Delivery Optimization (DO) for Windows</a>.</p>
+<p>The defaults provide some immediate value, but organizations often achieve better results by:</p>
+<ul>
+<li>Defining peer groups</li>
+<li>Increasing cache size</li>
+<li>Increasing retention periods</li>
+<li>Lowering the minimum file-size threshold when appropriate</li>
+</ul>
+<p>When configuring Delivery Optimization, avoid managing the same setting from multiple locations, such as settings catalog and custom policy. Using the settings catalog as your primary management location can help reduce conflicts and simplify troubleshooting.</p>
+<p>Windows quality updates, feature updates, and Office updates are typically the largest bandwidth consuming events most organizations face. A 1 GB cumulative update pushed to 10,000 devices means 10 TB of traffic from the internet unless Delivery Optimization lets devices share locally. This is where properly configured Delivery Optimization pays for itself immediately.</p>
+<p>Coordinate Delivery Optimization with deployment rings. Start with a small seeder ring, typically 5 to 10 percent of devices, so those devices populate peer caches before broader rings begin hours or days later. If Microsoft Connected Cache is deployed, the same seeder ring also populates the cache node, creating a persistent local source for later rings.</p>
+<p>Large scale deployments vary greatly in complexity and challenges. Device count isn’t the only factor to consider. Network infrastructure and configuration can also play a role in your configuration and deployment of Delivery Optimization.  </p>
+<p>How you tune Delivery Optimization for large-scale updates depends heavily on your WAN topology. The two most common designs call for different approaches:</p>
+<p><strong>Star (hub-and-spoke) topology</strong></p>
+<p>Branches connect to a central hub; internet traffic may be backhauled. Every update byte a branch device pulls from the internet crosses the internal link between the hub and spoke.</p>
+<ul>
+<li><strong>Group boundaries:</strong> Identify local LAN configurations at branch locations. If all devices at a branch location are on a single subnet, use DODownloadMode = 1 with DORestrictPeerSelectionBy=1 to restrict peers to that subnet. If a branch site has multiple subnets, DODownloadMode = 2 with a branch-specific DOGroupID is more effective because devices can discover peers throughout the branch instead of being limited to their local subnet.<br/>
+<div>
+<p><strong>Tip: Delivery Optimization Has Evolved</strong></p>
+<p>Many organizations disabled Delivery Optimization during early Windows 10 deployments after experiencing unexpected WAN traffic. At that time, peer sharing controls were far less granular, making it difficult to limit content sharing to devices within the same network or site.</p>
+<p>As a result, some organizations chose to disable Delivery Optimization entirely and missed potential bandwidth savings from peer-to-peer content distribution.</p>
+<p>Today, modern Delivery Optimization policies provide significantly more control through features such as <strong>Group mode</strong>, <strong>Group IDs</strong>, <strong>subnet-based peer restrictions</strong>, bandwidth management settings, and integration with <strong>Microsoft Connected Cache</strong>. These capabilities help organizations realize the benefits of peer caching while maintaining tighter control over network traffic.</p>
+</div>
+</li>
+<li><strong>Bandwidth throttling:</strong> Spoke links are often the bottleneck. Use DOPercentageMaxBackgroundBandwidth to limit Delivery Optimization background downloads to 10% to 25% of available bandwidth during business hours. Configure DOSetHoursToLimitBackgroundDownloadBandwidth to define the hours when those limits apply, then relax or remove the limits outside business hours.<br/><br/></li>
+<li><strong>Cache retention:</strong> Set DOMaxCacheSize to 40% to 50% and DOMaxCacheAge to match your final deployment ring so cached content survives all ring phase days at branches. Branch peers are the only local sources. They need to hold content long enough for the full ring cycle.<br/><br/></li>
+<li><strong>Hub site:</strong> Devices at the hub have direct internet access and also typically have more bandwidth available. Standard cache settings (20% to 30%, 3 days) are usually sufficient.<br/>
+<div>
+<p><strong>Tip: Combine Peer Caching and Microsoft Connected Cache</strong></p>
+<p>In star (hub-and-spoke) network topologies, <strong>Microsoft Connected Cache (MCC)</strong> can deliver the greatest bandwidth savings at central hubs and larger branch offices. By caching frequently requested updates and applications locally, MCC helps reduce the amount of content that must traverse upstream WAN links.</p>
+<p>You can configure an MCC server directly in your Delivery Optimization policy by specifying: <strong>DOCacheHost=&lt;MCC FQDN&gt;</strong></p>
+<p>When configured, Delivery Optimization continues to prioritize content from nearby peers. If the requested content isn't available from peers, devices will attempt to download it from Microsoft Connected Cache. If the content isn't present in the cache, devices automatically fall back to Microsoft's internet content source.</p>
+<p>Think of the content retrieval process as a layered approach: <strong>Peers → Microsoft Connected Cache → Internet</strong>. This hierarchy helps optimize bandwidth usage while maintaining reliable access to updates and applications.</p>
+</div>
+</li>
+</ul>
+<p><strong>Distributed topology</strong></p>
+<p>With a distributed topology, all locations have their own local internet access. Each site reaches the internet directly, so the WAN penalty for a cache miss is lower.</p>
+<ul>
+<li><strong>Group</strong><strong> boundaries:</strong> Set DODownloadMode=2 and set a DOGroupID. The key is that each physical site is its own peer group. DORestrictPeerSelectionBy = 1 (Subnet) is still recommended but less critical because cross-site peer-to-peer traffic is less likely.</li>
+<li><strong>Bandwidth</strong><strong> limits:</strong> More relaxed than star. 25% to 50% during business hours is typical since each site has its own internet cache path.</li>
+</ul>
+<p>Tip: With local internet connectivity and Delivery Optimization Group mode, many locations achieve excellent bandwidth savings with no additional infrastructure. Microsoft Connected Cache adds value primarily at the largest locations (more than 100 devices).</p>
+<p>Branch offices often see the biggest Delivery Optimization savings. Instead of every device pulling the same update over the WAN, one device can download from the internet and share locally with peers on the subnet.</p>
+<p>Use DODownloadMode = 2 and assign a unique DOGroupID per branch location to keep peer-to-peer traffic within the branch. Set aggressive background limits (15% to 25% of link speed) to protect line-of-business applications. For very small branches with fewer than 10 devices, or locations where devices are frequently reimaged, consider adding a Microsoft Connected Cache node. A small cache server with a 100 GB drive provides a persistent local source that doesn't depend on any single peer being online.</p>
+<p>During Windows Autopilot bulk provisioning or mass reimaging, many devices request identical content at the same time. Without Delivery Optimization, every device downloads independently from the internet cache, often saturating internet links and extending provisioning times.</p>
+<p>For environments with repeated content consumption, such as shared devices, labs, and kiosks that get reimaged frequently, peer-to-peer distribution has a structural limitation. After a mass reimage, no device has cached content available to share. This is where Microsoft Connected Cache provides the greatest value. Because the cache node retains content on-premises independent of device state, the first device after a wipe can download from the local cache rather than the internet cache. If you're using peer-to-peer alone, consider staggering reimage schedules so that some devices always have content available to share.</p>
+<p>Intune already uses Delivery Optimization to distribute Win32 and Microsoft Store apps, so no extra setup is needed beyond the core Delivery Optimization policies. The main tuning is around thresholds and retention. Lower DOMinFileSizeToCache from 10 MB to 5 MB so snaller app installers qualify for peer-to-peer sharing and extend DOMaxCacheAge to 7 days (604800 seconds) to accommodate app deployments that often span a full week.</p>
+<p>During large provisioning events, be generous with cache resources. Increase DOMaxCacheSize to 50 percent or higher to ensure early devices have room to cache and share content. Set DOMonthlyUploadDataCap to 0 (unlimited) so the first-wave of devices can serve a larger number of peers. Finally, provision devices in stages whenever possible. Even a 15-minute delay between groups gives Delivery Optimization time to build peer availability before the next wave starts.</p>
+<p>In environments where employees frequently move between locations, isolating peer traffic can be challenging. For example, a device assigned to the Group ID for Branch A may be physically connected at Branch B, causing it to search for peers across the WAN. In this scenario, use DHCP to provide the appropriate DOGroupID and, when applicable, DOCacheHost source for the device’s current location.</p>
+<ul>
+<li>DOCacheHostSource=1 and set the DHCP Option 235 at the site to the FQDN of the Microsoft Connected Cache.</li>
+<li>DOGroupIdSource=3 and set the DHCP Option 234 to the GUID for the GroupID.</li>
+</ul>
+<p>Microsoft Connected Cache is an optional on-premises content cache. It complements Delivery Optimization by providing a persistent local source when peers are unavailable.</p>
+<div>
+<p><strong>Tip: Start with Peer-to-Peer Caching First</strong></p>
+<p>Before deploying <strong>Microsoft Connected Cache (MCC)</strong>, consider optimizing <strong>Delivery Optimization peer-to-peer caching</strong>. Many organizations achieve substantial bandwidth savings through properly configured download modes, peer groups, cache settings, and deployment rings without introducing additional infrastructure.</p>
+<p>Peer-to-peer caching is often the simplest and most cost-effective first step because devices can share content directly with one another, reducing internet downloads and WAN utilization across the organization.</p>
+<p>Microsoft Connected Cache becomes particularly valuable when peer sharing alone cannot fully meet business requirements, such as locations with few devices, frequent device reimaging, limited peer availability, or a need for a persistent on-premises content source. In these scenarios, MCC can complement Delivery Optimization to further reduce bandwidth consumption and improve content availability.</p>
+</div>
+<p>Microsoft Connected Cache is most valuable at small locations with few peers, in environments with frequent device resets, or anywhere large content volumes need a guaranteed local source. Devices can find the cache node in two ways:</p>
+<ul>
+<li><strong>Static (Intune policy): </strong>Set DOCacheHost to the FQDN of your Microsoft Connected Cache server in the Intune Settings catalog. Simple, static, works well for single-site deployments.</li>
+<li><strong>Dynamic (DHCP Option 235): </strong>Set DOCacheHostSource = 1 and configure DHCP Option 235 with the MCC server FQDN. Devices discover the correct cache node automatically based on network location. This is the preferred approach for multi-site deployments.</li>
+</ul>
+<p>When using Microsoft Connected Cache, configure DODelayForegroundDownloadFromHttp to 30 seconds and DODelayBackgroundDownloadFromHttp to 60 seconds. These timeouts control how long Delivery Optimization waits for a local source before falling back to the internet cache; they don’t control download speed.</p>
+<p>For setup details and hardware requirements, refer to: <a class="lia-external-url" href="https://aka.ms/MCC-ENT-release-notes" rel="noopener noreferrer" target="_blank">Release Notes for Microsoft Connected Cache for Enterprise and Education</a>.</p>
+<ul>
+<li><strong>Slow downloads: </strong>The fallback timeout is the most misunderstood Delivery Optimization setting. It controls how long a device waits for a local source before requesting from the internet cache, not download speed. If downloads are slow, check network routing, DNS, and firewall rules.</li>
+<li><strong>Cache misses: </strong>Internet cache Vary headers can prevent content from being cached on the first request. Microsoft Connected Cache respects these headers, which can cause initial cache misses. The product team is actively working on a fix.</li>
+<li><strong>Diagnostics: </strong>Run the Delivery Optimization troubleshooter at <a class="lia-external-url" href="https://aka.ms/DO-Fix" rel="noopener noreferrer" target="_blank">aka.ms/DO-Fix</a> for automated diagnostics.</li>
+<li><strong>PowerShell: </strong>Use Get-DeliveryOptimizationStatus in PowerShell to see real-time download source, peer count, and bytes per source for each active download.</li>
+<li><strong>Delivery Optimization reporting:</strong> Centralized reporting is available in the Windows Update for Business Delivery Optimization report or through PowerShell cmdlets. <a class="lia-external-url" href="https://learn.microsoft.com/windows/deployment/do/waas-delivery-optimization-monitor" rel="noopener noreferrer" target="_blank">Monitor Delivery Optimization</a>.</li>
+</ul>
+<p>Delivery Optimization is already available on supported Windows devices you manage. The configurations in this post take minutes to deploy through the Intune settings catalog and can save significant bandwidth with every update cycle and application deployment. Start with the essential policies table, pilot the profile with a small device group, and review Windows Update for Business reports after a couple of patch cycles to measure the impact.</p>
+<p>Many organizations achieve their goals using Delivery Optimization peer-to-peer caching alone. For scenarios where peer caching is insufficient or a persistent local cache is required, Microsoft Connected Cache is available as an additional option. The product team is active in the Connected Cache Community at <a class="lia-external-url" href="https://aka.ms/ConnectedCacheCommunity" rel="noopener noreferrer" target="_blank">aka.ms/ConnectedCacheCommunity</a>, and feature ideas can be submitted through the Intune feedback portal at <a class="lia-external-url" href="https://aka.ms/IntuneFeedback" rel="noopener noreferrer" target="_blank">aka.ms/IntuneFeedback</a>.</p>
+<p> </p>
+<p>If you have any feedback or questions, leave a comment below or reach out to us on X <a class="lia-external-url" href="https://aka.ms/IntuneSuppTeam" rel="noopener noreferrer" target="_blank">@IntuneSuppTeam</a>.</p></div></div></div>
+</article>
+</body>
+</html>

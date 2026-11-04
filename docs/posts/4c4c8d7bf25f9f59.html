@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deploying Platform SSO for pre macOS 26 with Microsoft Intune: Lessons Learned</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Intune Customer Success</span>
+    <span class="date">June 19, 2026</span>
+  </div>
+  <h1>Deploying Platform SSO for pre macOS 26 with Microsoft Intune: Lessons Learned</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/intune-customer-success/deploying-platform-sso-for-pre-macos-26-with-microsoft-intune/ba-p/4521368" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p><strong>By: Naveen Akkugari, Sr. Service Engineer and Michael Griswold, Principal Service Engineering Manager | Microsoft Intune</strong></p>
+<p>Our internal Intune administration team at Microsoft is responsible for running Intune and Configuration Manager for the devices used by employees. We <strong>receive</strong> early access to features for evaluation and feedback using real world usage scenarios. As such, some features may be changed before the public release and be slightly different. The experience should be similar and<strong> </strong>we wanted to share our learnings when deploying platform single sign-on (PSSO). It is worth noting that since the time of this experience a new method for newer OS versions is available and you can read more about it at: <a class="lia-internal-link lia-internal-url lia-internal-url-content-type-blog" data-lia-auto-title="New Platform SSO with registration during Automated Device Enrollment on macOS | Microsoft Community Hub" data-lia-auto-title-active="0" href="https://techcommunity.microsoft.com/blog/intunecustomersuccess/new-platform-sso-with-registration-during-automated-device-enrollment-on-macos/4519846" target="_blank">New Platform SSO with registration during Automated Device Enrollment on macOS | Microsoft Community Hub</a>.</p>
+<p>As IT admins managing a growing Mac fleet, we kept running into the same gap. Our Windows devices had hardware-backed authentication, token protection, and seamless SSO through Windows Hello for Business, but our Macs were still relying on browser-based prompts with no easy way to enforce the same level of security and identity protection. Platform SSO finally closed that gap for us. It’s worth noting that new macOS allows new capabilities in this space and we are evaluating them as well. The new flow can be read about at <a class="lia-external-url" href="https://aka.ms/Intune/MacPSSO-Setup" rel="noopener noreferrer" target="_blank">https://aka.ms/Intune/MacPSSO-Setup</a>.</p>
+<p>While there were fewer pip-ups, we found the changes in the security layer to be the real value to our operations. Platform SSO binds authentication tokens (Primary Refresh Tokens) to the device’s Secure Enclave hardware. Even if a PRT is intercepted, it’s <strong>designed to not be replayed from another device</strong>. For our team, this unlocked two things we couldn’t do on macOS before:</p>
+<ul>
+<li><strong>Token protection policies:</strong> Conditional Access can now verify that tokens are device-bound, the same enforcement we had been relying on with Windows Hello for Business</li>
+<li><strong>Phishing-resistant MFA:</strong> Secure Enclave keys act as FIDO2 passkeys, so users authenticate with Touch ID instead of passwords or SMS codes</li>
+</ul>
+<p>Getting from documentation to production took real effort for us. A password policy issue that silently blocked registration for half our pilot group, users who swiped away the registration banner without knowing what it was, and macOS updates that broke SSO overnight. This blog post is what we wish someone had written before we started.</p>
+<p><strong>How it works under the hood: </strong>Intune delivers the SSO extension profile → macOS prompts the user to register → the device registers with Microsoft Entra ID and gets a hardware-bound workplace (WPJ) certificate → a PRT is issued and bound to device hardware (not designed to be exported) → SSO works across Microsoft 365 apps, browsers, and Kerberos resources, all with token protection enforced.</p>
+<div>
+<div class="styles_lia-table-wrapper__h6Xo9 styles_table-responsive__MW0lN"><table border="1"><thead><tr class="lia-background-color-custom-f2f4f7"><th class="lia-border-color-custom-dddddd lia-border-style-solid">Capability</th><th class="lia-border-color-custom-dddddd lia-border-style-solid">Secure Enclave</th><th class="lia-border-color-custom-dddddd lia-border-style-solid">Smart Card</th><th class="lia-border-color-custom-dddddd lia-border-style-solid">Password Sync</th></tr></thead><tbody><tr><td class="lia-border-color-custom-dddddd lia-border-style-solid">Passwordless and phishing-resistant</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">✅</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">✅</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">❌</td></tr><tr class="lia-background-color-custom-fafafa"><td class="lia-border-color-custom-dddddd lia-border-style-solid">Touch ID / passkey (WebAuthn)</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">✅</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">❌ <span>Touch ID only</span></td><td class="lia-border-color-custom-dddddd lia-border-style-solid">❌</td></tr><tr><td class="lia-border-color-custom-dddddd lia-border-style-solid">Local password synced with Microsoft Entra</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">❌</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">❌</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">✅</td></tr><tr class="lia-background-color-custom-fafafa"><td class="lia-border-color-custom-dddddd lia-border-style-solid">Minimum macOS</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">13.0</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">14.0</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">13.0</td></tr></tbody><colgroup><col/><col/><col/><col/></colgroup></table></div>
+<p> </p>
+<p><strong>Recommendation: Start with Secure Enclave. </strong>Keys are hardware-bound, phishing-resistant, and double as FIDO2 passkeys via WebAuthn, enabling browser-based passwordless login (Touch ID instead of passwords) and meeting Conditional Access multi-factor authentication (MFA) requirements. Unlike iCloud-synced passkeys, these are <strong>device-bound</strong>, aligning with Zero Trust.</p>
+</div>
+<p><strong>Prerequisites: </strong>macOS 13+, Intune with Microsoft Entra ID, Intune Company Portal v5.2404.0+</p>
+<p>In the Intune admin center, navigate to <strong>Devices &gt; Configuration &gt; Create &gt; macOS &gt; Settings Catalog &gt; Authentication &gt; Extensible SSO<br/><br/></strong></p>
+<div>
+<div class="styles_lia-table-wrapper__h6Xo9 styles_table-responsive__MW0lN"><table border="1"><thead><tr class="lia-background-color-custom-f2f4f7"><th class="lia-border-color-custom-dddddd lia-border-style-solid">Setting</th><th class="lia-border-color-custom-dddddd lia-border-style-solid">Value</th></tr></thead><tbody><tr><td class="lia-border-color-custom-dddddd lia-border-style-solid">Extension Identifier</td><td class="lia-border-color-custom-dddddd lia-border-style-solid"><code>com.microsoft.CompanyPortalMac.ssoextension</code></td></tr><tr class="lia-background-color-custom-fafafa"><td class="lia-border-color-custom-dddddd lia-border-style-solid">Team Identifier</td><td class="lia-border-color-custom-dddddd lia-border-style-solid"><code>UBF8T346G9</code></td></tr><tr><td class="lia-border-color-custom-dddddd lia-border-style-solid">Type</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Redirect</td></tr><tr class="lia-background-color-custom-fafafa"><td class="lia-border-color-custom-dddddd lia-border-style-solid">Registration Token</td><td class="lia-border-color-custom-dddddd lia-border-style-solid"><code>{{DEVICEREGISTRATION}}</code></td></tr><tr><td class="lia-border-color-custom-dddddd lia-border-style-solid">Use Shared Device Keys</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Enabled</td></tr><tr class="lia-background-color-custom-fafafa"><td class="lia-border-color-custom-dddddd lia-border-style-solid">Screen Locked Behavior</td><td class="lia-border-color-custom-dddddd lia-border-style-solid"><code>DoNotHandle</code></td></tr><tr><td class="lia-border-color-custom-dddddd lia-border-style-solid">URLs</td><td class="lia-border-color-custom-dddddd lia-border-style-solid"><code>https://login.microsoftonline.com</code><br/><code>https://login.microsoft.com</code><br/><code>https://sts.windows.net</code><br/><code>https://login-us.microsoftonline.com</code></td></tr></tbody><colgroup><col/><col/></colgroup></table>
+<p> <br/>Users see a “Registration required” notification → sign in → complete MFA → SSO works everywhere.</p>
+</div>
+</div>
+<p>Knowing what users see on their screen helps you write better rollout communications and cuts down help desk tickets.</p>
+<p><strong>First-time registration flow:</strong></p>
+<ol>
+<li><strong> Profile arrives silently: </strong>After enrollment, Intune pushes the SSO extension profile to the Mac. Nothing visible to the user yet.</li>
+<li><strong> Registration banner appears: </strong>macOS displays a notification: “Registration required: Your organization requires you to register your device.” The user must click this to proceed. (This is our #1 learning point, users swipe it away, and there’s no simple way to retrigger it.)</li>
+<li><strong> Sign-in window: </strong>The user enters their Microsoft Entra ID email and password.</li>
+<li><strong> MFA challenge: </strong>Authenticator app push, phone call, or other configured method.</li>
+<li><strong> Secure Enclave key creation: </strong>macOS generates a hardware-bound key pair. The user may see a Touch ID or local password prompt to authorize this.</li>
+<li><strong> Registration completes: </strong>Device registers with Microsoft Entra ID, a WPJ certificate and PRT are issued. User sees a success confirmation.</li>
+<li><strong> SSO is active: </strong>From here, Microsoft 365 apps, Edge (natively), Chrome (with SSO extension), and Kerberos resources authenticate without prompts. Touch ID replaces password entry.</li>
+</ol>
+<p><strong>Missed the registration notification? Here is how to manually register:</strong></p>
+<p>This was our most common help desk ticket during rollout. If a user dismissed or missed the banner, they can still register manually through the following options:</p>
+<ol>
+<li><strong> (Recommended) System Settings → Users &amp; Groups → Network Account Server: </strong>This is the easiest method. Go to System Settings → Users &amp; Groups, scroll down to “Network Account Server” and click “Edit.” This opens a panel showing two sections: Network Servers and Platform single sign-on. If the Platform SSO policy is deployed, “Mac SSO Extension” will be listed under Platform single sign-on. If the device isn’t registered, there will be a “Register” button that can be selected to start the Platform SSO device registration flow.</li>
+<li><strong>Lock / Sign out and back in:</strong> Performing a lock or signing out of macOS followed by signing back in can retrigger the registration notification upon the next login attempt.</li>
+<li><strong> Wait for the notification to reappear: </strong>macOS retries the notification periodically around every 15 mins.</li>
+<li><strong> Last resort, reprofile: </strong>If none of the above work, an IT admin can remove and reassign the SSO extension profile in Intune. Before doing so, ensure any stale device objects are cleared from Microsoft Entra ID to avoid conflicts. Once the new profile lands on the device, the registration notification reappears.</li>
+</ol>
+<p>One of the first questions we got after rollout was “how do I know it’s actually working?” Here’s how both users and IT admins can confirm.</p>
+<p><strong>For IT admins (Microsoft Entra ID &amp; Intune admin centers):</strong></p>
+<div>
+<div class="styles_lia-table-wrapper__h6Xo9 styles_table-responsive__MW0lN"><table border="1"><thead><tr class="lia-background-color-custom-f2f4f7"><th class="lia-border-color-custom-dddddd lia-border-style-solid">What to check</th><th class="lia-border-color-custom-dddddd lia-border-style-solid">Platform SSO registered device</th><th class="lia-border-color-custom-dddddd lia-border-style-solid">Non-registered device</th></tr></thead><tbody><tr><td class="lia-border-color-custom-dddddd lia-border-style-solid">Microsoft Entra ID → Devices</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Join Type shows <strong>Microsoft Entra joined</strong></td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Join Type shows <strong>Microsoft Entra registered</strong></td></tr><tr class="lia-background-color-custom-fafafa"><td class="lia-border-color-custom-dddddd lia-border-style-solid">Intune → Device configuration</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">SSO extension profile shows <strong>Succeeded</strong></td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Profile may show <strong>Pending</strong>, <strong>Error</strong>, or not assigned</td></tr></tbody><colgroup><col/><col/><col/></colgroup></table></div>
+</div>
+<p> </p>
+<p><strong>For users (on the Mac):</strong></p>
+<ol>
+<li><strong> System Settings → Users &amp; Groups → Network Account Server: </strong>Scroll down in Users &amp; Groups to “Network Account Server” and click “Edit.” If the Platform SSO policy is deployed, they will see “Mac SSO Extension” listed under Platform Single Sign-on. A registered device shows a green dot with “Registered” status and a “Repair” button (useful if registration gets into a bad state). If not registered, they will see a “Register” button instead. This is the quickest at-a-glance check for users.</li>
+<li><strong> System Settings → Users &amp; Groups:</strong> Click on the user account name in Users &amp; Groups (on macOS 14+, click the info button “i” next to the user name). When Platform SSO registration is complete, a “Platform Single Sign-on” section will be listed under the account. If Platform SSO is active, the user account shows the Microsoft Entra ID identity linked to the local account.</li>
+<li><strong> Company Portal app → Devices: </strong>The device should show as “Compliant” and “Microsoft Entra ID registered.” If registration failed, it shows “Registration required.”</li>
+<li><strong> Terminal command: </strong>Run app-sso platform -s to check Platform SSO status.</li>
+</ol>
+<p>If you run into issues during deployment, here’s how you can diagnose and fix issues.<br/><br/></p>
+<p><strong>Step 1: Check the Platform SSO profile in Intune device management</strong></p>
+<p>Before troubleshooting on the Mac itself, confirm the profile reached the device:</p>
+<p><strong>In Intune: </strong>Go to Devices → select the device → Device configuration. The SSO extension profile should show “Succeeded.” If it shows “Pending” or “Error,” the device hasn’t received the policy. Check assignment groups, sync status, and whether the device is enrolled.</p>
+<p>Then <strong>on the Mac: </strong>Go to System Settings → General → Device Management (or Profiles on older macOS). Look for the SSO extension profile (com.apple.extensiblesso). It should show as “Installed” with no errors. If the profile isn’t listed, it hasn’t been delivered yet. Check Intune assignment and device sync.<br/><br/></p>
+<p><strong>Step 2: Check registration status on the Mac </strong></p>
+<p>Refer to the <strong>previous section</strong> <strong>“</strong>How to <strong>verify </strong>P<strong>latform </strong>SSO <strong>registration” for steps.<br/><br/></strong></p>
+<p><strong>Step 3: Check SSO extension logs</strong></p>
+<p>Run in Terminal for real-time logs:</p>
+<pre class="lia-code-sample language-bash"><code>log stream --predicate 'subsystem == "com.apple.AppSSO"' --level debug</code></pre>
+<p>Then prompt a sign-in (open Edge or Outlook). Look for:<br/><strong>Error 10002:</strong> Duplicate SSO profiles. Remove the extra one from Intune.<br/><strong>Error 10003:</strong> Registration failed. Usually a network issue or TLS inspection blocking auth URLs.<br/><strong>User cancelled:</strong> User dismissed the registration banner.<br/><strong>Token refresh failed:</strong> PRT could not refresh. Check network and whether the Microsoft Entra ID password was recently changed.</p>
+<p> </p>
+<p><strong>Step 4: Verify from the admin side</strong></p>
+<div>
+<div class="styles_lia-table-wrapper__h6Xo9 styles_table-responsive__MW0lN"><table border="1"><thead><tr class="lia-background-color-custom-f2f4f7"><th class="lia-border-color-custom-dddddd lia-border-style-solid">Check</th><th class="lia-border-color-custom-dddddd lia-border-style-solid">How</th><th class="lia-border-color-custom-dddddd lia-border-style-solid">What It Tells You</th></tr></thead><tbody><tr><td class="lia-border-color-custom-dddddd lia-border-style-solid">Profile delivery</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Intune &gt; Devices &gt; select device &gt; Device configuration</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Whether the SSO profile reached the device and its install status</td></tr><tr class="lia-background-color-custom-fafafa"><td class="lia-border-color-custom-dddddd lia-border-style-solid">Registration state</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Entra ID &gt; Devices &gt; search device &gt; Properties</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Whether the device has PSSO registration and NGC credential</td></tr><tr><td class="lia-border-color-custom-dddddd lia-border-style-solid">Sign-in failures</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Entra ID &gt; Sign-in logs &gt; filter by user</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Error codes like <code>AADSTS50076</code> MFA required, <code>AADSTS700024</code> token issue, or <code>AADSTS7000218</code> client assertion</td></tr><tr class="lia-background-color-custom-fafafa"><td class="lia-border-color-custom-dddddd lia-border-style-solid">Token protection</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Entra ID &gt; Sign-in logs &gt; Conditional Access tab</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Whether token protection policy was applied or skipped</td></tr><tr><td class="lia-border-color-custom-dddddd lia-border-style-solid">Company Portal version</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Intune &gt; Apps &gt; macOS &gt; Company Portal</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Must be <strong>v5.2404.0+</strong> for PSSO; older versions silently fail</td></tr></tbody><colgroup><col/><col/><col/></colgroup></table></div>
+</div>
+<p> </p>
+<p><strong>Common error codes and fixes:</strong></p>
+<div>
+<div class="styles_lia-table-wrapper__h6Xo9 styles_table-responsive__MW0lN"><table border="1"><thead><tr class="lia-background-color-custom-f2f4f7"><th class="lia-border-color-custom-dddddd lia-border-style-solid">Error</th><th class="lia-border-color-custom-dddddd lia-border-style-solid">Cause</th><th class="lia-border-color-custom-dddddd lia-border-style-solid">Fix</th></tr></thead><tbody><tr><td class="lia-border-color-custom-dddddd lia-border-style-solid"><code>10002</code></td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Multiple SSO extension profiles assigned</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Remove duplicate profiles; keep only the Settings Catalog policy</td></tr><tr class="lia-background-color-custom-fafafa"><td class="lia-border-color-custom-dddddd lia-border-style-solid"><code>10003</code></td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Registration failed network/TLS</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Allowlist Apple and Microsoft auth URLs from TLS inspection</td></tr><tr><td class="lia-border-color-custom-dddddd lia-border-style-solid"><code>AADSTS50076</code></td><td class="lia-border-color-custom-dddddd lia-border-style-solid">MFA required but not completed</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">User needs to complete MFA during registration</td></tr><tr class="lia-background-color-custom-fafafa"><td class="lia-border-color-custom-dddddd lia-border-style-solid"><code>AADSTS700024</code></td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Client assertion invalid</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Password likely needs reset; have user reset Entra ID password and retry</td></tr><tr><td class="lia-border-color-custom-dddddd lia-border-style-solid"><code>AADSTS7000218</code></td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Request body must contain <code>client_assertion</code></td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Company Portal version too old; update to <strong>v5.2404.0+</strong></td></tr></tbody><colgroup><col/><col/><col/></colgroup></table></div>
+</div>
+<p> </p>
+<ol>
+<li><strong> Have newer OS devices and use the new flow: </strong><a class="lia-internal-link lia-internal-url lia-internal-url-content-type-blog" data-lia-auto-title="New Platform SSO with registration during Automated Device Enrollment on macOS" data-lia-auto-title-active="0" href="https://techcommunity.microsoft.com/blog/intunecustomersuccess/new-platform-sso-with-registration-during-automated-device-enrollment-on-macos/4519846" target="_blank">New Platform SSO with registration during Automated Device Enrollment on macOS</a>.<br/><br/></li>
+<li><strong> Have users reset their password before Platform SSO registration. </strong>During initial enrollment, if password configuration or compliance policies are applied, users are required to reset their password after device enrollment and prior to initiating Platform SSO registration. Skipping this step can result in silent registration failures that are difficult to diagnose. Ensure this is communicated as the first step in your rollout guidance.<br/><br/></li>
+<li><strong> Assign the SSO profile during enrollment, not after. </strong>Deploying during enrollment means the registration prompt shows up at first login, a natural part of setup. Retrofitting existing devices forces users to notice and click a notification banner. Many will not. macOS Tahoe (26) Simplified Setup will auto-register, removing this friction.<br/><br/></li>
+<li><strong> One SSO profile per device, no exceptions. </strong>Duplicate profiles cause Error 10002. If you are migrating from a Device Features template to Settings Catalog, remove the old one first.<br/><br/></li>
+<li><strong> Pilot with realistic scenarios. </strong>Don’t just test “can I open Outlook.” Test registration, SSO to Microsoft 365, on-prem file shares, password change mid-session, reboot behavior, and what happens when a user dismisses the registration banner. We found issues in every one of these.<br/><br/></li>
+<li><strong> Align password policies end-to-end. </strong>For Password Sync, Intune compliance and Microsoft Entra ID password policies must match: length, complexity, expiration.<br/><br/></li>
+<li><strong> Integrate legacy Kerberos properly. </strong>If you run a standalone Kerberos SSO extension, set usePlatformSSOTGT = true in its ExtensionData to reuse Platform SSO TGT instead of running duplicate flows. Requires macOS 14.6+ and Company Portal 5.2408.0+.<br/><a class="lia-external-url" href="https://learn.microsoft.com/entra/identity/devices/device-join-macos-platform-single-sign-on-kerberos-configuration" rel="noopener noreferrer" target="_blank">Enable Kerberos SSO to on-premises Active Directory and Microsoft Entra ID Kerberos Resources in Platform SSO</a>.<br/><br/></li>
+<li><strong> Allowlist auth URLs from TLS inspection. </strong>Apple and Microsoft authentication endpoints must be excluded from proxy/TLS inspection. If they are not, registration fails silently with no error.</li>
+</ol>
+<div>
+<div class="styles_lia-table-wrapper__h6Xo9 styles_table-responsive__MW0lN"><table border="1"><thead><tr class="lia-background-color-custom-f2f4f7"><th class="lia-border-color-custom-dddddd lia-border-style-solid">Challenge</th><th class="lia-border-color-custom-dddddd lia-border-style-solid">What we experienced</th><th class="lia-border-color-custom-dddddd lia-border-style-solid">Solution</th></tr></thead><tbody><tr><td class="lia-border-color-custom-dddddd lia-border-style-solid">Password must be reset before registration during the new enrollment</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Half our pilot group could not register after the new enrollment as their Entra ID password had not been reset.</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Require a password reset before rollout; make this step 1 in user communications</td></tr><tr class="lia-background-color-custom-fafafa"><td class="lia-border-color-custom-dddddd lia-border-style-solid">Users dismiss the registration banner</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">The notification is easy to swipe away. Once dismissed, there is no simple way to retrigger it.</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Send screenshots and instructions before rollout; macOS Tahoe auto-registers via Simplified Setup</td></tr><tr><td class="lia-border-color-custom-dddddd lia-border-style-solid">SSO breaks after macOS updates</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">After point updates, SSO stopped working until re-registration.</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Restart <code>swcd</code> process; some cases required full re-registration; check release notes</td></tr><tr class="lia-background-color-custom-fafafa"><td class="lia-border-color-custom-dddddd lia-border-style-solid">Password policy mismatch</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Users changed Microsoft Entra password, but local Mac password did not sync, causing lockouts.</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Match Intune compliance and Microsoft Entra ID password policies exactly; test end-to-end</td></tr><tr><td class="lia-border-color-custom-dddddd lia-border-style-solid">Browser SSO inconsistency</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Edge worked natively, Chrome needed extension, Safari varied by OS.</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Deploy Chrome SSO extension via Intune; test Safari on each target OS version</td></tr></tbody><colgroup><col/><col/><col/></colgroup></table></div>
+</div>
+<p>Platform SSO delivers phishing-resistant passwordless authentication, seamless cross-platform SSO, and Conditional Access compliance with hardware-backed identity. <strong>Start</strong> your implementation<strong> with Secure Enclave, deploy via Intune Settings Catalog, pilot small, then scale.</strong></p>
+<p>If you have questions on implementing Platform SSO, leave a comment below or reach out to us on X <a class="lia-external-url" href="https://aka.ms/IntuneSuppTeam" rel="noopener noreferrer" target="_blank">@IntuneSuppTeam</a>.</p>
+<p><strong>Join our community!</strong> Discuss real-world scenarios, get expert guidance, connect with peers, and influence the future of Microsoft Security products. Learn more at <a class="lia-external-url" data-outlook-id="1500cb02-a991-4798-bffb-dc0f1bde5fd5" href="https://aka.ms/JoinIntuneCommunity" rel="noopener noreferrer" target="_blank">aka.ms/JoinIntuneCommunity</a>.</p></div></div></div>
+</article>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What&#x27;s New in Microsoft Intune – January 2026</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Microsoft Intune Blog</span>
+    <span class="date">February 5, 2026</span>
+  </div>
+  <h1>What&#x27;s New in Microsoft Intune – January 2026</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/microsoft-intune-blog/what-s-new-in-microsoft-intune-january-2026/ba-p/4476487" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p><span data-contrast="auto">When trees lose their leaves, you see the structure beneath. The branches you couldn’t see. The shape that was always there.</span></p>
+<p><span data-contrast="auto">January is like that for IT admins. You get a fresh view of your endpoint management landscape, such as where elevation can get sharper, where application deployment process can be improved, and where admin tasks could be made more efficient.</span></p>
+<p><span data-contrast="auto">The same is true for Intune. January isn’t just about celebrating what we’ve accomplished in the past year, but it’s also about looking forward to what new challenges we will face and new ways we can help IT admins be more productive. In this blog post, I’ll highlight the recent capabilities that I’m personally excited about.</span> </p>
+<p><span data-ccp-parastyle="heading 2"><span data-contrast="auto">Today, many organizations customize app deployments outside Intune using PowerShell scripts to handle prerequisite checks, post-install steps, dependencies, and registry updates. Previously, each time the script changed, the entire app binary needed to be repackaged and re-uploaded.</span><span data-contrast="auto"> </span><span data-contrast="auto">That friction often can add hours to deployment cycles and kept critical work outside the admin center.</span> </span></p>
+<p><span data-ccp-parastyle="heading 2"><span data-contrast="auto">This month, that changes that. When creating a Win32 app in Intune, admins can now upload a PowerShell script that acts as the app installer, rather than specifying a command line. The script runs natively. Intune packages it with app content and runs it in the same context as the installer. Installation results show in the admin center as 'success' or 'failure' based on return codes, providing visibility into what happened.</span> </span></p>
+<p><span data-ccp-parastyle="heading 2"><span data-contrast="auto">So, what does this mean? It means app deployment gets faster, customization gets easier, and teams in highly regulated industries like finance and healthcare can use the script to enforce compliance steps as part of the app installation process. It means system requirements can be checked before anything else runs, and app-specific settings can be configured after the app is installed. It means admins gain even more control.</span></span></p>
+<p><span data-ccp-parastyle="heading 2"><span data-contrast="auto"><span data-contrast="none">When users need elevated privilege, we are introducing a new Endpoint Privilege Management (EPM) capability to elevate users in a way that preserves their current profile. For example, profile paths, environment variables, and personalized settings.  <br/>This matters for installers and tools that depend on the active user’s profile. Before,  <br/>EPM isolated virtual accounts. Now, the user’s identity is maintained throughout elevation, meaning your audit trails stay cleaner and compliance records are more accurate. </span></span></span></p>
+<p><span data-ccp-parastyle="heading 2"><span data-contrast="auto"><span data-contrast="none">In addition, the ability to enforce scope tags for elevation scenarios safeguards admins can only view elevation requests for which they have permission. This is critical for compartmentalizing data in regulated environments. Together with 'Elevate as current user,' this enables organizations to easily oversee who is allowed to perform elevated actions, while avoiding the disclosure of excessive context. These two capabilities integrate seamlessly out of the box, with no configuration required.</span></span></span></p>
+<p><span data-contrast="auto">The new year brings clarity. Admins manage privilege elevation, device offboarding, security alerts, and policy approvals. Admin tasks, now generally available (GA) in Microsoft Intune, brings that work into a single, prioritized queue. </span></p>
+<p><span data-contrast="auto">Admin tasks centralizes these workflows to help admins focus on high-impact actions that need their attention now. It is under Tenant Administration, where admins can search, filter, and sort across requests, tasks, and approvals. Currently, admin tasks includes Endpoint Privilege Management (EPM) requests, Multi Admin Approval (MAA) tasks, Microsoft Defender for Endpoint (MDE) security tasks, and the Device Offboarding Agent (part of Microsoft Security Copilot) for tasks.</span></p>
+<p><span data-contrast="auto">EPM elevation requests help admins quickly approve or deny elevation needs and create reusable rules. Microsoft Defender for Endpoint security tasks enables admins to review recommended remediation actions, take corrective action on security issues, and monitor task status through a consistent Intune workflow. The Device Offboarding Agent helps detect unused or outdated devices that may no longer be needed or may pose a security risk, surfacing these findings as actionable tasks within admin tasks. Multi Admin Approval requests, such as scripts, device wipes, and role changes, are reviewed and approved with this same view. Each approval or rejection is recorded to support audit and compliance requirements. Learn more by taking a deeper dive in this blog on </span><a href="https://aka.ms/IntuneAdminTasksBlog" rel="noopener noreferrer" target="_blank"><span data-contrast="none"><span data-ccp-charstyle="Hyperlink">admin tasks in </span><span data-ccp-charstyle="Hyperlink">the </span><span data-ccp-charstyle="Hyperlink">Intune</span></span></a><span data-contrast="auto">.</span></p>
+<p><span data-contrast="auto">The technical foundation for enrollment of Apple devices just got stronger. We're rolling out support for the Automated Certificate Management Environment (ACME) protocol for new iOS, iPadOS, and macOS enrollments.</span></p>
+<p><span data-contrast="auto">So, what’s the difference? ACME provides better protection than the previous SCEP approach against unauthorized certificate issuance. It includes improved validation mechanisms and automated processes that reduce errors in certificate management. Now, when new Apple devices enroll, they receive an ACME certificate instead of a SCEP certificate.</span></p>
+<p><span data-contrast="auto">There's no change to your enrollment experience or Intune admin center doesn’t change. Its infrastructure works better in the background. This applies to Apple Device Enrollment, Apple Configurator enrollment, and automated device enrollment (ADE) methods. We also added 12 new Setup Assistant screens you can control during ADE. Want to skip the App Store screen? Hide camera settings? Now you can. This gives you more flexibility in how your end-users experience onboarding.</span></p>
+<p><span data-contrast="auto">January always feels like a restart. New year, fresh roadmap, the engineering teams recharged and looking at what's next. When I talk with the team building these capabilities, the energy is real. They're already thinking about solving more challenges </span> <br/><span data-contrast="auto">IT admins face. The momentum is here with the team at Microsoft Intune. </span></p>
+<p><span data-contrast="auto">Stay up to date with Intune, please bookmark the </span><a href="https://techcommunity.microsoft.com/t5/microsoft-intune-blog/bg-p/MicrosoftIntuneBlog" target="_blank"><span data-contrast="none"><span data-ccp-charstyle="Hyperlink">Microsoft Intune Blog</span></span></a><span data-contrast="auto">, and follow us on </span><a href="https://www.linkedin.com/showcase/microsoft-intune/" rel="noopener nofollow noreferrer" target="_blank"><span data-contrast="none"><span data-ccp-charstyle="Hyperlink">LinkedIn</span></span></a><span data-contrast="auto"> or </span><a href="https://twitter.com/MSIntune" rel="noopener nofollow noreferrer" target="_blank"><span data-contrast="none"><span data-ccp-charstyle="Hyperlink">@MSIntune</span></span></a><span data-contrast="auto"> on X.</span><span data-ccp-props="{}"> </span></p></div></div></div>
+</article>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Exporting all Microsoft Intune Enterprise App Management catalog apps to CSV using Microsoft Graph</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Intune Customer Success</span>
+    <span class="date">June 22, 2026</span>
+  </div>
+  <h1>Exporting all Microsoft Intune Enterprise App Management catalog apps to CSV using Microsoft Graph</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/intune-customer-success/exporting-all-microsoft-intune-enterprise-app-management-catalog/ba-p/4529579" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p><strong>By: Joe Lurie, Sr. Product Manager | Microsoft Intune</strong></p>
+<p>Managing applications at scale is one of the biggest time-consuming tasks for IT admins. Between packaging installers, writing detection rules, and keeping everything up to date - it adds up fast. That's exactly the problem <a class="lia-external-url" href="https://learn.microsoft.com/intune/app-management/deployment/enterprise-app-management" rel="noopener noreferrer" target="_blank">Enterprise App Management</a> in Microsoft Intune is designed to address.</p>
+<p>Enterprise App Management gives you access to a curated <a class="lia-external-url" href="https://learn.microsoft.com/intune/app-management/deployment/add-enterprise-catalog-app" rel="noopener noreferrer" target="_blank">Enterprise App Catalog</a> with hundreds of popular Win32 apps that are pre-packaged, pre-tested, and ready to deploy. Microsoft handles the install commands, detection logic, and update-ready packaging. Automatic updates for catalog apps are expected to roll out in mid-2026, making the experience even more hands-off. You just pick the app, assign it, and move on.</p>
+<p>But what if you want a full inventory of what's available in the catalog? Maybe you're evaluating which apps your organization can migrate from manual packaging, or you want to share the list with your app owners for review. In this post, I'll show you how to pull the complete catalog using Microsoft Graph PowerShell and export it to a CSV file.</p>
+<p>Before you start, make sure you have:</p>
+<ul>
+<li><strong>Intune admin permissions</strong>: An account with Intune permissions to read app and catalog data (such as Intune Administrator or a custom role with app read access).
+<ul>
+<li>You will also need <strong>Microsoft Graph delegated scope</strong>: <em>DeviceManagementApps.Read.All</em> (you'll consent to this when connecting).</li>
+</ul>
+</li>
+<li><strong>An </strong><a class="lia-external-url" href="https://learn.microsoft.com/intune/fundamentals/add-ons" rel="noopener noreferrer" target="_blank">Intune Suite</a><strong> or Enterprise App Management add-on license:</strong> Enterprise App Management is part of the Intune Suite or available as a standalone add-on. <em>Note: Microsoft has </em><a class="lia-internal-link lia-internal-url lia-internal-url-content-type-blog" data-lia-auto-title="announced" data-lia-auto-title-active="0" href="https://techcommunity.microsoft.com/blog/microsoftintuneblog/microsoft-365-adds-advanced-microsoft-intune-solutions-at-scale/4474272" target="_blank">announced</a><em> that Enterprise App Management will also be included in Microsoft 365 E5 licensing starting July 1, 2026 - check current licensing guidance to confirm availability for your tenant.</em></li>
+<li><strong>Microsoft </strong><a class="lia-external-url" href="https://learn.microsoft.com/powershell/microsoftgraph/installation" rel="noopener noreferrer" target="_blank">Graph PowerShell SDK</a><strong> (Beta module)</strong> <strong>installed</strong>: Note that the catalog API is currently in the beta endpoint which means cmdlet names and properties may change before reaching v1.0.</li>
+</ul>
+<p>If you don't have the beta module installed yet, run:</p>
+<pre class="lia-code-sample language-powershell"><code>Install-Module Microsoft.Graph.Beta.Devices.CorporateManagement -Scope CurrentUser -Force</code></pre>
+<p>First, authenticate to Microsoft Graph with the required scope:</p>
+<pre class="lia-code-sample language-powershell"><code>Connect-MgGraph -Scopes "DeviceManagementApps.Read.All"</code></pre>
+<p>You'll get a browser prompt to sign in and consent. Once connected, you're ready to query the catalog.</p>
+<p>Microsoft Graph exposes the Enterprise App Catalog through the /beta/deviceAppManagement/mobileAppCatalogPackages collection. The PowerShell cmdlet for it is:</p>
+<pre class="lia-code-sample language-powershell"><code>$catalogApps = Get-MgBetaDeviceAppManagementMobileAppCatalogPackage -All</code></pre>
+<p>The -All parameter is important as it handles pagination automatically so you get every catalog package, not just the first page of results.</p>
+<div>
+<p><span>💡</span> <strong>Tip</strong></p>
+<p>To see every property available on a catalog package object, pipe the first result to <code>Format-List</code>.</p>
+<pre class="lia-code-sample language-powershell"><code>$catalogApps | Select-Object -First 1 | Format-List *</code></pre></div>
+<p>Next, let's select the most useful fields and write them to a CSV file:</p>
+<pre class="lia-code-sample language-powershell"><code>$csvPath = "C:\Temp\IntuneCatalogApps.csv"
+New-Item -ItemType Directory -Path (Split-Path $csvPath) -Force | Out-Null</code></pre><pre class="lia-code-sample language-powershell"><code>$catalogApps | Select-Object ProductDisplayName, VersionDisplayName, PublisherDisplayName | Export-Csv -Path $csvPath -NoTypeInformation</code></pre>
+<p>Open the CSV in Excel and you've got a clean, sortable list of every catalog package in the Intune Enterprise App Catalog.</p>
+<p>Here's the complete script you can save and run:</p>
+<pre class="lia-code-sample language-powershell"><code># Connect to Microsoft Graph
+Connect-MgGraph -Scopes "DeviceManagementApps.Read.All"
+
+# Pull all Enterprise App Catalog packages
+$catalogApps = Get-MgBetaDeviceAppManagementMobileAppCatalogPackage -All
+
+# Export to CSV
+$csvPath = "C:\Temp\IntuneCatalogApps.csv"
+New-Item -ItemType Directory -Path (Split-Path $csvPath) -Force | Out-Null
+
+$catalogApps | Select-Object ProductDisplayName, VersionDisplayName, PublisherDisplayName | Export-Csv -Path $csvPath -NoTypeInformation
+
+Write-Host "Exported $($catalogApps.Count) catalog apps to $csvPath" -ForegroundColor Green
+
+# Disconnect when done
+Disconnect-MgGraph</code></pre>
+<p>Your CSV will look something like this:</p>
+<div>
+<div class="styles_lia-table-wrapper__h6Xo9 styles_table-responsive__MW0lN"><table border="1"><thead><tr class="lia-background-color-custom-f2f4f7"><th class="lia-border-color-custom-dddddd lia-border-style-solid">Product</th><th class="lia-border-color-custom-dddddd lia-border-style-solid">Version</th><th class="lia-border-color-custom-dddddd lia-border-style-solid">Publisher</th></tr></thead><tbody><tr><td class="lia-border-color-custom-dddddd lia-border-style-solid">Mozilla Firefox</td><td class="lia-border-color-custom-dddddd lia-border-style-solid"><code>137.0.1</code></td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Mozilla Corporation</td></tr><tr class="lia-background-color-custom-fafafa"><td class="lia-border-color-custom-dddddd lia-border-style-solid">Google Chrome</td><td class="lia-border-color-custom-dddddd lia-border-style-solid"><code>135.0.6998.89</code></td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Google LLC</td></tr><tr><td class="lia-border-color-custom-dddddd lia-border-style-solid">Zoom Workplace</td><td class="lia-border-color-custom-dddddd lia-border-style-solid"><code>6.4.6</code></td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Zoom Video Communications, Inc.</td></tr><tr class="lia-background-color-custom-fafafa"><td class="lia-border-color-custom-dddddd lia-border-style-solid">Adobe Acrobat Reader DC</td><td class="lia-border-color-custom-dddddd lia-border-style-solid"><code>25.001.20467</code></td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Adobe Inc.</td></tr><tr><td class="lia-border-color-custom-dddddd lia-border-style-solid">7-Zip</td><td class="lia-border-color-custom-dddddd lia-border-style-solid"><code>24.09</code></td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Igor Pavlov</td></tr></tbody><colgroup><col/><col/><col/></colgroup></table></div>
+</div>
+<p>Having a complete list of what's in the catalog is useful for a few scenarios:</p>
+<ul>
+<li><strong>App rationalization</strong> - Share the list with app owners and identify which apps you can stop manually packaging and switch to the catalog instead.</li>
+<li><strong>Gap analysis</strong> - Compare the catalog against your current app portfolio to see what's missing.</li>
+<li><strong>Change management</strong> - Track what's available over time as Microsoft continues to add new apps.</li>
+<li><strong>Compliance and auditing</strong> - Document which catalog apps are available for your tenant.</li>
+</ul>
+<p>Enterprise App Management is one of the most impactful features in the Intune Suite. It takes the most tedious parts of endpoint management - app packaging and updates - and just handles it for you. And with a short Graph script, you can get full visibility into what's available. And to see how Enterprise App Management secures your app catalog, check out the companion post here: <a class="lia-external-url" href="https://aka.ms/Intune/EAM-Security" rel="noopener noreferrer" target="_blank">aka.ms/Intune/EAM-Security</a>.</p>
+<p>Give the script a try and let us know what you think along with other Enterprise App Management topics you’d like to see by leaving a comment below or reaching out on X <a class="lia-external-url" href="https://aka.ms/IntuneSuppTeam" rel="noopener noreferrer" target="_blank">@IntuneSuppTeam</a>.</p>
+<p><em>Want to learn more about Enterprise App Management? Check out the </em><a class="lia-external-url" href="https://learn.microsoft.com/intune/app-management/deployment/enterprise-app-management" rel="noopener noreferrer" target="_blank">official documentation</a><em> for the full details.</em></p>
+<p><em><strong>Join our community!</strong> Discuss real-world scenarios, get expert guidance, connect with peers, and influence the future of Microsoft Security products. Learn more at <a class="lia-external-url" data-outlook-id="b28472ac-e9ef-4c22-803d-2eabb395ee0c" href="https://aka.ms/JoinIntuneCommunity" rel="noopener noreferrer" target="_blank">https://aka.ms/JoinIntuneCommunity</a>.</em></p></div></div></div>
+</article>
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MDOP is out of support: What to do next with Microsoft Intune</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Intune Customer Success</span>
+    <span class="date">June 19, 2026</span>
+  </div>
+  <h1>MDOP is out of support: What to do next with Microsoft Intune</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/intune-customer-success/mdop-is-out-of-support-what-to-do-next-with-microsoft-intune/ba-p/4526024" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><h2 class="styles_text-body__F7QRV MessageIntroduction_lia-message-introduction___mMAN styles_h4__wlzOi">A practical mapping from MDOP tools to supported options in Microsoft Entra ID, Intune, and Windows.</h2><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p><strong>By: Joe Lurie – Sr. Product Manager | Microsoft Intune</strong></p>
+<p>On April 14, 2026, the <a class="lia-external-url" href="https://learn.microsoft.com/microsoft-desktop-optimization-pack/" rel="noopener noreferrer" target="_blank">Microsoft Desktop Optimization Pack (MDOP)</a> reached the end of extended support. Microsoft no longer provides security updates, bug fixes, or technical support for MDOP components. For more information, refer to: <a class="lia-external-url" href="https://learn.microsoft.com/lifecycle/announcements/mdop-extended" rel="noopener noreferrer" target="_blank">Microsoft Desktop Optimization Pack (MDOP) support extended</a>.</p>
+<p>If your organization still relies on parts of MDOP, it’s time to move to supported options. In most cases, including Windows desktop management, app virtualization, BitLocker administration, and Group Policy change control, you can handle the same workloads with capabilities in Microsoft Entra ID, Intune, Windows 11, and Configuration Manager.</p>
+<p>Moving these workloads to the cloud does more than keep you supported. It removes on-premises server infrastructure you have to stand up and patch, brings management of cross-platform devices into a unified console, and connects capabilities like encryption and recovery into a Zero Trust framework with Conditional Access.</p>
+<ul>
+<li><strong>Inventory what you actually use.</strong> Confirm whether Application Virtualization (App-V) server components, Microsoft BitLocker Administration and Monitoring (MBAM), Diagnostics and Recovery Toolset (DaRT), User Experience Virtualization (UE-V), or Advanced Group Policy Management (AGPM) are still in production.</li>
+<li><strong>Prioritize BitLocker Management first.</strong> If you still rely on MBAM, plan your move to <a class="lia-external-url" href="https://learn.microsoft.com/intune/device-configuration/endpoint-security/encrypt-bitlocker-windows" rel="noopener noreferrer" target="_blank">BitLocker management in Intune</a> and confirm recovery key escrow is working as expected.</li>
+<li><strong>Plan your App-V exit.</strong> Keep existing App-V packages running where needed but shift net-new packaging work to <a class="lia-external-url" href="https://learn.microsoft.com/windows/msix/overview" rel="noopener noreferrer" target="_blank">MSIX</a>.</li>
+<li><strong>Validate your PC recovery story.</strong> Document how you’ll handle common break/fix scenarios using <a class="lia-external-url" href="https://learn.microsoft.com/windows/configuration/quick-machine-recovery/" rel="noopener noreferrer" target="_blank">Quick Machine Recovery</a>, WinRE, bootable media, and Intune remote actions.</li>
+<li><strong>Decide how you want to handle policy change management.</strong> For cloud policy, we recommend <a class="lia-external-url" href="https://learn.microsoft.com/intune/fundamentals/role-based-access-control/multi-admin-approval" rel="noopener noreferrer" target="_blank">Multi Admin Approval</a> for sensitive actions and policy-as-code practices for versioning and review.</li>
+</ul>
+<p>App-V let you virtualize applications so they could run in isolated environments without a traditional install, which helped avoid app conflicts. It was especially useful for legacy line-of-business apps that were hard to install or update cleanly.</p>
+<p><strong>Important<br/></strong>The App-V server components (Management Server, Publishing Server, Reporting Server) reached end of extended support in April 2026. The App-V client and sequencer are still included with Windows Enterprise and Education editions. They will continue to receive security fixes for the support lifecycle of the Windows versions they ship with. If you are distributing App-V packages today via Configuration Manager, that can still work. The key change is that you should not plan on using the standalone App-V server infrastructure going forward. For more details refer to: <a class="lia-external-url" href="https://learn.microsoft.com/microsoft-desktop-optimization-pack/app-v/appv-support-policy" rel="noopener noreferrer" target="_blank">App-V in Windows support policy</a>.</p>
+<p><strong>What to do instead:</strong> For new packaging work, we recommend <a class="lia-external-url" href="https://learn.microsoft.com/windows/msix/overview" rel="noopener noreferrer" target="_blank">moving to MSIX</a>. MSIX is a modern packaging format that supports clean install and uninstall and more predictable updating. The <a class="lia-external-url" href="https://learn.microsoft.com/windows/msix/packaging-tool/tool-overview" rel="noopener noreferrer" target="_blank">MSIX Packaging Tool</a> can help you convert existing installers. In Azure Virtual Desktop, <a class="lia-external-url" href="https://learn.microsoft.com/azure/virtual-desktop/app-attach-overview" rel="noopener noreferrer" target="_blank">MSIX App Attach</a> can deliver apps without baking them into the base image. A good starting point is to inventory your App-V packages, identify the ones you still need, and prioritize candidates to <a class="lia-external-url" href="https://learn.microsoft.com/windows/msix/packaging-tool/create-app-package" rel="noopener noreferrer" target="_blank">convert</a> to MSIX.</p>
+<p>MBAM gave IT admins centralized control over BitLocker, including policy enforcement, compliance reporting, and a self-service recovery portal. Many organizations used MBAM as their standard management solution.</p>
+<p><strong>What to do instead:</strong> We recommend replacing MBAM with Microsoft Intune’s BitLocker policy management through an <a class="lia-external-url" href="https://learn.microsoft.com/intune/device-configuration/endpoint-security/encrypt-bitlocker-windows#endpoint-security-policy-recommended" rel="noopener noreferrer" target="_blank">Endpoint security policy</a>. Intune management provides backup of recovery keys to Microsoft Entra ID, reporting, and <a class="lia-external-url" href="https://learn.microsoft.com/mem/intune/protect/conditional-access" rel="noopener noreferrer" target="_blank">Conditional Access</a> integration so you can require encryption for access to company resources. If you already manage devices with Intune, you may only need to create a disk encryption policy and confirm recovery keys are being escrowed. For detailed guidance, review <a class="lia-external-url" href="https://learn.microsoft.com/intune/device-configuration/endpoint-security/encrypt-bitlocker-windows" rel="noopener noreferrer" target="_blank">Encrypt Windows devices with BitLocker using Intune</a>.</p>
+<p>DaRT provided a bootable recovery environment with advanced tools like file recovery, registry editing, and offline troubleshooting. You typically used DaRT when a machine wouldn’t boot and you needed to repair it or recover data without reimaging.</p>
+<p><strong>What to do instead:</strong> Windows includes the <a class="lia-external-url" href="https://learn.microsoft.com/windows-hardware/manufacture/desktop/windows-recovery-environment--windows-re--technical-reference" rel="noopener noreferrer" target="_blank">Windows Recovery Environment (WinRE)</a> with tools like Startup Repair, System Restore, command prompt, and reset options. For many scenarios DaRT covered, WinRE is enough. You can also boot from a Windows installation USB, select "Repair your computer," and use the recovery tools for tasks like offline troubleshooting.</p>
+<p>For managed devices, you can pair recovery options with Intune remote actions, such as restart, wipe, or collect diagnostics, or use <a class="lia-external-url" href="https://learn.microsoft.com/windows/configuration/quick-machine-recovery/?tabs=intune" rel="noopener noreferrer" target="_blank">Quick Machine Recovery</a>. Additionally, Quick Machine Recovery can automatically detect and fix boot failures using cloud-based remediation delivered through Windows Update, with no hands-on IT intervention required for managed devices running Windows 11 version 24H2 or later. You can enable and configure it through the <a class="lia-external-url" href="https://learn.microsoft.com/intune/device-configuration/settings-catalog/" rel="noopener noreferrer" target="_blank">settings catalog</a> in Intune, and <a class="lia-external-url" href="https://learn.microsoft.com/autopilot/windows-autopilot" rel="noopener noreferrer" target="_blank">Windows Autopilot</a> scenarios for redeployment. These don’t replace every DaRT capability, but they cover many common use cases and work without shipping a separate recovery toolkit.</p>
+<p>UE-V roamed (synchronized) some user application and OS settings to persist across devices so users could sign in to a different Windows PC and keep a familiar experience. This was often used in shared workstation scenarios.</p>
+<p><strong>What to do instead:</strong> For Windows settings roaming, <a class="lia-external-url" href="https://learn.microsoft.com/windows/configuration/windows-backup/?tabs=intune" rel="noopener noreferrer" target="_blank">Windows Backup for Organizations</a> syncs certain Windows settings across Microsoft Entra ID joined devices. Review the latest guidance to confirm which settings are covered and how to enable it in your environment.</p>
+<p><strong>Important:</strong></p>
+<p>Windows Backup for Organizations syncs Windows settings (theme, password, language) but doesn’t roam per-application settings for Win32 apps. Some apps may provide their own cloud-based sync. Windows Backup for Organizations is not a direct replacement for UE-V.</p>
+<p>For user files, we recommend <a class="lia-external-url" href="https://learn.microsoft.com/sharepoint/redirect-known-folders" rel="noopener noreferrer" target="_blank">OneDrive Known Folder Move</a> to back up Desktop, Documents, and Pictures so content follows the user. Many Microsoft applications also sync their own settings through the cloud, which reduces the need for an OS-level roaming solution.</p>
+<p>Another option is to use a virtualized solution, like <a class="lia-external-url" href="https://azure.microsoft.com/products/virtual-desktop/" rel="noopener noreferrer" target="_blank">Azure Virtual Desktop</a> or <a class="lia-external-url" href="https://learn.microsoft.com/windows-365/overview" rel="noopener noreferrer" target="_blank">Windows 365</a>. With a Cloud PC, users connect to the same environment from any device, so settings and apps are already there when they sign in. For scenarios where UE-V mattered most, like shared workstation environments, Windows 365 can be a practical alternative. And for Azure Virtual Desktop, <a class="lia-external-url" href="https://learn.microsoft.com/fslogix/overview-what-is-fslogix" rel="noopener noreferrer" target="_blank">FSLogix</a> is a viable option.</p>
+<p><strong>Important:</strong></p>
+<p>Enterprise State Roaming does not roam per-application settings for traditional Win32 desktop apps the way UE-V did. So, Windows 365 may not be the right fit if you need settings roaming across multiple physical devices.</p>
+<p>AGPM brought version control, change tracking, and approval workflows to Group Policy management. Instead of an admin changing Group Policy Objects (GPOs) directly in production, AGPM enforced a check-out and check-in model with full audit history. This mattered most in environments with strict change management requirements.</p>
+<p><strong>What to do instead:</strong> Move to cloud-managed endpoints and replace Group Policy settings with Intune configuration profiles and security baselines. The settings catalog in Intune includes thousands of settings, including many ADMX-backed policies. If you use custom ADMX files for third-party or internal applications, you can <a class="lia-external-url" href="https://learn.microsoft.com/intune/device-configuration/settings-catalog/import-custom-admx-templates" rel="noopener noreferrer" target="_blank">import them into Intune</a>. For settings that aren’t available in the catalog, custom OMA-URI profiles can sometimes be used, depending on the CSP support for that setting.</p>
+<p>For change management, Intune offers <a class="lia-external-url" href="https://learn.microsoft.com/intune/fundamentals/role-based-access-control/multi-admin-approval" rel="noopener noreferrer" target="_blank">Multi Admin Approval</a> for certain policy changes, which can add a second-admin approval step. If you want deeper versioning and review workflows, we often see teams using Configuration as Code. Teams practicing Configuration as Code define Intune policies as code or structured data, such as in a JSON file stored outside the Intune admin center. This can be stored in version control like Azure DevOps or GitHub, and use <a class="lia-external-url" href="https://learn.microsoft.com/graph/api/resources/intune-graph-overview?view=graph-rest-1.0" rel="noopener noreferrer" target="_blank">Microsoft Graph</a> – directly or via tooling – to deploy and reconcile the service. This enables deep versioning, peer review, and repeatable, auditable changes. And with Intune, you can use Graph API to get <a class="lia-external-url" href="https://learn.microsoft.com/intune/governance/monitor-audit-logs#use-graph-api-to-retrieve-audit-events" rel="noopener noreferrer" target="_blank">two years</a> of audit events.</p>
+<div class="styles_lia-table-wrapper__h6Xo9 styles_table-responsive__MW0lN"><table border="1" class="lia-indent-margin-left-60px lia-border-style-solid"><tbody><tr><td>
+<p><strong>MDOP tool</strong></p>
+</td><td>
+<p><strong>What it did</strong></p>
+</td><td>
+<p><strong>Cloud-native replacement</strong></p>
+</td></tr><tr><td class="lia-align-center">
+<p>App-V (Server)</p>
+</td><td class="lia-align-center">
+<p>Application virtualization and streaming</p>
+</td><td>
+<p>MSIX packaging and Intune deployment (client still supported in Windows)</p>
+</td></tr><tr><td class="lia-align-center">
+<p>MBAM</p>
+</td><td class="lia-align-center">
+<p>BitLocker management and recovery</p>
+</td><td>
+<p>Intune management of BitLocker and Microsoft Entra ID key escrow</p>
+</td></tr><tr><td class="lia-align-center">
+<p>DaRT</p>
+</td><td class="lia-align-center">
+<p>Bootable diagnostics and recovery</p>
+</td><td>
+<p>Windows Recovery Environment (WinRE), bootable USB, and Intune remote actions</p>
+</td></tr><tr><td class="lia-align-center">
+<p>UE-V</p>
+</td><td class="lia-align-center">
+<p>User settings roaming</p>
+</td><td>
+<p>Windows 365 Cloud PC, Windows Backup for Organizations, OneDrive Known Folder Move, app-native sync</p>
+</td></tr><tr><td class="lia-align-center">
+<p>AGPM</p>
+</td><td class="lia-align-center">
+<p>GPO version control and approval workflows</p>
+</td><td>
+<p>Intune settings catalog, Multi Admin Approval, policy-as-code in source control</p>
+</td></tr></tbody><colgroup><col/><col/><col/></colgroup></table></div>
+<p>By moving to cloud endpoint management, most MDOP scenarios are covered through Microsoft Intune and Microsoft Entra ID supported capabilities with less infrastructure to maintain, making it easier for you to manage.</p>
+<p>If you haven’t started planning yet, we suggest starting with MBAM since Intune is the most direct replacement. Then, you can work through App-V, DaRT, UE-V, and AGPM based on what’s still in use.</p>
+<p>If you’re in the middle of an MDOP exit and need help leave a comment below or reach out to us on X <a class="lia-external-url" href="https://aka.ms/IntuneSuppTeam" rel="noopener noreferrer" target="_blank">@IntuneSuppTeam</a>. Tell us which components you still have and how you manage endpoints today (Intune, Configuration Manager, hybrid, or other). We can help you sanity-check dependencies, choose an order of operations, and avoid common migration pitfalls.</p>
+<p><em><strong>Join our community!</strong> Discuss real-world scenarios, get expert guidance, connect with peers, and influence the future of Microsoft Security products. Learn more at <a data-outlook-id="1500cb02-a991-4798-bffb-dc0f1bde5fd5" href="https://aka.ms/JoinIntuneCommunity" rel="noopener noreferrer" target="_blank">aka.ms/JoinIntuneCommunity</a>.</em></p></div></div></div>
+</article>
+</body>
+</html>

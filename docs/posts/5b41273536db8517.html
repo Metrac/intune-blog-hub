@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Migrating frontline mobile devices: Aligning stakeholders before real-world testing</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Intune Customer Success</span>
+    <span class="date">May 1, 2026</span>
+  </div>
+  <h1>Migrating frontline mobile devices: Aligning stakeholders before real-world testing</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/intune-customer-success/migrating-frontline-mobile-devices-aligning-stakeholders-before/ba-p/4516511" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p><strong>By: Carol Burns - Principal Product Manager | Microsoft Intune and Sucheta Gawade, Microsoft MVP (Azure &amp; Security / Intune)</strong></p>
+<p><em>Practitioner perspective from Sucheta Gawade, Microsoft MVP (Azure &amp; Security / Intune), with deep experience in secure frontline mobility, including regulated healthcare environments.</em></p>
+<p> </p>
+<p>In the previous article, we focused on <a class="lia-internal-link lia-internal-url lia-internal-url-content-type-blog" data-lia-auto-title="understanding the reality of your frontline device estate " data-lia-auto-title-active="0" href="https://techcommunity.microsoft.com/blog/intunecustomersuccess/migrating-frontline-mobile-devices-understanding-the-reality-of-your-estate/4511683" target="_blank">understanding the reality of your frontline device estate </a>- what devices you have, how they’re used, and which tasks they must support. Now that discovery is complete, the next step is to assess what you’ve found and align your people and processes before beginning real‑world testing with Microsoft Intune and representative users and devices. This is where you turn discovery into an actionable plan your team can execute in real operational conditions.</p>
+<p>Many organizations refer to this stage as a Proof of Concept (POC) or pilot. In this article, we use these terms to describe limited real‑world validation of frontline workflows with representative users and devices, rather than internal IT feasibility testing. Use the pilot to confirm that users can reliably complete critical tasks in live operational environments before wider rollout.</p>
+<p>Discovery produces facts, but readiness requires decisions. Before beginning real‑world testing with representative users and devices, your team should be able to answer questions like:</p>
+<ul>
+<li>Are we migrating “as‑is,” or do we plan on correcting identity and usage anti‑patterns such as shared credentials or personal use on corporate devices?</li>
+<li>Which workflows are non‑negotiable and must work on day one, and which can be improved later?</li>
+<li>Do we need to refresh hardware now, or can we migrate current devices and plan standardization at refresh time?</li>
+<li>What are our top constraints (OS support, connectivity, etc.)?</li>
+</ul>
+<p>A useful way to structure discovery output is to categorize findings and determine whether they support limited real‑world testing or require further alignment before proceeding.</p>
+<p>Pre‑requisites for real‑world testing typically include clear ownership of devices and apps, supported OS versions, and a manageable device or OEM mix.</p>
+<p>Items that often require alignment before real‑world testing include shared devices without a defined shared‑device model, shared credentials or unclear authentication approaches, personal use on corporate devices (which affects wipe/re‑enroll decisions), certified app or peripheral constraints, and network or certificate dependencies that could impact enrollment and compliance.</p>
+<p>Real‑world testing of frontline workflows depends on more than technical readiness. A clear stakeholder map helps surface operational dependencies early and ensures that limited validation activities can be conducted safely without disrupting day‑to‑day work.</p>
+<p>Not every environment requires all of the roles listed below at this stage, but these are the most common stakeholders needed to support limited real‑world testing of frontline workflows.<br/><br/></p>
+<p><strong>Operational stakeholders</strong></p>
+<div class="styles_lia-table-wrapper__h6Xo9 styles_table-responsive__MW0lN"><table border="1" class="lia-border-style-solid"><tbody><tr><td>
+<p><strong>Stakeholder</strong></p>
+</td><td>
+<p><strong>Why they matter</strong></p>
+</td><td>
+<p><strong>What to align</strong></p>
+</td></tr><tr><td>
+<p><strong>Operations / business leadership</strong></p>
+</td><td>
+<p>Define frontline outcomes and approve change windows.</p>
+</td><td>
+<p>Critical workflows, downtime tolerance, shift patterns, pilot locations, operational sign‑off criteria.</p>
+</td></tr><tr><td>
+<p><strong>Funding owners / procurement</strong></p>
+</td><td>
+<p>Discovery often uncovers refresh or licensing gaps.</p>
+</td><td>
+<p>Device and accessory funding, carrier plans, spares, and standardization strategy.</p>
+</td></tr><tr><td>
+<p><strong>Change management</strong></p>
+</td><td>
+<p>Testing may introduce new sign‑in flows or device behaviors.</p>
+</td><td>
+<p>Communications plan, support readiness, rollback and escalation processes, exception management.</p>
+</td></tr></tbody><colgroup><col/><col/><col/></colgroup></table></div>
+<p><br/>In addition to operational alignment, technical readiness across supporting IT teams is required to ensure testing reflects production like conditions.</p>
+<p><strong><br/>Technical and support stakeholders</strong></p>
+<div class="styles_lia-table-wrapper__h6Xo9 styles_table-responsive__MW0lN"><table border="1" class="lia-border-style-solid"><tbody><tr><td>
+<p><strong>Stakeholder</strong></p>
+</td><td>
+<p><strong>Why they matter</strong></p>
+</td><td>
+<p><strong>What to align</strong></p>
+</td></tr><tr><td>
+<p><strong>Endpoint or Microsoft Intune owners</strong></p>
+</td><td>
+<p>Build policy, enrollment, apps, and compliance.</p>
+</td><td>
+<p>Device categories, management models, policy approach, rollout waves.</p>
+</td></tr><tr><td>
+<p><strong>Architecture team</strong></p>
+</td><td>
+<p>Ensure alignment with enterprise standards.</p>
+</td><td>
+<p>Reference architecture, lifecycle approach, dependency mapping.</p>
+</td></tr><tr><td>
+<p><strong>Microsoft Identity / Microsoft Entra team</strong></p>
+</td><td>
+<p>Underpins Conditional Access and shared‑device patterns.</p>
+</td><td>
+<p>Authentication model, shared device sign‑in patterns, break‑glass scenarios.</p>
+</td></tr><tr><td>
+<p><strong>Network team</strong></p>
+</td><td>
+<p>Enrollment depends on connectivity and certificate flows.</p>
+</td><td>
+<p>Wi‑Fi (EAP‑TLS), proxies, segmentation, roaming, known dead zones.</p>
+</td></tr><tr><td>
+<p><strong>Security / risk / compliance</strong></p>
+</td><td>
+<p>Define guardrails and exceptions.</p>
+</td><td>
+<p>Wipe policies, logging, least privilege, auditability.</p>
+</td></tr><tr><td>
+<p><strong>App owners / vendors</strong></p>
+</td><td>
+<p>Critical frontline workflows depend on app behavior.</p>
+</td><td>
+<p>Compatibility, offline behavior, deployment approach.</p>
+</td></tr><tr><td>
+<p><strong>Support / service Desk</strong></p>
+</td><td>
+<p>Manage user impact during testing.</p>
+</td><td>
+<p>Runbooks, escalation paths, enrollment troubleshooting, shift‑based support.</p>
+</td></tr><tr><td>
+<p><strong>Project management (large environments)</strong></p>
+</td><td>
+<p>Coordinate testing across teams.</p>
+</td><td>
+<p>Timeline, risk tracking, cross‑team communications.</p>
+</td></tr></tbody><colgroup><col/><col/><col/></colgroup></table></div>
+<p>Real‑world testing often produces limited value when it focuses primarily on Microsoft Intune enrollment rather than operational use. Enrollment is a starting point, but the goal of this stage is to confirm that critical frontline workflows function reliably end‑to‑end in production‑like conditions.</p>
+<div class="styles_lia-table-wrapper__h6Xo9 styles_table-responsive__MW0lN"><table border="1" class="lia-border-style-solid"><tbody><tr><td>
+<p><strong>Readiness area</strong></p>
+</td><td>
+<p><strong>Questions to consider before real‑world testing</strong></p>
+</td></tr><tr><td>
+<p><strong>Licensing</strong></p>
+</td><td>
+<p>Do you have the correct Intune licenses for the devices or users in scope?<br/>Are any add-ons needed?</p>
+</td></tr><tr><td>
+<p><strong>Identity</strong></p>
+</td><td>
+<p>Is Microsoft Entra configured for your enrollment approach?<br/>Are Conditional Access policies ready for real‑world testing?</p>
+<p>For shared devices, what sign‑in model will you use?</p>
+</td></tr><tr><td>
+<p><strong>Stakeholder alignment</strong></p>
+</td><td>
+<p>Who owns the success criteria? <br/>Who approves the testing scope and change window? <br/>Who funds required accessories or device refresh?</p>
+</td></tr><tr><td>
+<p><strong>Operational readiness</strong></p>
+</td><td>
+<p>Who provides day‑to‑day support for test devices? <br/>What is the escalation path for a broken critical workflow? <br/>What is the rollback or recovery plan?</p>
+</td></tr><tr><td>
+<p><strong>Device lifecycle decisions</strong></p>
+</td><td>
+<p>Will you test by migrating existing devices as‑is, replacing end‑of‑life devices first, or using testing to define the future standard?</p>
+</td></tr><tr><td>
+<p><strong>OEM and ecosystem readiness</strong></p>
+</td><td>
+<p>Are the devices still supported by the OEM? <br/>Are required peripherals supported?<br/>Do rugged or certified requirements limit device options?</p>
+</td></tr></tbody><colgroup><col/><col/></colgroup></table></div>
+<p><br/>Lack of clear ownership for testing success criteria is a common cause of inconclusive pilots, particularly where operational workflows span multiple teams.</p>
+<p>Real‑world testing often produces limited value when it focuses primarily on enrollment rather than operational use. Enrollment is a starting point, but the goal of this stage is to confirm that critical frontline workflows function reliably end‑to‑end in production‑like conditions.</p>
+<p>Real‑world testing should validate high‑value operational outcomes, ensuring:</p>
+<ol>
+<li><strong> </strong><strong>Critical workflows function end</strong>‑<strong>to</strong>‑<strong>end</strong>
+<ul>
+<li>Scanning, inventory, delivery confirmation, POS, etc.</li>
+<li>Session transitions match shift patterns</li>
+<li>Offline or degraded‑mode behavior works as expected (where relevant)<br/><br/></li>
+</ul>
+</li>
+<li><strong> </strong><strong>Security works without disrupting operations</strong>
+<ul>
+<li>Compliance and Conditional Access do not block legitimate frontline activity</li>
+<li>Wipe and recovery processes are realistic for shared devices</li>
+<li>App protection controls align with user experience<br/><br/></li>
+</ul>
+</li>
+<li><strong> </strong><strong>Supportability is operationally viable</strong>
+<ul>
+<li>Device reset and re‑enroll processes are documented</li>
+<li>Troubleshooting steps are known and repeatable</li>
+<li>Escalation paths exist for frontline‑impacting incidents<br/><br/></li>
+</ul>
+</li>
+<li><strong> </strong><strong>Representative device scenarios are included<br/></strong>Include the different frontline scenarios identified during discovery, such as:
+<ul>
+<li>Shared vs assigned devices</li>
+<li>Different OEM models or OS versions</li>
+<li>Sites with known connectivity constraintso</li>
+<li>Common peripherals that may introduce migration risk (for example, scanners or printers)</li>
+</ul>
+</li>
+</ol>
+<p>You may need to begin real‑world testing using the environment you have today. However, this stage can also be used to identify patterns that may shape future procurement and standardization decisions without delaying validation activities.</p>
+<p>Practical prompts to add to your planning:</p>
+<ul>
+<li>If you could reset procurement going forward, would you reduce OEM or device model sprawl?</li>
+<li>What might your target “approved device set” look like for the next refresh cycle?</li>
+<li>Which procurement models could support consistent enrollment, warranty coverage, and access to spares across shifts?</li>
+</ul>
+<p>Standardization doesn’t need to be a prerequisite for real‑world testing, but it can become a valuable outcome of the migration effort over time.</p>
+<p>After you’ve aligned stakeholders, clarified dependencies, and defined what your real‑world testing must validate, you’re ready to move from assessment to limited operational testing with representative users and devices.</p>
+<p>The key takeaway is this: <strong>discovery tells you what’s real, but readiness determines whether you can safely test it in live operational conditions.</strong></p>
+<p>As always, we welcome your feedback and experience. If you’ve already tested frontline workflows in operational conditions, what advice would you give organizations preparing for this stage? Share your thoughts in the comments below or reach out to us on X <a class="lia-external-url" href="https://aka.ms/IntuneSuppTeam" rel="noopener noreferrer" target="_blank">@IntuneSuppTeam</a>.</p>
+<p>Explore the <a class="lia-external-url" href="https://aka.ms/Intune/FLW-home" rel="noopener noreferrer" target="_blank">From the frontlines: Frontline worker management with Microsoft Intune</a> series for additional guidance on managing frontline workers and devices.</p></div></div></div>
+</article>
+</body>
+</html>

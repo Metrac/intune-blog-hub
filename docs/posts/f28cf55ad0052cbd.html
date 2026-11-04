@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Migrating frontline mobile devices: A frontline-first approach to moving to Microsoft Intune</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Intune Customer Success</span>
+    <span class="date">March 30, 2026</span>
+  </div>
+  <h1>Migrating frontline mobile devices: A frontline-first approach to moving to Microsoft Intune</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/intune-customer-success/migrating-frontline-mobile-devices-a-frontline-first-approach-to/ba-p/4501347" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p>Frontline organizations consistently tell us that unified management is the goal but the challenge is getting there without disrupting day-to-day operations. Smartphones, Android handhelds, rugged scanners, and shared tablets now sit at the center of how retail stores run, how clinicians deliver care, how supply chains move, and how field workers’ complete work. These devices are mission critical, and any disruption is immediately felt on the ground.</p>
+<p>To strengthen security, reduce costs, and simplify operations, many IT architects and administrators are now evaluating or planning to move to Intune.</p>
+<p>This new series, “<em>Migrating Frontline Mobile Devices - </em>is designed to help. We’ve worked side by side with frontline customers, observing what works, where projects stall, and how small decisions early on can dramatically improve outcomes later. The articles in this series distil those lessons into practical guidance for teams who are considering, planning, or actively migrating devices.<br/><br/>Frontline devices serve different needs and follow different operational rhythms than knowledge worker devices. Frontline migrations aren’t the same as standard knowledge-worker migrations and treating them as such often leads to operational problems or rollout delays.</p>
+<p>This article explains what the difference means in practice and how it shapes planning for successful frontline migrations.</p>
+<p>A failed knowledge worker enrollment is an inconvenience. A failed frontline device enrollment or non-functioning device can affect revenue, disrupt essential services, and in some industries compromise safety. When a device is unavailable, critical work halts immediately:</p>
+<ul>
+<li>Pickers can’t complete scanning tasks</li>
+<li>Cashiers can’t take payments</li>
+<li>Health practitioners can’t document or prescribe care</li>
+<li>Drivers can’t dispatch</li>
+<li>Production lines stop</li>
+<li>Workers can’t perform required safety or compliance actions</li>
+</ul>
+<p><strong>What we’ve learned:</strong> Frontline migrations must be coordinated with business and operational leaders; store managers, shift supervisors, clinical leads, and supply chain teams because they decide what is required and when devices can be taken offline.</p>
+<p>The operational impact of failure is higher on the frontline because frontline devices operate in very different environments to knowledge worker devices.</p>
+<p>Knowledge worker devices usually run in stable, well understood environments with known device catalogues, predictable lifecycles, assigned users, and steady connectivity.</p>
+<p>Frontline devices operate in conditions that introduce unique design and migration challenges. The environments they run in directly affect how and when a device can be enrolled or updated. Devices may run in low bandwidth or intermittent connectivity environments, making enrollment flows and policy delivery harder to complete reliably. Some operate in high-risk industrial or clinical settings where devices can only be taken offline during narrow operational windows. Others return to charging racks between shifts, meaning migrations must align with shift changes rather than user availability. Many run in kiosk or locked task modes tied to a single workflow, so even small configuration changes can disrupt critical tasks if not planned carefully.</p>
+<p>These environmental and operational realities show up across the entire device lifecycle from provisioning to updates to support. To make the differences clearer, here’s a concise comparison of frontline and knowledge worker devices:</p>
+<div class="styles_lia-table-wrapper__h6Xo9 styles_table-responsive__MW0lN"><table border="1" class="lia-border-style-solid"><tbody><tr><td>
+<p><strong>Category</strong></p>
+</td><td>
+<p><strong>Frontline devices</strong></p>
+</td><td>
+<p><strong>Knowledge worker devices </strong></p>
+</td></tr><tr><td>
+<p><strong>Devices </strong></p>
+</td><td>
+<p>Smartphones, handhelds, rugged devices, scanners, wearables, tablets</p>
+</td><td>
+<p>Laptops, desktops, smartphones</p>
+</td></tr><tr><td>
+<p><strong>OS and patch posture</strong></p>
+</td><td>
+<p>Often older versions; inconsistent patch levels due to operational constraints</p>
+</td><td>
+<p>Typically, current OS or N-1; regular security patching cycles</p>
+</td></tr><tr><td>
+<p><strong>Ownership</strong></p>
+</td><td>
+<p>Shared, shift-based or individually assigned depending on role</p>
+</td><td>
+<p>Individually assigned</p>
+</td></tr><tr><td>
+<p><strong>Network conditions</strong></p>
+</td><td>
+<p>Variable, often constrained</p>
+</td><td>
+<p>Generally stable</p>
+</td></tr><tr><td>
+<p><strong>Provisioning</strong></p>
+</td><td>
+<p>Zero-touch essential</p>
+</td><td>
+<p>User-led viable</p>
+</td></tr><tr><td>
+<p><strong>Updates</strong></p>
+</td><td>
+<p>Highly controlled</p>
+</td><td>
+<p>Standard update cycles</p>
+</td></tr><tr><td>
+<p><strong>Apps</strong></p>
+</td><td>
+<p>Task-specific, time-sensitive updates</p>
+</td><td>
+<p>Broad, less time critical updates</p>
+</td></tr><tr><td>
+<p><strong>Workflow impact</strong></p>
+</td><td>
+<p>Operationally critical</p>
+</td><td>
+<p>Productivity-focused</p>
+</td></tr><tr><td>
+<p><strong>Typical usage scenarios</strong></p>
+</td><td>
+<p>Point-of-sale, healthcare, barcode scanning, delivery routing, inventory checks</p>
+</td><td>
+<p>Email, productivity tools, collaboration, creative workflows</p>
+</td></tr><tr><td>
+<p><strong>Failure impact </strong></p>
+</td><td>
+<p>Immediate operational issues</p>
+</td><td>
+<p>Localized user disruption</p>
+</td></tr></tbody><colgroup><col/><col/><col/></colgroup></table></div>
+<p> </p>
+<p>Standard knowledge worker migrations are designed for predictable conditions such as consistent users, steady connectivity, current OS levels, and a governed device lifecycle. Frontline fleets rarely match this baseline, so their migrations require planning and design that reflects actual device state and use<strong>.</strong></p>
+<p>A migration offers an opportunity to reassess business needs, tighten governance, simplify and modernize app delivery, and confirm assumptions about how devices are used. It’s also a chance to raise your frontline security, aligning devices with Zero Trust principles.</p>
+<p><strong>In successful frontline migrations:</strong> Teams build in time for design, evaluation, and piloting. Early alignment across stakeholders supports smoother execution and reduces the risk of disruptive rework later.</p>
+<p>Frontline migration projects always reveal something unexpected. Common patterns include:</p>
+<ul>
+<li>Mixed iOS/Android versions and multiple original equipment manufacturers (OEM) such as Samsung, Zebra, Honeywell, Apple and more.</li>
+<li>Devices running outdated OS versions or custom OEM images.</li>
+<li>Devices that haven’t checked in for months, often sitting unused in cabinets.</li>
+<li>App delivery paths reliant on sideloading or site specific packages with no update mechanism.</li>
+<li>Multiple active mobile device management (MDM) systems inherited through acquisitions or decentralized teams.</li>
+</ul>
+<p>Most migration issues that appear later in the project can be traced back to decisions made before anyone understood what existed in the field, how devices were being used, or what the business needed them to do in the future.</p>
+<p><strong>What we’ve learned: </strong>Migration success improves dramatically when teams validate device inventory, usage patterns, and business requirements before choosing an enrollment method and designing configuration profiles. Real-world data turns assumptions into facts and avoids costly rework.</p>
+<p>Many frontline devices run with shared logins or no user at all. Intune fully supports these scenarios, but identity gaps - shared credentials, app only authentication, and managed access patterns - often emerge over years of organic growth. These gaps can show up during migrations as both user experience issues and security risks.</p>
+<p><strong>What we’ve learned:</strong> Even if you’re not ready to modernize frontline identity or introduce Microsoft 365 tools for workers, consider laying out the foundation. Mapping which users or roles should have identities, simplifying and securing access, and aligning devices to Microsoft Entra foundations will future proof your estate.</p>
+<p>This series will explore the areas that consistently shape successful frontline mobile migrations the steps, patterns, and design decisions that matter most in real frontline environments. Over the coming weeks we’ll cover themes such as:</p>
+<ul>
+<li>Understanding your frontline estate - what exists today, how devices are used, and the realities that shape migration decisions</li>
+<li>Designing for frontline conditions - identity foundations, shared device patterns, kiosk considerations, and reliable enrolment flows</li>
+<li>Designing for frontline device scenarios - single user, shared, rugged, kiosk, and high-risk operational models</li>
+<li>Consolidating to a single Intune tenant - simplifying governance, policies, and operating models</li>
+<li>Getting the ecosystem right - apps, connectivity, certificates, and the infrastructure dependencies that influence reliability</li>
+<li>Executing the migration safely - pilots, phasing, cutover windows, and planning for 24/7 operations</li>
+<li>Life after migration - monitoring, support readiness, and ongoing operational ownership</li>
+</ul>
+<p>We’ll share practical guidance, common friction points, and patterns we’ve seen work across industries.</p>
+<p>Future articles will include perspectives from Microsoft Product Managers and community experts with hands-on experience managing large scale frontline device estates. Look out for the next article in the series - Understanding the reality of your estate.</p>
+<p>We’d love to include your perspective. If you have questions, scenarios, or experiences you want this series to address, share them in the comments below to help shape the upcoming articles, or reach out to us on X <a href="https://aka.ms/IntuneSuppTeam" rel="noopener noreferrer" target="_blank">@IntuneSuppTeam.</a></p>
+<p>Our goal is simple: To help you migrate frontline mobile fleets to Intune without disrupting the business.</p></div></div></div>
+</article>
+</body>
+</html>

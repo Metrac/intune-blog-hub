@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Protect browser-based work on agency-managed Windows PCs</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Microsoft Intune Blog</span>
+    <span class="date">February 24, 2026</span>
+  </div>
+  <h1>Protect browser-based work on agency-managed Windows PCs</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/microsoft-intune-blog/protect-browser-based-work-on-agency-managed-windows-pcs/ba-p/4496538" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><h2 class="styles_text-body__F7QRV MessageIntroduction_lia-message-introduction___mMAN styles_h4__wlzOi">Updates to Microsoft Edge for Business profiles and Microsoft Entra sign-in flows improve browser work protection</h2><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p><span data-contrast="auto">From SaaS apps and internal web portals to AI-powered tools, the browser is now a major workspace for many employees and contractors alike. This shift has introduced new opportunities for organizations to enable an extended workforce. At the same time, it creates new data protection complexities for IT administrators.</span></p>
+<p><span data-contrast="auto">Securing corporate data has traditionally relied on full device management. However, when work occurs on a Windows PC that your organization doesn't own—such as a device already enrolled and managed by a contractor’s home agency—full device enrollment isn't a viable option. Organizations need a flexible way to reduce these data blind spots without taking over the device itself.</span></p>
+<p><span data-contrast="auto">To address this, Microsoft continues to expand data protection capabilities across Microsoft Edge for Business, Microsoft Entra, Microsoft Intune, and Microsoft Purview. Recent profile and sign-in updates with Edge for Business and Entra now help organizations to secure browser-based work on Windows PCs managed by another organization. And these updates work alongside inline data loss prevention with Purview and prescriptive deployment guidance from Intune to help administrators apply protections consistently rather than configuring policies in isolation.</span><span data-ccp-props='{"201341983":0,"335559739":240,"335559740":259}'> </span></p>
+<p><span data-contrast="auto">Edge for Business now extends Intune app protection policies (APP) to the Edge for Business work profile on Windows PCs managed by another organization. This new capability, currently in public preview, helps organizations to protect work contractors do in the browser, while respecting existing device ownership and management boundaries. This protects corporate data without requiring full device enrollment or creating conflicts with another tenant’s management.</span><span data-ccp-props='{"201341983":0,"335559739":240,"335559740":259}'> </span></p>
+<p class="lia-video-container lia-media-is-center lia-media-size-large" data-video-id="https://youtu.be/Ng2w_aBGgUw/1771962075551" data-video-remote-vid="https://youtu.be/Ng2w_aBGgUw/1771962075551"></p>
+<p><em><span data-contrast="auto">Figure 1 <span data-teams="true">Demo showing Intune app protection policies in action within an Edge for Business work profile on a Windows PC managed by another organization.</span></span></em></p>
+<p><span data-contrast="auto">Key capabilities include:</span><span data-ccp-props='{"201341983":0,"335559739":240,"335559740":259}'> </span></p>
+<ul>
+<li><strong><span data-contrast="auto">Browser-level protection through the Edge work profile: </span></strong><span data-contrast="auto">Intune APP policies can be applied directly to Edge for Business user profiles, helping to create a protected boundary for work data. Contractors can securely access corporate resources in an Edge for Business profile without enrolling the device or altering existing management.</span></li>
+<li aria-setsize="-1" data-aria-level="1" data-aria-posinset="1" data-font="Symbol" data-leveltext="" data-list-defn-props='{"335552541":1,"335559685":1080,"335559991":360,"469769226":"Symbol","469769242":[8226],"469777803":"left","469777804":"","469777815":"hybridMultilevel"}' data-listid="1"><strong><span data-contrast="auto">Tenant-scoped controls within Edge for Business</span></strong><span data-contrast="auto"><strong>:</strong> Organizations can help protect corporate data within the browser by redirecting downloads to OneDrive for Business, restricting copy and paste, and enforcing data boundaries inside the managed Edge for Business profile.</span><span data-ccp-props='{"201341983":0,"335559685":360,"335559739":80,"335559740":259}'> </span></li>
+</ul>
+<p><strong><a href="https://learn.microsoft.com/en-us/DeployEdge/microsoft-edge-cross-tenant-support-using-intune-mam?branch=pr-en-us-6771" rel="noopener noreferrer" target="_blank"><span data-contrast="none"><span data-ccp-charstyle="Hyperlink">Learn more:</span></span></a></strong><span data-contrast="auto"><strong> </strong>How to get started with agency-managed device support in Edge for Business and apply APP. </span><span data-ccp-props='{"201341983":0,"335559739":160,"335559740":278}'> </span></p>
+<p><span data-contrast="auto">Recent Entra improvements to the Edge on Windows sign-in flow enable admins to configure the enrollment screen to create a more predictable setup and enrollment experience. These new sign-in updates help route users into Intune application protection polices, while reducing accidental full device enrollment.</span><span data-ccp-props='{"201341983":0,"335559739":160,"335559740":278}'> </span></p>
+<span class="lia-media-object lia-media-is-no-align lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/107660b9d379e750/img_0.png"/></button></span>
+<p><em><span data-contrast="auto"><span data-contrast="none"><span data-ccp-parastyle="caption">Figure 2</span></span><span data-contrast="none"><span data-ccp-parastyle="caption"> Microsoft Entra updated sign-in experience pop-up window.</span></span><span data-ccp-props='{"201341983":0,"335559739":200,"335559740":240}'> </span></span></em></p>
+<p><span data-contrast="auto">These Entra updates include: </span><span data-ccp-props='{"201341983":0,"335559739":160,"335559740":278}'> </span></p>
+<ul>
+<li><strong><span data-contrast="auto">Modernized Entra registration page for the user: </span></strong><span data-contrast="auto">An updated account registration flow provides clearer guidance during sign-in, helping users understand when they are registering an account versus enrolling a device.</span></li>
+<li><strong><span data-contrast="auto">Prevention of unintended device enrollment: </span></strong><span data-contrast="auto">Administrators can enable the “Disable MDM enrollment when adding work or school account” setting to block the prompt for devince enrollment during the account registration flow. Users are directed into the intended app-protection experience without unnecessary prompts or management conflicts.</span><span data-ccp-props='{"201341983":0,"335559739":160,"335559740":278}'> </span></li>
+</ul>
+<p><strong><a href="https://learn.microsoft.com/en-us/intune/intune-service/enrollment/windows-enroll" rel="noopener noreferrer" target="_blank"><span data-contrast="none"><span data-ccp-charstyle="Hyperlink">Learn more</span></span></a></strong><span data-contrast="auto"><strong>:</strong> </span><span data-contrast="auto">Read more about how to apply the updated Entra sign-in flow.</span><span data-ccp-props='{"201341983":0,"335559739":160,"335559740":278}'> </span></p>
+<p><span data-contrast="auto">Microsoft Purview Data Loss Prevention (DLP) helps protect sensitive corporate data during browser-based work on Windows PCs that are managed by another organization or not enrolled at all. Purview DLP is built directly into Edge for Business and applies to the user’s work profile, so organizations can detect and control sensitive actions without requiring device onboarding into Purview or taking ownership of the device.</span><span data-ccp-props='{"201341983":2,"335559739":0,"335559740":300}'> </span></p>
+<span class="lia-media-object lia-media-is-no-align lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/107660b9d379e750/img_1.png"/></button></span>
+<p><em><span data-ccp-props='{"201341983":2,"335559739":0,"335559740":300}'><span data-contrast="none"><span data-ccp-parastyle="caption">Figure 3</span></span><span data-contrast="none"><span data-ccp-parastyle="caption"> Purview DLP: Displays </span><span data-ccp-parastyle="caption">a</span><span data-ccp-parastyle="caption"> pop-up message to indicate</span><span data-ccp-parastyle="caption"> organizationa</span><span data-ccp-parastyle="caption">l protection for a file download.</span></span><span data-ccp-props='{"201341983":0,"335559739":200,"335559740":240}'> </span></span></em></p>
+<p><span data-contrast="auto">With Purview DLP in Edge for Business, organizations can:</span><span data-ccp-props='{"201341983":2,"335559739":0,"335559740":300}'> </span></p>
+<ul>
+<li><strong><span data-contrast="auto">Apply inline DLP protection in the browser: </span></strong><span data-contrast="auto">Support detection and control for sensitive actions, such as uploads, downloads, copy/paste, printing, and across cloud apps accessed in the browser.</span></li>
+<li><strong>Extend coverage to unmanaged cloud apps:</strong> <span data-contrast="auto">Apply DLP policies </span><span data-contrast="none">to enrolled apps and extend protection to unenrolled </span><span data-contrast="auto">cloud apps, helping prevent oversharing or unintended data movement during browser activity.</span><span data-ccp-props='{"201341983":2,"335559739":0,"335559740":300}'> </span></li>
+<li><strong><span data-contrast="auto">Reduce data leakage without limiting productivity: </span></strong><span data-contrast="auto">Detect and prevent risky actions involving sensitive data without blocking site access or disrupting normal workflows.</span><span data-ccp-props='{"201341983":0,"335559738":240,"335559739":240,"335559740":278}'> </span></li>
+</ul>
+<p><strong><a href="https://learn.microsoft.com/en-us/purview/dlp-browser-dlp-learn" rel="noopener noreferrer" target="_blank"><span data-contrast="none"><span data-ccp-charstyle="Hyperlink">Learn more:</span></span></a></strong><span data-contrast="auto"><strong> </strong>Apply Purview Data Loss Prevention in Edge for Business to protect sensitive data during browser-based work. </span><span data-ccp-props='{"201341983":2,"335559739":0,"335559740":300}'> </span></p>
+<p><span data-contrast="auto">Microsoft published “</span><a href="https://learn.microsoft.com/en-us/intune/intune-service/apps/mamedge-overview" rel="noopener noreferrer" target="_blank"><span data-contrast="none"><span data-ccp-charstyle="Hyperlink">Secure</span><span data-ccp-charstyle="Hyperlink"> Your Corporate Data in Intune with Microsoft Edge for Business</span></span></a><span data-contrast="auto">” to provide guidance on how administrators can operationalize browser-based protections across platforms. This guidance provides step-by-step configuration paths that align identity, app protection, browser configuration, and device controls into a single, structured deployment model rather than isolated policy setup.</span><span data-ccp-props='{"201341983":0,"335559738":240,"335559739":240,"335559740":259}'> </span></p>
+<p><span data-contrast="auto">The guide covers:</span><span data-ccp-props='{"201341983":0,"335559738":240,"335559739":240,"335559740":259}'> </span></p>
+<ul>
+<li><strong><span data-contrast="auto">Three-level security framework</span></strong><span data-contrast="auto"><strong>: </strong>Basic, Enhanced, and High protection tiers mapped to common industry standards such as NIST and DISA STIG, enabling organizations to align browser security posture with risk tolerance and user roles.</span></li>
+<li><strong>Cross-platform policy mapping</strong><span data-contrast="auto"><strong>: </strong>Clear guidance on when to use app protection policies, app configuration policies, settings catalog controls, and conditional access across Windows, macOS, iOS, and Android without creating policy conflicts or double-applying browser policies.</span><span data-ccp-props='{"201341983":0,"335559738":240,"335559739":80,"335559740":278}'> </span></li>
+<li><strong>Sequenced configuration paths</strong><span data-contrast="auto"><strong>:</strong> Ordered implementation steps that show how identity enforcement, app protection, browser configuration, and device-level controls work together to form a cohesive secure enterprise browser strategy.</span><span data-ccp-props='{"201341983":0,"335559738":240,"335559739":80,"335559740":278}'> </span></li>
+</ul>
+<p><strong><a href="https://learn.microsoft.com/en-us/intune/intune-service/apps/mamedge-overview" rel="noopener noreferrer" target="_blank"><span data-contrast="none"><span data-ccp-charstyle="Hyperlink">Learn </span><span data-ccp-charstyle="Hyperlink">m</span><span data-ccp-charstyle="Hyperlink">ore:</span></span></a></strong><span data-contrast="auto"><strong> </strong>Read more on how to get started with Intune’s configuration guidance to protect browser-based work and align identity, app protection, and browser controls.</span><span data-contrast="auto"> </span><span data-ccp-props='{"201341983":0,"335559738":240,"335559739":240,"335559740":278}'> </span></p>
+<p><span data-contrast="auto">Organizations do not need to treat browser-based work as an exception to endpoint protection. By combining identity routing in Entra, app-level boundaries through Intune, workspace separation in Edge for Business, and inline data governance with Purview, organizations can apply consistent controls even on Windows PCs they don’t own or manage. </span><span data-ccp-props='{"201341983":0,"335559738":240,"335559739":240,"335559740":259}'> </span></p>
+<p><span data-contrast="auto">With this approach, protection moves from the device to the work context itself. Administrators can secure corporate data where work happens, while preserving productivity and respecting existing device ownership and management boundaries.</span><span data-ccp-props='{"201341983":0,"335559738":240,"335559739":240,"335559740":259}'> </span></p>
+<p> </p>
+<hr/>
+<p><em><span data-contrast="none">Stay up to date! Bookmark the </span><a href="https://techcommunity.microsoft.com/t5/microsoft-endpoint-manager-blog/bg-p/MicrosoftEndpointManagerBlog" target="_blank"><span data-contrast="none"><span data-ccp-charstyle="Hyperlink">Microsoft Intune Blog</span></span></a><span data-contrast="none"> and follow us on </span><a href="https://www.linkedin.com/company/microsoft-intune-product" rel="noopener nofollow noreferrer" target="_blank"><span data-contrast="none"><span data-ccp-charstyle="Hyperlink">LinkedIn</span></span></a><span data-contrast="none"> or </span><a href="https://twitter.com/MSIntune" rel="noopener nofollow noreferrer" target="_blank"><span data-contrast="none"><span data-ccp-charstyle="Hyperlink">@MSIntune</span></span></a><span data-contrast="none"> and </span><a href="https://x.com/IntuneSuppTeam" rel="noopener nofollow noreferrer" target="_blank"><span data-contrast="none"><span data-ccp-charstyle="Hyperlink">@IntuneSuppTeam</span></span></a><span data-contrast="none"> on X to continue the conversation.</span></em></p></div></div></div>
+</article>
+</body>
+</html>

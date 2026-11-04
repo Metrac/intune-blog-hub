@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Microsoft Intune and Apple platform updates: What to expect after WWDC 2026</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Intune Customer Success</span>
+    <span class="date">June 25, 2026</span>
+  </div>
+  <h1>Microsoft Intune and Apple platform updates: What to expect after WWDC 2026</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/intune-customer-success/microsoft-intune-and-apple-platform-updates-what-to-expect-after/ba-p/4531058" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p><strong>By Benjamin Flamm | Product Manager, Iris Yuning Ye | Product Manager - Microsoft Intune</strong></p>
+<p>Apple’s Worldwide Developers Conference (WWDC) is the annual starting point for the next wave of Apple platform changes. For Microsoft Intune customers, WWDC is also the moment when IT teams begin planning how new operating system capabilities will affect Apple device management, security, app deployment, and user readiness ahead of the fall OS releases. We’ve spent time watching and re-watching the sessions, sifting through new documentation with a magnifying glass, and philosophizing over the impact of what’s new this year. Just like every year, we’ll still have our day zero blog officially announcing what Intune supports for the new OS versions; however, this year we’ve heard your feedback that you’d like to know where Intune is prioritizing investments ahead of time so that you can prepare with confidence.</p>
+<p>Our team is absolutely thrilled<strong> </strong>by the latest WWDC announcements and what they mean for organizations using Intune to manage Apple devices at scale. Apple is executing their promise of a declarative future, and we’re excited to enable our customers to leverage the benefits of declarative device management (DDM) like efficient configurations and real time status reporting. Most importantly, Apple continues to provide new customer-delighting functionality that previously didn’t exist in the legacy protocol.</p>
+<p>The Intune settings catalog is our data-driven experience that automatically generates UI based on a schema. Basically, Intune adds new settings very quickly. Our goal is to always provide new settings like restrictions and intelligence controls as fast as possible, but in a way that’s enterprise ready. Having to manually create policies in third party tools just to upload them into the Intune admin center is a thing of the past. That said, these are the configurations and settings announced at WWDC 2026 that will be available very soon in the settings catalog for testing on the OS 27 betas.</p>
+<p>One of the biggest announcements for device management this year is the new App settings configuration which includes declarative binary management for Mac. Until now, admins have relied on third party tooling and scripting for controlling unwanted apps on macOS, which is a clunky and time-consuming process. This new configuration also brings privacy permission management to DDM, reducing the number of prompts that users see while ensuring that apps have the permissions they need.</p>
+<p>Content caching has been supported in mobile device management (MDM) and our settings catalog for years, but it’s becoming much more powerful as it moves to DDM in macOS 27. New status items provide richer information about the <a class="lia-external-url" href="https://developer.apple.com/documentation/devicemanagement/statuscontentcacheservicecontentcachestatusobject" rel="nofollow noopener noreferrer" target="_blank">health, disk space, and usage</a> of content cache services without requiring a separate monitoring agent. This will be especially useful for everyone who wants to significantly reduce network traffic due to large deployments such as multi-gigabyte app installations and OS updates.</p>
+<p>Platform Single Sign-on (Platform SSO) picked up a major set of upgrades this year as part of its transition to DDM: the option to require Touch ID as a built-in second factor for logging in and unlocking FileVault. Additionally, new web-based authentication that opens the door to customizable push notifications, one-time codes, and QR-code sign-in for shared-device environments.</p>
+<p>Our settings story wouldn’t be complete without mentioning skip keys, and we have so much to mention this year! You may have seen the news that we recently updated our Apple enrollment policies, but what you may have missed is that these use the same infrastructure as our settings catalog. Starting this year, you should now expect to see skip keys release as fast as the Apple settings catalog.</p>
+<p>Everything we’ve talked about so far is only the tip of the iceberg for settings and what’s coming, so here’s the complete list of what you should expect to see in Intune this summer:</p>
+<ul>
+<li>App Settings
+<ul>
+<li>Allow/deny macOS binaries</li>
+<li>App privacy</li>
+</ul>
+</li>
+<li>Content caching</li>
+<li>DNS Settings</li>
+<li>DNS Proxy</li>
+<li>Extensible SSO</li>
+<li>Safari privacy</li>
+<li>Web Content Filter</li>
+<li>Apple Intelligence (Calendar)</li>
+<li>Device restrictions</li>
+<li>Skip keys</li>
+</ul>
+<p>This is the announcement that we’ve been waiting for ever since Apple first showed us the power of DDM! While there isn’t Wi-Fi support yet, we’re thrilled to see this first step into DDM-based network configurations. The on-device user experience and admin configuration experience will see significant improvements in comparison to today’s profile model, especially when managing policies that depend on certificates for authentication. Our team is evaluating the new network configurations for our roadmap as we build support for these critical workloads in a declarative world.</p>
+<p>The more device information that Apple moves to DDM, the faster Intune will become. The 15-minute check-in will soon be obsolete as MDM can solely rely on the device to detect drift or issues. This year, Apple has continued to add more device information to the DDM status channel, allowing admins to get a richer picture of the health of their device fleet. <a class="lia-external-url" href="https://developer.apple.com/documentation/devicemanagement/statusdevicesystemhealthdevicesystemhealthobject" rel="nofollow noopener noreferrer" target="_blank">Device health reports </a>that highlight whether a specific hardware component is operating normally, or experiencing an issue, will provide useful insights to organizations when planning their next device refresh cycle or monitoring for device issues before they affect productivity. Apple also added new status reports that show MDM-specific information for devices, such as if they’re enabled for return to service or shared iPad, and APNS-related information for MDMs to better stay in sync with devices.</p>
+<p>Over the past few years, Apple has been adding new features that are shifting traditional agent-based management to the DDM stack. The declarative package (.pkg) configuration introduced last year lets MDM send complex macOS packages and configurations without the constraints of the legacy install command. This year, they rounded out the story by adding package uninstall to remove data and files that were installed by a declarative package configuration as well as extending the <a class="lia-external-url" href="https://developer.apple.com/documentation/ManagedApp" rel="nofollow noopener noreferrer" target="_blank">Managed App framework</a> to macOS. Just like with the new network configurations, our team is investigating what this means for Intune Mac management and re-evaluating our macOS roadmap.</p>
+<p>Apple introduced a new command to remotely trigger enhanced log collection which seems simple, but it has a lot packed into it. The old way involved lots of downloading and waiting and uploading and more waiting. With this latest announcement, Apple has streamlined this whole process by allowing MDMs to send a command to enable the device for logging with the correct logging state configured. The cherry on top is this new process will tell the device to directly upload its sysdiagnose to AppleCare without requiring physical access to the device or manual interaction from the device owner. It also wouldn’t be a new feature without DDM status, and devices will report their enhanced logging status every step of the way. This will reduce a lot of the friction, idle time, and “what’s actually happening?” that’s associated with getting a sysdiagnose file needed for engineering investigations. This new feature benefits IT teams, AppleCare, MDMs, and everyone in between, and our team is prioritizing this new workflow for the fall.</p>
+<p>Apple has continued to iterate on the <a class="lia-external-url" href="https://support.apple.com/guide/deployment/use-return-to-service-for-apple-devices-dep17cb455a0/web" rel="nofollow noopener noreferrer" target="_blank">return to service workflow</a> since its introduction in 2023. Its first iterations showed how RTS can be useful for troubleshooting, quickly returning devices back to a fresh service state while also preserving apps across resets. This year, Apple announced 2 major improvements: the ability to trigger RTS directly from the device and the ability to configure an inactivity timeout. This makes RTS a must-have for shared device scenarios where you need to securely and quickly minimize downtime between user sessions.</p>
+<p>DDM is now the only way to manage software updates, with the legacy MDM workload being fully removed from support in OS 27. We will be removing the legacy software update policies and settings from our UI in the coming months. Intune has supported DDM updates since they were first released in 2023, and we also have <a class="lia-external-url" href="https://learn.microsoft.com/intune/device-updates/apple/monitor-reports?tabs=summary" rel="noopener noreferrer" target="_blank">gold standard software update reports</a> where you can see rich and fast OS update status every step of the way. More information is available on our <a class="lia-internal-link lia-internal-url lia-internal-url-content-type-blog" data-lia-auto-title="Tech Community blog." data-lia-auto-title-active="0" href="https://techcommunity.microsoft.com/blog/intunecustomersuccess/support-tip-move-to-declarative-device-management-for-apple-software-updates/4432177" target="_blank">Tech Community blog.</a></p>
+<ul>
+<li>Identify the Apple device populations that are most business-critical, including supervised iOS and iPadOS devices, shared devices, and managed Macs.</li>
+<li>Review enrollment, compliance, app deployment, and software update workflows that may be affected by major OS upgrades.</li>
+<li>Plan a beta validation ring with representative users, devices, apps, and different network conditions.</li>
+<li>Document known business-critical apps and confirm vendor readiness timelines for the fall OS releases.</li>
+<li>Test the available beta settings in the settings catalog and share your feedback with our team and Apple via Feedback Assistant.</li>
+<li>Watch for Intune documentation, Message center posts, and release notes as support details become available.</li>
+</ul>
+<p>Apple’s fall OS releases are an important planning milestone for every organization managing Apple devices, and Intune’s priority is to help our customers confidently adopt new capabilities securely and at scale. Keep an eye out for our yearly day zero blog to learn more about Intune updates and new feature support as we get closer to the OS 27 release this fall – happy beta testing!</p>
+<p>If you have any questions, leave a comment below or reach out to us on X <a class="lia-external-url" href="https://aka.ms/IntuneSuppTeam" rel="noopener noreferrer" target="_blank">@IntuneSuppTeam</a>.</p>
+<p><strong><em>Join our community!</em></strong><em> Discuss real-world scenarios, get expert guidance, connect with peers, and influence the future of Microsoft Security products. Learn more at <a class="lia-external-url" href="https://aka.ms/JoinIntuneCommunity" rel="noopener noreferrer" target="_blank">aka.ms/JoinIntuneCommunity</a>.</em></p></div></div></div>
+</article>
+</body>
+</html>

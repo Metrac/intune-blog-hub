@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What’s new in Microsoft Intune – July</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Microsoft Intune Blog</span>
+    <span class="date">July 28, 2026</span>
+  </div>
+  <h1>What’s new in Microsoft Intune – July</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/microsoft-intune-blog/what-s-new-in-microsoft-intune-july/ba-p/4537392" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p>Ask an IT admin what a good day looks like, and it usually comes down to one word: control. Control means you push a change and know it landed. It means you have a clear view into your device fleet, from compliance status to sync health. That certainty is what helps IT stay ahead and deliver.</p>
+<p>Still, endpoint management gets harder as fleets grow across locations and device types. More devices and policies rarely mean fewer admin hours. This month's updates focus on giving IT clearer visibility and more confident action.</p>
+<p><span data-teams="true">When admins troubleshoot a device, they need visibility into what’s happening. The updated per-device sync experience in the Intune admin center now shows progress, making it easier for admins to confirm actions are running and understand where they are in the process.</span></p>
+<p>The updated sync action also triggers both the mobile device management check-in and the Intune Management Extension (Windows only) check-in. One sync can now pull-down policy, app, and script changes in a single pass. For admins working through a single-device issue, this makes sync more transparent, more complete, and easier to trust as a troubleshooting step. <a class="lia-external-url" href="https://learn.microsoft.com/intune/device-management/actions/sync?pivots=windows" rel="noopener noreferrer" target="_blank">Learn more about sync actions for Windows</a> and how to use them to troubleshoot and validate device state.</p>
+<p> </p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt="Sync status pane in the Microsoft Intune admin center for a Windows device. Six stages show a green checkmark with timestamps: Notifying device, Device connecting, Policies (3 of 3 succeeded), Applications (2 offered), Scripts (1 offered), and Calculating compliance (Compliant)."><button aria-haspopup="true" aria-label="Enlarge Image Sync status pane in the Microsoft Intune admin center for a Windows device. Six stages show a green checkmark with timestamps: Notifying device, Device connecting, Policies (3 of 3 succeeded), Applications (2 offered), Scripts (1 offered), and Calculating compliance (Compliant)." aria-labelledby="Ihm9CH_caption" class="lia-media-unstyled-btn" type="button"><img alt="Sync status pane in the Microsoft Intune admin center for a Windows device. Six stages show a green checkmark with timestamps: Notifying device, Device connecting, Policies (3 of 3 succeeded), Applications (2 offered), Scripts (1 offered), and Calculating compliance (Compliant)." src="assets/9425440e3219c6e1/img_0.png"/></button><span class="lia-media-caption-text" id="Ihm9CH_caption"><span data-contrast="auto">Figure 1: The Sync status pane tracks each step live, from notifying the device to calculating compliance.</span></span></span>
+<p>Want a deeper story about how we delivered this change? Read the <a class="lia-internal-link lia-internal-url lia-internal-url-content-type-blog" data-lia-auto-title="blog" data-lia-auto-title-active="0" href="https://techcommunity.microsoft.com/blog/intunecustomersuccess/speed-where-it-matters-how-microsoft-intune-helps-it-prioritize-time-sensitive-a/4515942" target="_blank">blog</a> about how Intune helps IT prioritize time-sensitive actions or catch the recent <a class="lia-external-url" href="https://www.youtube.com/live/dUN6cAI6nhA?is=3kHcspq7ZUYMxU6v" rel="noopener nofollow noreferrer" target="_blank">Microsoft Technical Takeoff video</a> on Intune timing demystified.</p>
+<p>This month, custom compliance settings for macOS became generally available. Admins can use these settings to apply organization-specific requirements that built-in compliance settings don’t cover. This extended coverage helps reduce risk and unblock macOS deployments by aligning compliance and Conditional Access requirements with the Intune security policies organizations need to manage them. To learn more about compliance policies and what they do, see <a class="lia-external-url" href="https://learn.microsoft.com/intune/device-security/compliance/overview" rel="noopener noreferrer" target="_blank">"Use compliance policies to set rules for devices you manage with Intune."</a></p>
+<p>Additionally, using discovery scripts and JSON rules, admins can inspect many macOS device attributes and conditions. Think about installed software, running processes, app versions, or security posture that no Apple built-in setting captures. Now macOS devices report compliance the same way Windows and Linux devices do, giving you one consistent view instead of three different ones. Read more about how to set up the <a class="lia-external-url" href="https://learn.microsoft.com/intune/device-security/compliance/custom-settings" rel="noopener noreferrer" target="_blank">custom compliance settings documentation for Microsoft Intune</a>.</p>
+<p>Keeping firmware current becomes harder as your mobile device fleet grows. For example, a new version may need testing against line-of-business apps before reaching production devices. In a Zero Trust environment, every unpatched device can become a compliance gap waiting to happen.</p>
+<p>The <a class="lia-external-url" href="https://www.samsungknox.com/en/solutions/it-solutions/samsung_e-fota" rel="noopener nofollow noreferrer" target="_blank">Samsung Knox Enterprise Firmware-Over-The-Air (E-FOTA)</a> integration brings precise control over firmware and OS updates across their Galaxy devices into the Microsoft Intune console. Existing Intune device groups determine which devices receive each version. If group membership changes, the firmware assignment follows.</p>
+<p>Admins can keep production devices on their current version while testing an update. After validation, they can roll it out gradually during planned maintenance windows. Battery requirements and postponement limits provide more control over installation timing. This helps maintain consistent firmware and compliance across the fleet.</p>
+<blockquote>
+<p><strong>Myth: </strong><a class="lia-external-url" href="https://learn.microsoft.com/autopilot/overview" rel="noopener noreferrer" target="_blank">Windows Autopilot</a> requires device registration for new PCs.</p>
+<p><strong>Reality: </strong>Device registration is not required in all Windows Autopilot scenarios. Many IT admins associate Windows Autopilot with device registration because the original Windows Autopilot solution uses registration to identify devices. Today, organizations can choose from multiple Autopilot approaches depending on their deployment needs.</p>
+<p>Windows Autopilot helps IT remotely provision devices at scale across a range of deployment scenarios, including existing devices, pre-provisioning, self-deploying deployments, and remote users.</p>
+<p><a class="lia-external-url" href="https://learn.microsoft.com/autopilot/device-preparation/overview" rel="noopener noreferrer" target="_blank">Windows Autopilot device preparation</a> helps streamline Windows 11 provisioning without requiring Windows Autopilot registration. It uses enrollment-time grouping to deliver selected apps and scripts during setup, with near real-time deployment reporting.</p>
+<p><strong>How to choose the right Autopilot approach:</strong> If you need registration-based deployment scenarios, such as pre-provisioning, self-deploying deployments, or existing device provisioning, use the original Windows Autopilot solution. Use Windows Autopilot device preparation when you want to streamline Windows 11 onboarding without Windows Autopilot registration and deliver selected apps and scripts during setup before users reach the desktop.</p>
+<p><strong>Windows Autopilot in action:</strong> <a class="lia-external-url" href="https://aka.ms/Onboarding-AutopilotVideo" rel="noopener noreferrer" target="_blank">Watch Microsoft MVP Jonathan Edwards walk through remote, at-scale onboarding with Intune</a>. You will get a step-by-step look at both Windows Autopilot and Autopilot device preparation in action, along with guidance on choosing the right approach for your environment.</p>
+<p> </p>
+</blockquote>
+<p>Control rarely arrives as one big feature or capability. It shows up in the smaller updates admins lean on daily. A sync they can watch, a compliance rule they can shape, or a firmware update they can run with confidence. Together, these capabilities add more certainty and give time back. That is how modern endpoint management should work.</p>
+<p>In that same spirit, staying in control means staying current as threat response speeds up. <a class="lia-internal-link lia-internal-url lia-internal-url-content-type-blog" data-lia-auto-title="Read our recent post by Jason Roszak" data-lia-auto-title-active="0" href="https://techcommunity.microsoft.com/blog/intunecustomersuccess/build-a-patch-strategy-for-today%E2%80%99s-threat-pace-with-microsoft/4535115" target="_blank">Read our recent post by Jason Roszak</a> for practical guidance on building a patch strategy with Microsoft. Let us know in the comments what you think of these new capabilities and stay tuned for more next month.</p>
+<p> </p>
+<hr/>
+<p><em>Stay up to date! Bookmark the <a data-lia-auto-title="Microsoft Intune Blog" data-lia-auto-title-active="0" href="https://techcommunity.microsoft.com/category/microsoftintune/blog/microsoftintuneblog" target="_blank">Microsoft Intune Blog</a> and follow us on <a href="https://www.linkedin.com/company/microsoft-intune-product" rel="noopener nofollow noreferrer" target="_blank">LinkedIn </a>or <a href="https://twitter.com/MSIntune" rel="noopener nofollow noreferrer" target="_blank">@MSIntune </a>and <a href="https://x.com/IntuneSuppTeam" rel="noopener nofollow noreferrer" target="_blank">@IntuneSuppTeam </a>on X to continue the conversation.</em></p></div></div></div>
+</article>
+</body>
+</html>

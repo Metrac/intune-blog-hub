@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Support tip: Restore the Managed Home Screen Exit PIN</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Intune Customer Success</span>
+    <span class="date">August 21, 2026</span>
+  </div>
+  <h1>Support tip: Restore the Managed Home Screen Exit PIN</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/intune-customer-success/support-tip-restore-the-managed-home-screen-exit-pin/ba-p/4549102" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p>We identified and resolved a recent issue (IT1450132) that could cause the configured Managed Home Screen exit PIN to be removed from some existing Android Enterprise when updating older device configuration policies.  While a fix has been deployed to address this, if a policy was already affected, you will need update the affected policy or policies and ensure the Exit Kiosk Mode PIN is set before saving.</p>
+<p>On an affected device, selecting <strong>Exit kiosk</strong> can display a message that a PIN to exit kiosk mode has not been set by the IT administrator, even though the policy was previously configured with one. See an example screenshot below. Note that this screen will also show on devices where you’ve intentionally disabled the Exit kiosk feature.</p>
+<span class="lia-media-object lia-media-is-center" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image &lt;p&gt;&lt;em&gt;Figure 1: Android device in kiosk mode displaying a message that no PIN has been configured to exit kiosk mode and advising the user to contact an administrator.&lt;/em&gt;&lt;/p&gt;" aria-labelledby="LcET4I_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/d632409c3b2a333e/img_0.png"/></button><span class="lia-media-caption-text" id="LcET4I_caption">
+<p><em>Figure 1: Android device in kiosk mode displaying a message that no PIN has been configured to exit kiosk mode and advising the user to contact an administrator.</em></p>
+</span></span>
+<ol>
+<li>In the Microsoft Intune admin center, open the device restrictions policy assigned to the affected Android Enterprise dedicated devices.</li>
+<li>Under <strong>Device experience</strong>, confirm that <strong>Leave kiosk mode</strong> is set to <strong>Enable</strong>.</li>
+<li>Enter a new 4-6 digit value for <strong>Leave kiosk mode code</strong>.</li>
+<li>Save the policy and allow it to deploy to the affected devices.</li>
+<li>Verify that the new PIN can be used to exit kiosk mode.</li>
+</ol>
+<p>The previous PIN cannot be recovered after it has been removed, so a new PIN is required. For more information, see <a href="https://learn.microsoft.com/intune/device-configuration/templates/ref-device-restrictions-android-enterprise" rel="noopener noreferrer" target="_blank">Android template device settings list to restrict features using Intune</a>.</p>
+<p>If you need temporary access before the updated policy reaches a device, use the <a href="https://learn.microsoft.com/intune/device-management/actions/suspend-managed-home-screen" rel="noopener noreferrer" target="_blank">Suspend Managed Home Screen device action</a>, provided the documented prerequisites are met.</p>
+<span class="lia-media-object lia-media-is-center" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image &lt;p&gt;&lt;em&gt;Figure 2: Microsoft Intune admin center showing Android Enterprise device restriction settings, with the “Leave kiosk mode” option enabled and a kiosk exit code configured.&lt;/em&gt;&lt;/p&gt;" aria-labelledby="SXyp8S_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/d632409c3b2a333e/img_1.png"/></button><span class="lia-media-caption-text" id="SXyp8S_caption">
+<p><em>Figure 2: Microsoft Intune admin center showing Android Enterprise device restriction settings, with the “Leave kiosk mode” option enabled and a kiosk exit code configured.</em></p>
+</span></span>
+<p>The service-side issue has been resolved. Administrators with previously affected policies should configure and deploy a new Managed Home Screen exit PIN, then verify the behavior on their devices.</p>
+<p>We’ll continue to update this post as new information becomes available. If you have questions or comments for the Intune team, reply to this post or reach out to <a class="lia-external-url" href="https://aka.ms/IntuneSuppTeam" rel="noopener noreferrer" target="_blank">@IntuneSuppTeam</a> on X.</p></div></div></div>
+</article>
+</body>
+</html>

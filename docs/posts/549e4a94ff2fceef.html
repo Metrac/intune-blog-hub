@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What’s new in Microsoft Intune – May</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Microsoft Intune Blog</span>
+    <span class="date">May 28, 2026</span>
+  </div>
+  <h1>What’s new in Microsoft Intune – May</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/microsoft-intune-blog/what-s-new-in-microsoft-intune-may/ba-p/4491984" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p>Whether it's Android app deployment, identity setup on macOS, certificate authority renewal, or faster compliance evaluations, the throughline is the same: less friction for the IT admins doing the work.</p>
+<p>A device that never got properly enrolled is still a risk, even if nobody's touched it in months. That's the kind of thing that keeps IT admins up at night. Three Android updates this month each address a different point where that risk shows up: getting devices onto the platform, making sure the right apps land on them, and keeping security policies running once they do.</p>
+<p>For enrollment, the Personal Work Profile Android Management API implementation is now generally available. One of the quieter but more effective changes here is that end users no longer have to hunt down the Company Portal app before they start enrollment. Organizations can opt into a web-based enrollment flow where everything begins from a browser, and policies are delivered through the <a class="lia-external-url" href="https://developers.google.com/android/management" rel="noopener nofollow noreferrer" target="_blank">Android Management API</a> from there. That brings personally owned work profile devices onto the same underlying management technology as corporate-owned Android Enterprise scenarios and gives admins a more consistent policy experience across Android.</p>
+<p>On the app side, directly managing Android line-of-business (LOB) apps in Intune is now generally available for Android Enterprise fully managed and dedicated devices. Previously, even internally developed apps had to be uploaded and distributed via Managed Google Play. With this update, admins can upload APK files straight to Intune, deploy multiple versions of the same app to different user or device groups, and remove constraints like requiring unique package names. This provides admins more flexibility and control over how internal Android applications are managed and distributed.</p>
+<p>Finally, Mobile Threat Defense (MTD) apps can now request enhanced security permissions on Android Enterprise devices, building on the existing <a class="lia-external-url" href="https://learn.microsoft.com/en-us/intune/device-security/mobile-threat-defense/enable-connector" rel="noopener noreferrer" target="_blank">MTD connector</a> in Intune. Google is introducing a capability that allows an MTD app to operate with additional security permissions on managed devices. You can use the MTD connector in the Intune admin center to grant those permissions to one MTD app of your choice, such as <a class="lia-external-url" href="https://www.microsoft.com/en-us/security/business/endpoint-security/microsoft-defender-endpoint" rel="noopener noreferrer" target="_blank">Microsoft Defender for Endpoint</a> or a supported third-party partner. On Android Enterprise fully managed devices and corporate-owned devices with a work profile, the selected MTD app can be exempted from app suspension, hibernation, and user-initiated restrictions. This helps threat detection and risk evaluation continue running even when the rest of the device is being optimized for battery life or user control.</p>
+<p><a class="lia-external-url" href="https://aka.ms/Intune/MacPSSO-Setup" rel="noopener noreferrer" target="_blank">Platform SSO with registration during Automated Device Enrollment on macOS</a> is now generally available for macOS devices.</p>
+<p>Previously, PSSO registration occurred after enrollment was complete, requiring users to click a notification on their desktop to finish setup. But these notifications are often missed, leading to incomplete SSO configuration, authentication failures in apps like Outlook, and devices that showed as non-compliant in Company Portal. IT teams managing Mac deployments at scale identified this as a consistent friction point.</p>
+<p>With this release, PSSO device registration completes automatically during ADE, bootstrapping identity and linking the device to Entra ID before the user ever reaches their desktop. The result is a setup experience where end users arrive at a desktop that is already PSSO-registered, authenticated, and equipped with the identities for accessing resources. This capability is designed for IT teams managing corporate-owned, single-user Mac devices where timing of when identity and enrollment are critical for compliance and productivity. To learn more, <a class="lia-external-url" href="https://learn.microsoft.com/en-us/intune/device-configuration/settings-catalog/configure-platform-sso-during-enrollment" rel="noopener noreferrer" target="_blank">read our documentation about configuring PSSO during ADE</a>.</p>
+<p>Microsoft Intune now supports renewing an existing Cloud PKI issuing certification authority (CA) directly, helping administrators maintain uninterrupted certificate issuance as a CA approaches expiration. Previously, renewing a CA required creating a new issuing CA and manually updating all dependent Simple Certificate Enrollment Protocol (SCEP) certificate profiles. With this update, eligible Cloud PKI issuing CAs can be renewed in place, generating a new CA certificate and key pair to reduce operational overhead and lower the risk of configuration errors.</p>
+<p>This capability helps provide continued certificate-based access for scenarios such as Wi-Fi, VPN, and email without requiring changes to existing SCEP profiles or device assignments. As part of the renewal process, Intune automatically creates a staged CA with a temporary SCEP endpoint, enabling admins to validate issuance and compatibility across their environment in a safe, controlled manner before activation. This staged validation model helps organizations complete renewal with minimal disruption and without taking services offline. To learn more about prerequisites and implementation details, visit the <a class="lia-external-url" href="https://learn.microsoft.com//intune/cloud-pki/renew-ca" rel="noopener noreferrer" target="_blank">Microsoft Learn page</a>.</p>
+<blockquote>
+<p>We hope you enjoyed last month’s Myth vs. Reality entry on <a class="lia-external-url" href="https://aka.ms/IntuneWN2604" rel="noopener noreferrer" target="_blank">latency</a>. This month, the focus is on <strong>application management in Intune. </strong></p>
+<ul>
+<li><strong>Myth: </strong>App migration to Intune is all-or-nothing. You must move all apps at once or not at all.</li>
+<li><strong>Reality: </strong>App management in Intune supports phased adoption. With co-management, you can migrate apps gradually while Configuration Manager continues deploying apps that have not moved yet. Moving the apps workload to Intune enables cloud-native app delivery—apps reach devices anywhere over the Internet, with no distribution points or on-prem infrastructure to maintain. And you manage Windows app deployment in the same place as your macOS, iOS, and Android apps. </li>
+<li><strong>How: </strong>Move the Client apps workload when you're ready by starting with a pilot collection, then expand by app type or persona as confidence grows. When migrating by app type, prioritize low-risk and low-complexity categories and apps first to reduce early friction and validate your approach.</li>
+</ul>
+<p>For example, start with Microsoft Store apps or apps delivered through Intune <a class="lia-external-url" href="https://learn.microsoft.com/en-us/intune/app-management/deployment/enterprise-app-management" rel="noopener noreferrer" target="_blank">Enterprise Application Management</a>, as these often do not require repackaging or customization, then move to simple Win32 applications with minimal dependencies before addressing more complex scenarios. In parallel, or as a follow-on motion, migrate by persona. Start with user groups that have predictable, standardized requirements, such as knowledge workers who primarily use Microsoft 365 apps, a browser, and a small set of common utilities. This helps validate end-to-end deployment, user experience, and support readiness before you expand to more complex roles. From there, you can expand confidently to developers and engineers with customized tool chains.</p>
+<p><a class="lia-external-url" href="https://learn.microsoft.com/en-us/intune/configmgr/comanage/workloads" rel="noopener noreferrer" target="_blank">Start exploring co-management workloads</a> in Configuration Manager and take the first step toward a more flexible, phased migration to Intune. To accelerate your migration, our partners <a class="lia-external-url" href="https://www.rimo3.com/" rel="noopener nofollow noreferrer" target="_blank">Rimo3</a> and <a class="lia-external-url" href="https://robopack.com/" rel="noopener nofollow noreferrer" target="_blank">Robopack</a> are offering a time-limited app migration service to all Intune customers who are looking to move from Configuration Manager to Intune<sup>1</sup>. To learn more, visit <a class="lia-external-url" href="https://aka.ms/IntuneAppMigration" rel="noopener noreferrer" target="_blank">aka.ms/IntuneAppMigration</a>.</p>
+<p> </p>
+</blockquote>
+<p>This month's features and the Myth vs. Reality section are making the same point: you do not need to solve everything at once. Enroll the predictable users first. Migrate the simple apps before the complex ones. Renew your CA without rebuilding your profiles. Start there, build confidence, and expand. Let us know what you think.</p>
+<hr/>
+<p><em>Stay up to date! Bookmark the <a class="lia-internal-link lia-internal-url lia-internal-url-content-type-blog" data-lia-auto-title="Microsoft Intune Blog" data-lia-auto-title-active="0" href="https://techcommunity.microsoft.com/category/microsoftintune/blog/microsoftintuneblog" target="_blank">Microsoft Intune Blog</a> and follow us on <a href="https://www.linkedin.com/company/microsoft-intune-product" rel="noopener nofollow noreferrer" target="_blank">LinkedIn </a> or <a href="https://twitter.com/MSIntune" rel="noopener nofollow noreferrer" target="_blank">@MSIntune </a>and <a href="https://x.com/IntuneSuppTeam" rel="noopener nofollow noreferrer" target="_blank">@IntuneSuppTeam </a>on X to continue the conversation.</em></p></div></div></div>
+</article>
+</body>
+</html>

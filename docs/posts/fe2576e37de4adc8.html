@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What’s new in Microsoft Intune – April</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Microsoft Intune Blog</span>
+    <span class="date">April 30, 2026</span>
+  </div>
+  <h1>What’s new in Microsoft Intune – April</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/microsoft-intune-blog/what-s-new-in-microsoft-intune-april/ba-p/4493135" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p><span data-contrast="auto">April's Intune updates focus on three areas administrators have consistently asked us to improve: fresher device data, streamlined identity foundations across platforms, and simpler management for non-traditional endpoints. This month includes advancements in Windows app inventory, Linux single sign-on (SSO), and expanded enrollment and control for Apple devices.</span></p>
+<p><span data-contrast="auto">IT administrators monitoring applications often rely on a feature known as </span><a href="https://learn.microsoft.com/en-us/intune/intune-service/apps/app-discovered-apps" rel="noopener noreferrer" target="_blank"><span data-contrast="none"><span data-ccp-charstyle="Hyperlink">Discovered apps</span></span></a><span data-contrast="auto">. With the general release of enhanced app inventory </span><span data-contrast="auto">capabilities in the “All Apps” tab, this function provides more detailed and more frequently refreshed inventory data. Some platforms refresh Discovered apps inventory every seven days. App inventory now updates Windows apps on a more frequent schedule, uploading only changes since the last sync, which can help limit additional network usage.</span><span data-contrast="auto"> </span><span data-contrast="auto">App inventory data is updated across the fleet, with most active, healthy Windows devices refreshed multiple times per day.</span></p>
+<p><span data-contrast="auto">Besides more frequent data, the range of properties collected by the inventory agent has expanded. Install paths, install dates, uninstall commands, estimated size, architecture, and </span><span data-contrast="auto">per-user install scope are now included. Store-specific identifiers and supported languages, which were not part of the Discovered apps before, are also included here. IT admins also benefit with how inventory collection takes place across all users who have accessed the device and not just the logged-in user, helping reduce issues of applications coming and going as users change.</span></p>
+<p><span data-contrast="auto">To take advantage of app inventory, a </span><a href="https://learn.microsoft.com/en-us/intune/device-configuration/settings-catalog/?tabs=sc-search-filter%2Csc-reporting" rel="noopener noreferrer" target="_blank"><span data-contrast="none"><span data-ccp-charstyle="Hyperlink">new device configuration policy</span></span></a><span data-contrast="auto"> should be set up based on Properties Catalog and assigned to corporate-owned Windows 11 devices enrolled in </span><a href="https://learn.microsoft.com/en-us/entra/fundamentals/what-is-entra" rel="noopener noreferrer" target="_blank"><span data-contrast="none"><span data-ccp-charstyle="Hyperlink">Microsoft Entra ID</span></span></a><span data-contrast="auto">. Once configured, inventory data will start coming in on subsequent </span><span data-contrast="auto">check-ins.</span></p>
+<p><span data-contrast="auto">The new sign-in process offers Linux users a low-friction and phishing-resistant sign-in option similar to Windows and macOS, alongside a smaller footprint and more integrated use of Entra ID technology. </span><span data-contrast="none">This introduces advanced SSO functionality for Linux endpoints, utilizing the Microsoft Identity Broker. This is a modern C++ identity broker that integrates Linux devices with Microsoft Entra ID and replaces the legacy Java broker for Intune. To learn more visit </span><a href="https://learn.microsoft.com/en-us/entra/identity/devices/sso-linux?tabs=password-auth%2Cdebian-install%2Cdebian-update%2Cdebian-uninstall%2Cdebian-sc-example" rel="noopener noreferrer" target="_blank"><span data-contrast="none"><span data-ccp-charstyle="Hyperlink">Microsoft single sign-on for Linux</span></span></a><span data-contrast="none">.</span></p>
+<p><span data-contrast="auto">The Microsoft Identity Broker supports a more integrated trust model between the endpoint and Microsoft Entra ID by using full device join to issue device-bound authentication tokens, going beyond what basic enrollment supports. This way, admins can employ Phishing-Resistant Multi-Factor Authentication (PRMFA ) to authenticate, which includes certificate-based authentication, smart cards, and Personal Identity Verification (PIV) enabled security keys. Additionally, the same SSO flow now works on iOS as it does on Windows and macOS, where Microsoft Authentication Library (MSAL) APIs can provide SSO for non-Microsoft applications. For configuration details about SSO on Linux with Entra ID, read our </span><a href="https://learn.microsoft.com/en-us/entra/identity/devices/troubleshoot-device-registration-tool-linux" rel="noopener noreferrer" target="_blank"><span data-contrast="none"><span data-ccp-charstyle="Hyperlink">Device Registration Command Tool for Linux</span></span></a><span data-contrast="auto"> instructions. It's a win for admins and end users alike:</span></p>
+<ul>
+<li><strong><span data-contrast="auto">End users</span></strong><span data-contrast="auto"><strong> </strong>receive a </span><a href="https://learn.microsoft.com/en-us/entra/identity/devices/troubleshoot-device-registration-tool-linux" rel="noopener noreferrer" target="_blank"><span data-contrast="none"><span data-ccp-charstyle="Hyperlink">Primary Refresh Token (PRT)</span></span></a><span data-contrast="auto"> and see fewer credential prompts, improving the sign-in experience.</span></li>
+<li><strong><span data-contrast="auto">IT admins</span></strong><span data-contrast="auto"> get full Conditional Access and device compliance through Entra ID join, plus a smaller installation package and reduced background authentication tasks now that the Java runtime dependency is gone.</span></li>
+</ul>
+<p aria-level="2"><span data-contrast="auto">Microsoft Intune has worked to enhance endpoint management for iOS, iPadOS, macOS, visionOS, and tvOS devices in enterprise environments. In this section, we will look at some of the capabilities released this month to help simplify management of Apple devices at scale and set up end users for success with an identity-ready setup.</span></p>
+<p aria-level="2"><span data-contrast="auto">Expanding Intune Plan 2 specialty devices, automated device enrollment (ADE) for visionOS and tvOS is now available, including Government Community Cloud High, all government cloud tenants, and will be included from July 1 for </span><a href="https://techcommunity.microsoft.com/blog/microsoftintuneblog/microsoft-365-adds-advanced-microsoft-intune-solutions-at-scale/4474272" target="_blank"><span data-contrast="none"><span data-ccp-charstyle="Hyperlink">Microsoft 365 E3 and E5 licenses</span></span><span data-contrast="none"><span data-ccp-charstyle="Hyperlink">.</span></span></a><span data-contrast="auto"> Organizations managing large-scale Apple device deployments in unattended and shared-use scenarios can now leverage userless ADE for visionOS and tvOS. This includes devices like Apple TVs in conference rooms, patient rooms, or retail locations, and Vision Pro headsets deployed to training and design teams. These devices can now be enrolled and managed without user affinity or individual sign-in.</span></p>
+<p aria-level="2"><span data-contrast="none">After enrollment, visionOS and tvOS devices can be remotely deleted, retired, restarted, renamed, or synced, individually or in bulk. </span><span data-contrast="auto">Admins can send down configuration profiles via custom file upload for these devices. They can also restrict enrollment by specifying if these operating systems can enroll into their organization.</span></p>
+<p aria-level="2"><span data-contrast="auto">With <a href="https://learn.microsoft.com/en-us/intune/device-enrollment/setup-time-grouping" rel="noopener noreferrer" target="_blank"><span data-contrast="none"><span data-ccp-charstyle="Hyperlink">enrollment time grouping</span></span></a> within the ADE enrollment policy, administrators will have the ability to group devices at enrollment time within the new ADE enrollment policies experience, helping ensure critically assigned policies, scripts, and apps start installation during Setup Assistant. Read our <a href="https://techcommunity.microsoft.com/blog/intunecustomersuccess/new-iosipados-and-macos-ade-enrollment-policies-experience/4393531" target="_blank"><span data-contrast="none"><span data-ccp-charstyle="Hyperlink">blog post about the new iOS/iPadOS and macOS ADE enrollment policies experience</span></span></a> to learn more.</span></p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label='Enlarge Image &lt;em&gt;&lt;span data-contrast="none"&gt;&lt;span data-ccp-parastyle="caption"&gt;Figure&lt;/span&gt;&lt;/span&gt;&lt;span data-contrast="none"&gt;&lt;span data-ccp-parastyle="caption"&gt;1&lt;/span&gt;&lt;/span&gt;&lt;span data-contrast="none"&gt;&lt;span data-ccp-parastyle="caption"&gt;Example of how to create&lt;/span&gt;&lt;span data-ccp-parastyle="caption"&gt;visionOS&lt;/span&gt;&lt;span data-ccp-parastyle="caption"&gt;/tvOS enrollment policy using ADE in the Intune admin cente&lt;/span&gt;&lt;span data-ccp-parastyle="caption"&gt;r.&lt;/span&gt;&lt;/span&gt;&lt;/em&gt;' aria-labelledby="JFQXYd_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/fe2576e37de4adc8/img_0.png"/></button><span class="lia-media-caption-text" id="JFQXYd_caption"><em><span data-contrast="none"><span data-ccp-parastyle="caption">Figure</span></span><span data-contrast="none"><span data-ccp-parastyle="caption">1</span></span><span data-contrast="none"><span data-ccp-parastyle="caption">Example of how to create</span><span data-ccp-parastyle="caption">visionOS</span><span data-ccp-parastyle="caption">/tvOS enrollment policy using ADE in the Intune admin cente</span><span data-ccp-parastyle="caption">r.</span></span></em></span></span>
+<p aria-level="2"><span data-contrast="auto">Rounding out this month's Apple updates, Intune now allows organizations to choose whether </span><a href="https://support.apple.com/en-gb/guide/business/axm53xk34bq/web" rel="noopener nofollow noreferrer" target="_blank"><span data-contrast="none"><span data-ccp-charstyle="Hyperlink">Managed Apple Accounts</span></span></a><span data-contrast="auto"> can be used on any Apple device or only on organization-owned devices. In practice, this means corporate identities stay on corporate hardware, and personal Apple Accounts can be blocked from signing in to organization-owned devices entirely. </span><span data-contrast="none">This is especially important in regulated sectors, such as financial services, where organizations need to prevent corporate data from residing on unmanaged,</span><span data-contrast="auto"> </span><span data-contrast="none">non-organization-owned devices.</span></p>
+<blockquote>
+<p aria-level="2"><span data-contrast="auto">Starting this month, the </span><span data-contrast="auto">What’s New in Intune</span><span data-contrast="auto"> blog includes a new segment,<strong> </strong></span><strong><span data-contrast="auto">Intune: Myth vs. Reality</span></strong><span data-contrast="auto">. This series will address common assumptions about endpoint management and how Intune works in practice.</span></p>
+<p aria-level="2"><strong><span data-contrast="auto">This month’s topic: Change-based delivery speed and responsiveness</span></strong></p>
+<ul>
+<li aria-level="2"><strong><span data-contrast="auto">Myth: </span></strong><span data-contrast="auto">App and policy changes take 8-hours to apply</span></li>
+<li aria-level="2"><strong><span data-contrast="auto">Reality:</span></strong><span data-contrast="auto"><strong> </strong>Intune processes 90% of device changes in less than an hour</span></li>
+<li aria-level="2"><strong><span data-contrast="auto">How</span></strong><span data-contrast="auto"><strong>: </strong>The commonly cited “8‑hour” timing reflects a routine maintenance check‑in — not how Intune delivers meaningful changes today. Most high-impact app deployments, policy updates, and device actions are delivered through prioritized, change‑based delivery paths that typically reach online devices much faster. By distinguishing these time-sensitive changes from routine maintenance activity and handling them differently, Intune helps reduce the likelihood that important changes aren’t unnecessarily delayed.</span></li>
+</ul>
+<p aria-level="2"><span data-contrast="auto">To go deeper, <a data-outlook-id="1c89dcdc-4b75-4243-bc95-633b94823ce9" href="https://aka.ms/IntuneMythSlowSync" rel="noopener noreferrer" target="_blank">read our latest blog</a>, which explains how Intune processes updates at scale, including priority‑aware check‑ins, push‑based signaling, and platform‑specific optimizations that improve consistency and responsiveness across devices.</span></p>
+<p aria-level="2"> </p>
+</blockquote>
+<p aria-level="2"><span data-contrast="auto">That’s a wrap for April. </span><span data-contrast="none">Whether you were interested in device data improvements, Apple enrollment expansions, or the Myth vs. Reality section, we'd love to hear your thoughts in the comments below.</span></p>
+<hr/>
+<p aria-level="2"><span data-contrast="none"><em>Stay up to date! Bookmark the <a href="https://techcommunity.microsoft.com/t5/microsoft-endpoint-manager-blog/bg-p/MicrosoftEndpointManagerBlog" target="_blank">Microsoft Intune Blog</a> and follow us on <a href="https://www.linkedin.com/company/microsoft-intune-product" rel="noopener nofollow noreferrer" target="_blank">LinkedIn</a> or <a href="https://twitter.com/MSIntune" rel="noopener nofollow noreferrer" target="_blank">@MSIntune</a> and <a href="https://x.com/IntuneSuppTeam" rel="noopener nofollow noreferrer" target="_blank">@IntuneSuppTeam</a> on X to continue the conversation.</em></span></p>
+<p aria-level="2"> </p></div></div></div>
+</article>
+</body>
+</html>

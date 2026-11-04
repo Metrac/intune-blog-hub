@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Best practices for securing Microsoft Intune</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Intune Customer Success</span>
+    <span class="date">March 14, 2026</span>
+  </div>
+  <h1>Best practices for securing Microsoft Intune</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/intune-customer-success/best-practices-for-securing-microsoft-intune/ba-p/4502117" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><h2 class="styles_text-body__F7QRV MessageIntroduction_lia-message-introduction___mMAN styles_h4__wlzOi">Three best practices to help strengthen Intune administrative controls.</h2><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p>Microsoft Intune gives IT and security teams a powerful way to manage endpoints at scale - deploying apps, enforcing security baselines, and configuring the settings that keep users productive and your organization protected. That’s why strong admin protections matter, so the right people can make the right changes, in the right scope, with the right safeguards.</p>
+<p>In this post, we’ll walk through three practical approaches to strengthen Intune protections:</p>
+<ol>
+<li><strong>Start with least-privilege</strong>, designing roles around real admin jobs</li>
+<li><strong>Embrace phishing-resistant authentication and privileged access hygiene</strong>, leveraging Microsoft Entra capabilities to reduce account and token compromise</li>
+<li><strong>Enable Multi Admin Approval</strong> in Intune for sensitive changes</li>
+</ol>
+<p>Below we outline how to put each approach into practice.</p>
+<p>Least-privilege works best when it’s grounded in how your team operates. As a best practice, don’t grant more administrative access than a role truly needs. In Intune, <a class="lia-external-url" href="https://go.microsoft.com/fwlink/?linkid=2356284" rel="noopener noreferrer" target="_blank">role-based access control</a> (RBAC) lets you tailor permissions and scopes so teams can run day-to-day operations with the minimum set of permissions required, nothing more. Microsoft Entra ID roles that have access to Intune, such as Global Administrator and Intune Administrator, are considered privileged roles with broad permissions in Intune. The use and assignment of privileged roles should be limited and not used for daily administrative tasks within Intune.</p>
+<p>Least-privilege is about limiting both the actions an admin can take and the users/devices those actions can be applied to. In Intune RBAC, scope tags enable you to constrain an admin’s visibility and actions to a defined set of users and devices - for example, only the devices assigned to a specific region, business unit, or platform team. When implementing RBAC policies, limit both the actions and users/devices an admin has permissions over.</p>
+<p><span data-contrast="auto"><strong>Call to action</strong>: Treat Intune administration as a set of job-specific roles, not a blanket entitlement.</span></p>
+<ul>
+<li>Inventory who has Intune Administrator, Global Administrator, or other high-impact roles, then remove broad assignments that don’t map to a named job function.</li>
+<li>Leverage Intune built-in role definitions for common personas (Help Desk Operator, Application Manager, Endpoint Security Manager, Read Only Operator) and standardize assignments. Create <a class="lia-external-url" href="https://go.microsoft.com/fwlink/?linkid=2356173" rel="noopener noreferrer" target="_blank">custom roles</a> for ultimate least-privilege control.</li>
+<li>Implement scoped administration (scope groups and <a class="lia-external-url" href="https://go.microsoft.com/fwlink/?linkid=2310700" rel="noopener noreferrer" target="_blank">scope tags</a>) for business units, regions, or platform teams, and validate that admins can only affect resources within their assigned scope.</li>
+<li>Adopt time-bound privilege elevation such as Microsoft <a class="lia-external-url" href="https://www.microsoft.com/security/business/identity-access/microsoft-entra-privileged-identity-management-pim" rel="noopener noreferrer" target="_blank">Entra Privileged Identity Management</a> (PIM) for admin roles and require reauthentication on elevation and sensitive operations.</li>
+</ul>
+<p>The security objective is straightforward: privileged access should be <strong>hard to obtain</strong> and <strong>hard to reuse</strong>. Microsoft Entra ID capabilities (<a class="lia-external-url" href="https://go.microsoft.com/fwlink/?linkid=2356286" rel="noopener noreferrer" target="_blank">Conditional Access</a>, <a class="lia-external-url" href="https://go.microsoft.com/fwlink/?linkid=2356287" rel="noopener noreferrer" target="_blank">phishing-resistant multifactor authentication</a> (MFA), <a class="lia-external-url" href="https://go.microsoft.com/fwlink/?linkid=2356388" rel="noopener noreferrer" target="_blank">risk signals</a>, and <a class="lia-external-url" href="https://go.microsoft.com/fwlink/?linkid=2356388" rel="noopener noreferrer" target="_blank">privileged access controls</a>) provide the policy engine that governs who can administer Intune, from where, and under what conditions.</p>
+<p><span data-contrast="auto"><strong>Call to action:</strong></span><span data-contrast="auto"> Every privileged Intune action (Intune RBAC Role Management, device wipe, script deployment) should require strong, policy-verified sign-in, not just a password.</span></p>
+<ul>
+<li><a class="lia-external-url" href="https://go.microsoft.com/fwlink/?linkid=2356285" rel="noopener noreferrer" target="_blank">Create Conditional Access policies</a> dedicated to privileged roles and admin portals (Intune, Microsoft Entra, and related admin endpoints): require phishing-resistant authentication only, require a compliant device, challenge high-risk users or sign-ins, and restrict access by location or trusted network where feasible. Reduce or eliminate policy exclusions.</li>
+<li>Eliminate standing access by using Microsoft <a class="lia-external-url" href="https://learn.microsoft.com/entra/id-governance/privileged-identity-management/pim-configure" rel="noopener noreferrer" target="_blank">Entra Privileged Identity Management</a> to assign time-bound roles based on conditions and approval steps, including restricting access to who can administer and assign permissions to apps.</li>
+<li>Move privileged accounts to phishing-resistant authentication methods and disable weaker methods for those accounts and through policy (see <a class="lia-external-url" href="https://learn.microsoft.com/entra/identity/authentication/how-to-deploy-phishing-resistant-passwordless-authentication" rel="noopener noreferrer" target="_blank">Plan a phishing-resistant passwordless authentication deployment)</a>.</li>
+<li>Establish <a class="lia-external-url" href="https://learn.microsoft.com/security/privileged-access-workstations/privileged-access-devices" rel="noopener noreferrer" target="_blank">privilege admin workstations</a> with higher security baselines and use them for Intune high privilege admin accounts.</li>
+<li>Operationalize your <a class="lia-external-url" href="https://learn.microsoft.com/security/operations/token-theft-playbook#investigations" rel="noopener noreferrer" target="_blank">token theft response</a> plan by investigating risky sign-ins and unusual admin activity in Microsoft Defender XDR with signals from Microsoft Entra, Microsoft Defender for Cloud Apps, and Microsoft Defender for Endpoints.</li>
+<li>Adopt a defense‑in‑depth strategy to reduce the risk and impact of token theft (see <a class="lia-external-url" href="https://learn.microsoft.com/entra/identity/devices/protecting-tokens-microsoft-entra-id" rel="noopener noreferrer" target="_blank">Protecting tokens in Microsoft Entra</a>).</li>
+</ul>
+<p><a class="lia-external-url" href="https://go.microsoft.com/fwlink/?linkid=2356383" rel="noopener noreferrer" target="_blank">Multi Admin Approval</a> introduces a practical governance control: selected Intune changes require a second authorized admin to review and approve before deployment. This is enforced for both Intune admin center actions and actions performed through Intune APIs. Multi Admin Approval reduces the risk that a single action can result in tenant-wide impact.</p>
+<p><strong>Call to action</strong>: Require a second approval for high-impact Intune workflows (such as Intune RBAC role management, device wipe, and script deployment) to add an additional safeguard and help contain potential tenant wide impact.</p>
+<ul>
+<li>Decide which change types require approval - start with high-impact changes such as Intune RBAC role management and device wipe. Then, add access policies for changes that affect authentication, compliance, security baselines, or broad assignment scopes.</li>
+<li>Define approver roles and coverage (who can approve, SLAs, and what happens during incidents).</li>
+<li>Document an emergency/break-glass path with explicit post-change review, so speed doesn’t erase governance.</li>
+</ul>
+<p>When combined, these practices help you shift from relying on “trusted administrators” toward building a more protected administration by design: least-privilege to contain impact, Microsoft Entra-based controls to ensure users are trusted and are who they say they are, and multi-admin approval to govern the changes that matter most. These practices help organizations advance safer speed, clearer separation of duties, stronger audit readiness, and more resilient endpoint operations.</p>
+<p><strong>If you’re looking for a place to start, here are a few quick steps:</strong> start with a quick wins pass - inventory broad, standing Intune role assignments and replace them with least-privilege RBAC roles; enforce Conditional Access and adopt phishing-resistant multifactor authentication for all admin scenarios; and place Intune RBAC role management, device wipe, script deployment behind multi-admin approval.</p></div></div></div>
+</article>
+</body>
+</html>

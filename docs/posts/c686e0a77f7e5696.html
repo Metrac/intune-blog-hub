@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Remote Help on Windows: Unattended Support with Remote Sign-In Is Here</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Intune Customer Success</span>
+    <span class="date">August 25, 2026</span>
+  </div>
+  <h1>Remote Help on Windows: Unattended Support with Remote Sign-In Is Here</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/intune-customer-success/remote-help-on-windows-unattended-support-with-remote-sign-in-is/ba-p/4549772" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p><strong>By: Rodolfo Bermudez | Sr. Product Manager &amp; Kara Wang | Product Manager 2 - Microsoft Intune</strong></p>
+<p>Helpdesk teams have long asked for a way to remotely troubleshoot Windows devices without needing the user to be present. Whether it’s after-hours maintenance on a shared device in a call center, or a device sitting idle at a remote office, waiting for a user to be available shouldn’t be the blocker to getting work done.</p>
+<p>With Intune’s August release, we’re excited to announce <strong>Remote Help Windows Unattended Support with Remote Sign-In</strong> a new capability that lets helpdesk staff remotely access physical Windows devices by signing in with credentials they have access to, without requiring the user to grant access or even be logged in.</p>
+<p>Previously, every Remote Help session on Windows required the user to be present at the device to accept the connection. Now Remote Help Windows Unattended Support enables:</p>
+<ul>
+<li><strong>After-hours support - </strong>Devices that need maintenance outside business hours can be serviced without scheduling time with users.</li>
+<li><strong>Improved Helpdesk efficiency - </strong>Tier 2 support staff don't spend extra time coordinating schedules that often take only minutes to fix.</li>
+<li><strong>Remote locations get the help they need - </strong>Branch offices without on-site IT have path to immediate remediation.</li>
+</ul>
+<p>With unattended capabilities your helpdesk connects directly to the Windows login screen, authenticates with their own credentials, and works in a separate Windows session, all while the user’s session remains safely locked and preserved.</p>
+<div class="styles_lia-table-wrapper__h6Xo9 styles_table-responsive__MW0lN"><table border="1"><thead><tr class="lia-background-color-custom-0078d4"><th class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><span class="lia-text-color-22">Capability</span></th><th class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><span class="lia-text-color-22">Details</span></th></tr></thead><tbody><tr><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><strong>Remote Access Without User Presence</strong></td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">Helpers can sign in with their own credentials and establish a new Windows session on the target device, even when no user is actively connected.</td></tr><tr class="lia-background-color-custom-f8f9fa"><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><strong>Session Isolation</strong></td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">The user's existing session remains locked and preserved, preventing disruption while support activities are performed in a separate session.</td></tr><tr><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><strong>Security-First Design</strong></td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">Uses least-privilege access, a dedicated RBAC permission, and a complete audit trail to help maintain security and compliance requirements.</td></tr><tr class="lia-background-color-custom-f8f9fa"><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><strong>User Awareness</strong></td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">If a user is currently signed in, they receive a notification and can choose to accept or reject the remote access request.</td></tr><tr><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><strong>Rich Session Features</strong></td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">Supports file transfer, clipboard passthrough, Remote Desktop Virtual Printer, multi-monitor support, and other productivity-enhancing capabilities.</td></tr></tbody><colgroup><col/><col/></colgroup></table></div>
+<ul>
+<li>Remote Help is included with Microsoft Intune Suite, Remote Help standalone add-on, or Microsoft 365 E3/E5.</li>
+<li>Remote Help must be enabled in the tenant. You can find step-by-step instructions in the following article: <a class="lia-external-url" href="https://learn.microsoft.com/intune/remote-help/deploy?tabs=macos#configure-remote-help-for-your-tenant" rel="noopener noreferrer" target="_blank">Deploy Remote Help with Microsoft Intune</a>.</li>
+</ul>
+<div class="styles_lia-table-wrapper__h6Xo9 styles_table-responsive__MW0lN"><table border="1"><thead><tr class="lia-background-color-custom-0078d4"><th class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><span class="lia-text-color-22">Requirement</span></th><th class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><span class="lia-text-color-22">Details</span></th></tr></thead><tbody><tr><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><strong>Ownership</strong></td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">Supports corporate-owned enrolled devices that are <strong>Microsoft Entra joined</strong> or <strong>Hybrid Microsoft Entra joined</strong>. Personal and BYOD devices aren't supported.</td></tr><tr class="lia-background-color-custom-f8f9fa"><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><strong>Platform</strong></td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">Requires physical Windows devices running <strong>x64-based operating systems</strong>. Virtual machines aren't currently supported.</td></tr><tr><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><strong>Device State</strong></td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">The device must be powered on, connected to the internet, able to reach the required Microsoft service endpoints, and have the <strong>Intune Management Extension</strong> installed.</td></tr></tbody><colgroup><col/><col/></colgroup></table></div>
+<p>This feature uses a dedicated permission: <strong>Remote Help app &gt; Windows unattended control remote sign-in</strong>. It must be explicitly assigned to helpdesk roles targeting specific device groups. To maintain a higher security boundary, this permission isn’t included in any Intune built-in role, including existing roles such as Help Desk Operator or School Administrator, and must be granted through a custom role assignment.</p>
+<div>
+<p><strong>Tip: Limit Access to Unattended Support</strong></p>
+<p>Consider creating a dedicated custom role for <strong>unattended support</strong> rather than including it in your standard Remote Help roles. Because unattended access enables support sessions without an end user present, it's a best practice to restrict this capability to <strong>Tier 2 and Tier 3 support staff</strong> or senior administrators, and scope access only to the devices they are responsible for managing.</p>
+</div>
+<p> </p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image &lt;p&gt;&lt;em&gt;Figure 1: Remote Help app settings in the Microsoft Intune admin center showing enabled and disabled permissions, including elevation, screen viewing, full control, and Windows unattended control at remote sign-in.&lt;/em&gt;&lt;/p&gt;" aria-labelledby="Wld85W_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/c686e0a77f7e5696/img_0.png"/></button><span class="lia-media-caption-text" id="Wld85W_caption">
+<p><em>Figure 1: Remote Help app settings in the Microsoft Intune admin center showing enabled and disabled permissions, including elevation, screen viewing, full control, and Windows unattended control at remote sign-in.</em></p>
+</span></span>
+<ol>
+<li>In the Intune admin center, go to Tenant administration &gt; Roles</li>
+<li>Create or edit a custom role</li>
+<li>Under Permissions &gt; Remote Help app, enable Windows unattended control remote sign-in</li>
+<li>Assign to your helpdesk groups, scoping to the device groups that should receive unattended support</li>
+</ol>
+<p><strong>Required agents</strong></p>
+<ol>
+<li><a class="lia-external-url" href="https://go.microsoft.com/fwlink/?linkid=2310011" rel="noopener noreferrer" target="_blank">Azure Virtual Desktop Agent</a>.</li>
+<li><a class="lia-external-url" href="https://go.microsoft.com/fwlink/?linkid=2311028" rel="noopener noreferrer" target="_blank">Azure Virtual Desktop Agent Bootloader</a>.</li>
+</ol>
+<p>Package both the AVD Agent MSI and AVD Agent Bootloader MSI as Win32 apps in Intune. Deploy to the same target device groups that are intended to receive unattended support from Step 1. No ongoing maintenance is required - the components auto-update.</p>
+<ol>
+<li>Go to Devices &gt; Windows &gt; Configuration profiles &gt; Create profile</li>
+<li>Platform: Windows 10 and later | Profile type: Settings catalog</li>
+<li>Add setting: Search for Remote Desktop &gt; Enable "Allow users to connect remotely using Remote Desktop"</li>
+<li>Assign to your target device groups</li>
+<li>Verify: Devices &gt; Configuration profiles &gt; Device status</li>
+</ol>
+<p>From the Intune admin center, navigate to the target device and select "..." &gt; New remote assistance session. A side panel appears with two options:</p>
+<ul>
+<li>Initiate attended control: sessions in which a signed-in end user is present and grants access to the helper</li>
+<li>Initiate unattended control: sessions in which an authorized helper can access and control an Intune managed device without a signed in end user present</li>
+</ul>
+<p>Select Initiate unattended control and click Select.<br/><br/></p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image &lt;p&gt;&lt;em&gt;Figure 2: Microsoft Intune admin center device overview with the Remote Help panel open, showing the option to initiate an unattended control session on a corporate Windows device.&lt;/em&gt;&lt;/p&gt;" aria-labelledby="A5ovzQ_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/c686e0a77f7e5696/img_1.png"/></button><span class="lia-media-caption-text" id="A5ovzQ_caption">
+<p><em>Figure 2: Microsoft Intune admin center device overview with the Remote Help panel open, showing the option to initiate an unattended control session on a corporate Windows device.</em></p>
+</span></span>
+<p>Before connecting, the Intune portal validates several conditions:</p>
+<div class="styles_lia-table-wrapper__h6Xo9 styles_table-responsive__MW0lN"><table border="1"><thead><tr class="lia-background-color-custom-0078d4"><th class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><span class="lia-text-color-22">Condition</span></th><th class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><span class="lia-text-color-22">What You'll See</span></th></tr></thead><tbody><tr><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><strong>Missing RBAC Permission</strong></td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">The unattended control option is disabled and displays the message: <br/><br/><em>"You can only select session types for which you have permission."</em></td></tr><tr class="lia-background-color-custom-f8f9fa"><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><strong>Personal Device</strong></td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">The unattended control option is disabled and displays: <br/><br/><em>"Unattended control is not available on personal devices."</em></td></tr><tr><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><strong>Device Noncompliant</strong></td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">A warning appears indicating the device doesn't meet your organization's security or compliance requirements.</td></tr><tr class="lia-background-color-custom-f8f9fa"><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><strong>Device Offline</strong></td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">The connection attempt fails and displays: <br/><br/><em>"Make sure the user's device is on and connected to the internet."</em></td></tr><tr><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><strong>Missing Prerequisites</strong></td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">
+<p>The Remote Help pane in the Intune admin center indicates that required agents, policies, permissions, or device settings haven't been configured.</p>
+</td></tr></tbody><colgroup><col/><col/></colgroup></table></div>
+<p> </p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label='Enlarge Image &lt;em&gt;Figure 3: &lt;/em&gt;
+&lt;em data-mce-style="color: rgb(112, 112, 112);"&gt;Microsoft Intune Remote Help panel displaying a notice that unattended control is unavailable for a personally owned device, with session options disabled.&lt;/em&gt;' aria-labelledby="MCkPV0_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/c686e0a77f7e5696/img_2.png"/></button><span class="lia-media-caption-text" id="MCkPV0_caption"><em>Figure 3: </em><em data-mce-style="color: rgb(112, 112, 112);">Microsoft Intune Remote Help panel displaying a notice that unattended control is unavailable for a personally owned device, with session options disabled.</em></span></span>
+<p>A progress panel shows real-time status: "Starting unattended session on user’s device" followed by green checkmarks when successful, with an "Open Remote Help" link.</p>
+<p>If the connection fails, for example because the device is offline or there is a network connectivity related issue, you’ll see a clear error with a Retry option.</p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label='Enlarge Image &lt;em&gt;Figure 4: &lt;span data-mce-style="color: rgb(112, 112, 112);"&gt;Microsoft Intune Remote Help panel confirming that an unattended remote session has started on a managed Windows device, with a link to open Remote Help.&lt;/span&gt;&lt;/em&gt;' aria-labelledby="T1Ra5Y_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/c686e0a77f7e5696/img_3.png"/></button><span class="lia-media-caption-text" id="T1Ra5Y_caption"><em>Figure 4: <span data-mce-style="color: rgb(112, 112, 112);">Microsoft Intune Remote Help panel confirming that an unattended remote session has started on a managed Windows device, with a link to open Remote Help.</span></em></span></span>
+<p>This will launch a new browser tab opening the Windows App (web client). The helper may need to authenticate again using the same username and credentials used to authenticate to Intune Admin portal.</p>
+<p>Once connected, the helper then needs to authenticate to the device within the remote session. You can sign in using a local Windows account (ComputerName\UserName), an Active Directory domain account (Domain\UserName or UPN), or a Microsoft Entra ID account (UPN), whichever is appropriate based on the join state of the device and the scenario. Least privilege is enforced - a standard user account does not gain Administrator permissions.</p>
+<p>If someone is actively using the device, the helper sees: "Another user is signed in. If you continue, they’ll be disconnected. Do you want to sign in anyway?"</p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label='Enlarge Image &lt;em&gt;Figure 5: &lt;span data-mce-style="color: rgb(112, 112, 112);"&gt;Windows sign-in screen displaying a prompt warning that another user is signed in and asking whether to continue with a remote sign-in session.&lt;/span&gt;&lt;/em&gt;' aria-labelledby="YhjO2c_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/c686e0a77f7e5696/img_4.png"/></button><span class="lia-media-caption-text" id="YhjO2c_caption"><em>Figure 5: <span data-mce-style="color: rgb(112, 112, 112);">Windows sign-in screen displaying a prompt warning that another user is signed in and asking whether to continue with a remote sign-in session.</span></em></span></span>
+<p>Choosing "Yes" locks the user’s session (preserving their work) and connects the helper to a separate Windows session.</p>
+<p>If a user is signed in, they see a notification: "Do you want to allow the helper to connect to this machine? Click OK to disconnect your session immediately or click Cancel to stay connected. No action will disconnect your session in 30 seconds."</p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label='Enlarge Image &lt;em&gt;Figure 6: &lt;/em&gt;
+&lt;em data-mce-style="color: rgb(112, 112, 112);"&gt;Windows 11 desktop showing a Remote Desktop Connection dialog requesting approval for a remote user to connect, with options to allow or cancel the session.&lt;/em&gt;' aria-labelledby="wlDZey_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/c686e0a77f7e5696/img_5.png"/></button><span class="lia-media-caption-text" id="wlDZey_caption"><em>Figure 6: </em><em data-mce-style="color: rgb(112, 112, 112);">Windows 11 desktop showing a Remote Desktop Connection dialog requesting approval for a remote user to connect, with options to allow or cancel the session.</em></span></span>
+<p>If they don’t respond in 30 seconds, the unattended session starts automatically.</p>
+<p>The end user’s console shows their lock screen. They cannot see what the helper is doing. The helper works in a separate Windows session.</p>
+<p>The end user can regain control at any time by signing back into their session from the lock screen. The helper is notified and can choose to disconnect.</p>
+<p>Unattended sessions are fully auditable using the same reporting infrastructure as existing Remote Help:</p>
+<ul>
+<li>Session monitoring: Tenant administration &gt; Remote Help &gt; Monitor tab (active sessions, average time, total sessions)</li>
+<li>Session history: Remote Help sessions tab with Provider, Recipient, Device, OS, session type (Unattended/Attended), and export capability</li>
+<li>Audit logs: Tenant administration &gt; Audit logs - filter by category "RemoteHelp" for complete session lifecycle events</li>
+</ul>
+<p>For detailed step-by-step instructions on monitoring, reporting, and auditing Remote Help sessions, see: <a class="lia-external-url" href="https://learn.microsoft.com/intune/remote-help/troubleshoot?tabs=macos" rel="noopener noreferrer" target="_blank">Troubleshoot and monitor Remote Help for Microsoft Intune.</a></p>
+<div class="styles_lia-table-wrapper__h6Xo9 styles_table-responsive__MW0lN"><table border="1"><thead><tr class="lia-background-color-custom-0078d4"><th class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><span class="lia-text-color-22">Control</span></th><th class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><span class="lia-text-color-22">How It Works</span></th></tr></thead><tbody><tr><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><strong>Corporate-Only Access</strong></td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">Only Intune-enrolled, corporate-owned physical devices that are Microsoft Entra joined or Hybrid Microsoft Entra joined are eligible for unattended support.</td></tr><tr class="lia-background-color-custom-f8f9fa"><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><strong>Explicit RBAC Permission</strong></td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">Uses a dedicated permission separate from traditional Remote Help scenarios that require user presence. This permission is included in the built-in Intune Help Desk Operator role.</td></tr><tr><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><strong>Least Privilege</strong></td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">The helper's actions are limited to the permissions associated with the Windows account used to sign in to the target device.</td></tr><tr class="lia-background-color-custom-f8f9fa"><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><strong>User Awareness</strong></td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">If a user is actively signed in, they receive a notification and a 30-second window to accept or reject the unattended access request.</td></tr><tr><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><strong>Session Isolation</strong></td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">Support occurs in a separate Windows session, keeping the user's active session locked and preventing access to in-use applications or data.</td></tr><tr class="lia-background-color-custom-f8f9fa"><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><strong>Full Audit Trail</strong></td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">All unattended support sessions are logged to support auditing, compliance reviews, and operational accountability.</td></tr><tr><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><strong>12-Hour Maximum Session Duration</strong></td><td class="lia-border-color-custom-d1d1d1 lia-border-style-solid">Unattended sessions automatically terminate after 12 hours to help reduce security risk and prevent abandoned connections.</td></tr></tbody><colgroup><col/><col/></colgroup></table></div>
+<p> </p>
+<p>✅ <strong>Three setup steps:</strong> RBAC role + AVD agents + Remote Desktop config profile, all targeting the same device groups.</p>
+<p>✅ <strong>Corporate-owned physical devices only:</strong> Personal and virtual devices are not supported at GA.</p>
+<p>✅ <strong>Dedicated RBAC permission:</strong> Use <em>Windows unattended control remote sign-in</em>.</p>
+<p>✅ <strong>Devices must be online:</strong> Sleep, hibernate, and powered-off devices cannot receive unattended sessions.</p>
+<p>✅ <strong>User sessions are preserved:</strong> If a user is signed in, their session is locked, not terminated.</p>
+<p>✅ <strong>Auto-updating agents:</strong> The AVD agent updates automatically, so no ongoing deployment maintenance is required.</p>
+<div>
+<p><strong>Can I start an unattended session from the Remote Help app?</strong></p>
+<p>No. Unattended sessions can only be initiated from the device page in the Intune admin center.</p>
+</div>
+<div>
+<p><strong>What if a user rejects the connection?</strong></p>
+<p>If they click Cancel, nothing happens and the session doesn't start.</p>
+</div>
+<div>
+<p><strong>What happens if no one responds to the notification?</strong></p>
+<p>After 30 seconds with no response, the unattended session starts automatically.</p>
+</div>
+<div>
+<p><strong>Does this work on Windows 365 or AVD?</strong></p>
+<p>We are working towards providing support for Windows 365 and Azure Virtual Desktop in the future.</p>
+</div>
+<div>
+<p><strong>What's the maximum session length?</strong></p>
+<p>Sessions can last up to 12 hours. After 12 hours, the session automatically disconnects. This limit isn't configurable.</p>
+</div>
+<div>
+<p><strong>What credentials can I use to sign in?</strong></p>
+<p>Users can sign in using a local Windows account (ComputerName\UserName), an Active Directory domain account (Domain\UserName or UPN), or a Microsoft Entra ID account (UPN), whichever is appropriate based on the join state of the device and the scenario.</p>
+</div>
+<p><em>We’d love to hear your feedback! Share your thoughts in the comments below, follow us on <a class="lia-external-url" href="https://aka.ms/IntuneLinked" rel="noopener noreferrer" target="_blank">LinkedIn</a> or reach out to us on X <a class="lia-external-url" href="https://aka.ms/IntuneSuppTeam" rel="noopener noreferrer" target="_blank">@IntuneSuppTeam</a> or <a class="lia-external-url" href="https://aka.ms/MSIntune" rel="noopener noreferrer" target="_blank">@MSIntune</a>.</em></p></div></div></div>
+</article>
+</body>
+</html>

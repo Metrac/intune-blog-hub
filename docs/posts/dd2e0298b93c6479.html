@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What’s new in Microsoft Intune – September</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Microsoft Intune Blog</span>
+    <span class="date">September 29, 2026</span>
+  </div>
+  <h1>What’s new in Microsoft Intune – September</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/microsoft-intune-blog/what-s-new-in-microsoft-intune-september/ba-p/4537394" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p>Planning before the first devices receive updates is an important part of managing a rollout. IT admins must regularly decide which devices go first, how quickly a rollout expands, and where to pause when the signals change. The same need for control shows up during device setup and day-to-day troubleshooting.</p>
+<p>September’s Intune updates help more government organizations use advanced management capabilities while giving IT teams greater control over change. Admins can stage app and policy rollouts to reduce deployment risk. From a consolidated view, they can investigate devices to resolve issues faster. From setup through retirement, they can streamline Windows and Android endpoint management.</p>
+<p>Government IT teams need to manage applications, certificates, and device support within their accredited cloud environments. This month, <a class="lia-external-url" href="https://learn.microsoft.com/en-us/intune/app-management/deployment/enterprise-app-management" rel="noopener noreferrer" target="_blank">Intune Enterprise Application Management</a>, <a class="lia-external-url" href="https://learn.microsoft.com/en-us/intune/cloud-pki/" rel="noopener noreferrer" target="_blank">Microsoft Cloud PKI</a>, and <a class="lia-external-url" href="https://learn.microsoft.com/en-us/intune/remote-help/?tabs=windows" rel="noopener noreferrer" target="_blank">Intune Remote Help</a> will be available in the <a class="lia-internal-link lia-internal-url lia-internal-url-content-type-blog" data-lia-auto-title="Government Community Cloud with high security requirements" data-lia-auto-title-active="0" href="https://techcommunity.microsoft.com/blog/publicsectorblog/advanced-microsoft-intune-capabilities-are-now-available-for-gcc-high/4555814" target="_blank">Government Community Cloud with high security requirements</a>. Enterprise Application Management is also being offered to organizations of the Department of Defense (DoD).</p>
+<p>This builds on the July availability of Intune Advanced Analytics and Endpoint Privilege Management, giving government admins more ways to assess device health, strengthen security, manage apps and certificates, and support endpoints through Intune. For an overview of all these capabilities and their availability, check out our public sector blog <a class="lia-internal-link lia-internal-url lia-internal-url-content-type-blog" data-lia-auto-title="here" data-lia-auto-title-active="0" href="https://techcommunity.microsoft.com/blog/publicsectorblog/advanced-microsoft-intune-capabilities-are-now-available-for-gcc-high/4555814" target="_blank">here</a>.</p>
+<p>Controlled rollouts helps IT teams reduce risk before changes reach the entire organization. Microsoft Intune deployments, now in public preview, bring this phased rollout model to support Windows apps and configuration policies so teams can validate change with smaller groups and expand with greater confidence.</p>
+<p>Admins can reduce rollout risk by organizing users and devices into rings, controlling when each ring receives an assignment, and applying exclusions that apply across the deployment. They can monitor ring activation in the Intune admin center so teams can respond to changing signals by pausing, resuming, or canceling an active deployment when needed. Existing Intune role-based access controls and scope tags continue to apply, preserving established governance as teams gain more control over rollout timing.</p>
+<p>Deployment plans save time by letting admins reuse a proven rollout structure across supported apps and policies. Admins can define the rings, groups, exclusions, and timing once, then reuse the plan across supported apps and policies. When a reusable plan isn’t needed, they can instead configure rings for a one-time deployment.</p>
+<p>In public preview, Microsoft Intune deployments support Windows devices and:</p>
+<ul>
+<li>Win32 apps</li>
+<li>Enterprise App Catalog apps</li>
+<li>Settings catalog policies</li>
+<li>Endpoint security policies </li>
+</ul>
+<p>To get started, read the <a class="lia-external-url" href="https://learn.microsoft.com/en-us/intune/device-management/deployments/overview" rel="noopener noreferrer" target="_blank">Microsoft Intune deployments overview</a>.</p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image Figure 1: Deployments page in the Microsoft Intune admin center showing the status of app and device configuration rollouts across deployment rings." aria-labelledby="snu0sG_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/dd2e0298b93c6479/img_0.jpg"/></button><span class="lia-media-caption-text" id="snu0sG_caption">Figure 1: Deployments page in the Microsoft Intune admin center showing the status of app and device configuration rollouts across deployment rings.</span></span>
+<p>The redesigned device page helps admins investigate issues faster by reducing the need to move between separate views. Now the default device view in the Intune admin center brings device details, recent activity, tools, reports, and supported actions together in one place.</p>
+<p>From <strong>Devices &gt; All devices</strong> admins can select a device to check its details and review recent activity, open tools and reports, and run supported actions without leaving the device view. The consistent layout across supported platforms reduces relearning, while actions grouped by purpose makes the next step easier to find. The page displays only actions supported by the device and permitted for the signed-in admin, and all tasks and reports from the previous page remain available. This gives help desk admins one place to understand device status and take appropriate actions.</p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image Figure 2: Microsoft Intune admin center device overview, with an example of a Windows device marked as not compliant and displaying configuration, compliance, app, and Endpoint Analytics status." aria-labelledby="H4IX4C_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/dd2e0298b93c6479/img_1.png"/></button><span class="lia-media-caption-text" id="H4IX4C_caption">Figure 2: Microsoft Intune admin center device overview, with an example of a Windows device marked as not compliant and displaying configuration, compliance, app, and Endpoint Analytics status.</span></span>
+<p>With Intune bulk device actions, admins can reduce the manual work required to provision, reassign, or retire Android devices. Admins can activate eSIMs on up to 100 supported corporate-owned Android Enterprise devices running Android 15 or later in a single action using one carrier activation server URL, rather than configuring each device separately. This capability supports corporate-owned fully managed devices, dedicated devices, and corporate-owned devices with a work profile.</p>
+<p>During a bulk Wipe action, Intune preserves the eSIMs by default. Admins can retain them when devices are reassigned or remove them when devices are taken out of service. For requirements and configuration guidance, see <a class="lia-external-url" href="https://learn.microsoft.com/en-us/intune/device-management/actions/update-cellular-data-plan" rel="noopener noreferrer" target="_blank">Manage eSIM cellular plans with Microsoft Intune device actions</a>.</p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image Figure 3: Microsoft Intune admin center showing bulk device actions with Wipe selected for Android devices and the option to remove the device’s data plan.
+&lt;br&gt;" aria-labelledby="Y1FrF4_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/dd2e0298b93c6479/img_2.png"/></button><span class="lia-media-caption-text" id="Y1FrF4_caption">Figure 3: Microsoft Intune admin center showing bulk device actions with Wipe selected for Android devices and the option to remove the device’s data plan.<br/></span></span>
+<p>Another Android update allows Frontline users on shared devices to answer urgent Microsoft Teams calls without weakening access protections for other work. If an incoming Microsoft Teams call arrives before <a class="lia-external-url" href="https://learn.microsoft.com/en-us/intune/app-management/configuration/configure-managed-home-screen" rel="noopener noreferrer" target="_blank">Managed Home Screen authentication</a> is complete, the user can accept or decline the call directly from the notification. Managed Home Screen asks for the session PIN before the user can move into any other protected app activity.</p>
+<p>The Managed Home Screen capability is generally available and applies to MAM-integrated apps that use the Intune App SDK, including non-Microsoft apps. The signed-in user must have an applicable App Protection Policy assigned for the app. Admins do not need to enable a specific setting in that policy.</p>
+<p>The two updates address different points in the Android device lifecycle. Bulk eSIM actions reduce device-by-device work during deployment and retirement, while Managed Home Screen protects app access during shared-device sessions.</p>
+<blockquote>
+<p><strong>Myth:</strong> There are no bandwidth controls for Windows-based content in Intune, and peer sharing through Delivery Optimization is not suitable or effective for enterprise environments.</p>
+<p><strong>Reality: </strong>Intune gives admins controls to manage bandwidth for supported Windows content. Delivery Optimization also provides optional peer-sharing capabilities designed to source eligible content already in their environment rather than relying only on internet sources.</p>
+<p><strong>How: </strong>Admins can shape how content moves across the network with Intune by defining peer groups, setting cache limits, controlling foreground and background download bandwidth, and capping monthly uploads to internet peers. Delivery Optimization can combine peers and Microsoft Connected Cache with Microsoft content sources while fallback-delay settings give local content sources more time before an internet download begins.</p>
+<p>Results will vary by environment and available content. The Windows Update for Business Delivery Optimization report shows observed bandwidth savings and content sources over the previous 28 days, which admins can use when reviewing their Delivery Optimization configuration.</p>
+<p>See how <a class="lia-external-url" href="https://learn.microsoft.com/en-us/windows/deployment/do/waas-delivery-optimization-reference" rel="noopener noreferrer" target="_blank">Delivery Optimization peer groups and bandwidth controls</a> work with <a class="lia-external-url" href="https://learn.microsoft.com/en-us/windows/deployment/do/mcc-ent-edu-overview" rel="noopener noreferrer" target="_blank">Microsoft Connected Cache</a> to reduce internet traffic for supported Microsoft content.</p>
+<p> </p>
+</blockquote>
+<p>September’s updates help IT teams make changes with less risk, resolve device issues with less context switching, and reduce manual work across the Android device lifecycle. By combining staged rollouts, a consolidated device view, and streamlined device actions, Intune gives admins clearer checkpoints and faster ways to respond. We’d like to hear which of these improvements will make the biggest difference for your team.</p>
+<hr/>
+<p><em>Stay up to date! Bookmark the <a data-lia-auto-title="Microsoft Intune Blog" data-lia-auto-title-active="0" href="https://techcommunity.microsoft.com/category/microsoftintune/blog/microsoftintuneblog" target="_blank">Microsoft Intune Blog</a> and follow us on <a href="https://www.linkedin.com/company/microsoft-intune-product" rel="noopener nofollow noreferrer" target="_blank">LinkedIn </a>or <a href="https://twitter.com/MSIntune" rel="noopener nofollow noreferrer" target="_blank">@MSIntune </a>and <a href="https://x.com/IntuneSuppTeam" rel="noopener nofollow noreferrer" target="_blank">@IntuneSuppTeam </a>on X to continue the conversation.</em></p></div></div></div>
+</article>
+</body>
+</html>

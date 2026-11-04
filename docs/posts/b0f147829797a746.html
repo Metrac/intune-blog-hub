@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Migrating Frontline Mobile Devices: Understanding the reality of your estate</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Intune Customer Success</span>
+    <span class="date">April 15, 2026</span>
+  </div>
+  <h1>Migrating Frontline Mobile Devices: Understanding the reality of your estate</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/intune-customer-success/migrating-frontline-mobile-devices-understanding-the-reality-of/ba-p/4511683" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p><strong>By: Carol Burns - Principal Product Manager | Microsoft Intune and Sucheta Gawade, Microsoft MVP (Azure &amp; Security / Intune)</strong></p>
+<p><em>Practitioner perspective from <strong>Sucheta Gawade</strong>, Microsoft MVP (Azure &amp; Security / Intune), with deep experience in secure frontline mobility, including regulated healthcare environments.</em></p>
+<p> </p>
+<p>Frontline devices have evolved from a small set of task-specific tools into the way day-to-day work gets done. As new workflows, apps, locations, and teams get added over time, device estates expand quickly, making it harder to maintain consistency and visibility.</p>
+<p>For many organizations, the reality of the estate isn't easy to keep track of. Devices may have been purchased locally, inherited through acquisitions, shared across teams, or left unused in lockers. They may be repurposed for new workflows or kept running far longer than originally planned.</p>
+<p>This creates a gap between what teams think they have, how they expect devices to be used, and what happens in the field.</p>
+<p><strong><em>“Frontline estates aren’t complex because teams don’t care, they’re complex because operations evolve faster than governance.”</em></strong><strong> -</strong>Sucheta Gawade, Microsoft MVP</p>
+<p>If teams don’t close this gap early, it tends to show up during pilots and cutover: devices fail in real conditions, frontline teams revert to workarounds, and the migration slows down through rework, exceptions, and avoidable disruption.</p>
+<p>To understand the estate, teams need to start by determining what the business needs devices to do and not just who happens to use them.</p>
+<p>While some devices are assigned to individual users, many are shared across shifts, used for specific tasks, or operate without a fixed user at all.</p>
+<p>Designing a migration around users or roles can obscure what really matters:<strong> the job the device must perform, when it must be available, and the impact if it isn’t.</strong></p>
+<p>Anchoring on business needs helps teams:</p>
+<ul>
+<li>Focus on outcomes rather than ownership models</li>
+<li>Simplify stakeholder conversations</li>
+<li>Make clearer tradeoffs, when required, around user experience, productivity and security</li>
+</ul>
+<p>One simple way for teams to gather this information is by mapping business tasks to what devices must reliably do.</p>
+<div class="styles_lia-table-wrapper__h6Xo9 styles_table-responsive__MW0lN"><table border="1" class="lia-border-style-solid"><tbody><tr><td>
+<p><strong>Business Task</strong></p>
+</td><td>
+<p><strong>What the device must do</strong></p>
+</td><td>
+<p><strong>When it must work</strong></p>
+</td><td>
+<p><strong>Impact if unavailable</strong></p>
+</td></tr><tr><td>
+<p>Take payment for goods</p>
+</td><td>
+<p>Run secure POS applications</p>
+</td><td>
+<p>Store open hours</p>
+</td><td>
+<p>Lost revenue</p>
+</td></tr><tr><td>
+<p>Pick inventory</p>
+</td><td>
+<p>Scan bar codes quickly and accurately</p>
+</td><td>
+<p>During shifts</p>
+</td><td>
+<p>Orders delayed</p>
+</td></tr><tr><td>
+<p>Document patient observations</p>
+</td><td>
+<p>Capture and submit clinical data</p>
+</td><td>
+<p>During care delivery</p>
+</td><td>
+<p>Delayed or incomplete care</p>
+</td></tr></tbody><colgroup><col/><col/><col/><col/></colgroup></table></div>
+<p> </p>
+<p>This framing applies equally across retail, healthcare, manufacturing, transport, logistics and utilities. It creates a shared language between IT, operations, and security - one that is grounded in business impact rather than tooling.</p>
+<p>Once business needs and intended device usage are clear, the next step is understanding how those devices support frontline work day to day.</p>
+<p>Frontline usage patterns often diverge from what business owners and IT expect. Devices may be shared across shifts or used by alternate users. They may also be repurposed to support new workflows or kept running beyond their intended lifecycle, all without IT or executive oversight.</p>
+<p>These gaps are best identified by partnering with operational and business owners to validate real-world usage through quick workflow walk-throughs, targeted questions, and a review of how devices are accessed and supported day-to-day. Some helpful questions:</p>
+<ul>
+<li>How are devices shared?</li>
+<li>When are they offline or unavailable?</li>
+<li>What workarounds exist to keep critical tasks moving?</li>
+</ul>
+<p>It’s also critical to confirm whether corporate-assigned devices have been used for personal activity. Personally used devices may also be treated as work devices, whether authorized or otherwise. This affects wipe and re-enroll decisions because personal use can introduce data retention, user impact, and acceptance risks.</p>
+<div class="styles_lia-table-wrapper__h6Xo9 styles_table-responsive__MW0lN"><table border="1" class="lia-border-style-solid"><tbody><tr><td>
+<p><strong>Intended usage</strong></p>
+</td><td>
+<p><strong>Actual observed use</strong></p>
+</td><td>
+<p><strong>Notes/Workarounds</strong></p>
+</td></tr><tr><td>
+<p>Assigned device</p>
+</td><td>
+<p>Shared across the shift</p>
+</td><td>
+<p>Shared credentials used</p>
+</td></tr><tr><td>
+<p>Always connected</p>
+</td><td>
+<p>Intermittent Wi-Fi</p>
+</td><td>
+<p>Offline workarounds</p>
+</td></tr><tr><td>
+<p>Single-app device</p>
+</td><td>
+<p>Multi-app usage</p>
+</td><td>
+<p>Local exceptions for multiple apps</p>
+</td></tr></tbody><colgroup><col/><col/><col/></colgroup></table></div>
+<p> </p>
+<p>This is also where identity assumptions surface, particularly in environments where devices are shared but access shouldn’t be.</p>
+<p><strong><em>“Identity reality matters: shared devices should not mean shared credentials. Migration is often the right moment to address this. Otherwise, teams simply re</em></strong>‑<strong><em>platform the same risks.”</em></strong><em> -Sucheta Gawade, Microsoft MVP</em></p>
+<p>Teams often uncover important dependencies at this stage. For example, some frontline workflows rely on constant connectivity, while others must function reliably in low‑bandwidth or offline conditions. Similarly, older operating systems or unsupported device models may still be in active use because replacing them has operational or budgetary implications.</p>
+<p>Understanding these realities early helps teams avoid designing for ideal conditions that don’t exist in the field.</p>
+<p>Inventory is most valuable when it supports planning decisions, not when it aims for completeness. For frontline migrations, teams need decision relevant information rather than a perfect asset register.</p>
+<p>Understanding how devices are procured and funded across the organization is important. For example, whether devices are purchased centrally through IT or sourced locally by business/departments. Procurement paths often explain why inventory is fragmented and help determine who owns refresh cycles, warranties, and enrollment readiness.</p>
+<p>At a minimum, this includes:</p>
+<ul>
+<li>Device types and OEMs</li>
+<li>OS version ranges and supportability</li>
+<li>Whether devices are active, dormant, or missing</li>
+<li>How devices align to business-critical tasks</li>
+<li>Where specialist or certified devices are required such as intrinsically safe or ruggedized devices</li>
+</ul>
+<p>This helps surface ecosystem considerations early:</p>
+<ul>
+<li>Are required apps and services supported on the OS versions in use today?</li>
+<li>Do OEMs still support the hardware?</li>
+<li>Do environment constraints affect enrollment, updates, or day‑to‑day operation?</li>
+</ul>
+<p>These questions are not about selecting solutions yet. They’re about understanding constraints that will shape options later.</p>
+<p>With business needs understood, usage patterns mapped, and inventory validated, teams are ready to start designing approaches that work in frontline conditions.</p>
+<p>Migration is also a good opportunity to plan for standardization and set a future procurement standard. Even if you migrate the current estate as-is, defining an approved OEM or model catalog for future purchases improves consistency. It can also accelerate troubleshooting and strengthen lifecycle governance as devices reach end of support.</p>
+<p>The key lesson is simple: validate reality before designing anything.</p>
+<p>Teams that invest time here:</p>
+<ul>
+<li>Reduce rework during pilots</li>
+<li>Avoid late‑stage surprises</li>
+<li>Have stronger conversations with operational, security, and platform stakeholders</li>
+</ul>
+<p><strong><em>“We don’t declare success at </em></strong><strong><em>enrollment</em></strong><strong><em>. We declare success when a frontline workflow can run end-to-end with predictable support.” -</em></strong><em>Sucheta Gawade, Microsoft MVP</em></p>
+<p>In future articles, we’ll look at how these insights shape design decisions. In the meantime, we’re interested in hearing what gaps you’ve uncovered between intended and actual device usage in your frontline environments. Leave a comment below or reach out on X <a class="lia-external-url" href="https://aka.ms/IntuneSuppTeam" rel="noopener noreferrer" target="_blank">@IntuneSupportTeam</a>.</p></div></div></div>
+</article>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What’s new in Microsoft Intune – June</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Microsoft Intune Blog</span>
+    <span class="date">July 6, 2026</span>
+  </div>
+  <h1>What’s new in Microsoft Intune – June</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/microsoft-intune-blog/what-s-new-in-microsoft-intune-june/ba-p/4491983" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><blockquote>
+<p><span data-teams="true"><strong>Editor's note (July 2026):</strong> This post has been updated since its original publication. Content related to Intune Endpoint Privilege Management capabilities for system-level network configuration has been removed.</span></p>
+</blockquote>
+<p>AI agents are beginning to act on behalf of users, interact with company data, and even make decisions independently. Trusting AI depends on three endpoint fundamentals: they must be compliant, up to date, and secure from the moment they enroll. This month’s new capabilities for Intune emphasizes these important checkpoints.</p>
+<p>Keeping applications up to date sounds straightforward until you're managing hundreds of endpoints and dozens of application versions. Manual packaging processes lead to version drift and inconsistent application states, which makes vulnerability remediation harder and security posture less predictable. </p>
+<p><a class="lia-external-url" href="https://learn.microsoft.com/en-us/intune/intune-service/apps/apps-enterprise-app-management" rel="noopener noreferrer" target="_blank">Microsoft Intune Enterprise Application Management (EAM)</a> helps organizations move away from fragmented workflows toward a more unified, cloud-native approach, with deployments, updates, and policy configuration in one place. <a class="lia-external-url" href="https://learn.microsoft.com/intune/app-management/deployment/enterprise-app-management" rel="noopener noreferrer" target="_blank">EAM auto-updates</a> is now generally available and automatically helps keep managed applications on the latest incremental release, such as 4.1 to 4.2, without manual packaging or admin intervention. This helps limit exposure to known vulnerabilities between full version upgrade cycles.</p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label='Enlarge Image &lt;span data-contrast="auto"&gt;Figure 1: View of the Intune admin center showing how to apply auto-updates for application management.&lt;/span&gt;' aria-labelledby="A4TT6q_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/33c6fd43f52f54af/img_0.png"/></button><span class="lia-media-caption-text" id="A4TT6q_caption"><span data-contrast="auto">Figure 1: View of the Intune admin center showing how to apply auto-updates for application management.</span></span></span>
+<p>But even with EAM auto-updates helping shrink the vulnerability window, new risks may still arise between update cycles. That's where the <a class="lia-external-url" href="https://learn.microsoft.com/en-us/intune/copilot/agents/vulnerability-remediation-agent" rel="noopener noreferrer" target="_blank">Vulnerability Remediation Agent</a> comes in. Operating within Microsoft Security Copilot and now in public preview, the agent draws on Microsoft Defender Vulnerability Management to prioritize Common Vulnerabilities and Exposures (CVEs) across your Intune-managed Windows devices and apps.</p>
+<p>When the agent runs, it ranks what matters most so you are not starting from a blank CVE list. Recommendations are prioritized by Common Vulnerability Scoring System (CVSS) score, exposure impact, affected device count, and appear directly in the Intune admin center on both the Agents page and the Endpoint security page. When IT admins examine any recommendation, they will see the related CVE count, a summary of the impact assisted by Copilot, suggested actions, the systems affected, the devices exposed, and detailed guidance on how to fix the issues. After taking action, administrators can mark the recommendation as completed.</p>
+<p>The Vulnerability Remediation Agent also operates under a dedicated Microsoft Entra agentic identity, provisioned during setup, rather than under a human user account. Admins delegate the required read permissions to that identity in the Intune and Defender admin centers before the first run. This keeps the agent's scope clearly bound and gives admins a clean audit trail of what it accessed and when. For more information, read our latest blog on <a class="lia-internal-link lia-internal-url lia-internal-url-content-type-blog" data-lia-auto-title="Triage vulnerabilities faster with the Vulnerability Remediation Agent" data-lia-auto-title-active="0" href="https://techcommunity.microsoft.com/blog/intunecustomersuccess/triage-vulnerabilities-with-the-vulnerability-remediation-agent-now-in-public-pr/4528646" target="_blank">Triage vulnerabilities faster with the Vulnerability Remediation Agent</a>.</p>
+<p>Keeping apps current and staying ahead of known vulnerabilities reduces the attack surface. But risk does not only come from unpatched software; it also comes from who has access and how that access gets granted in the moment. This month, we’ve made support approval requests for non-primary users generally available in <a class="lia-external-url" href="https://learn.microsoft.com/intune/epm/overview" rel="noopener noreferrer" target="_blank">Intune Endpoint Privilege Management</a>. This capability helps address how elevations work in environments that do not follow a single-user-per-device model.</p>
+<p><strong><a class="lia-external-url" href="https://learn.microsoft.com/intune/epm/manage-support-approvals" rel="noopener noreferrer" target="_blank">Support approval requests for non-primary users</a></strong> extends file elevation requests to any user on a device rather than just the primary enrollee. For example, in organizations running shared workstations across rotating shifts, elevation requests from non-primary users can push IT to create  workarounds that can erode a secure least-privilege posture over time. The new capability for support approval requests changes that by routing elevation requests through an auditable workflow regardless of who has signed in, keeping IT in control of every elevation decision.</p>
+<p>In the June release of Intune, iOS/iPadOS and macOS automated device enrollment (ADE) profiles will move to a new infrastructure that enables Intune to speed up the delivery of new features. This update rebuilds the enrollment policies experience for Apple ADE devices, reorganizing authentication and removing outdated settings to share more granular policy controls.</p>
+<p>The new experience completes Intune support of <a class="lia-external-url" href="https://learn.microsoft.com/en-us/intune/device-enrollment/setup-time-grouping" rel="noopener noreferrer" target="_blank">enrollment time grouping (ETG)</a> across all platforms with the addition of iOS/iPadOS and macOS corporate device enrollment with ADE. ETG allows policies and apps targeted to a static group to apply at enrollment time for supported enrollment methods, so critical configurations (i.e., policies and apps targeted to the specific static group) are already in place when a user reaches the home screen. Devices arrive more secure, and users can be productive right away without waiting for policies to catch up. For a full walkthrough of the new experience, see the <a class="lia-internal-link lia-internal-url lia-internal-url-content-type-blog" data-lia-auto-title="New iOS/iPadOS, visionOS, tvOS and macOS ADE enrollment policies experience blog on Microsoft Tech Community" data-lia-auto-title-active="0" href="https://techcommunity.microsoft.com/blog/intunecustomersuccess/new-iosipados-visionos-tvos-and-macos-ade-enrollment-policies-experience/4393531" target="_blank">New iOS/iPadOS, visionOS, tvOS and macOS ADE enrollment policies experience blog on Microsoft Tech Community</a>.</p>
+<p>We hope you enjoyed last month’s reality check on <a class="lia-internal-link lia-internal-url lia-internal-url-content-type-blog" data-lia-auto-title="app migration" data-lia-auto-title-active="0" href="https://techcommunity.microsoft.com/blog/microsoftintuneblog/what%E2%80%99s-new-in-microsoft-intune-%E2%80%93-may/4491984" target="_blank">app migration</a>. This month, we’re continuing the conversation on applications with a myth focused on app refresh data.</p>
+<blockquote>
+<p><strong>Myth:</strong> Intune takes seven days for Discovered apps to refresh app inventory data.</p>
+<p><strong>Reality:</strong> That seven-day figure was an oversimplification that stuck. No one refresh number existed for every app on every platform, and that seven-day calculation did not apply to the apps an organization’s workforce uses most. Win32 apps listed in Add/Remove Programs collect data every 24 hours, while Windows store apps and apps on non-Windows platforms can have refresh cycles of up to seven days. And now it's getting even better. The new app inventory experience in the All Apps page refreshes its data multiple times per day for active devices, including both Win32 and Windows store apps. This report also shows details that the earlier report did not capture, including install location, app size, and uninstall commands for each app.</p>
+<p><strong>How:</strong> Intune continues to enhance its underlying platform infrastructure, resulting in a fresher, more detailed app inventory. This comes from sustained improvements across three fronts: a reconfigured data platform that collects app data; reduced latency that moves data faster; and reporting updates that brings it into the console.</p>
+<p>To learn more, take a closer look at the <a class="lia-internal-link lia-internal-url lia-internal-url-content-type-blog" data-lia-auto-title="investments we’re making to support faster, more predictable delivery to devices" data-lia-auto-title-active="0" href="https://techcommunity.microsoft.com/blog/IntuneCustomerSuccess/speed-where-it-matters-how-microsoft-intune-helps-it-prioritize-time-sensitive-a/4515942" target="_blank">investments we’re making to support faster, more predictable delivery to devices</a>. You can also see how app data is <a class="lia-external-url" href="https://learn.microsoft.com/intune/app-management/deployment/enhanced-app-inventory" rel="noopener noreferrer" target="_blank">collected and refreshed in the enhanced app inventory experience</a>. Follow the What's New in Microsoft Intune blog each month to read how these improvements are reflected in the console.</p>
+</blockquote>
+<p>The work behind each capability update is the same whether it shows up in a CVE list, an elevation workflow, or an enrollment screen. AI agents can only move as fast as the foundations beneath them allow. EPM and EAM are now part of Microsoft 365 E5 from July 1. If you missed the <a class="lia-internal-link lia-internal-url lia-internal-url-content-type-blog" data-lia-auto-title="December announcement" data-lia-auto-title-active="0" href="https://techcommunity.microsoft.com/blog/microsoftintuneblog/microsoft-365-adds-advanced-microsoft-intune-solutions-at-scale/4474272" target="_blank">December announcement</a> on what that means for your organization, it is worth a read before these capabilities land in your tenant.</p>
+<p> </p>
+<hr/>
+<p><em>Stay up to date! Bookmark the <a data-lia-auto-title="Microsoft Intune Blog" data-lia-auto-title-active="0" href="https://techcommunity.microsoft.com/category/microsoftintune/blog/microsoftintuneblog" target="_blank">Microsoft Intune Blog</a> and follow us on <a href="https://www.linkedin.com/company/microsoft-intune-product" rel="noopener nofollow noreferrer" target="_blank">LinkedIn </a> or <a href="https://twitter.com/MSIntune" rel="noopener nofollow noreferrer" target="_blank">@MSIntune </a>and <a href="https://x.com/IntuneSuppTeam" rel="noopener nofollow noreferrer" target="_blank">@IntuneSuppTeam </a>on X to continue the conversation.</em></p></div></div></div>
+</article>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Triage vulnerabilities with the Vulnerability Remediation Agent, now in public preview</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Intune Customer Success</span>
+    <span class="date">June 19, 2026</span>
+  </div>
+  <h1>Triage vulnerabilities with the Vulnerability Remediation Agent, now in public preview</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/intune-customer-success/triage-vulnerabilities-with-the-vulnerability-remediation-agent/ba-p/4528646" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p>As automation and AI accelerate the pace of vulnerability discovery, the window between disclosure and exploitation continues to shrink. For IT and security teams, the challenge is no longer just <em>finding</em> vulnerabilities - it's prioritizing the ones that matter and acting on them before they can be exploited. To help organizations close that gap, we're pleased to announce that the <strong>Vulnerability Remediation Agent for Security Copilot </strong>in Microsoft Intune is now in public preview and rolling out to all customers.</p>
+<p>Following a successful limited preview, the agent is now broadly available. This release brings agentic vulnerability remediation out of an early-access cohort and into the hands of every eligible organization - an important step in our continued investment in helping admins reduce exposure faster and with greater confidence. View eligibility prerequisites <a class="lia-external-url" href="https://learn.microsoft.com/intune/copilot/agents/vulnerability-remediation-agent#prerequisites" rel="noopener noreferrer" target="_blank">here</a>.</p>
+<p>The Vulnerability Remediation Agent uses data from Microsoft Defender Vulnerability Management to identify Common Vulnerabilities and Exposures (CVEs) across your Intune-managed Windows devices and apps, then prioritizes them for remediation. Rather than leaving admins to sift through lengthy  CVE lists with little context, the agent surfaces a prioritized set of recommendations directly in the Intune admin center - accessible from both the Agents and Endpoint security pages.</p>
+<p>When the agent runs, it evaluates vulnerability data and ranks threats based on factors such as CVSS scores, exposure impact, and affected device count, so the most critical issues rise to the top. Drilling into any suggestion provides:</p>
+<ul>
+<li>The count of associated CVEs</li>
+<li>A Copilot-assisted summarized impact analysis</li>
+<li>Suggested actions and affected systems</li>
+<li>Exposed devices and potential impact</li>
+<li>Step-by-step guidance for remediating the threat using Intune</li>
+</ul>
+<p>After acting on a recommendation, admins can mark it as applied, allowing the agent to retain a record for tracking remediation actions over time. The result is a meaningful reduction in the time it takes to investigate, prioritize, and remediate - strengthening overall security posture.</p>
+<p>With this release, the agent now operates under Microsoft<strong> </strong>Entra agentic identity - a meaningful advancement in how autonomous agents are governed and secured.</p>
+<p><strong>What it is.</strong> Agentic identity is a specialized identity in Microsoft Entra ID that allows the agent to operate securely and independently. During setup, the agent provisions a dedicated agentic identity and a corresponding agentic user in your tenant's Microsoft Entra directory. The agent then runs under the permissions delegated to that agentic user rather than under a human user account.</p>
+<p><strong>Why it matters.</strong> Agentic identity decouples the agent from any one person, ensuring its behavior is strictly bound to the permissions and scope you delegate to it. This delivers clearer accountability, a cleaner audit trail, and enterprise-grade governance for autonomous operations.</p>
+<p><strong>How it helps.</strong> Admins remain firmly in control. After setup, delegate the required read permissions to the agentic user in the  Microsoft Intune and Microsoft Defender admin centers, then use the built-in Readiness Check to confirm everything is configured correctly before the agent runs.</p>
+<p>Learn more in <a class="lia-external-url" href="https://learn.microsoft.com/intune/copilot/agents/vulnerability-remediation-agent#agent-identity" rel="noopener noreferrer" target="_blank">Agent identity</a>.</p>
+<p>One of the design goals behind the Vulnerability Remediation Agent is to make agentic security approachable, not complex. Rather than stitching together signals across multiple tools and admin centers, the agent guides admins through a clear, repeatable flow - from connecting your data to tracking measurable improvement over time.</p>
+<p class="lia-embeded-content" contenteditable="false"></p>
+<ol>
+<li><strong> Connect — bring Defender and Intune data together.</strong> The agent draws on Microsoft Defender Vulnerability Management for CVE intelligence and Microsoft Intune for device and configuration context. With the required Microsoft Defender and Microsoft Intune plugins in place, your vulnerability and management signals work as one. <a class="lia-external-url" href="https://learn.microsoft.com/intune/copilot/agents/vulnerability-remediation-agent#prerequisites" rel="noopener noreferrer" target="_blank">Learn more on what is needed to connect the experience.</a></li>
+<li><strong>Enable — turn on the agent. </strong>From the <strong>Agents</strong> node in the Microsoft Intune admin center, set up the agent in a few guided steps. During setup, the agent provisions its Microsoft Entra agentic identity and surfaces the permissions and plugins it needs, so you know exactly what to delegate before the first run.</li>
+<li><strong>Run — let automated prioritization do the heavy lifting.</strong> Once permissions are delegated and the Run Readiness Check passes, you can configure the agent to run on demand or schedule it to run automatically in the background on a cadence you define; scheduling is a unique capability that helps teams stay ahead of emerging risks without requiring constant manual intervention. Each run analyzes your environment and produces a prioritized list of recommendations ranked by CVSS score, exposure impact, and affected device count so the most critical risks rise to the top automatically.</li>
+<li><strong>Remediate — act with guided, Intune-ready actions.</strong> Each recommendation includes a Copilot-assisted impact summary,  exposed devices, and step-by-step guidance for remediating the threat using Intune. Admins move directly from insight to action, without leaving the admin center.</li>
+<li><strong>Track — measure improvement over time.</strong> Recommendations can be marked as applied, and the agent retains a record of your remediation actions.</li>
+</ol>
+<p>The outcome is a streamlined operating model: connect once, enable with confidence, and let the agent drive a continuous cycle of prioritization, remediation, and view progress. For full prerequisites, licensing, plugin, and role requirements, see <a class="lia-external-url" href="https://learn.microsoft.com/intune/copilot/agents/vulnerability-remediation-agent" rel="noopener noreferrer" target="_blank">Vulnerability Remediation Agent overview and set up</a>.</p>
+<p>The Vulnerability Remediation Agent represents a meaningful step toward a more proactive, AI-assisted security posture, one where admins spend less time sifting through CVE lists and more time acting on what matters most. We invite you to try the public preview today, connect your Defender and Intune data, and experience how agentic remediation can help your team stay ahead of emerging threats.</p>
+<p>As always, we'd love to hear your feedback as we continue investing in making security in Intune faster, smarter, and more accessible. Share your tips and lessons learned in the comments below or reach out to us on X <a class="lia-external-url" href="https://aka.ms/IntuneSuppTeam" rel="noopener noreferrer" target="_blank">@IntuneSuppTeam</a>.</p>
+<p><em><strong>Join our community!</strong> Discuss real-world scenarios, get expert guidance, connect with peers, and influence the future of Microsoft Security products. Learn more at <a class="lia-external-url" data-outlook-id="1500cb02-a991-4798-bffb-dc0f1bde5fd5" href="https://aka.ms/JoinIntuneCommunity" rel="noopener noreferrer" target="_blank">aka.ms/JoinIntuneCommunity</a>.</em></p></div></div></div>
+</article>
+</body>
+</html>

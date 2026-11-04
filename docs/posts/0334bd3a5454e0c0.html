@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Support tip: Resolve device noncompliance with Mobile Threat Defense partner apps</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Intune Customer Success</span>
+    <span class="date">May 6, 2026</span>
+  </div>
+  <h1>Support tip: Resolve device noncompliance with Mobile Threat Defense partner apps</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/intune-customer-success/support-tip-resolve-device-noncompliance-with-mobile-threat/ba-p/4491669" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p>Using a Mobile Threat Defense (MTD) solution, such as Microsoft Defender for Endpoint, with Microsoft Intune helps keep your organization’s resources protected and allows you to block devices that aren’t compliant with your organization’s policies.<br/><br/></p>
+<p>When an MTD detects a threat or determines that a device is noncompliant the device user will see one of two types of messages indicating:</p>
+<ul>
+<li><strong>Install and activate partner app</strong>: The device needs the [MTD app] installed and activated to restore access to work or school resources. This message indicates that Intune hasn't received a signal from the [MTD app] the device, or the connection was lost.</li>
+<li>Resolve detected threats: The [MTD app] app identified one or more threats on the device. Open the [MTD app] and follow the guidance to resolve the threats before accessing work or school resources.<br/><br/></li>
+</ul>
+<p>In this blog, we’ll focus on troubleshooting and resolving the first scenario, where users will need to install and activate the MTD app.<br/><br/></p>
+<p><strong>Note</strong>: For help resolving threats detected by the MTD app, open the partner app directly on the device for remediation guidance.<br/><br/></p>
+<p>Before you begin troubleshooting, confirm that:</p>
+<ul>
+<li>The user device is enrolled in Intune through the Company Portal app.</li>
+<li>The user has access to their work or school account credentials.</li>
+<li>The device has an active internet connection.</li>
+</ul>
+<p> </p>
+<p><strong>Restore device compliance</strong></p>
+<p><u>Have the user</u> follow these steps to resolve the noncompliance issue and restore access to work or school resources.</p>
+<p> </p>
+<p><strong>Step 1: Install and activate the partner app</strong></p>
+<p>If the [MTD app] isn’t installed on the device:</p>
+<ol>
+<li>Open the Intune Company Portal app on the device.</li>
+<li>Go to <strong>Devices</strong> and select the device.</li>
+<li>Install the required [MTD app] shown in the noncompliance message.</li>
+<li>Open the [MTD app] and sign in with your work or school account.</li>
+<li>Complete any required setup or activation steps in the app.</li>
+<li>Wait up to 30 minutes for the device compliance status to update.</li>
+</ol>
+<p>If your device remains noncompliant after 30 minutes, continue to the next step.</p>
+<p> </p>
+<p><strong>Step 2: Refresh the connection</strong></p>
+<p>If the [MTD app] is already installed and the user is signed in, the connection between the app and Intune services may need to be refreshed:</p>
+<ol>
+<li>Open the [MTD app] on the device.</li>
+<li>Sign out of the work or school account.</li>
+<li>Sign back in with the same work or school account.</li>
+<li>Wait up to 30 minutes for the device compliance status to update.</li>
+</ol>
+<p>If the device remains noncompliant after 30 minutes, continue to the next step.</p>
+<p> </p>
+<p><strong>Step 3: Reinstall the MTD app</strong></p>
+<p>If refreshing the connection doesn't resolve the issue, reinstalling the app can restore the signal between services:</p>
+<ol>
+<li>Uninstall the [MTD app] from the device.</li>
+<li>Restart the device.</li>
+<li>Open the Company Portal app on the device.</li>
+<li>Reinstall the [MTD app].</li>
+<li>Open the app and sign in with the work or school account.</li>
+<li>Complete any required setup or activation steps.</li>
+<li>Wait up to 30 minutes for the device compliance status to update.<br/><br/></li>
+</ol>
+<p><strong>Check device compliance status</strong></p>
+<p>Users can verify their device's compliance status at any time:</p>
+<ol>
+<li>Open the Company Portal app.</li>
+<li>Go to <strong>Devices</strong>.</li>
+<li>Select the device to view its current status.</li>
+</ol>
+<p>If the device shows as compliant, they can access work or school resources. If it  shows as noncompliant and they’ve taken steps to resolve, wait a few more minutes and check again, as compliance status updates can take up to 30 minutes to appear in the Company Portal app.</p>
+<p> </p>
+<p>Admins can configure a simplified remediation experience on iOS and iPadOS to help end‑users return to a compliant state more easily. This experience streamlines how users address Mobile Threat Defense (MTD)–related noncompliance and reduces the number of steps required to restore access.</p>
+<p>To enable this experience:</p>
+<ol>
+<li>Follow the guidance in <a class="lia-internal-link lia-internal-url lia-internal-url-content-type-blog" data-lia-auto-title="Simplifying compliance remediation with Microsoft Intune and Defender on iOS/iPadOS" data-lia-auto-title-active="0" href="https://techcommunity.microsoft.com/blog/intunecustomersuccess/simplifying-compliance-remediation-with-microsoft-intune-and-defender-on-iosipad/4465293" target="_blank">Simplifying compliance remediation with Microsoft Intune and Defender on iOS/iPadOS</a> to configure the updated remediation workflow for your organization.</li>
+<li>Once enabled, end‑users will see clearer guidance within the Microsoft Defender app when their device is marked noncompliant.</li>
+<li>The Defender app will direct users through the necessary remediation steps automatically - such as re‑authentication, resolving threat signals, or re‑establishing the MTD connection.</li>
+<li>After the guided process is complete, Defender will send updated device status to Intune so the device can return to a <em>compliant</em> state.</li>
+</ol>
+<p>This simplified flow reduces support overhead and increases user success resolving MTD‑related compliance issues on iOS/iPadOS.<br/><br/></p>
+<p>If the user is on an Android device, first have them try signing out of the Mobile Threat Defense (MTD) app and signing back in. This often re‑establishes the connection and allows Intune to receive updated device status.</p>
+<p>If the option to sign out of the MTD app is blocked by IT policy, follow these steps to reset the app’s data instead:</p>
+<ol>
+<li>Long‑press the <strong>Defender app</strong> in the <strong>work profile</strong>. </li>
+<li>Tap <strong>ⓘ App info</strong>. </li>
+<li>Go to <strong>Storage &amp; cache</strong> → <strong>Clear data</strong> (do <strong>not</strong> select <em>Clear cache</em>). </li>
+<li>Relaunch the Defender app - it will open to the <strong>welcome screen</strong>. </li>
+<li>Sign back in with the work or school account.</li>
+</ol>
+<p>Once signed back in, Defender will update Intune with the latest device data, and the device should return to a <strong>compliant</strong> state after Intune receives the refreshed signals.</p>
+<p>For Windows devices, noncompliance with Defender for Endpoint is commonly caused by devices that are no longer properly onboarded or connected to the service. When a device is not onboarded, it can’t report risk signals, which may result in the device being marked as noncompliant in Intune.</p>
+<p><strong>Recommended action:</strong></p>
+<p>If you identify Windows devices showing as noncompliant due to missing or stale Defender for Endpoint signals:</p>
+<ul>
+<li>Verify that the device is onboarded to Microsoft Defender for Endpoint</li>
+<li>Review your existing onboarding policies in Intune</li>
+<li>Onboard affected devices using Intune if needed</li>
+</ul>
+<p>Once properly onboarded, the device can participate in compliance evaluation. If devices continue to appear noncompliant after verifying onboarding and policy assignment, we recommend opening a support case for further investigation.</p>
+<p>To learn more about onboarding devices refer to the documentation:</p>
+<p><br/>If you have any questions, leave a comment below or reach out to us on X <a class="lia-external-url" href="https://aka.ms/IntuneSuppTeam" rel="noopener noreferrer" target="_blank">@IntuneSuppTeam</a>!</p>
+<p> </p>
+<p>Post updates:<br/>02/05/26: <em>Added two new sections covering simplified user remediation on iOS/iPadOS and refreshing the MTD connection on Android when sign-out is blocked.</em></p>
+<p>05/06/26: <em>Added a new section covering Windows devices that may be noncompliant due to not being properly onboarded to Microsoft Defender for Endpoint.</em></p></div></div></div>
+</article>
+</body>
+</html>

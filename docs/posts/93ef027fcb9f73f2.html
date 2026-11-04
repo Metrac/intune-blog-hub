@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Designing Intune enrollment for frontline workers: Choosing the right path for real-world devices</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Intune Customer Success</span>
+    <span class="date">July 23, 2026</span>
+  </div>
+  <h1>Designing Intune enrollment for frontline workers: Choosing the right path for real-world devices</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/intune-customer-success/designing-intune-enrollment-for-frontline-workers-choosing-the/ba-p/4540144" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p><strong>By: Shawn Catlin – Senior Product Manager | Microsoft Intune and Sucheta Gawade, Microsoft MVP (Azure &amp; Security / Intune)</strong></p>
+<p><em>Practitioner perspective from Sucheta Gawade, Microsoft MVP (Azure &amp; Security / Intune), with deep experience in secure frontline mobility, including regulated healthcare environments.</em></p>
+<p>Enrollment <u>methodology</u> is one of the most consequential design decisions teams make for frontline environments. It shapes how devices are used, how identity is handled, how failures are recovered from, and how much friction workers experience before they can do their jobs.</p>
+<p>Frontline use cases aren’t limited to shared devices. They can span nearly every enrollment type available in Microsoft Intune, including user-assigned, shared, dedicated, kiosk, corporate-owned, BYOD, and zero-touch deployment models. The right choice is often influenced by business need, operational workflow, budget, support model, and security requirements. But it must also account for platform and operating system design. Android, iOS, and iPadOS may offer similar enrollment concepts, but they don’t always behave the same way or support the same management patterns.</p>
+<p>That distinction matters. A kiosk or dedicated-device model, for example, is intentionally designed for a locked-down, task-focused experience. It manages the device around a specific function, not around a personalized user workspace. In that model, broad app availability, persistent personalization, and user-driven app installation are not the primary management paradigm. Similarly, a shared-device model should not be selected simply because an organization cannot provide a dedicated device to every worker. If identity, app access, compliance, or user context are required, those needs must be part of the enrollment decision from the beginning.</p>
+<p>There is no copy-and-paste frontline enrollment strategy that works across every industry, business unit, or device scenario. Some frontline devices are shared across shifts and must remain reliable where connectivity, identity, and support are not guaranteed. Others are assigned to supervisors, clinicians, field workers, or shift leads who need persistent access to apps, settings, and data. When enrollment choices are made without accounting for these realities, especially platform differences and OS-level limitations, friction surfaces quickly during pilots and scales painfully during rollout.</p>
+<p>This article explains how to approach Intune enrollment for frontline devices through a practical, reality-first lens: start with how the device is used, align the management model to the workflow, and then plan how the device will be enrolled, replaced, and reprovisioned at scale.</p>
+<blockquote>
+<p><span aria-hidden="true">“</span>In a hospital environment, frontline does not mean one type of device or one type of worker. A shared clinical workstation, a nurse’s mobile device, a patient check-in kiosk, a barcode scanner, and a supervisor’s assigned device may all be considered frontline, but they each have very different identity, security, app, and recovery requirements. That is why enrollment decisions have to start with the workflow.</p>
+<p><strong>Sucheta Gawade</strong><br/>Practitioner</p>
+</blockquote>
+<p>Enrollment does more than bring a device under management. It defines how the device is expected to work, where the security boundary sits, how identity is applied, and what recovery looks like when something fails in the field.</p>
+<p>There is no single “best” enrollment model for frontline. There is only the model that best fits how the device is actually used. The right choice depends on whether the device follows a person, a shift, a task, or a business process. It also depends on how much identity matters to the experience, whether apps need to be personalized, whether Conditional Access or compliance is required, and how quickly the device must be replaced or recovered.</p>
+<p>This is why many problems that look like policy, app, or configuration failures are actually enrollment design problems in disguise. A device can be successfully enrolled and still be poorly designed for the job it needs to do.</p>
+<blockquote>
+<p><span aria-hidden="true">“</span>A device can be successfully enrolled and still fail the workflow. If a shift worker cannot access the right app quickly, if a shared device retains the wrong user context, or if a replacement device cannot be brought online during a shift, the issue may look like an app or support problem. In reality, it often traces back to an enrollment model that did not match the workflow.</p>
+<p><strong>Sucheta Gawade</strong><br/>Practitioner</p>
+</blockquote>
+<p>Frontline enrollment planning becomes easier when teams separate two related but different decisions.</p>
+<p>The first decision is the <strong>management model</strong>. This is the architectural choice. It answers questions such as:</p>
+<ul>
+<li>Does the device need to represent a specific person?</li>
+<li>Is the device shared across multiple workers?</li>
+<li>Is it dedicated to a narrow task or workflow?</li>
+<li>Does the device require personal apps, persistent settings, or user-specific data?</li>
+<li>Does the workflow require Conditional Access, compliance, auditability, or individual identity?</li>
+</ul>
+<p>This decision determines whether the device should be user-associated, shared, dedicated, kiosk-style, personally owned, or corporate-owned with a work profile.</p>
+<p>The second decision is the <strong>provisioning and reprovisioning method</strong>. This is the lifecycle choice. It answers questions such as:</p>
+<ul>
+<li>How will the device get into management the first time?</li>
+<li>Will it be staged by IT, a depot, a partner, or the site?</li>
+<li>What happens after a wipe, repair, refresh, or reassignment?</li>
+<li>Can the device recover without a specific user’s credentials?</li>
+<li>Will Wi-Fi, certificates, tokens, apps, and policies be available at first boot?</li>
+</ul>
+<p>Zero-touch, pre-staging, depot workflows, and reprovisioning plans support the selected management model. They should not replace the decision about which model is right for the scenario.</p>
+<p>In the previous article, <a class="lia-external-url" href="https://aka.ms/Intune/FLM-mobile-estate" rel="noopener noreferrer" target="_blank">Migrating Frontline Mobile Devices: Understanding the Reality of Your Estate</a>, we discussed why successful frontline migrations begin with understanding how devices are actually used in the field. That discovery work should now feed directly into enrollment design.</p>
+<p>The most reliable starting point is not the department, license, or ownership model. It is the device’s behavior in the field.</p>
+<p>Ask:</p>
+<ul>
+<li>Does this device follow a person?</li>
+<li>Does it follow a shift?</li>
+<li>Does it follow a task?</li>
+<li>Does it need to know who the user is?</li>
+<li>Does it need persistent user context?</li>
+<li>Does it need to be quickly replaced with minimal IT involvement?</li>
+<li>Does the platform support the experience you expect?</li>
+</ul>
+<p>The answers help map real-world requirements to the right Intune enrollment approach. Before selecting an enrollment model, organizations should also understand how identity is expected to function on the device. If you have not yet reviewed assigned versus shared identity patterns, see our previous article, <a class="lia-external-url" href="https://aka.ms/Intune/FLM-Identity" rel="noopener noreferrer" target="_blank">Migrating frontline mobile devices: Identity considerations for assigned and shared devices</a>, which explores how user identity, authentication, auditability, and device ownership assumptions can influence frontline management decisions.</p>
+<div>
+<div class="styles_lia-table-wrapper__h6Xo9 styles_table-responsive__MW0lN"><table border="1"><thead><tr class="lia-background-color-custom-0078d4"><th class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><span class="lia-text-color-16">Decision indicator</span></th><th class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><span class="lia-text-color-16">Usually points toward</span></th><th class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><span class="lia-text-color-16">Validate before choosing</span></th></tr></thead><tbody><tr class="lia-background-color-22"><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">One person regularly uses the device and needs persistent apps, settings, approvals, or data</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">User-driven or user-associated enrollment</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Whether identity and personalization are truly required for the workflow</td></tr><tr class="lia-background-color-custom-f7f7f7"><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Multiple workers use the same device across shifts and need individual sign-in</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Shared or device-first enrollment with identity support</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">How sign-in, sign-out, session cleanup, and auditability will work</td></tr><tr class="lia-background-color-22"><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">The device performs a narrow, repeatable task</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Dedicated or kiosk-style enrollment</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Whether the workflow can operate with a locked-down app set and minimal user choice</td></tr><tr class="lia-background-color-custom-f7f7f7"><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">The device needs corporate control but may allow limited personal use</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Corporate-owned work profile where supported</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Whether the OS supports the expected separation between work and personal data</td></tr><tr class="lia-background-color-22"><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">The device is personally owned and only work data needs to be protected</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">BYOD / personally owned work profile / user enrollment</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Whether the workflow can tolerate limited organizational control</td></tr><tr class="lia-background-color-custom-f7f7f7"><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">The device must be replaced quickly with minimal IT involvement</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Pre-staged, zero-touch, or easily reprovisioned device-first model</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Reset behavior, network readiness, certificate delivery, and replacement speed</td></tr><tr class="lia-background-color-22"><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">The environment has inconsistent connectivity or limited support</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Simpler enrollment paths with fewer live dependencies</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">What the device needs at first boot, during sign-in, and after wipe or reset</td></tr></tbody><colgroup><col/><col/><col/></colgroup></table></div>
+</div>
+<p>A practical Intune strategy starts by accepting that frontline is not one scenario. It is a collection of scenarios. Standardization is important, but standardizing on one enrollment method for every frontline use case is rarely the right goal. Mature organizations standardize the decision framework, not necessarily the deployment model.</p>
+<div>
+<div class="styles_lia-table-wrapper__h6Xo9 styles_table-responsive__MW0lN"><table border="1"><thead><tr class="lia-background-color-custom-0078d4"><th class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><span class="lia-text-color-16">Device usage pattern</span></th><th class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><span class="lia-text-color-16">Typical characteristics</span></th><th class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><span class="lia-text-color-16">iOS/iPadOS enrollment</span></th><th class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><span class="lia-text-color-16">Android enrollment</span></th></tr></thead><tbody><tr class="lia-background-color-22"><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">User-assigned device</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">One person regularly uses the device and needs personalized apps, settings, and data</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Automated Device Enrollment with user affinity</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Android Enterprise Fully Managed or Corporate-Owned Work Profile if personal use is permitted</td></tr><tr class="lia-background-color-custom-f7f7f7"><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Shared device with individual sign-in</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Multiple workers share the device and sign in with their own identities</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Automated Device Enrollment with Microsoft Entra Shared Device Mode; Shared iPad when multi-user iPad support is required</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Android Enterprise Dedicated Device with Microsoft Entra Shared Device Mode</td></tr><tr class="lia-background-color-22"><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Dedicated or task-based device</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Device performs a specific function and does not require a personalized user experience</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Automated Device Enrollment without user affinity, with supervised device and app restrictions</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Android Enterprise Dedicated Device</td></tr><tr class="lia-background-color-custom-f7f7f7"><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Android device without Google Mobile Services</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Corporate-owned specialty device, often shared or task-focused</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Not applicable</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Android AOSP userless or AOSP user-associated enrollment</td></tr><tr class="lia-background-color-22"><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Personally owned device</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Employee-owned device used for work</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">BYOD User Enrollment</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Android Enterprise Personally Owned Work Profile</td></tr><tr class="lia-background-color-custom-f7f7f7"><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Zero-touch or pre-staged deployment</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Corporate-owned device that needs scalable provisioning or replacement</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Automated Device Enrollment through Apple Business Manager or Apple School Manager</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Android Zero-touch Enrollment, Samsung Knox Mobile Enrollment, or equivalent supported provisioning path</td></tr></tbody><colgroup><col/><col/><col/><col/></colgroup></table></div>
+</div>
+<p>If the device follows a person, choose a model optimized for identity and personalized access. If the device follows a shift, workflow, or task, choose a model optimized for simplicity, consistency, and easy replacement.</p>
+<p>If you’re looking for more platform-specific guidance please see frontline enrollment resources for both Android and iOS/iPadOS:</p>
+<p>These resources provide detailed implementation guidance, recommended enrollment approaches, and platform-specific considerations for frontline deployments.</p>
+<p>Teams often assume that similar enrollment concepts behave the same way across platforms. They do not.</p>
+<p>On Android, a shared frontline device that needs a locked-down experience and individual worker sign-in often maps to Android Enterprise Dedicated Device with Microsoft Entra Shared Device Mode. Android Enterprise Dedicated Device provides the task-focused management model. Entra Shared Device Mode adds the identity layer so workers can sign in as themselves. Intune Managed Home Screen then helps present a consistent launcher experience and enforce the sign-in flow between shifts.</p>
+<p>On iPadOS, a shared device with individual sign-in may be designed using Shared iPad for Business or Automated Device Enrollment with Microsoft Entra Shared Device Mode. The distinction becomes important when security requirements are involved. Shared iPad can support multi-user scenarios, but organizations should review its limitations carefully, especially if Conditional Access or device compliance enforcement is required. Where Conditional Access, compliance, and security-driven access controls are mandatory, ADE with Entra Shared Device Mode may be the better fit, although it introduces additional configuration considerations and dependency on compatible apps. See <a class="lia-external-url" href="https://learn.microsoft.com/intune/device-enrollment/apple/shared-device-solutions-ios" rel="noopener noreferrer" target="_blank">Shared iOS and iPadOS devices</a> for more information.</p>
+<p>Platform differences also matter for corporate-owned devices that allow personal use. Android Corporate-Owned Work Profile provides a native work profile boundary between corporate and personal data. iOS and iPadOS do not provide that same OS-level separation for corporate-owned personally enabled devices, so organizations often rely more heavily on app-level controls and MAM policies.</p>
+<p>The practical point is simple: choose the enrollment model that fits the workflow, but confirm that the platform supports the management pattern you expect.</p>
+<blockquote>
+<p><span aria-hidden="true">“</span>One of the most common mistakes I have seen is designing for the cleanest administrative model instead of the messiest operational reality. In FLW cases, the real test is not whether the device enrolls successfully on day one. It is whether the device can keep supporting the workflow after shift changes, network changes, app issues, wipes, repairs, and urgent replacements.</p>
+<p><strong>Sucheta Gawade</strong><br/>Practitioner</p>
+</blockquote>
+<p>User-driven enrollment still has a place in frontline, but the use cases are narrower than many teams expect. It makes sense when the device needs to reflect a specific person, not just a task.</p>
+<p>This can work well for shift managers, supervisors, clinicians, field workers, or frontline leads who need persistent access to apps, approvals, notifications, data, and settings. In these cases, user-driven or user-associated enrollment can provide cleaner app targeting, stronger identity context, and a more familiar experience for the person carrying the device.</p>
+<p>Common indicators include:</p>
+<ul>
+<li>The worker keeps the device for most of its working life.</li>
+<li>The user needs email, Teams, approvals, or real-time app badges.</li>
+<li>The workflow depends on user-specific apps, settings, or data.</li>
+<li>The device may support some personal enablement where the platform supports separation.</li>
+<li>The worker is responsible for keeping the device available, charged, and ready for use.</li>
+</ul>
+<p>But personalization comes with operational cost. User-driven enrollment increases dependency on credentials, adds friction when sign-in steps fail, and makes recovery more complex when a device must be replaced quickly. It is usually a poor fit for shared workflows, high-turnover roles, or task-based devices where speed and predictability matter more than personalization.</p>
+<p>Shared and shift-based devices are passed from one worker to the next. They are expected to stay productive across handoffs and often operate in environments where there is little time for sign-in friction or troubleshooting.</p>
+<p>For these scenarios, device-first enrollment usually aligns better with reality because the device is treated as a managed tool for a shared workflow, not as a personal endpoint tied to one individual. The goal is consistency: the next worker should be able to pick up the device, authenticate if required, and get to work without recovering from leftover state or complex setup steps.</p>
+<p>If shared devices require individual sign-in, identity must be designed into the enrollment model. Microsoft Entra Shared Device Mode and QR code authentication can help preserve individual identity without forcing workers through a full username and password flow at every handoff. This is especially relevant in environments such as retail, healthcare, warehousing, and field operations where shared devices still need auditability, Conditional Access, app access, or user-specific sessions.</p>
+<p>Shared-device success does not come from default settings alone. Teams should define:</p>
+<ul>
+<li>How sign-in and sign-out should work.</li>
+<li>What user context should persist.</li>
+<li>What should be cleared between sessions.</li>
+<li>Which apps need to support shared-device behavior.</li>
+<li>How quickly a device can be swapped or reprovisioned.</li>
+<li>Whether access depends on the user, the device, the app session, or a combination.</li>
+</ul>
+<blockquote>
+<p><span aria-hidden="true">“</span>Especially in healthcare and clinical settings, shared devices have to be absolutely ready for the next worker, the next patient, and the next task. There is rarely time for complex recovery steps, unclear ownership, or leftover user state from the previous shift. A good shared-device design should support quick handoff, clean session behavior, and predictable recovery under pressure.</p>
+<p><strong>Sucheta Gawade</strong><br/>Practitioner</p>
+</blockquote>
+<p>Dedicated and kiosk-style enrollment is ideal when the device performs a narrow, repeatable function and individual identity is secondary or unnecessary. Examples include scanners, point-of-sale systems, check-in kiosks, digital signage, inventory devices, and task-specific handhelds.</p>
+<p>The strength of kiosk-style design is that it limits choice. That is also the boundary teams must respect. A kiosk is not intended to behave like a general-purpose device where users browse a catalog of available apps, personalize settings, or install what their business unit needs on demand.</p>
+<p>A common friction point occurs when organizations try to simplify IT support with one shared kiosk configuration for multiple businesses or personas, and then expect users to install the apps they need. That creates a mismatch. User-installed available apps are not the kiosk paradigm. If each business unit needs a different set of apps, the better design is usually to do the work upfront: segment the device scenarios, define the required app sets, and deploy the right configuration to the right devices.</p>
+<p>This is also important for identity and certificates. User certificates, persistent user sessions, and shared secrets can conflict with the assumptions of a device-first or kiosk model. If the workflow requires user identity, auditability, or user-specific access, that requirement should be addressed through the right shared-device identity pattern, not bolted onto a kiosk design after the fact.</p>
+<p>Once the right management model is selected, teams should plan how devices will be enrolled and reprovisioned at scale.</p>
+<p>At scale, enrollment becomes a lifecycle capability. The question is not only how a device gets into management the first time. Instead, it is how quickly that same device can be staged, replaced, wiped, repaired, reassigned, or reintroduced into service.</p>
+<p>Some organizations ship devices directly to frontline locations and complete setup during out-of-box experience. Others rely on depot, partner, or white-glove processes to front-load setup before the device reaches the site. Neither model is automatically better. The right choice depends on network readiness, site support, variability at first boot, app dependencies, certificate delivery, and replacement expectations.</p>
+<p>Replacement velocity is a real design constraint. In many frontline settings, a broken device cannot wait for a full troubleshooting cycle. A worker may need to drop one device at a charging bay and pick up another with minimal disruption. The more the enrollment and reprovisioning model supports a known-good state, the less productivity depends on one specific device surviving the shift.</p>
+<p>Frontline enrollment problems are rarely caused by one dramatic failure. More often, they come from reasonable decisions made in the wrong order or optimized for the wrong thing.</p>
+<div>
+<div class="styles_lia-table-wrapper__h6Xo9 styles_table-responsive__MW0lN"><table border="1"><thead><tr class="lia-background-color-custom-0078d4"><th class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><span class="lia-text-color-16">Friction point</span></th><th class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><span class="lia-text-color-16">Why it happens</span></th><th class="lia-border-color-custom-d1d1d1 lia-border-style-solid"><span class="lia-text-color-16">Better design approach</span></th></tr></thead><tbody><tr class="lia-background-color-22"><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Treating frontline as only shared</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">The organization assumes all frontline workers use devices the same way</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Segment by workflow: person, shift, task, or business process</td></tr><tr class="lia-background-color-custom-f7f7f7"><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Choosing shared because dedicated devices are too expensive</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Budget drives the model before identity and workflow are understood</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Validate identity, app, compliance, and recovery needs before choosing shared</td></tr><tr class="lia-background-color-22"><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Using kiosk for personalized workflows</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Kiosk seems simple and locked down</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Use kiosk only when the workflow is task-focused and does not require broad personalization</td></tr><tr class="lia-background-color-custom-f7f7f7"><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Wanting available apps on kiosk devices</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">One configuration is used for too many personas</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Build scenario-specific app sets and configurations instead of relying on user installation</td></tr><tr class="lia-background-color-22"><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Using shared credentials</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Enrollment was not designed for individual identity</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Use Entra Shared Device Mode, QR code authentication, or another supported identity pattern</td></tr><tr class="lia-background-color-custom-f7f7f7"><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Requiring user certificates on device-first or kiosk scenarios</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Security assumptions are copied from knowledge-worker designs</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Validate whether access can be controlled through device, app, or session design</td></tr><tr class="lia-background-color-22"><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Over-securing setup at the expense of recovery</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Controls are designed for ideal conditions, not shift pressure</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Design security that holds up during replacement, poor connectivity, and limited support</td></tr><tr class="lia-background-color-custom-f7f7f7"><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Treating enrollment as a one-time event</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Success is measured by initial provisioning only</td><td class="lia-border-color-custom-d1d1d1 lia-vertical-align-top lia-border-style-solid">Design for wipe, repair, reassignment, refresh, and reprovisioning</td></tr></tbody><colgroup><col/><col/><col/></colgroup></table></div>
+<p> </p>
+<p>A deployment path that saves time on day one can create years of friction if it does not match how the device is used. In frontline scenarios, the best enrollment model is not always the fastest one to provision. It is the one that is easiest to sustain.</p>
+</div>
+<blockquote>
+<p><span aria-hidden="true">“</span>One of the most common mistakes I have seen is designing for the cleanest administrative model instead of the messiest operational reality. In FLW cases, the real test is not whether the device enrolls successfully on day one. It is whether the device can keep supporting the workflow after shift changes, network changes, app issues, wipes, repairs, and urgent replacements.</p>
+<p><strong>Sucheta Gawade</strong><br/>Practitioner</p>
+</blockquote>
+<p>Successful frontline deployments are rarely defined by the sophistication of their policies alone. They are defined by how well design choices hold up under real-world pressure. Enrollment is one of the earliest and most visible signals to frontline teams about whether the technology is there to support their work or get in the way.</p>
+<p>By treating enrollment as a deliberate design decision and grounding it in how devices are actually used, organizations can reduce friction, improve resilience, and create a foundation that scales as frontline operations evolve. Getting enrollment right does not guarantee success, but getting it wrong sets a ceiling that no amount of policy refinement can overcome.</p>
+<p>For more frontline examples and implementation guidance, see related Microsoft frontline worker management resources, including the blog, <a class="lia-internal-link lia-internal-url lia-internal-url-content-type-blog" data-lia-auto-title="From the frontlines: Frontline worker management with Microsoft Intune" data-lia-auto-title-active="0" href="https://techcommunity.microsoft.com/blog/intunecustomersuccess/from-the-frontlines-frontline-worker-management-with-microsoft-intune/4387449" target="_blank"><em>From the frontlines: Frontline worker management with Microsoft Intune</em></a>, and the earlier article, <a class="lia-external-url" href="https://aka.ms/Intune/FLM-mobile-estate" rel="noopener noreferrer" target="_blank"><em>Migrating Frontline Mobile Devices: Understanding the Reality of Your Estate</em></a>.</p>
+<blockquote>
+<p><span aria-hidden="true">“</span>When enrollment, identity, security, and recovery are designed well, frontline teams can stay focused on the people they serve - customers, patients, guests, employees, students, and communities - instead of the device in their hands. That is the standard a frontline enrollment strategy should be measured against.</p>
+<p><strong>Sucheta Gawade</strong><br/>Practitioner</p>
+</blockquote>
+<p>As always, we welcome your feedback and experience. If you’ve navigated identity decisions for shared or frontline devices, share your advice and lessons learned in the comments, or reach out to us on X <a class="lia-external-url" href="https://aka.ms/IntuneSuppTeam" rel="noopener noreferrer" target="_blank">@IntuneSuppTeam</a>.</p></div></div></div>
+</article>
+</body>
+</html>

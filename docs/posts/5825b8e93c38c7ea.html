@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What’s new in Microsoft Intune – October</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Microsoft Intune Blog</span>
+    <span class="date">October 29, 2026</span>
+  </div>
+  <h1>What’s new in Microsoft Intune – October</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/microsoft-intune-blog/what-s-new-in-microsoft-intune-october/ba-p/4537396" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p>Most changes to a device happen without the admin watching. A user turns off BitLocker to troubleshoot something. Patch Tuesday arrives. An agent starts working on a Cloud PC from an admin-configured pool. October’s new capabilities give admins more say over who can change what, and when updates land.</p>
+<p>A Cloud PC that an agent may use needs security configurations in place before the first task runs. Intune now includes a security baseline for Windows 365 for Agents Cloud PCs. Admins can deploy recommended device settings for Windows 11, Microsoft Edge, and Microsoft Defender for Endpoint to set up a consistent security posture for agentic workloads that meet your organization’s compliance needs, then customize only what those workloads need.</p>
+<p>For organizations that use Security Technical Implementation Guides (STIGs) as part of their security and compliance requirements, Intune’s STIG baseline is now available in Intune for commercial customers, extending its previous government-cloud availability. This allows organizations to audit supported Windows device configurations against recommendations from the Defense Information Systems Agency (DISA), and help them identify settings that don’t meet those recommendations without changing any device settings. Learn more:<a class="lia-external-url" href="https://learn.microsoft.com/intune/device-security/security-baselines/configure-baselines" rel="noopener noreferrer" target="_blank"> Manage security baseline profiles in Microsoft Intune</a> and <a class="lia-external-url" href="https://learn.microsoft.com/windows-365/agents/introduction-windows-365-for-agents" rel="noopener noreferrer" target="_blank">What is Windows 365 for Agents?</a>.</p>
+<p>Changing an IP address shouldn’t mean handing out local admin rights. Microsoft Intune Endpoint Privilege Management (EPM) now allows standard users without broad administrator access to change network settings through a dedicated experience in Company Portal. Standard users can make IT-approved network changes without waiting for the help desk, while admins keep broader administrator rights restricted.</p>
+<p>With an elevation system settings policy, EPM lets standard users change IPv4, IPv6, and DNS server values on their device's network adapters without broad administrator rights or a separate app deployment. Admins can configure the rule as automatic or user confirmed. For user-confirmed rules, they can require a business justification, Windows authentication, or both before the change applies. Learn more: <a class="lia-external-url" href="https://learn.microsoft.com/intune/epm/manage-system-settings" rel="noopener noreferrer" target="_blank">Manage system settings with Endpoint Privilege Management</a>.</p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image Figure 1: Elevation system setting policy creation example in the Microsoft Intune admin center" aria-labelledby="csz4NQ_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/5825b8e93c38c7ea/img_0.png"/></button><span class="lia-media-caption-text" id="csz4NQ_caption">Figure 1: Elevation system setting policy creation example in the Microsoft Intune admin center</span></span>
+<p>Not every update should follow same rollout schedule. When an update isn’t security-critical, you need room to plan deployment around the people using those devices. Windows Autopatch now extends the approval and scheduling process you already use for driver updates to quality updates. IT admins can approve or auto-approve updates by type, schedule deployments, and pause rollouts when needed. This gives admins more flexibility to plan non-security updates around users’ work while responding to security updates according to their urgency.</p>
+<p>Admins can manage monthly security updates, monthly non-security updates, out-of-band security updates, and out-of-band non-security updates independently, so rollout timing can follow testing, compliance, and business readiness. These expanded controls also let admins configure .NET Framework updates and Quick machine recovery controls for boot-critical issues. Learn more by reading <a class="lia-external-url" href="https://learn.microsoft.com/windows/deployment/windows-autopatch/manage/windows-autopatch-windows-quality-update-overview" rel="noopener noreferrer" target="_blank">Windows quality and .NET Framework updates</a> and <a class="lia-external-url" href="https://learn.microsoft.com/windows/deployment/windows-autopatch/monitor/windows-autopatch-quick-machine-recovery-updates" rel="noopener noreferrer" target="_blank">Quick machine recovery updates</a> resources.</p>
+<p>Any new employee’s first morning should focus on starting their new job, not on configuring the feature settings on their new device. This month, users who are provided a company owned Apple device have greater flexibility to get up and running. Automated Device Enrollment profiles now include a Setup Assistant skip key for the Device features tour on supported devices running iOS 27 and iPadOS 27. It joins the Liquid Glass and Accessibility Appearance skip keys Intune added in August.</p>
+<p>The Intune management client on macOS now checks in for configuration right after the user signs into the device for the first time, continues with frequent updates for the next couple of hours, and then follows the standard hourly check in schedule while the device is online. That means that apps, scripts, and related assignments reach devices sooner without admin or user action. For more information, see <a class="lia-external-url" href="https://learn.microsoft.com/intune/device-configuration/troubleshoot-device-profiles#policy-refresh-intervals" rel="noopener noreferrer" target="_blank">Questions with policies and profiles in Microsoft Intune</a>.</p>
+<p>Those check-ins also deliver more Apple settings. The Settings Catalog now includes options for supported iOS/iPadOS and macOS devices covering app settings, Apple Intelligence, network and web content filtering, and the macOS login window, configured through the same Settings Catalog policy workflow. Check out how to <a class="lia-external-url" href="https://learn.microsoft.com/intune/intune-service/configuration/settings-catalog" rel="noopener noreferrer" target="_blank">create a policy using settings catalog</a> with this guidance.</p>
+<p>The iOS/iPadOS Company Portal now supports declarative Volume Purchase Program (VPP) app downloads from the Apps tab. These apps install with less latency, can update automatically overnight, and show users live installation status. If you don't use declarative VPP apps, nothing changes for admins or users.</p>
+<p>Intune will add Apple OS 27 declarative device management (DDM) status data to device inventory, giving admins a clearer view of Apple devices in use. Devices report this data as their status changes. Admins will see system health for supported hardware components, content cache details, enhanced logging, and MDM status. The information available will vary by operating system, hardware, enrollment type, and supported DDM capabilities.</p>
+<p> </p>
+<blockquote>
+<p><strong>Myth:</strong> Intune takes hours to reevaluate compliance after a policy or security setting changes on a device.</p>
+<p><strong>Reality:</strong> When a device falls out of compliance, Conditional Access rules can prevent devices from accessing company resources. Supported Windows devices can detect changes to key security settings locally and request a check-in to reevaluate compliance sooner. That speed matters to users as much as admins. This fast reevaluation allows users to quickly regain access to the resources they need once the device meets compliance requirements again.</p>
+<p><strong>How: </strong>When you update or assign a compliance policy, Intune uses Fast Lane to notify devices to sync and receive the requirements. You’ve changed what the device needs to meet, so Intune prompts it to check in.</p>
+<p>But the policy isn’t always what changes. Supported Windows devices also monitor key security settings, even when their compliance requirements stay the same. For example, if the firewall is turned off, the device detects the change and requests a check-in so compliance can be reevaluated without waiting for the next scheduled one, reducing the vulnerability window.</p>
+<p>Faster compliance reevaluation can also help users regain access after a security issue is resolved. When a monitored security state improves. For example, when antivirus returns to a healthy, up-to-date, and active state, the device can detect the change and trigger a check-in. Intune can then reevaluate compliance sooner. For users blocked by Conditional Access policies, this can shorten the time between resolving the issue and regaining access to their work.</p>
+<p><strong>Learn more:</strong> <a class="lia-external-url" href="https://learn.microsoft.com/intune/intune-service/protect/create-compliance-policy" rel="noopener noreferrer" target="_blank">Create a compliance policy in Microsoft Intune</a>, or watch how Intune timing works in the Microsoft Mechanics video at <a class="lia-external-url" href="https://aka.ms/IntuneTimingDemystified" rel="noopener noreferrer" target="_blank">aka.ms/IntuneTimingDemystified</a>.</p>
+<p> </p>
+</blockquote>
+<p>Next month, instead of a What’s New blog, we’re having Microsoft Ignite 2026, which is happening November 17-20 in San Francisco and online. To see where Intune is headed, register and watch<a class="lia-external-url" href="https://ignite.microsoft.com/en-US/sessions/1787856634726001E24O-1791814916437001CEUi?source=sessions" rel="noopener noreferrer" target="_blank"> AI ready endpoints: secure, manage and scale (BRK404)</a> with Jason Roszak, VP of Product Management, and Eugenie Burrage, Director of Product Marketing. The session will share how Intune turns insights into policy and action and verifies that each change keeps devices healthy and secure.</p>
+<p> </p>
+<hr/>
+<p><em>Stay connected at Microsoft Ignite. Join us November 17–20 in San Francisco or online to explore the latest Microsoft Intune innovations, connect with the experts behind them, and go deeper with sessions, demos, and hands-on experiences. Explore <a class="lia-internal-link lia-internal-url lia-internal-url-content-type-blog" data-lia-auto-title="Microsoft Ignite" data-lia-auto-title-active="0" href="https://techcommunity.microsoft.com/blog/microsoftintuneblog/your-guide-to-intune-at-microsoft-ignite-2026/4564556" target="_blank">Microsoft Ignite</a> and plan your experience. Then, keep the conversation going: follow <a class="lia-internal-link lia-internal-url lia-internal-url-content-type-blog" data-lia-auto-title="Microsoft Intune" data-lia-auto-title-active="0" href="https://techcommunity.microsoft.com/category/microsoftintune/blog/microsoftintuneblog" target="_blank">Microsoft Intune</a> for the latest updates, insights, and best practices.</em></p></div></div></div>
+</article>
+</body>
+</html>

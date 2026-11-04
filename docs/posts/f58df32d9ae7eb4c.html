@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What’s new in Microsoft Intune – August</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Microsoft Intune Blog</span>
+    <span class="date">August 27, 2026</span>
+  </div>
+  <h1>What’s new in Microsoft Intune – August</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/microsoft-intune-blog/what-s-new-in-microsoft-intune-august/ba-p/4537393" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p>At scale, endpoint management becomes a different job. A two-minute task on one device can become months of work across thousands of devices. Organizations can’t add headcount every time the device estate grows. They need repeatable processes that give IT admins’ time back.</p>
+<p>This month’s updates support the device lifecycle, from provisioning devices with trusted identity before they ever reach enrollment, to unattended remote access and preparing Apple device settings.</p>
+<p><a class="lia-external-url" href="https://learn.microsoft.com/autopilot/device-preparation/device-association/overview" rel="noopener noreferrer" target="_blank">Windows Autopilot device association</a> is now generally available. Device association is a Windows Autopilot device preparation capability that can help admins associate devices to their tenant before enrollment in Microsoft Intune and establish trust earlier in the onboarding flow. This step adds an extra layer of onboarding security by verifying device identity before enrollment with cryptographic keys and TPM attestation, helping ensure that only trusted devices gain access to organizational resources.</p>
+<p>For teams deploying devices with Autopilot device preparation, we’ve added a streamlined path from first boot to a productive, managed Windows device. Device association enables device-based device preparation policies, out-of-box experience customization, and support for renaming devices before enrollment. This capability is rolling out with support for the upcoming Windows update and will become available as the required OS update is released to devices. <span data-contrast="auto">For more detail </span><a class="lia-external-url" href="https://aka.ms/Intune/Autopilot-device-association-blog" rel="noopener noreferrer" target="_blank">read the customer success blog on Autopilot device preparation</a><span data-contrast="auto">.</span></p>
+<p>Microsoft Intune Remote Help unattended access with remote sign-in gives IT teams the flexibility to support Windows devices whenever assistance is needed, even when the device is idle and no user is signed in. With remote sign-in, help desk agents can securely access a physical Windows device using their own credentials, so a user does not have to be present to accept the remote help connection. This makes it easier to provide support during scheduled maintenance, after-hours operations, and across distributed branch office environments.</p>
+<p>Access is scoped through a dedicated role-based access control (RBAC) permission, so unattended support can be reserved for admins authorized for their designated device set. This lets IT teams run maintenance at optimal times and resolve issues sooner, with Intune still enforcing access and audit controls throughout every session. For more details, read guidance on <a class="lia-external-url" href="https://nam06.safelinks.protection.outlook.com/?url=https%3A%2F%2Faka.ms%2FIntune%2FRemote-Help-Unattended&amp;data=05%7C02%7CTricia.Van%40microsoft.com%7C5ac3bbe55d05479d690108df02ce7aa5%7C72f988bf86f141af91ab2d7cd011db47%7C1%7C0%7C639232758012628938%7CUnknown%7CTWFpbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&amp;sdata=dGEqwcv2G33U00blMxib%2Bzl18L8T07pLC2UXU3jHUFo%3D&amp;reserved=0" rel="noopener nofollow noreferrer" target="_blank">unattended support with remote sign-in</a>.</p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image Figure 1, Administrators can start an unattended control session from the same place in the Intune admin center used for attended support today." aria-labelledby="dZWfQa_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/f58df32d9ae7eb4c/img_0.png"/></button><span class="lia-media-caption-text" id="dZWfQa_caption">Figure 1, Administrators can start an unattended control session from the same place in the Intune admin center used for attended support today.</span></span>
+<p>In anticipation of Apple releasing its new OSes in the coming months, we've added new capabilities to ensure you’re prepared, especially as AI adoption accelerates across your digital estate. Although the new release will have many additional features to configure, we want to highlight two of them.</p>
+<p>The first is the App Settings configuration, a native way for admins to manage apps and binaries, including AI apps, on managed Mac devices running macOS 27 and later. That matters for organizations that want to prevent specific apps from running on their devices. Before this, blocking an app meant standing up and maintaining complex open-source tooling. When managing only a few hundred devices, that’s a workaround. But workarounds do not scale. And every new app widens the gap until it becomes a system nobody wants to own or manage. Admins can now stay in control of allowed and denied apps and binaries with a single policy in the Intune admin center.</p>
+<p>The second is the new enhanced logging device actions option to minimize a lot of the manual work needed for collecting logs on AppleCare support cases. Admins can put a device into an enhanced logging state to ensure its log files go directly to the AppleCare case. The old path meant asking the user to trigger log collection, then uploading the files by hand. Now it's streamlined into a device action, reducing interruptions for users. For more details on Apple’s announcement, see <a class="lia-external-url" href="https://support.apple.com/en-euro/guide/deployment/depd567c9ffa/web" rel="noopener nofollow noreferrer" target="_blank">WWDC26 app management updates</a>.</p>
+<blockquote>
+<p><strong>Myth: </strong>Organizations need a dedicated third-party endpoint management tool to deploy and run Microsoft Defender for Endpoint at scale.</p>
+<p><strong>Reality: </strong>Built-in integration between Microsoft Intune and <a class="lia-external-url" href="https://www.microsoft.com/security/business/endpoint-security/microsoft-defender-endpoint" rel="noopener noreferrer" target="_blank">Defender for Endpoint</a> helps organizations make the most of their existing Microsoft investments, reduce tool sprawl, and avoid managing and reconciling separate endpoint security and management systems.</p>
+<p>Onboarding, configuration, and ongoing security management are available through Intune as native, first-party capabilities. From the Intune admin center, admins can deploy Defender onboarding policies, apply protection using Microsoft-recommended security baselines or targeted endpoint security policies, and manage security settings at scale.</p>
+<p>The built-in integration between Intune and Defender for Endpoint connects threat detection with device compliance and access. When appropriate policies are configured, Defender for Endpoint risk signals can inform compliance in Intune, and Conditional Access can prevent at-risk devices from accessing company resources without manual intervention.</p>
+<p><strong>Still have questions about switching from a third-party solution? </strong>Watch Microsoft MVP Jonathan Edwards’ video,<a class="lia-external-url" href="https://youtu.be/nCYPmAr-k90" rel="noopener nofollow noreferrer" target="_blank"> 99% of IT Teams still get Microsoft Defender &amp; Microsoft Intune Wrong</a>, where he addresses the common concerns and explains the benefits of running Defender alongside Intune.</p>
+<p><strong>How:</strong> Follow the new Defender and Intune <a class="lia-external-url" href="https://aka.ms/TechnicalUserManual" rel="noopener noreferrer" target="_blank">Technical User Manual</a> for a clear, sequenced path from setup to full integration.</p>
+<p> </p>
+</blockquote>
+<p>Native Defender for Endpoint integration is one more example of the same theme running through this month's blog. Fewer tools to manage. Fewer manual steps. More of IT's time going toward the work that actually needs judgment. That's what scaling with Intune looks like in practice. Tell us in the comments which capability you'll put to work first.</p>
+<hr/>
+<p><em>Stay up to date! Bookmark the <a data-lia-auto-title="Microsoft Intune Blog" data-lia-auto-title-active="0" href="https://techcommunity.microsoft.com/category/microsoftintune/blog/microsoftintuneblog" target="_blank">Microsoft Intune Blog</a> and follow us on <a href="https://www.linkedin.com/company/microsoft-intune-product" rel="noopener nofollow noreferrer" target="_blank">LinkedIn </a> or <a href="https://twitter.com/MSIntune" rel="noopener nofollow noreferrer" target="_blank">@MSIntune </a>and <a href="https://x.com/IntuneSuppTeam" rel="noopener nofollow noreferrer" target="_blank">@IntuneSuppTeam </a>on X to continue the conversation.</em></p></div></div></div>
+</article>
+</body>
+</html>

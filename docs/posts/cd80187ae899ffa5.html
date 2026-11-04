@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to Configure macOS Privacy Preferences Policy Control (PPPC) Using the Intune Settings Catalog</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Intune Customer Success</span>
+    <span class="date">June 24, 2026</span>
+  </div>
+  <h1>How to Configure macOS Privacy Preferences Policy Control (PPPC) Using the Intune Settings Catalog</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/intune-customer-success/how-to-configure-macos-privacy-preferences-policy-control-pppc/ba-p/4530406" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p><strong>By: Chris Kunze - Principal Product Manager | Microsoft Intune</strong></p>
+<p><a href="https://support.apple.com/guide/deployment/privacy-preferences-policy-control-payload-dep38df53c2a/web" rel="noopener nofollow noreferrer" target="_blank">Privacy Preferences Policy Control (PPPC)</a> settings on macOS are used to pre-approve privacy permissions for apps so users aren't repeatedly prompted by macOS for access requests. Common examples include Full Disk Access, Screen Recording, Camera, Microphone, Accessibility, Files and Folders, and Apple Events permissions.</p>
+<p>Organizations commonly deploy PPPC profiles to improve the user experience, reduce support calls, and ensure management and security tools have the permissions they require to function correctly. This is especially important for tools such as Microsoft Defender, remote support applications, compliance agents, and inventory tools. PPPC profiles also help standardize privacy settings across managed Macs and support zero-touch onboarding scenarios where users can begin working without manually approving a series of permission prompts.</p>
+<p>Intune’s settings catalog provides a straightforward way to deploy PPPC settings, but because macOS uses strict matching criteria, a few configuration details are important to get right. If these settings aren’t configured correctly, apps can either break - or worse, fail quietly. This article walks through the key configuration details that help ensure those settings are applied correctly.</p>
+<p>macOS evaluates PPPC entries using a combination of:</p>
+<ul>
+<li>App identifier (Bundle ID or Path)</li>
+<li>Code requirement (from the app’s signature)</li>
+<li>The specific permission being granted or denied.</li>
+</ul>
+<p><a class="lia-external-url" href="https://developer.apple.com/documentation/devicemanagement/privacypreferencespolicycontrol/services-data.dictionary/identity" rel="noopener nofollow noreferrer" target="_blank">Apple</a> requires each PPPC payload to use either Authorization or Allowed, but not both. If any of these values don’t align correctly, the policy won’t apply.</p>
+<ol>
+<li>Create a settings catalog profile.<br/>In the <a class="lia-external-url" href="https://intune.microsoft.com" rel="noopener noreferrer" target="_blank">Intune admin center</a><span>, create a macOS configuration profile using </span><a class="lia-external-url" href="https://learn.microsoft.com/mem/intune/configuration/settings-catalog" rel="noopener noreferrer" target="_blank">Settings Catalog</a><span>. Search for: </span><a class="lia-external-url" href="https://learn.microsoft.com/mem/intune/configuration/privacy-preferences-policy-control-macos" rel="noopener noreferrer" target="_blank">Privacy Preferences Policy Control</a>.<br/><br/><span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image &lt;em&gt;Figure 1 - Settings picker showing Privacy Preferences Policy Control.&lt;/em&gt;" aria-labelledby="bt7iNq_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/cd80187ae899ffa5/img_0.png"/></button><span class="lia-media-caption-text" id="bt7iNq_caption"><em>Figure 1 - Settings picker showing Privacy Preferences Policy Control.</em></span></span>This is where you'll configure the PPPC permissions required by your application.<br/><br/></li>
+<li>Use the Authorization field <br/>When configuring, select the <strong>Authorization</strong> setting instead of the legacy <strong>Allowed</strong> setting whenever supported, but never both.<br/><br/></li>
+<li>Get the correct code requirement<br/>
+<p>On a Mac where the application is installed, open <strong>Terminal</strong> and run:</p>
+<pre class="lia-code-sample language-bash"><code>codesign -dr - /Applications/YourApp.app</code></pre>
+<p>Replace /Applications/YourApp.app with the path to the application you're configuring.<br/><br/>The output will contain a string similar to:</p>
+<pre class="lia-code-sample language-bash"><code>designated =&gt; identifier "com.example.app" and ...</code></pre>
+<p>Copy everything that appears after “designated =&gt;” exactly as displayed. You'll use this value when configuring the PPPC entry in Intune.<br/><br/></p>
+<p><strong>Note</strong>: Some applications return a multi-line code requirement. If that happens, paste the value into Intune as a single continuous string without line breaks. The content for the Identifier field can also be extracted from this command.</p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image &lt;em&gt;Figure 2 - Screenshot of a terminal window showing Chrome/ChromeDriver startup errors, including “DevToolsActivePort file doesn’t exist” and certificate-related error messages.&lt;/em&gt;" aria-labelledby="q9bLRB_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/cd80187ae899ffa5/img_1.png"/></button><span class="lia-media-caption-text" id="q9bLRB_caption"><em>Figure 2 - Screenshot of a terminal window showing Chrome/ChromeDriver startup errors, including “DevToolsActivePort file doesn’t exist” and certificate-related error messages.</em></span></span>
+<p> </p>
+</li>
+<li>Configure the PPPC entry<br/>
+<p>After gathering the required information, configure the application entry.</p>
+<div>
+<div class="styles_lia-table-wrapper__h6Xo9 styles_table-responsive__MW0lN"><table border="1"><thead><tr class="lia-background-color-custom-f2f4f7"><th class="lia-border-color-custom-dddddd lia-border-style-solid">Field</th><th class="lia-border-color-custom-dddddd lia-border-style-solid">Value</th></tr></thead><tbody><tr><td class="lia-border-color-custom-dddddd lia-border-style-solid">Identifier type</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Bundle ID or Path</td></tr><tr class="lia-background-color-custom-fafafa"><td class="lia-border-color-custom-dddddd lia-border-style-solid">Identifier</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Application Bundle ID</td></tr><tr><td class="lia-border-color-custom-dddddd lia-border-style-solid">Code requirement</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Full output from the <code>codesign</code> command in Step 3.</td></tr><tr class="lia-background-color-custom-fafafa"><td class="lia-border-color-custom-dddddd lia-border-style-solid">Authorization</td><td class="lia-border-color-custom-dddddd lia-border-style-solid">Allow</td></tr></tbody><colgroup><col/><col/></colgroup></table></div>
+</div>
+<br/><span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image &lt;em&gt;Figure 3 - Screenshot of the Microsoft Intune admin center editing a OneDrive configuration profile. The main pane shows privacy and synchronization settings, while a right-side “Configure instance” panel displays Privacy Preferences Policy Control options, including an enabled setting for “Use System SSL.”&lt;/em&gt;" aria-labelledby="lWDZ59_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/cd80187ae899ffa5/img_2.png"/></button><span class="lia-media-caption-text" id="lWDZ59_caption"><em>Figure 3 - Screenshot of the Microsoft Intune admin center editing a OneDrive configuration profile. The main pane shows privacy and synchronization settings, while a right-side “Configure instance” panel displays Privacy Preferences Policy Control options, including an enabled setting for “Use System SSL.”</em></span></span>
+<p><strong>Tip:</strong> <span class="tooltip"> Use Bundle ID for apps whenever possible. <span class="tooltip-text" role="tooltip"> Bundle IDs are more reliable than file paths because they typically remain consistent when an app is updated or moved. </span> </span></p>
+</li>
+</ol>
+<p>If these settings fail, they fail silently. Intune may report the policy as successfully applied, but macOS evaluates PPPC entries when the app requests access to the protected resource. Upon app launch, macOS skips any entry where the code requirement doesn’t match the app’s current binary signature without any indication that the setting is skipped. The three most common causes are:</p>
+<ul>
+<li>Incorrect code requirement<br/>The code requirement must match the application's current signing information exactly. Even a small mismatch can prevent the PPPC setting from being applied.</li>
+<li>Mixing Authorization and Allowed<br/>Apple’s documentation states PPPC entries should use either Authorization or Allowed, not both.</li>
+<li>Wrong identifier type<br/>If the PPPC entry is configured with the wrong identifier type, macOS won't match the application correctly.</li>
+</ul>
+<p>If you’ve been avoiding the settings catalog for PPPC, try this approach. Pull the identifier and code requirement directly from the app using codesign, use Authorization when available, and validate the configuration with a pilot group before broader deployment. <br/><br/>Most PPPC issues come down to matching. Once you understand how macOS evaluates these settings it becomes much more predictable. <br/><br/>If you have any questions, leave a comment below or reach out to us on X <a class="lia-external-url" href="https://aka.ms/IntuneSuppTeam" rel="noopener noreferrer" target="_blank">@IntuneSuppTeam</a>.</p>
+<p> </p>
+<p><em><strong>Join our community!</strong> Discuss real-world scenarios, get expert guidance, connect with peers, and influence the future of Microsoft Security products. Learn more at <a class="lia-external-url" data-outlook-id="b28472ac-e9ef-4c22-803d-2eabb395ee0c" href="https://aka.ms/JoinIntuneCommunity" rel="noopener noreferrer" target="_blank">aka.ms/JoinIntuneCommunity</a>.</em></p></div></div></div>
+</article>
+</body>
+</html>

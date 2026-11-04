@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Establish a macOS security baseline with mSCP and Microsoft Intune custom compliance</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Intune Customer Success</span>
+    <span class="date">October 28, 2026</span>
+  </div>
+  <h1>Establish a macOS security baseline with mSCP and Microsoft Intune custom compliance</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/intune-customer-success/establish-a-macos-security-baseline-with-mscp-and-microsoft/ba-p/4568222" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p><strong>By: Iris Yuning Ye, Product Manager | Microsoft Intune</strong></p>
+<p>Organizations that manage Mac devices need a reliable way to evaluate their security posture against a recognized baseline. Microsoft Intune custom compliance provides the device compliance evaluation policy, and the National Institute of Standards and Technology’s (NIST) macOS Security Compliance Project (mSCP) provides macOS security rules and checks mapped to compliance requirements.</p>
+<p>Earlier this year we released <a class="lia-external-url" href="https://learn.microsoft.com/intune/device-security/compliance/custom-settings" rel="noopener noreferrer" target="_blank">Intune custom compliance for macOS devices.</a> The feature uses a discovery script and JSON file to define compliance settings. With the mSCP command-line tool, you can select and tailor a security baseline, generate a macOS discovery script, and pair the discovered identifiers with an Intune rules JSON file. Intune then evaluates each device against the chosen baseline and uses the result in compliance reporting and Conditional Access decisions.</p>
+<p>In this blog, we’re introducing a <a class="lia-external-url" href="https://github.com/microsoft/shell-intune-samples/tree/master/macOS/Custom%20Compliance" rel="noopener noreferrer" target="_blank">JSON conversion script</a> (mscp_to_intune_json_conversion.sh). The script converts the mSCP’s generated vendor manifest into the JSON format required for Intune custom compliance.</p>
+<p> </p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image &lt;em&gt;Figure 1:&lt;/em&gt;" aria-labelledby="ledBO1_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/d81fca6d409a9e98/img_0.png"/></button><span class="lia-media-caption-text" id="ledBO1_caption"><em>Figure 1:</em></span></span>
+<p>Before you begin, set up the mSCP locally by following the NIST guidance: <a href="https://pages.nist.gov/macos_security/welcome/getting-started/" rel="noopener noreferrer nofollow" target="_blank">Getting started with the macOS Security Compliance Project</a>.</p>
+<p>Next, we’ll establish and configure the security baseline on the device.</p>
+<ol>
+<li>Select your security baseline: Choose a security baseline your organization intends to evaluate devices against by looking through <a class="lia-external-url" href="https://github.com/usnistgov/macos_security" rel="noopener noreferrer" target="_blank">frameworks supported by mSCP</a> (for the example in this blog we’ll use CIS Level 1)</li>
+<li>Configure your baseline: When creating the baseline for the first time, you'll follow a guided process to specify the name of the custom baseline, your name and organization, choose what specific rules to include or exclude.</li>
+</ol>
+<p>Once the customization process is completed, a new baseline file containing all the rules you specified is generated under the custom/baselines/ directory as a YAML file.</p>
+<pre class="lia-code-sample language-bash"><code>./mscp.py baseline –k cis_lvl1 –t</code></pre>
+<div>
+<p><strong>Note:</strong> The command uses the following flags:</p>
+<ul>
+<li><code>-k</code> Specifies the keyword. In this example, we're using <code>cis_lvl1</code>.</li>
+<li><code>-t</code> Enables tailoring, allowing you to select specific rules to include and define organization-specific values.</li>
+</ul>
+</div>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image &lt;em&gt;Figure 2: Sample results after running the baseline keyword and tailoring command.&lt;/em&gt;" aria-labelledby="PKiOoN_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/d81fca6d409a9e98/img_1.png"/></button><span class="lia-media-caption-text" id="PKiOoN_caption"><em>Figure 2: Sample results after running the baseline keyword and tailoring command.</em></span></span><span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image &lt;em&gt;Figure 3: Sample of tailoring each security baseline rule to your organization's need.&lt;/em&gt;" aria-labelledby="5hUEJM_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/d81fca6d409a9e98/img_2.png"/></button><span class="lia-media-caption-text" id="5hUEJM_caption"><em>Figure 3: Sample of tailoring each security baseline rule to your organization's need.</em></span></span>
+<p>Once the baseline YAML file is generated, run the command below to generate mSCP documents. These files will be saved into a build/[your specified project name] directory.</p>
+<pre class="lia-code-sample language-bash"><code>./mscp.py guidance –s –M [yaml file location]</code></pre>
+<p> </p>
+<p>The yaml file location should be the relative location on top of your mSCP folder.</p>
+<div>
+<p><strong>Note:</strong> The command uses the following flags:</p>
+<ul>
+<li><code>-s</code> Generates the compliance script.</li>
+<li><code>-M</code> Generates the JSON vendor manifest file.</li>
+</ul>
+</div>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image &lt;em&gt;Figure 4: Command line shows mSCP document generation complete.&lt;/em&gt;" aria-labelledby="ZOu7LZ_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/d81fca6d409a9e98/img_3.png"/></button><span class="lia-media-caption-text" id="ZOu7LZ_caption"><em>Figure 4: Command line shows mSCP document generation complete.</em></span></span>
+<p>Once the JSON Vendor Manifest and compliance script are successfully generated, we highly recommend running a test check to verify that all rules and values are defined as expected.</p>
+<p> </p>
+<p>The key is to locate where you build folder is and where the .sh file was saved in:</p>
+<pre class="lia-code-sample language-bash"><code>sudo ./[base folder]/cis_lvl1_macos_27.0/cis_lvl1_macos_27.0_compliance.sh --check</code></pre>
+<p> </p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image &lt;em&gt;Figure 5: Run check to confirm security baseline rule was set as expected.&lt;/em&gt;" aria-labelledby="zxMfpU_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/d81fca6d409a9e98/img_4.png"/></button><span class="lia-media-caption-text" id="zxMfpU_caption"><em>Figure 5: Run check to confirm security baseline rule was set as expected.</em></span></span>
+<p>Create a mobileconfig file by creating a plain text file, then copy and paste the example in <a class="lia-external-url" href="https://github.com/microsoft/shell-intune-samples/tree/master/macOS/Custom%20Compliance" rel="noopener noreferrer" target="_blank">GitHub</a> into it.</p>
+<p> </p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image &lt;em&gt;Figure 6: Sample mobileconfig file.&lt;/em&gt;" aria-labelledby="Dtc8CY_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/d81fca6d409a9e98/img_5.png"/></button><span class="lia-media-caption-text" id="Dtc8CY_caption"><em>Figure 6: Sample mobileconfig file.</em></span></span>
+<ol>
+<li>Update the PayloadType key to match the audit file name. This ensures the compliance script uses the correct managed arguments when running.<strong><br/>Example:</strong> In our demo, the value is updated to:<br/><pre class="lia-code-sample language-bash"><code>org.intune_compliance_lv1_macOS_26.0.audit</code></pre></li>
+<li>Customize the following keys based on your organization's requirements and preferences:
+<ul>
+<li>PayloadDescription</li>
+<li>PayloadOrganization</li>
+<li>PayloadDisplayName</li>
+</ul>
+</li>
+</ol>
+<p>To verify the configuration, install the .mobileconfig profile locally on a test MacOS device.</p>
+<ol>
+<li>Open <strong>System Settings</strong> &gt; <strong>General</strong> &gt; <strong>Device Management</strong>.</li>
+<li>Select the <strong>+</strong> button to add a configuration profile.</li>
+<li>Navigate to the saved .mobileconfig file, select it, and click <strong>Open</strong>.</li>
+<li>Follow the prompts to <strong>Continue</strong> and <strong>Install</strong> the profile.</li>
+</ol>
+<div>
+<p><strong>Note:</strong> Administrator privileges are required to install the device profile.</p>
+</div>
+<p> </p>
+<p><strong>Validating the Results:</strong><br/>Once the profile is installed, run the generated compliance script. If the script runs successfully and outputs JSON, the managed arguments are correctly set. Run the generated compliance script with no arguments specified to make sure it uses the managed arguments from the installed mobileconfig file.</p>
+<p> </p>
+<pre class="lia-code-sample language-bash"><code>sudo ./[base folder]/cis_lvl1_macos_27.0/cis_lvl1_macos_27.0_compliance.sh</code></pre>
+<p> </p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image &lt;em&gt;Figure 7: Sample result from running the script locally.&lt;/em&gt;" aria-labelledby="LFwqwd_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/d81fca6d409a9e98/img_6.png"/></button><span class="lia-media-caption-text" id="LFwqwd_caption"><em>Figure 7: Sample result from running the script locally.</em></span></span>
+<p>Once testing is complete, remove the test profile for your local Mac. It’s critical to ensure all testing profiles are removed from target devices before deploying from Intune to avoid conflicts.</p>
+<p>You can <a class="lia-external-url" href="https://learn.microsoft.com/intune/device-configuration/templates/configure-custom-settings-apple?pivots=macos" rel="noopener noreferrer" target="_blank">deploy the custom mobileconfig profile</a> for the managed arguments using Intune to the desired set of macOS devices.</p>
+<div>
+<p><strong>Important:</strong> Deploy the <code>.mobileconfig</code> file to target devices <strong>before</strong> deploying the custom compliance policy. Otherwise, the custom compliance policy may not run correctly.</p>
+</div>
+<p>Next, use the mscp_to_intune_json_conversion.sh script from <a class="lia-external-url" href="https://github.com/microsoft/shell-intune-samples/tree/master/macOS/Custom%20Compliance" rel="noopener noreferrer" target="_blank">GitHub</a> to convert the mSCP JSON Vendor Manifest file into the specific JSON format required for Intune’s custom compliance policy. The command line is comprised of three parts:</p>
+<ol>
+<li>Locate where you saved the conversion script.</li>
+<li>Specify the JSON file from security baseline you intend to convert from.</li>
+<li>Specify the name of the custom compliance JSON file you intend to convert to.</li>
+</ol>
+<pre class="lia-code-sample language-bash"><code>~/ mscp_to_intune_json_conversion.sh [base folder]/cis_lvl1_macos_27.0/cis_lvl1_macos_27.0_compliance.json &gt; intune_custom_compliance.json</code></pre>
+<p> </p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image &lt;em&gt;Figure 8: Using JSON conversion script to convert mSCP generated rule file into Intune custom compliance policy compatible JSON file.&lt;/em&gt;" aria-labelledby="E93pNu_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/d81fca6d409a9e98/img_7.png"/></button><span class="lia-media-caption-text" id="E93pNu_caption"><em>Figure 8: Using JSON conversion script to convert mSCP generated rule file into Intune custom compliance policy compatible JSON file.</em></span></span>
+<p>You can now upload the compliance script built by the mSCP that can be found in the build directory as your Discovery Script within Intune’s custom compliance policy.  You can also upload the converted JSON file as the JSON for custom settings.<br/><br/>Devices with the mobileconfig profile installed will run the compliance script using the managed arguments and output the JSON required for the custom discovery script.</p>
+<ul>
+<li>Start with a small pilot group and a focused baseline of your choice.</li>
+<li>Validate every identifier, returned data type, and expected value before broad deployment.</li>
+<li>Deploy mobileconfig file and make sure the file is already successfully deployed on target devices before custom compliance policy.</li>
+<li>Review the per-setting results in the <strong>Intune admin center &gt;</strong> <strong>Reports &gt; Device compliance -&gt; Noncompliant devices and settings</strong>.</li>
+<li>Make sure the JSON file generated is aligned with other discovery scripts’ output to avoid misalignment errors.</li>
+<li>The recommended first step is to pilot one baseline on a small Mac device group, document the source version and rule mapping, and expand only after the discovery script output and Intune results have been validated.</li>
+</ul>
+<p>The steps and scripts provided simplifies the flow to connect the mSCP with Intune’s custom compliance feature. By leveraging mSCP, organizations can efficiently translate recognized macOS security guidance into actionable, measurable compliance signals. While Intune provides the mechanism to capture identifiers and current device values, the rules JSON define the precise evaluation criteria. Together, these tools create a transparent, automated path from a high-level security baseline to detailed, device-level compliance reporting.</p>
+<div>
+<p>A special thank you to <strong><a class="lia-external-url" href="https://www.nist.gov/people/robert-gendler" rel="noopener noreferrer nofollow" target="_blank">Robert Gendler from NIST</a></strong> for authoring the <code>mscp_to_intune_json_conversion.sh</code> script and collaborating on this project.</p>
+</div>
+<p>Collaboration on this post does not imply NIST endorsement of the products or services offered by Microsoft. Any mention of specific tools or software is for informational purposes and does not constitute a recommendation by NIST.</p></div></div></div>
+</article>
+</body>
+</html>

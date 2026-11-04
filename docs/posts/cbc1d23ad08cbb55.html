@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>As vulnerability discovery moves at AI speed, keeping current is foundational to reduce exposure</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Intune Customer Success</span>
+    <span class="date">April 22, 2026</span>
+  </div>
+  <h1>As vulnerability discovery moves at AI speed, keeping current is foundational to reduce exposure</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/intune-customer-success/as-vulnerability-discovery-moves-at-ai-speed-keeping-current-is/ba-p/4513766" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><h2 class="styles_text-body__F7QRV MessageIntroduction_lia-message-introduction___mMAN styles_h4__wlzOi">A new security update status dashboard in Microsoft Intune - and four ways to shrink your vulnerability window.</h2><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p>Recent advances in automation and AI are accelerating vulnerability discovery and shortening the window between disclosure and exploitation. As Microsoft outlined in our recent <a class="lia-external-url" href="https://aka.ms/prioritizingdefense" rel="noopener noreferrer" target="_blank">Security blog</a>, this shift raises the bar for how quickly organizations need to reduce exposure across their environments.</p>
+<p>For IT and security teams, this makes staying current on updates more critical than before. While responding to individual Common Vulnerabilities Exposures (CVE) remains essential, keeping current across devices and applications is foundational to reducing exposure as threats evolve.</p>
+<p>This post focuses on the endpoint execution layer - how Microsoft Intune helps organizations understand their update posture, prioritize action, and reduce the time it takes for protections to land.</p>
+<p>To act decisively, teams need clear visibility into where systems are current, where gaps exist, and how update deployments are progressing. Without a shared, defensible view of update status, it’s difficult to prioritize remediation or answer a basic question from leadership: <em>“Are we patched?” </em></p>
+<p>To address this, Intune is introducing the General Availability of a new <a class="lia-external-url" href="https://go.microsoft.com/fwlink/?LinkId=2361207" rel="noopener noreferrer" target="_blank">security update status</a> dashboard providing centralized visibility into update compliance across Windows Clients, Windows Servers, and Microsoft 365 Apps. The dashboard provides a clear, current view for leadership, backed by current data — without switching between multiple reports or tools.</p>
+<p> </p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image &lt;em&gt;Figure 1: Security update dashboard showing patch status for Windows clients, servers, and Microsoft 365 apps.&lt;/em&gt;" aria-labelledby="hVUIHO_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/cbc1d23ad08cbb55/img_0.png"/></button><span class="lia-media-caption-text" id="hVUIHO_caption"><em>Figure 1: Security update dashboard showing patch status for Windows clients, servers, and Microsoft 365 apps.</em></span></span>
+<p>The dashboard surfaces:</p>
+<ul>
+<li>Visibility into which devices are current on quality and feature updates, which are falling behind, and where remediation gaps exist across your Intune-managed estate</li>
+<li>The data needed to prioritize action, track progress across deployment rings, and help demonstrate a more accurate compliance posture</li>
+<li>Insight to where exposure is critical and needs immediate attention</li>
+</ul>
+<p>The dashboard delivers visibility. The capabilities below help you act on it.</p>
+<p class="lia-indent-padding-left-30px">Windows Autopatch manages update orchestration through predefined deployment rings, releasing updates progressively across representative device groups so that quality and security updates reach broad production populations only after passing validation in pilot environments. IT teams shift from manually coordinating deployment schedules each month to focusing on policy and exception management while Windows Autopatch handles sequencing, scheduling, and rollout logic.</p>
+<p class="lia-indent-padding-left-30px">When critical vulnerabilities emerge, expedited update deployment allows devices to advance more quickly through the rollout process, providing security teams with an additional lever for reducing time-to-secure when AI-driven discovery shortens the window between disclosure and exploitation.</p>
+<p class="lia-indent-padding-left-30px">Even when updates deploy rapidly, protection is not realized until a device restarts, and users routinely defer reboots for hours or days. Hotpatch updates for Windows reduces this gap by applying supported security updates to in-memory processes without requiring frequent restarts. Eligible Windows 11 Enterprise devices can reach a protected state immediately after installation, helping reduce the vulnerability window.</p>
+<p class="lia-indent-padding-left-30px">Operationally, hotpatch updates shifts the restart requirement from monthly update to a smaller number of planned baseline updates per year, enabling organizations to deploy critical fixes without the productivity impact of forced restarts. You can enable hotpatch updates through quality update policies in Intune on supported systems.</p>
+<p class="lia-indent-padding-left-30px">In addition, with <a class="lia-external-url" href="https://learn.microsoft.com/windows/deployment/windows-autopatch/monitor/windows-autopatch-update-readiness-overview" rel="noopener noreferrer" target="_blank">Autopatch update readiness</a>, IT admins can better anticipate when planned quality or feature updates won’t reach a device, understand Autopatch and hotpatch enrollment coverage, and quickly identify blockers to bringing devices into a ready state.</p>
+<p class="lia-indent-padding-left-30px">The Microsoft 365 Apps admin center includes Inventory and Cloud Update, giving administrators visibility into update status across connected devices by update channel so they can quickly spot systems missing the latest security updates and track progress. When an accelerated response is required, teams can tighten deadlines and move from staged rollout to immediate enforcement by removing waves, deferrals, or exclusion windows that may delay availability for specific groups, especially where channel divergence or scoped targeting leaves devices outside policy. Because expedited servicing reduces time for testing across diverse configurations, Cloud Update controls such as pausing a deployment or rolling back an update help mitigate risk while closing security gaps quickly.</p>
+<p class="lia-indent-padding-left-30px">For organizations managing servers, <strong>Configuration Manager</strong> helps streamline the identification, packaging, and assignment of security updates (for example, with Automatic Deployment Rules) based on classification and severity. Cloud-based sourcing through the Microsoft Update service can prevent deployment failures in distributed environments, while maintenance windows let you pre-stage updates for highly available systems and install them during defined downtime intervals - achieving compliance without unplanned service interruptions. For server estates that are <strong>Arc-enabled</strong>, you can also use <strong>Azure Arc</strong> to extend visibility and management across hybrid and multicloud infrastructure.</p>
+<p class="lia-indent-padding-left-30px">If you need even deeper coverage and insight, consider integrating <strong>Microsoft Defender Vulnerability Management (MDVM)</strong> to enrich update posture with vulnerability intelligence and prioritize remediation based on real exposure.</p>
+<p>Deploying updates is half the job. Verifying they land - and holding the line when they don't - is the other half. Intune compliance policies let you define minimum OS build numbers, required update levels, and grace periods. Devices that fall out of compliance are flagged automatically.</p>
+<p>Paired with Microsoft Entra ID Conditional Access, update currency can become a condition of access - checking that only current, healthy devices connect to corporate resources. This turns update posture into an enforceable control, not just a reporting metric.</p>
+<p>The increasing use of AI in vulnerability discovery, combined with a rapidly evolving threat landscape, underscores the importance of taking proactive security measures. Here are actions you can take today:</p>
+<ul>
+<li><strong>Assess. </strong>Open the new security update status dashboard and know the baseline of your fleet. See<strong> </strong>how many Windows devices are behind on feature releases, quality updates, and Microsoft 365 Apps patches.</li>
+<li><strong>Automate. </strong>Configure Windows Autopatch for ring-based deployment, enable hotpatch updates on eligible devices, and set Microsoft 365 Apps servicing profiles. Enable expedited updates so you can respond to critical vulnerabilities quickly.</li>
+<li><strong>Enforce. </strong>Pair compliance policies with Conditional Access. Make being current a condition of access to corporate data.</li>
+<li><strong>Monitor. </strong>Review the dashboard weekly. Investigate deployment failures promptly and deploy proactive remediations to clear blockers.</li>
+<li><strong>Communicate. </strong>Share dashboard trends with security leadership and application owners. When stakeholders see the data, update compliance becomes a shared priority, not just an IT burden.</li>
+<li><strong>Evolve. </strong>Revisit your deployment rings, deferral windows, and compliance thresholds quarterly. Use failure patterns from the dashboard to refine your approach and evaluate Windows Autopatch for a fully managed experience that scales with your organization.</li>
+</ul>
+<p>Every day a device remains out of date is potential exposure to unnecessary vulnerabilities. Intune gives you the tools, and now the visibility, to get current, stay current, and defend your organization at the speed the threat landscape demands.</p>
+<p>Reducing exposure starts with knowing where you stand. The <strong>security update status dashboard in Intune</strong> provides a single place to understand update status across Windows devices and Microsoft 365 Apps, helping you identify lagging systems and prioritize action.</p>
+<p>Make the dashboard part of your regular operational rhythm: review it, act on the gaps it surfaces, and track progress over time. With the right visibility and tooling, staying current becomes repeatable - not reactive.</p>
+<p>Feature availability varies by license. Learn more about plan details and requirements <a class="lia-external-url" href="https://www.microsoft.com/security/business/microsoft-intune-pricing" rel="noopener noreferrer" target="_blank">here</a>.</p>
+<p><a class="lia-external-url" href="https://aka.ms/prioritizingdefense" rel="noopener noreferrer" target="_blank">Read the latest Microsoft Security blog</a> to learn how turning AI‑driven discovery into protection at scale can help secure your estate in an AI‑driven threat landscape.</p>
+<p><a class="lia-external-url" href="https://security.microsoft.com/securenow" rel="noopener noreferrer" target="_blank">Get started with Microsoft Secure Now</a> for guidance in assessing risk and take recommended actions.</p></div></div></div>
+</article>
+</body>
+</html>

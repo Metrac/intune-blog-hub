@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What’s new in Microsoft Intune – March</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Microsoft Intune Blog</span>
+    <span class="date">March 31, 2026</span>
+  </div>
+  <h1>What’s new in Microsoft Intune – March</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/microsoft-intune-blog/what-s-new-in-microsoft-intune-march/ba-p/4493136" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p><span data-contrast="auto">In a typical week, IT admins are enrolling devices, deploying apps, enforcing policies, and making a hundred small decisions that keep their organizations running. This month’s updates focus on improving the experience around daily actions, compliance visibility, and management capabilities for Apple devices and mobile apps.</span></p>
+<p><span data-contrast="auto">Intune sends notifications to devices when changes occur that require devices to </span><span data-contrast="auto">check in. When those notifications are delayed, whether from devices being offline or in a particular state (network instability, low battery, etc.), the action can be delayed, and devices can miss the check in. Now, on Windows devices, we're complementing the Windows Notification Service (WNS) with the same notification protocol that powers Microsoft Teams to support more timely notification delivery that gives admins the traceability they need for troubleshooting.</span></p>
+<p><span data-contrast="auto">We're introducing this functionality with Remote Help for Windows to help reduce the likelihood of stalled session starts when devices are online and reachable. We recommend updating firewall rules to include this new endpoint: *<u>.</u></span><u><span data-contrast="auto">trouter.communications.svc.cloud.microsoft</span></u><span data-contrast="auto">. Stay informed about our progress by bookmarking the </span><a href="https://learn.microsoft.com/en-us/intune/intune-service/apps/intune-management-extension#intune-management-extension-logs" rel="noopener noreferrer" target="_blank"><span data-contrast="none"><span data-ccp-charstyle="Hyperlink">Intune Management Extension logs documentation</span></span></a><span data-contrast="auto"> and the </span><a href="https://learn.microsoft.com/en-us/intune/intune-service/fundamentals/remote-help-use?tabs=windows%2Cwindowsnative#provide-help" rel="noopener noreferrer" target="_blank"><span data-contrast="none"><span data-ccp-charstyle="Hyperlink">Remote Help for Windows documentation.</span></span></a></p>
+<p><span data-contrast="auto">Scope tags are used by Intune to control resources that an administrator can act on in Microsoft Intune. When an admin holds multiple role assignments with different scope tags, those tags can be combined and grant more access than intended. A new de-union setting lets admins keep these scopes discrete and within the boundaries they define. This prevents a role assignment from expanding based on how they overlap with permissions.</span></p>
+<p><span data-contrast="auto">Before enabling the capability, admins can use the new ‘Permissions assessment report’ to review how changes to roles and permission allocation will affect their IT team’s day-to-day operations, giving them the chance to plan and adjust before implementing changes. To get started configuring permissions behaviors, read our learn page on <a href="https://learn.microsoft.com/intune/intune-service/fundamentals/scope-tags" rel="noopener noreferrer" target="_blank"><span data-contrast="none"><span data-ccp-charstyle="Hyperlink">p</span><span data-ccp-charstyle="Hyperlink">ermission behavior across role assignments</span></span></a>.</span></p>
+<p><span data-contrast="auto">Turning to device setup, having to manually authorize each app before it can run can slow down deployment and create gaps that are hard to track. Managed installer policy helps address this by automatically marking apps deployed through Intune as authorized, removing the need to manually whitelist each app. This month, Managed installer policy now applies during Windows Autopilot device preparation, running during out-of-box experience (OOBE) so that Win32, Microsoft Store, and Enterprise App Catalog apps are trusted and available earlier in the setup experience, before the user reaches the desktop.</span></p>
+<p><span data-contrast="auto">Beyond a great setup experience, the next job is keeping devices current.</span><span data-contrast="auto"> </span><span data-contrast="none"><span data-ccp-charstyle="Hyperlink">Windows Autopatch update readiness</span></span><span data-contrast="auto"> </span><span data-contrast="auto">is now generally available to help just that. With four additional experiences that provide visibility of the status across their tenant, device-level details into the quality update process, centralized alerts with remediation guidance, and an Update Readiness Checker, admins gain tools intended to support a more proactive approach to update management. For the full story, the </span><a href="https://techcommunity.microsoft.com/blog/windows-itpro-blog/windows-autopatch-update-readiness-brings-insights-to-it/4497611" target="_blank"><span data-contrast="none"><span data-ccp-charstyle="Hyperlink">Windows IT Pro Blog</span></span></a><span data-contrast="auto"> </span><span data-contrast="auto">has the complete announcement.</span></p>
+<p><span data-contrast="auto">Intune's adoption of </span><a href="https://learn.microsoft.com/en-us/intune/intune-service/enrollment/device-enrollment-program-enroll-ios" rel="noopener noreferrer" target="_blank"><span data-contrast="none"><span data-ccp-charstyle="Hyperlink">Apple's Declarative Device Management</span></span></a><span data-contrast="auto"> (DDM) protocol has moved quickly, from software update reporting and day zero configuration support to our most recent release of assignment filters. This month, DDM extends to line-of-business (LOB) apps on iOS and iPadOS devices. Until now, app install status was only reported once devices check in. With DDM-based LOB apps, devices proactively report installation status back to Intune as it changes.</span></p>
+<p><span data-contrast="auto">This change represents progress toward broader DDM support within the apps infrastructure, with additional capabilities under consideration for future releases. To dive deeper into these topics, check out the </span><a href="https://techcommunity.microsoft.com/event/microsoftintuneevents/manage-apple-devices-at-scale-intune-security-best-practices/4490571" target="_blank"><span data-contrast="auto"><span data-ccp-charstyle="Hyperlink">Tech Takeoff session on</span></span><span data-contrast="none"><span data-ccp-charstyle="Hyperlink"> iOS management at scale</span></span></a><span data-contrast="auto"> and the </span><a href="https://learn.microsoft.com/en-us/intune/intune-service/apps/lob-apps-ios" rel="noopener noreferrer" target="_blank"><span data-contrast="none"><span data-ccp-charstyle="Hyperlink">iOS line-of-business app documentation</span></span></a><span data-contrast="auto">.</span></p>
+<p><span data-contrast="auto">On Mac, admins previously had no MDM-based way to set a password on the recovery OS, leaving Apple Silicon devices with a potential exposure that could be difficult to address. With macOS Recovery lock, admins can now set that password directly, helping prevent users from booting into recovery mode to bypass security controls, and support both on-demand and scheduled password rotation. The March 2026 Tech Takeoff session on </span><a href="https://techcommunity.microsoft.com/event/microsoftintuneevents/manage-apple-devices-at-scale-intune-security-best-practices/4490571" target="_blank"><span data-contrast="none"><span data-ccp-charstyle="Hyperlink">Apple device security best practices</span></span></a><span data-contrast="auto"> covers this in detail. With this improvement, Recovery Lock support in Intune helps organizations progress towards compliance with security baselines such as STIG, preventing users from booting into recovery mode to bypass security controls.</span></p>
+<p><span data-contrast="auto">When I think of a month like this, I don't think about any one of those new capabilities in isolation. I think about the IT admins who have greater visibility into whether a device action reached its destination, or the help desk professionals who don't have to wonder whether a policy applied. It's not exactly headline grabbing, but it's exactly this kind of continuous improvement that makes for a strong foundation for our customers. That same idea holds whether we're talking about improvements aimed at supporting more reliable Windows device notifications, tighter permission boundaries, or Apple devices that are protected all the way down to its recovery partition. We'd love to hear what resonated most with you this month, so please leave a comment below.</span></p>
+<p> </p>
+<hr/>
+<p><span data-contrast="auto"><em>Stay up to date! Bookmark the <a href="https://techcommunity.microsoft.com/t5/microsoft-endpoint-manager-blog/bg-p/MicrosoftEndpointManagerBlog" target="_blank">Microsoft Intune Blog</a> and follow us on <a href="https://www.linkedin.com/company/microsoft-intune-product" rel="noopener nofollow noreferrer" target="_blank">LinkedIn</a> or <a href="https://twitter.com/MSIntune" rel="noopener nofollow noreferrer" target="_blank">@MSIntune</a> and <a href="https://x.com/IntuneSuppTeam" rel="noopener nofollow noreferrer" target="_blank">@IntuneSuppTeam</a> on X to continue the conversation.</em></span></p></div></div></div>
+</article>
+</body>
+</html>

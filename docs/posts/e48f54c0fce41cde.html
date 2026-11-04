@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Streamlining macOS security: Automatically enable AutoFill after Platform SSO registration</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Intune Customer Success</span>
+    <span class="date">June 29, 2026</span>
+  </div>
+  <h1>Streamlining macOS security: Automatically enable AutoFill after Platform SSO registration</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/intune-customer-success/streamlining-macos-security-automatically-enable-autofill-after/ba-p/4531908" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p><strong>By: Chris Kunze - Principal Product Manager | Microsoft Intune</strong></p>
+<p>Platform single sign-on (SSO) improves how macOS devices establish identity with Microsoft Entra ID, enabling a more secure and streamlined authentication experience. However, completing Platform SSO registration isn’t enough to deliver a fully passwordless workflow. To enable passwordless authentication in Safari, Microsoft Edge, and Google Chrome, the Company Portal AutoFill extension must also be enabled. In many deployments, this step still depends on the user.</p>
+<p>Devices may be fully enrolled, and Platform SSO may be successfully registered, yet users can still fall back to entering credentials manually if Company Portal AutoFill is not enabled. At scale, even small manual configuration steps can lead to inconsistent results. The goal of this post is to remove that dependency by automatically enabling AutoFill after Platform SSO registration, so users receive a complete passwordless experience without any additional steps.</p>
+<p>After Platform SSO is deployed to a macOS device, two conditions must be met before users receive the intended passwordless experience:</p>
+<ul>
+<li><strong>Platform SSO registration must be completed</strong><br/> The device must complete Platform SSO registration with Microsoft Entra ID.</li>
+<li><strong>Company Portal AutoFill must be enabled</strong><br/>The Company Portal AutoFill extension must be enabled for supported browsers so credentials can be supplied automatically.</li>
+</ul>
+<p>When Platform <a class="lia-internal-link lia-internal-url lia-internal-url-content-type-blog" data-lia-auto-title="SSO registration happens after Setup Assistant" data-lia-auto-title-active="0" href="https://techcommunity.microsoft.com/blog/intunecustomersuccess/new-platform-sso-with-registration-during-automated-device-enrollment-on-macos/4519846" target="_blank">SSO registration happens after Setup Assistant</a>, the user is prompted through the registration flow and receives a reminder to enable Company Portal AutoFill. However, enabling AutoFill is still a separate manual step that the user must complete. If the user skips or overlooks that step, the device can be successfully registered for Platform SSO while still requiring credentials to be entered manually. The result is a deployment that appears complete but does not consistently deliver the intended passwordless experience or security posture. Authentication should not depend on user action after enrollment.</p>
+<p>This approach becomes especially impactful when combined with the <a class="lia-external-url" href="https://learn.microsoft.com/intune/device-configuration/settings-catalog/configure-platform-sso-during-enrollment" rel="noopener noreferrer" target="_blank">Enable Registration During Setup</a> setting for Platform SSO. When used with <a class="lia-external-url" href="https://learn.microsoft.com/intune/device-enrollment/apple/overview-automated-enrollment-macos" rel="noopener noreferrer" target="_blank">Automated Device Enrollment (ADE)</a>, Platform SSO registration can be completed automatically during Setup Assistant before the user reaches the desktop. This helps ensure identity registration completes as part of the provisioning experience rather than requiring additional post-enrollment actions.</p>
+<p>After registration has completed, AutoFill often becomes the final remaining step that still depends on user action. To close this gap, you can use a custom script to enable the Company Portal AutoFill extension after Platform SSO registration is complete.</p>
+<p>The sample script, Check-PSSO.zsh, available in the <a class="lia-external-url" href="https://github.com/microsoft/shell-intune-samples/tree/master/macOS/Config/Set%20Autofill%20Automatically%20after%20PSSO%20Registration" rel="noopener noreferrer" target="_blank">GitHub repository</a>, was written by the Intune Customer Experience Engineering team. The script detects when Platform SSO registration has completed on a device and then enables AutoFill automatically.<br/><br/></p>
+<p><strong>Important:</strong> <span class="tooltip" tabindex="0"> Microsoft supports Intune’s ability to deploy scripts, but not the scripts themselves. <span class="tooltip-text" role="tooltip"> Microsoft fully supports Intune and its script deployment capabilities. However, Microsoft does not provide support for individual scripts, including scripts published in Microsoft GitHub repositories. These scripts are provided as examples only. You are responsible for reviewing, validating, and testing their behavior in your environment before deploying them broadly.</span></span></p>
+<p><br/>The script essentially performs four key actions:</p>
+<ol>
+<li><strong>Wait for a user session</strong> - The script detects when a user session is active to ensure the device is ready for configuration.</li>
+<li><strong>Verify Platform SSO registration - </strong>It confirms that Platform SSO registration has completed successfully before proceeding.</li>
+<li><strong>Detect the AutoFill extension - </strong>The script waits until the Company Portal AutoFill extension becomes available on the device.</li>
+<li><strong>Enable AutoFill automatically - </strong>Once detected, the script enables AutoFill programmatically, eliminating the need for users to manually configure the setting in System Settings.</li>
+</ol>
+<p>All activities are logged locally, providing visibility for auditing and troubleshooting.</p>
+<p>The Company Portal AutoFill extension works with:</p>
+<p>Once AutoFill is enabled, users can authenticate across all supported browsers on their macOS device without manually entering passwords.</p>
+<ul>
+<li>macOS 15 or later</li>
+<li>Company Portal version 5.2604.0 or later installed on the device</li>
+<li>Platform SSO configured via an <a class="lia-external-url" href="https://learn.microsoft.com/mem/intune/configuration/use-enterprise-sso-plug-in-macos-with-intune" rel="noopener noreferrer" target="_blank">Intune SSO extension profile</a></li>
+</ul>
+<p>The Check-PSSO script is deployed using a lightweight, scalable approach aligned with modern macOS management practices.</p>
+<p>The recommended method is to package the script as a <a class="lia-internal-link lia-internal-url lia-internal-url-content-type-blog" data-lia-auto-title="payloadless PKG" data-lia-auto-title-active="0" href="https://techcommunity.microsoft.com/blog/intunecustomersuccess/exploring-the-use-cases-of-payloadless-packages-in-microsoft-intune-for-macos/4382728" target="_blank">payloadless PKG</a> with a pre-install script.</p>
+<p>High-level steps:</p>
+<ol>
+<li>Build an empty PKG</li>
+<li>Attach the Check-PSSO script as a pre-install script</li>
+<li>Upload the package to Intune</li>
+<li>Assign it as <strong>Required</strong></li>
+<li>Verify successful deployment through script logs</li>
+</ol>
+<p>Detailed instructions are available in the <a class="lia-external-url" href="https://github.com/microsoft/shell-intune-samples/tree/master/macOS/Config/Set%20Autofill%20Automatically%20after%20PSSO%20Registration" rel="noopener noreferrer" target="_blank">GitHub repository</a>.</p>
+<p><strong>Polling with timeouts</strong></p>
+<p>The script waits for the required conditions to be met before continuing, including an active user session and completed Platform SSO registration. To avoid indefinite loops in edge-case scenarios, it uses timeouts while polling for those conditions.</p>
+<p> </p>
+<p><strong>Diagnostic logging and auditing</strong></p>
+<p>Optional verbose logging provides detailed troubleshooting information and an audit trail confirming AutoFill was enabled. Each run is logged locally under:</p>
+<pre class="lia-code-sample language-bash"><code>/Library/Logs/Microsoft/IntuneScripts/checkPSSO</code></pre>
+<p> </p>
+<p><strong>Clear exit codes</strong></p>
+<ul>
+<li>Exit 0: Success</li>
+<li>Exit 1: Failure<br/><br/></li>
+</ul>
+<p class="lia-video-container lia-media-is-center lia-media-size-large" data-video-id="https://youtu.be/b9nMSNOnQEo/1782756754391" data-video-remote-vid="https://youtu.be/b9nMSNOnQEo/1782756754391"></p>
+<p>Automating AutoFill helps ensure users can take advantage of passwordless authentication without additional configuration steps. It reduces reliance on user action, improves deployment consistency, improves security posture, and supports zero-touch provisioning. It also provides admins with verification through centralized logging and reporting.</p>
+<p>If you’ve already deployed Platform SSO, automating AutoFill is a natural next step toward delivering a complete passwordless experience. By removing a manual configuration step that often depends on user action, you can improve consistency and user experience across devices. When combined with the Enable Registration During Setup setting, this helps create a true zero-touch experience from enrollment through authentication.</p>
+<p><br/>Let us know if you have questions by leaving a comment below or reaching out on X <a class="lia-external-url" href="https://aka.ms/IntuneSuppTeam" rel="noopener noreferrer" target="_blank">@IntuneSuppteam</a>.</p>
+<p><em><strong>Join our community!</strong> Discuss real-world scenarios, get expert guidance, connect with peers, and influence the future of Microsoft Security products. Learn more at <a data-outlook-id="b28472ac-e9ef-4c22-803d-2eabb395ee0c" href="https://aka.ms/JoinIntuneCommunity" rel="noopener noreferrer" target="_blank">aka.ms/JoinIntuneCommunity</a>.</em></p></div></div></div>
+</article>
+</body>
+</html>

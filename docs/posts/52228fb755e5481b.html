@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Known issue: Upgrading Microsoft Tunnel version 20260129.1</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Intune Customer Success</span>
+    <span class="date">June 15, 2026</span>
+  </div>
+  <h1>Known issue: Upgrading Microsoft Tunnel version 20260129.1</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/intune-customer-success/known-issue-upgrading-microsoft-tunnel-version-20260129-1/ba-p/4517935" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p>We identified an upgrade issue with the early March release of Microsoft Tunnel version 20260129.1 that caused servers to become stuck and unable to complete the upgrade. The issue can be resolved by uninstalling and reinstalling the server to a newer version (<a class="lia-external-url" href="https://learn.microsoft.com/intune/device-security/microsoft-tunnel/upgrade#march-30-2026" rel="noopener noreferrer" target="_blank">20260330.1 or later</a>). Alternatively, we’ve created a script to help you update affected servers. This blog explains how to use the mstunnel-patch-2602 script to remediate the issue.</p>
+<p>Before you run the script, make sure you have the following:</p>
+<ul>
+<li>Access to the Linux virtual machine hosting the Microsoft Tunnel server</li>
+<li>Permission to run commands with sudo</li>
+<li>The patch script downloaded to the server from <a class="lia-external-url" href="https://aka.ms/mstunnel-patch-2602" rel="noopener noreferrer" target="_blank">https://aka.ms/mstunnel-patch-2602</a></li>
+</ul>
+<p>Use this script if your server is showing one or more of the following behaviors:</p>
+<ul>
+<li>The server remains on the affected version (20260129.1) and doesn’t move to the latest version</li>
+<li>In the Intune admin center, the server health state appears as Healthy, but the upgrade banner shows an error</li>
+<li>The server rolls back to the affected version because of a version mismatch in Agent Settings</li>
+</ul>
+<p>The issue affects servers on version 20260129.1, use the following hash to identify whether your deployment is on this version:</p>
+<p><br/>The issue was resolved with version 20260330.1, released March 30, 2026. You can verify your servers are on this version with the following hash:</p>
+<p><strong><br/>Additionally, in the Intune admin center check the server site auto upgrade setting. If auto upgrade is turned off (Automatically upgrade servers at this site = No), select "Upgrade servers" to configure the latest image for site.</strong></p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image &lt;p&gt;&lt;em&gt;Figure 1: Screenshot of the Microsoft Intune admin center showing a Microsoft Tunnel Gateway site named “SimpleSite” with the&lt;strong&gt;Upgrade servers&lt;/strong&gt; option highlighted.&lt;/em&gt;&lt;/p&gt;" aria-labelledby="WHoVTq_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/52228fb755e5481b/img_0.png"/></button><span class="lia-media-caption-text" id="WHoVTq_caption">
+<p><em>Figure 1: Screenshot of the Microsoft Intune admin center showing a Microsoft Tunnel Gateway site named “SimpleSite” with the<strong>Upgrade servers</strong> option highlighted.</em></p>
+</span></span>
+<p>After downloading the script to the server, complete the following steps.</p>
+<p><strong>Step 1: Enable execution permissions</strong></p>
+<p>If needed, make the script executable:</p>
+<pre class="lia-code-sample language-bash"><code>chmod +x mstunnel-patch-2602.sh</code></pre>
+<p> </p>
+<p><strong>Step 2: Run the script</strong></p>
+<p>Run the script with elevated permissions:</p>
+<pre class="lia-code-sample language-bash"><code>sudo ./mstunnel-patch-2602.sh</code></pre>
+<ol>
+<li>Checks whether the current server is using the affected build hashes.</li>
+<li>Creates backups of the current configuration so the system can revert if the update fails.</li>
+<li>Stops the Tunnel agent and server services.</li>
+<li>Updates the configuration with version 20260330.1 hashes</li>
+<li>Pulls version 20260330.1 and forces mst-cli install without requiring additional user input</li>
+</ol>
+<p>After the script completes successfully, the server should be updated to the March 30, 2026 version 20260330.1. This remediation is intended to resolve upgrade failures caused by a version mismatch and eliminate the need for a manual uninstall and reinstall workflow.<br/><br/></p>
+<p>If you have any questions or issues running the script to update your servers, reply to this post or reach out to the team on X <a class="lia-external-url" href="https://aka.ms/IntuneSuppTeam" rel="noopener noreferrer" target="_blank">@IntuneSuppTeam</a>.</p>
+<p> </p>
+<p><strong>Post Updates:</strong><br/>6/15/26: Added guidance to check the server site auto-upgrade setting in Intune and use the Upgrade servers option when auto upgrade is disabled to apply the latest image.</p></div></div></div>
+</article>
+</body>
+</html>

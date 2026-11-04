@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Preparing for end of support for CNAME auto-discovery in Windows MDM-only enrollment</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Intune Customer Success</span>
+    <span class="date">October 16, 2026</span>
+  </div>
+  <h1>Preparing for end of support for CNAME auto-discovery in Windows MDM-only enrollment</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/intune-customer-success/preparing-for-end-of-support-for-cname-auto-discovery-in-windows/ba-p/4564973" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p>Today, some organizations use an <strong>EnterpriseEnrollment DNS CNAME</strong> record to automatically direct devices to the Microsoft enrollment service during Windows MDM-only enrollment.</p>
+<p>Starting January 15, 2027, as part of our ongoing efforts to simplify and modernize enrollment experiences, Microsoft Intune will end support for CNAME-based auto-discovery in Windows MDM-only enrollment scenarios. This change reduces dependency on DNS-based discovery while providing a more consistent enrollment experience moving forward.</p>
+<p>After this change, users may need to enter the Microsoft enrollment server URL if it’s not already provided by the enrollment experience:</p>
+<pre class="lia-code-sample language-html"><code>https://enrollment.manage.microsoft.com/enrollmentserver/discovery.svc</code></pre>
+<p>Your organization may be affected if:</p>
+<ul>
+<li>You use Windows MDM-only enrollment.</li>
+<li>You have configured an <strong>EnterpriseEnrollment </strong>DNS CNAME record.</li>
+<li>Your enrollment process depends on DNS record to automatically discover the enrollment service.</li>
+</ul>
+<p>You likely aren't affected if you exclusively use:</p>
+<ul>
+<li>Microsoft Entra join enrollment</li>
+<li>Microsoft Entra hybrid join enrollment</li>
+<li>Other enrollment methods that don't rely on <strong>EnterpriseEnrollment</strong> CNAME discovery</li>
+</ul>
+<p>Today, in affected environments, a user can begin Windows MDM-only enrollment, and the enrollment service is automatically discovered using the organization’s <strong>EnterpriseEnrollment</strong> DNS CNAME record. The user doesn’t need to provide the enrollment server information.</p>
+<p>After this change, CNAME-based auto-discovery will no longer be used for these Windows MDM-only enrollment scenarios. If the enrollment service URL isn't already provided by the enrollment experience, the user will need to enter it when prompted. Enrollment can then continue using the Microsoft enrollment service URL. For example:</p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image &lt;em&gt;Figure 1: An example of how a user may need to enter the enrollment service URL.&lt;/em&gt;" aria-labelledby="4uH4za_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/f9369fe0a146e362/img_0.png"/></button><span class="lia-media-caption-text" id="4uH4za_caption"><em>Figure 1: An example of how a user may need to enter the enrollment service URL.</em></span></span>
+<p>Review your organization's DNS configuration and Windows MDM-only enrollment documentation.In particular, look for an <strong>EnterpriseEnrollment </strong>DNS record similar to:</p>
+<pre class="lia-code-sample language-html"><code>EnterpriseEnrollment.contoso.com</code></pre>
+<p>If your organization configured the <strong>EnterpriseEnrollment</strong> record to support Windows MDM-only enrollment discovery, you should prepare for this change.</p>
+<p>You should also review and update documentation that assumes enrollment service discovery happens automatically through DNS, including:</p>
+<ul>
+<li>Internal enrollment guides</li>
+<li>Help desk procedures</li>
+<li>Device deployment instructions</li>
+<li>Provisioning documentation</li>
+<li>User onboarding materials</li>
+</ul>
+<p>To prepare for this change we recommend the following actions:</p>
+<div>
+<p><strong><span>1. Identify impacted enrollment workflows</span></strong></p>
+<p>Review all Windows MDM-only enrollment scenarios used within your organization and determine whether they depend on <strong>EnterpriseEnrollment</strong> DNS discovery.</p>
+</div>
+<div>
+<p><strong><span>2. Update enrollment documentation</span></strong></p>
+<p>Update user guides, knowledge base articles, onboarding materials, and other instructions to reflect the new enrollment process.</p>
+</div>
+<div>
+<p><strong><span>3. Prepare support teams</span></strong></p>
+<p>Ensure help desk and deployment teams understand the change and know when the enrollment service URL may need to be provided.</p>
+</div>
+<div>
+<p><strong><span>4. Test enrollment scenarios</span></strong></p>
+<p>Validate affected enrollment workflows before the change takes effect. Identify any required updates and determine where users may be prompted to enter the enrollment service URL.</p>
+</div>
+<div>
+<p><strong><span>5. Communicate with impacted users</span></strong></p>
+<p>If users will need to enter the enrollment service URL, provide updated instructions before the change takes effect.</p>
+</div>
+<p> </p>
+<p><strong>Frequently asked questions</strong></p>
+<div>
+<p><strong>Does this affect existing enrolled devices?</strong></p>
+<p>No. Existing enrolled devices remain enrolled and aren’t affected by this change.</p>
+</div>
+<div>
+<p><strong>Is Windows MDM-only enrollment being retired?</strong></p>
+<p>No. Windows MDM-only enrollment remains supported. Only CNAME-based auto-discovery will become unsupported.</p>
+</div>
+<div>
+<p><strong>Do I need to remove my EnterpriseEnrollment DNS record?</strong></p>
+<p>Review your environment and DNS configuration requirements. This change only affects use of the record for Windows MDM-only enrollment auto-discovery.</p>
+</div>
+<div>
+<p><strong>Will every user need to enter the enrollment service URL?</strong></p>
+<p>Not necessarily. Some enrollment experiences may already provide enrollment server information. Manual entry is only required when the enrollment experience doesn’t provide it automatically.</p>
+</div>
+<div>
+<p><strong>Should we begin testing now?</strong></p>
+<p>Yes. We strongly recommend validating enrollment scenarios as early as possible and updating relevant documentation before this change takes effect.</p>
+</div>
+<p>Review your Windows MDM-only enrollment processes and identify any dependencies on <strong>EnterpriseEnrollment</strong> DNS CNAME records. Update enrollment guidance, deployment instructions, onboarding materials, and help desk procedures that assume the enrollment service will be discovered automatically through DNS.</p>
+<p>Stay tuned to this blog for updates. If you have any questions, leave a comment below.</p></div></div></div>
+</article>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intune my Macs: Accelerating macOS proof of concepts with Microsoft Intune</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Intune Customer Success</span>
+    <span class="date">March 30, 2026</span>
+  </div>
+  <h1>Intune my Macs: Accelerating macOS proof of concepts with Microsoft Intune</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/intune-customer-success/intune-my-macs-accelerating-macos-proof-of-concepts-with/ba-p/4488571" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p><strong>By: Neil Johnson and Chris Kunze - Principal Product Managers | Microsoft Intune</strong><br/><br/></p>
+<p><span data-contrast="auto">Intune provides a broad and mature set of capabilities for managing macOS devices across security, compliance, applications, and user onboarding. Many customers, however, aren’t always aware of just how much functionality is available or how to bring it all together. We've developed a starter kit to make it easy to explore and set up macOS configurations in Intune: Intune my Macs. Intune my Macs helps bridge that gap by making it easy to explore some recommended macOS configurations and quickly set up a successful proof of concept using Intune.</span><span data-ccp-props="{}"> </span></p>
+<p> </p>
+<p><a class="lia-external-url" href="https://aka.ms/intunemacpoc" rel="noopener noreferrer" target="_blank">Intune my Macs</a><span data-contrast="auto"> is an open-source project from the Microsoft Intune Customer Experience Engineering team that allows you to deploy a complete macOS proof of concept in minutes. This starter kit brings together over 31 enterprise-grade configurations - identified by Apple’s Mac Evaluation Utility - along with policies, scripts, and applications, all of which can be deployed using a single PowerShell script.</span><span data-ccp-props="{}"> </span></p>
+<p><span data-contrast="auto">The project operates in dry-run mode by default, letting you preview exactly what will be created before committing any changes to your Intune tenant. When you're ready, simply add the --apply flag to the command-line to commit changes.<br/></span><span data-ccp-props="{}"><br/></span></p>
+<p><em><span data-contrast="auto"><strong>Important</strong>: From a support perspective, Microsoft fully supports Intune and its ability to deploy PowerShell scripts. However, Microsoft does not support the scripts themselves, even if they are on our GitHub repository. They’re provided for example only. You are responsible for anything that they may do within your environment. Always test!</span><span data-ccp-props="{}"> </span></em></p>
+<p aria-level="2"> </p>
+<p> </p>
+<p>Want a quick walkthrough before you dive in? Watch the video below to see a deep-dive on Intune my Macs - from authentication to policy creation, app deployment, and beyond.</p>
+<p class="lia-video-container lia-media-is-center lia-media-size-large" data-video-id="https://www.youtube.com/watch?v=0JzO0VyFnVM/1774911393330" data-video-remote-vid="https://www.youtube.com/watch?v=0JzO0VyFnVM/1774911393330"></p>
+<p> </p>
+<p><span data-contrast="auto">Instead of building macOS configurations from scratch, Intune my Macs provides a ready-to-use baseline of production quality Intune artifacts. These configurations are designed to help you quickly evaluate Microsoft Intune for macOS management while also serving as reference implementations you can adapt to your environment.</span><span data-ccp-props="{}"> </span></p>
+<p><span data-contrast="auto">Below is an overview of what Intune my Macs deploys into your tenant, organized by category.</span><span data-ccp-props="{}"> </span></p>
+<div class="styles_lia-table-wrapper__h6Xo9 styles_table-responsive__MW0lN"><table border="1"><tbody><tr><td>
+<p><strong><span data-contrast="none">Category</span><span data-ccp-props="{}"> </span></strong></p>
+</td><td>
+<p><strong><span data-contrast="none">Example configurations</span><span data-ccp-props="{}"> </span></strong></p>
+</td></tr><tr><td>
+<p><strong><span data-contrast="auto">Security</span><span data-ccp-props="{}"> </span></strong></p>
+</td><td>
+<p><span data-contrast="auto">FileVault configuration, firewall enablement, Gatekeeper policies, Microsoft Edge policies</span><span data-ccp-props="{}"> </span></p>
+</td></tr><tr><td>
+<p><strong><span data-contrast="auto">Compliance</span><span data-ccp-props="{}"> </span></strong></p>
+</td><td>
+<p><span data-contrast="auto">Minimum macOS version (15.0), SIP enforcement, encryption requirements</span><span data-ccp-props="{}"> </span></p>
+</td></tr><tr><td>
+<p><strong><span data-contrast="auto">Identity</span><span data-ccp-props="{}"> </span></strong></p>
+</td><td>
+<p><span data-contrast="auto">Platform SSO via Secure Enclave with Microsoft Entra ID</span><span data-ccp-props="{}"> </span></p>
+</td></tr><tr><td>
+<p><strong><span data-contrast="auto">Applications</span><span data-ccp-props="{}"> </span></strong></p>
+</td><td>
+<p><span data-contrast="auto">Intune Company Portal, Microsoft 365, Remote Help, Intune Log Watch, Microsoft 365 Copilot, Windows App, and Edge</span><span data-ccp-props="{}"> </span></p>
+</td></tr><tr><td>
+<p><strong><span data-contrast="auto">Scripts</span><span data-ccp-props="{}"> </span></strong></p>
+</td><td>
+<p><span data-contrast="auto">Dock customization, FileVault key escrow (Escrow Buddy), onboarding automation</span><span data-ccp-props="{}"> </span></p>
+</td></tr><tr><td>
+<p><strong><span data-contrast="auto">Custom Attributes</span><span data-ccp-props="{}"> </span></strong></p>
+</td><td>
+<p><span data-contrast="auto">Hardware compatibility checks, Intune agent version reporting</span><span data-ccp-props="{}"> </span></p>
+</td></tr></tbody><colgroup><col/><col/></colgroup></table></div>
+<p class="styles_lia-table-wrapper__h6Xo9 styles_table-responsive__MW0lN"> </p>
+<p><span data-contrast="auto">Each configuration in the repository serves as a practical reference implementation. The naming conventions follow a consistent pattern (for example,<strong> </strong></span><strong><span data-contrast="auto">pol-sec-001-filevault, scr-app-100-install-company-portal</span></strong><span data-contrast="auto">), and detailed documentation explains what each setting does and why it's configured that way.</span><span data-ccp-props="{}"> </span></p>
+<p><span data-contrast="auto">Tasks that typically require extensive research, configuration, and testing can now be completed in just about 5 minutes, thanks to this streamlined approach. The script handles:</span><span data-ccp-props="{}"> </span></p>
+<ul>
+<li aria-setsize="-1" data-aria-level="1" data-aria-posinset="1" data-font="Symbol" data-leveltext="" data-list-defn-props='{"335552541":1,"335559685":720,"335559991":360,"469769226":"Symbol","469769242":[8226],"469777803":"left","469777804":"","469777815":"multilevel"}' data-listid="2"><strong><span data-contrast="auto">Microsoft Graph SDK authentication</span></strong></li>
+<li aria-setsize="-1" data-aria-level="1" data-aria-posinset="1" data-font="Symbol" data-leveltext="" data-list-defn-props='{"335552541":1,"335559685":720,"335559991":360,"469769226":"Symbol","469769242":[8226],"469777803":"left","469777804":"","469777815":"multilevel"}' data-listid="2"><strong><span data-contrast="auto">Policy creation via Intune settings catalog and custom configuration profiles</span></strong></li>
+<li aria-setsize="-1" data-aria-level="1" data-aria-posinset="1" data-font="Symbol" data-leveltext="" data-list-defn-props='{"335552541":1,"335559685":720,"335559991":360,"469769226":"Symbol","469769242":[8226],"469777803":"left","469777804":"","469777815":"multilevel"}' data-listid="2"><strong><span data-contrast="auto">Script deployment with proper execution settings</span></strong></li>
+<li aria-setsize="-1" data-aria-level="1" data-aria-posinset="1" data-font="Symbol" data-leveltext="" data-list-defn-props='{"335552541":1,"335559685":720,"335559991":360,"469769226":"Symbol","469769242":[8226],"469777803":"left","469777804":"","469777815":"multilevel"}' data-listid="2"><strong><span data-contrast="auto">PKG application uploads</span></strong></li>
+<li aria-setsize="-1" data-aria-level="1" data-aria-posinset="1" data-font="Symbol" data-leveltext="" data-list-defn-props='{"335552541":1,"335559685":720,"335559991":360,"469769226":"Symbol","469769242":[8226],"469777803":"left","469777804":"","469777815":"multilevel"}' data-listid="2"><strong><span data-contrast="auto">Optional group assignments</span></strong></li>
+<li aria-setsize="-1" data-aria-level="1" data-aria-posinset="1" data-font="Symbol" data-leveltext="" data-list-defn-props='{"335552541":1,"335559685":720,"335559991":360,"469769226":"Symbol","469769242":[8226],"469777803":"left","469777804":"","469777815":"multilevel"}' data-listid="2"><strong><span data-contrast="none"><span data-ccp-parastyle="heading 3">Optional Microsoft Defender for Endpoint </span><span data-ccp-parastyle="heading 3">i</span><span data-ccp-parastyle="heading 3">ntegration</span></span></strong></li>
+</ul>
+<p><span data-contrast="auto">If you're evaluating Microsoft Defender for Endpoint on macOS, the project includes an optional </span><em><span data-contrast="auto">--mde</span></em><span data-contrast="auto"> command-line flag that deploys the full Defender for Endpoint configuration, including system extensions, privacy preferences, network filter settings, and a script that can be used to install the client.<br/><br/></span></p>
+<p><span data-contrast="auto">This starter kit is driven by XML manifest files that define each configuration artifact. The main PowerShell script reads these manifests, resolves the associated JSON/mobileconfig/script files, and creates the corresponding objects in Intune via the Microsoft Graph API.</span><span data-ccp-props="{}"> </span></p>
+<p><span data-contrast="auto">You can scope this starter kit to specific artifact types using command-line flags like </span><em><span data-contrast="auto">--apps</span><span data-contrast="auto">,</span><span data-contrast="auto"> --config</span><span data-contrast="auto">,</span><span data-contrast="auto"> --compliance</span><span data-contrast="auto">,</span><span data-contrast="auto"> --scripts</span></em><span data-contrast="auto">, or</span><span data-contrast="auto"> <em>--custom-attributes</em></span><span data-contrast="auto">. A custom naming prefix defined using the<em> </em></span><em><span data-contrast="auto">–prefix</span></em><span data-contrast="auto"> command-line flag) keeps your deployed objects easily identifiable, and the --</span><em><span data-contrast="auto">remove-all</span></em><span data-contrast="auto"> command-line flag provides a clean way, based on the custom naming prefix, to delete everything created by an earlier run.</span><span data-ccp-props="{}"> </span></p>
+<p><span data-contrast="auto">For more information on how to use this project, be sure to review the prerequisites and instruction in the readme file. </span><span data-ccp-props="{}"> </span></p>
+<p> </p>
+<p><span data-contrast="auto">The project also includes several analysis and documentation tools:</span><span data-ccp-props="{}"> </span></p>
+<ul>
+<li aria-setsize="-1" data-aria-level="1" data-aria-posinset="1" data-font="Symbol" data-leveltext="" data-list-defn-props='{"335552541":1,"335559685":720,"335559991":360,"469769226":"Symbol","469769242":[8226],"469777803":"left","469777804":"","469777815":"multilevel"}' data-listid="10"><strong><span data-contrast="auto">Export-MacOSConfigPolicies.ps1</span></strong><span data-contrast="auto"> - Back up existing Intune macOS policies to JSON</span><span data-ccp-props='{"201341983":0,"335559739":240,"335559740":240}'> </span></li>
+</ul>
+<ul>
+<li aria-setsize="-1" data-aria-level="1" data-aria-posinset="2" data-font="Symbol" data-leveltext="" data-list-defn-props='{"335552541":1,"335559685":720,"335559991":360,"469769226":"Symbol","469769242":[8226],"469777803":"left","469777804":"","469777815":"multilevel"}' data-listid="10"><strong><span data-contrast="auto">Find-DuplicatePayloadSettings.ps1</span></strong><span data-contrast="auto"> - Detect conflicting settings across all your Mac configuration files</span><span data-ccp-props='{"201341983":0,"335559739":240,"335559740":240}'> </span></li>
+</ul>
+<ul>
+<li aria-setsize="-1" data-aria-level="1" data-aria-posinset="3" data-font="Symbol" data-leveltext="" data-list-defn-props='{"335552541":1,"335559685":720,"335559991":360,"469769226":"Symbol","469769242":[8226],"469777803":"left","469777804":"","469777815":"multilevel"}' data-listid="10"><strong><span data-contrast="auto">Generate-ConfigurationDocumentation.py</span></strong><span data-contrast="auto"><strong> - </strong>Create Markdown or Word documentation from the manifests</span><span data-ccp-props='{"201341983":0,"335559739":240,"335559740":240}'> </span></li>
+</ul>
+<ul>
+<li aria-setsize="-1" data-aria-level="1" data-aria-posinset="4" data-font="Symbol" data-leveltext="" data-list-defn-props='{"335552541":1,"335559685":720,"335559991":360,"469769226":"Symbol","469769242":[8226],"469777803":"left","469777804":"","469777815":"multilevel"}' data-listid="10"><strong><span data-contrast="auto">Get-IntuneAgentProcessingOrder.ps1</span></strong><span data-contrast="auto"> - Understand script and app processing sequence</span><span data-ccp-props='{"201341983":0,"335559739":240,"335559740":240}'> </span></li>
+</ul>
+<ul>
+<li aria-setsize="-1" data-aria-level="1" data-aria-posinset="5" data-font="Symbol" data-leveltext="" data-list-defn-props='{"335552541":1,"335559685":720,"335559991":360,"469769226":"Symbol","469769242":[8226],"469777803":"left","469777804":"","469777815":"multilevel"}' data-listid="10"><strong><span data-contrast="auto">Get-MacOSGlobalAssignments.ps1</span></strong><span data-contrast="auto"> - List Mac policies assigned to All Devices or All Users</span><span data-ccp-props='{"201341983":0,"335559739":240,"335559740":240}'> </span></li>
+</ul>
+<p> </p>
+<p><span data-contrast="auto">Intune my Macs isn't meant to be a one-size-fits-all production starter kit, but it’s a great way to get started. Use it to quickly implement a proof of concept, learn from the configuration patterns, and adapt the policies to your organization's specific requirements.</span><span data-ccp-props="{}"> </span></p>
+<p><span data-contrast="auto">Whether you're evaluating Intune for macOS management, setting up a new tenant, or just looking for reference implementations of common security configurations, this project can save you significant time and effort.</span><span data-ccp-props="{}"> </span></p>
+<p><span data-contrast="auto"><br/>If you have any questions, leave a comment below or reach out to us on X </span><a class="lia-external-url" href="https://aka.ms/IntuneSuppTeam" rel="noopener noreferrer" target="_blank">@IntuneSuppTeam</a><span data-contrast="auto">!</span></p>
+<p> </p>
+<p><span data-contrast="auto"><strong>Post Updates</strong><br/>03/30/26: </span>A video walkthrough has been added above. Watch to see Intune my Macs deploy a complete macOS proof of concept in minutes.</p></div></div></div>
+</article>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>From GPO to Microsoft Intune: A practical guide to cloud-first policy management</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Intune Customer Success</span>
+    <span class="date">August 31, 2026</span>
+  </div>
+  <h1>From GPO to Microsoft Intune: A practical guide to cloud-first policy management</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/intune-customer-success/from-gpo-to-microsoft-intune-a-practical-guide-to-cloud-first/ba-p/4551946" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p><strong>By: Per Larsen - Senior Product Manager | Microsoft Intune</strong></p>
+<p>For many organizations, Group Policy Objects (GPOs) remain an important part of Windows configuration. As device strategies expand to include cloud-native management, Microsoft Intune provides the policy platform for devices that are Microsoft Entra joined and managed from the cloud. The goal isn’t to force every organization through the same migration, it’s to choose the right management path for each device population and each setting.</p>
+<p>This guide explains three common paths: starting fresh for new cloud-native devices, selectively transitioning required settings to Intune, and coordinating GPO with Intune for hybrid Microsoft Entra joined or co-managed devices. Across all three paths, the recommended principle is the same: assess and rationalize existing policy before deciding what to retain, re-create, redesign, or retire.</p>
+<p>GPO was designed primarily for domain-joined, on-premises devices. Intune, in contrast, is designed for cloud-based management of devices whether they are on or off prem. The right path will depend on the scenario in which the devices are joined and managed.</p>
+<p>This is the recommended approach for new Microsoft Entra joined devices. Invest in the cloud-first configuration you need today rather than reproducing every historical GPO. Begin with mandatory security requirements, Microsoft-recommended security baselines, and essential settings for services such as OneDrive and Microsoft Edge. Add other settings only when there’s business, security, or operational requirement.</p>
+<p>Organizations that need to preserve specific behavior can assess and rationalize existing GPOs, then re-create only the settings that are supported and necessary in Intune. Treat this as a deliberate replatforming effort, not a one-to-one copy. Test each new profile with a pilot group before broad deployment.</p>
+<p>Hybrid Microsoft Entra joined devices may receive settings from both GPO and Intune, including common scenarios where Intune-managed workloads or Windows Autopatch are used for existing hybrid domain-joined devices. Use of both group policy and Intune policy enforcement can continue for an extended period, but you should plan carefully to avoid conflicting settings. Organizations can either leave existing GPOs in place until devices are rebuilt as cloud-native, or actively shift selected policy areas to Intune while the devices remain hybrid joined.</p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image &lt;p&gt;&lt;em&gt;Figure 1. A cloud-first policy workflow begins with assessment and rationalization, then applies the appropriate path for each device population.&lt;/em&gt;&lt;/p&gt;" aria-labelledby="Wbm0Ph_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/d74cda3ea2303b03/img_0.png"/></button><span class="lia-media-caption-text" id="Wbm0Ph_caption">
+<p><em>Figure 1. A cloud-first policy workflow begins with assessment and rationalization, then applies the appropriate path for each device population.</em></p>
+</span></span>
+<p>Before changing policy source, understand what’s actually in use. Many environments contain GPOs that are old, undocumented, duplicated, or applied more broadly than intended. A direct lift-and-shift carries that technical debt into Intune.</p>
+<ul>
+<li>Export all GPOs from <a class="lia-external-url" href="https://learn.microsoft.com/windows-server/identity/ad-ds/manage/group-policy/group-policy-management-console" rel="noopener noreferrer" target="_blank">Group Policy Management Console (GPMC).</a></li>
+<li>Use <a class="lia-external-url" href="https://learn.microsoft.com/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/cc733160(v=ws.11)" rel="noopener noreferrer" target="_blank">Gpresult</a> and operational knowledge to identify which GPOs are still applied and functional.</li>
+<li>Remove or archive unused, legacy, or duplicated policies instead of transitioning them.</li>
+<li>Categorize required settings by security, update management, device restrictions, application control, and legacy or unsupported scenarios.</li>
+<li>Record the device populations and business requirements associated with each policy.</li>
+</ul>
+<p>Microsoft Intune includes <a class="lia-external-url" href="https://learn.microsoft.com/intune/intune-service/configuration/group-policy-analytics" rel="noopener noreferrer" target="_blank">Group Policy Analytics</a>, a built-in tool that imports on-premises GPOs and reports their mapped support in mobile device management. It can help identify settings with Intune equivalents, deprecated settings, and configurations that may require another implementation approach.</p>
+<p>Use the report as one source of evidence rather than as a complete transition engine. Its mappings may not reflect every setting currently available in the Settings Catalog, especially settings added after the analytics mapping was last updated. Validate important settings directly in Intune and against current Microsoft documentation.</p>
+<ul>
+<li>Highlights settings with documented Intune mappings.</li>
+<li>Surfaces GPO settings that no longer make sense for cloud-native devices.</li>
+<li>Helps identify GPOs that should be retired rather than re-created.</li>
+<li>Supports, but does not replace, business validation and pilot testing.</li>
+</ul>
+<p>A direct copy of GPOs into Intune can reproduce policy sprawl and create new conflicts. Instead, use the assessment to determine the intended outcome of each setting. Some settings will be unnecessary, some will have a direct Intune settings catalog equivalent, and others will need a cloud-appropriate redesign.</p>
+<ul>
+<li>Retire settings that are no longer required.</li>
+<li>Re-create settings that are supported and necessary.</li>
+<li>Rethink and redesign legacy dependencies such as drive mappings, printers, or vendor-specific prioritizing or considering cloud-first solutions and configurations.</li>
+<li>Document the owner, target population, and validation method for each resulting Intune profile.</li>
+</ul>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image &lt;p&gt;&lt;em&gt;Figure 2. Decide whether to retain, re-create, redesign, or retire each GPO based on device type and current business need.&lt;/em&gt;&lt;/p&gt;" aria-labelledby="HeTiPe_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/d74cda3ea2303b03/img_1.png"/></button><span class="lia-media-caption-text" id="HeTiPe_caption">
+<p><em>Figure 2. Decide whether to retain, re-create, redesign, or retire each GPO based on device type and current business need.</em></p>
+</span></span>
+<p>Security baselines in Intune are curated collections of Microsoft-recommended settings for Windows, Microsoft Edge, and Microsoft Defender. They provide a controlled foundation that can reduce policy sprawl and align devices with current security guidance.</p>
+<ul>
+<li>Review baseline settings with security stakeholders rather than applying them without evaluation.</li>
+<li>Identify overlaps with existing policies before deployment.</li>
+<li>Pilot the baseline with representative devices and users.</li>
+<li>Layer additional configuration policies only for documented requirements.</li>
+</ul>
+<p>After assessment and baseline planning:</p>
+<ul>
+<li>Configure supported and necessary settings in the <a class="lia-external-url" href="https://learn.microsoft.com/intune/device-configuration/settings-catalogs%2Csc-search-filter%2Csc-reporting" rel="noopener noreferrer" target="_blank">settings catalog</a>.</li>
+<li>Use Administrative Templates or imported ADMX policies for applicable settings.</li>
+<li>Use custom configuration, scripts, or remediations only when a built-in option doesn’t meet the requirement.</li>
+<li>Use standard or organizational safe rollout practices to assign policies before broad rollout, and monitor deployment and conflict reports.</li>
+</ul>
+<p>Customers often expect GPOWinsOverMDM to act as a universal precedence switch: whenever Group Policy and Intune configure the same setting, GPO should win. In reality, conflict control applies only to the subset of settings exposed through the Windows Policy CSP with corresponding Group Policy mappings.</p>
+<p>Additionally, it doesn’t govern settings delivered through other CSPs, such as Defender or Windows Update. Those policy areas can have different precedence, merging, or conflict behavior. Consequently, using GPOWinsOverMDM as a coexistence strategy can produce inconsistent and difficult-to-predict results.</p>
+<p>The safer approach is to avoid configuring the same setting through both management planes. Use targeted groups, assignment filters, GPO security filtering, and Organizational Units (OU) scoping to establish one authoritative source for each setting and device population.</p>
+<ul>
+<li>In Group Policy, use appropriate OU link placement, security group filtering, and carefully validated Windows Management Instrumentation (WMI) filters to stop selected GPOs from applying to devices that will receive the Intune equivalent.</li>
+<li>In Intune, use Microsoft Entra groups, dynamic membership rules, assignment filters, and exclusions to target the intended device population.</li>
+<li>For each policy area, document the authoritative management plane and the date or condition for changing ownership.</li>
+<li>Validate effective configuration with Gpresult, Intune reports, Event Viewer, and representative pilot devices.</li>
+</ul>
+<p>For example, an organization might leave most existing GPOs in place for hybrid joined devices while excluding a pilot group from the Windows Update GPO. The same group can then receive the corresponding Intune update policy. After validation, you can expand the targeting changes in stages in alignment with your organizational safe-rollout standards.</p>
+<p>Uncoordinated configuration can create conflicts, inconsistent results, and difficult troubleshooting. Define an authoritative management plane for each setting and device population.</p>
+<p>You should rationalize old, unused, or duplicated settings rather than reproducing or recreating them in Intune. Supporting legacy or non-cloud-first settings. Some requirements don’t have a direct built-in Intune equivalent. Evaluate whether the requirement is still necessary, then use a supported alternative, redesign the process, or retain the setting in GPO for the applicable hybrid devices.</p>
+<p>Pilot groups reveal assignment, compatibility, and user-impact issues before a broad deployment.</p>
+<p>Retire a GPO only after its replacement or removal has been validated for the affected device population.</p>
+<ul>
+<li>Exclude a pilot population from the original GPO and assign the intended Intune configuration.</li>
+<li>Validate effective settings, Intune deployment status, device events, and user impact.</li>
+<li>Expand the targeting change in controlled stages.</li>
+<li>Disable and archive the GPO after dependencies are removed and rollback is no longer required.</li>
+<li>Keep GPOs that remain necessary for hybrid joined devices, with clear ownership and targeting.</li>
+</ul>
+<p>Moving to Intune policy management isn’t a one-size-fits-all migration or a copy-and-paste exercise. For new cloud-native devices, start with a clean, cloud-first configuration. When existing behavior must be preserved, assess and rationalize the requirement before re-creating it in Intune. During a period of parallel Group Policy and Intune management, coordinate targeting so GPO and Intune do not compete for the same settings.</p>
+<p>The key principles are:</p>
+<ul>
+<li>Choose the management path by device population.</li>
+<li>Assess and rationalize before making changes.</li>
+<li>Start with security requirements and validated baselines.</li>
+<li>Use Group Policy Analytics as an input, not as the sole source of truth.</li>
+<li>Transition only supported and necessary settings.</li>
+<li>Coordinate GPO and Intune targeting throughout any transition period.</li>
+</ul></div></div></div>
+</article>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Require Google Workspace authentication on Android Enterprise devices with Microsoft Intune</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Intune Customer Success</span>
+    <span class="date">October 19, 2026</span>
+  </div>
+  <h1>Require Google Workspace authentication on Android Enterprise devices with Microsoft Intune</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/intune-customer-success/require-google-workspace-authentication-on-android-enterprise/ba-p/4565954" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p><strong>By: Samuel Vara, Software Engineer &amp; Mayur <span data-teams="true">Jadhav, Product Manager </span>| Microsoft Intune</strong></p>
+<p>We’re excited to announce that organizations using Android Enterprise can now require users on managed devices to authenticate with a managed Google Account. This capability is generally available in Microsoft Intune and helps organizations use their Google Workspace identities as the primary management identity on supported Android Enterprise devices.</p>
+<p>The new policy supports organizations that have upgraded their Managed Google Play enterprise to a managed Google domain enterprise.</p>
+<p> Android Enterprise has traditionally used managed Google Play accounts solely to enroll and manage devices and distribute corporate apps, rather than as user identities for accessing Google services outside the managed device.  With this policy, admins can now require users to enroll and authenticate with their organization’s managed Google Workspace Account instead of using the device’s managed Google Play account. This gives users access to Google apps and services with their organizational identity. This feature doesn‘t impact the Microsoft Entra account associated with the managed device.</p>
+<p>This capability supports the following Android Enterprise enrollment types:</p>
+<ul>
+<li>Corporate-owned, fully managed devices</li>
+<li>Corporate-owned devices with a work profile</li>
+</ul>
+<p><strong>Note:</strong> Corporate-owned dedicated devices aren't supported because they aren't associated with an individual user.</p>
+<p>Before you configure the policy, complete these prerequisites:</p>
+<ul>
+<li>Verify your organization's Google Workspace domain.</li>
+<li>Upgrade the Managed Google Play enterprise to a managed Google domain enterprise, if required, using the Upgrade button on the Intune admin center.</li>
+<li>If users don't already have managed Google Accounts created in the enterprise's Google Workspace domain, create them following the instructions in the "Domain verified" section of <a class="lia-external-url" href="https://knowledge.workspace.google.com/admin/users/add-an-account-for-a-new-user" rel="nofollow noopener noreferrer" target="_blank">Add an account for a new user | User management | Google Workspace Help</a></li>
+<li>Use an account with at least the <strong>Policy and Profile Manager</strong> role in  Intune for the above oprations within the Intune admin center.</li>
+</ul>
+<p>In the Intune admin center, <a class="lia-external-url" href="https://learn.microsoft.com/intune/device-configuration/settings-catalog/?tabs=ios%2Csc-search-filter%2Csc-reporting" rel="noopener noreferrer" target="_blank">Create a policy using settings catalog in Microsoft Intune</a> or follow the instructions below:</p>
+<ol>
+<li>Go to <strong>Devices</strong> &gt; <strong>Manage devices</strong> &gt; <strong>Configuration</strong> &gt; <strong>Create</strong> &gt; <strong>New policy</strong>.</li>
+<li>For <strong>Platform</strong>, select <strong>Android Enterprise</strong>.</li>
+<li>For <strong>Profile type</strong>, select <strong>Settings catalog</strong>.</li>
+<li>In <strong>Configuration settings</strong>, open <strong>Device restrictions</strong> &gt; <strong>Users and Accounts</strong>.</li>
+<li>Add <strong>Require users to authenticate with a Google Workspace account</strong> and set it to <strong>True</strong>.</li>
+<li>ssign the policy to groups containing users that want to use the managed Google accounts for authentication and enrollment on their Intune managed Android devices.</li>
+<li>Review and create the policy.</li>
+</ol>
+<p>You can assign the policy before enrollment or to devices that are already enrolled. If you assign it before enrollment, the authentication prompt appears after enrollment. On an enrolled device, the prompt appears after the device receives the policy.</p>
+<ol>
+<li>After the policy reaches the device, the user receives a <strong>Sign in with your work account</strong> prompt on the device.</li>
+<li>The user clicks on the prompt and adds a managed Google Account from the organization's enterprise domain and completes authentication.
+<ol>
+<li>Until the user completes the prompt and authenticates with the Google Account, the policy setting reports an "Error" state, and the Gmail app, if present on the device, is disabled.</li>
+<li>This policy's non-compliance doesn't change the device's overall compliance state.</li>
+<li>Once a Google Account is chosen the user completes authentication, the managed Google Play account is replaced on the device by the chosen Google Account.<br/><br/><span class="lia-media-object lia-media-is-center" data-image-alt=""><button aria-haspopup="true" aria-label='Enlarge Image &lt;em&gt;Figure 01: A&lt;span data-mce-style="color: rgb(112, 112, 112);"&gt;ndroid phone lock screen showing a Device Policy notification prompting the user to "Sign in with a work account".&lt;/span&gt;&lt;/em&gt;' aria-labelledby="tCh0Rj_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/1bd81c4e9939d393/img_0.png"/></button><span class="lia-media-caption-text" id="tCh0Rj_caption"><em>Figure 01: A<span data-mce-style="color: rgb(112, 112, 112);">ndroid phone lock screen showing a Device Policy notification prompting the user to "Sign in with a work account".</span></em></span></span></li>
+</ol>
+</li>
+</ol>
+<p>Administrators can monitor the policy from <strong>Devices</strong> &gt; <strong>Manage devices</strong> &gt; <strong>Configuration</strong> &gt; <strong>Policies</strong> in the Intune admin center. Select the policy to review device and user check-in status, device assignment status, and per-setting status.</p>
+<p>After the user completes authentication, confirm that the managed Google Account is available on the device.</p>
+<p>This new Intune capability gives organizations greater control over how users access Google apps and services on supported corporate-owned Android Enterprise devices. By requiring authentication with a managed Google Account from the organization’s Google Workspace domain, admins can provide a consistent organizational identity and give users access to the Google Workspace resources and services assigned to that account, while retaining Microsoft Entra as the device’s management identity. Review the prerequisites, configure the settings catalog policy, and monitor deployment to bring this experience to your users.</p></div></div></div>
+</article>
+</body>
+</html>
