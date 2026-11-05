@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Debunking the myth: Cloud-native Windows devices and access to on-premises resources</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Intune Customer Success</span>
+    <span class="date">November 15, 2025</span>
+  </div>
+  <h1>Debunking the myth: Cloud-native Windows devices and access to on-premises resources</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/intune-customer-success/debunking-the-myth-cloud-native-windows-devices-and-access-to-on/ba-p/4470056" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p><strong>By: Roger Southgate - Sr. Product Manager | Microsoft Intune</strong></p>
+<p><strong>Myth</strong>: Cloud-native Windows devices can’t access on-premises resources such as file shares or legacy applications.</p>
+<p><strong>Reality</strong>: With minimal or no configuration, cloud-native devices can seamlessly access on-premises resources using NTLM or Kerberos.</p>
+<p> </p>
+<p>Microsoft’s vision for secure, productive workplaces is clear: adopt cloud-first services, integrate Zero Trust throughout, and deploy Windows 11 devices as cloud-native endpoints to stay agile and future-ready. If you’re yet to begin this journey, review the <a class="lia-external-url" href="https://aka.ms/gocloudnative" rel="noopener noreferrer" target="_blank">Set up and configure a cloud-native Windows endpoint with Microsoft Intune</a> tutorial.</p>
+<p> </p>
+<p>For context, a cloud-native device is a Windows device, joined to Microsoft Entra and managed by Intune. No domain join, no group policy, and no Microsoft Configuration Manager required. Leveraging complementary services such as <a class="lia-external-url" href="https://learn.microsoft.com/autopilot/overview" rel="noopener noreferrer" target="_blank">Windows Autopilot</a> and <a class="lia-external-url" href="https://learn.microsoft.com/windows/deployment/windows-autopatch/overview/windows-autopatch-overview" rel="noopener noreferrer" target="_blank">Windows Autopatch</a> enables users to self-provision their devices, work remotely, and remain secure by applying the latest Windows Updates.</p>
+<p> </p>
+<p>But what about user’s data, files, and applications that they require to be productive? Moving to the cloud is a common goal for many organizations, though practical realities can make this a gradual process. Legacy technology, operational constraints, complexity, and other challenges can hinder adoption. While the goal might be to migrate all data to cloud-friendly repositories such as SharePoint Online and OneDrive, and transition applications to SaaS solutions, these migrations don’t happen overnight. In many cases, data may remain scattered across internal servers and on-premises repositories, creating scenarios where cloud-native devices still need to connect to these resources.</p>
+<p> </p>
+<p>What happens when you take a cloud-native device and try to access an on-premises resource such as a file share? Similarly, what about access to an application that is located on-premises? While these are just two examples, they can be used interchangeably in this scenario since the process of getting access is the same, regardless of apps or files. This is a topic that is raised (and often misunderstood) when discussing the transition of Windows devices to the cloud. Cloud-native devices were designed to take this scenario into account and have seamless access to on-premises resources.</p>
+<p> </p>
+<p><strong>Note</strong>: This assumes you have line-of-sight to an Active Directory Domain Controller and that your on-premises resources, such as file shares and applications, use Windows authentication. Like a domain-joined device, a cloud-native device won’t have line of sight by default unless it’s physically on-site (for example, in a corporate office). If you require this functionality, you may need to use a VPN or Zero Trust Network Access (ZTNA) solution to provide this connectivity to on-premises resources. More on this later, when we touch on <a class="lia-external-url" href="https://learn.microsoft.com/entra/global-secure-access/overview-what-is-global-secure-access" rel="noopener noreferrer" target="_blank">Microsoft Entra Global Secure Access</a>.<br/><br/></p>
+<p>When people talk about legacy applications in this context, they typically mean apps that can only do legacy (NTLM or Kerberos) authentication with Active Directory.</p>
+<p> </p>
+<p>The good news is that for users synchronized using Microsoft Entra Connect Sync, cloud-native devices can seamlessly authenticate using NTLM and Kerberos just like domain-joined devices. When an on-premises domain account is synchronized to Microsoft Entra ID via Microsoft Entra Connect Sync, Windows uses details from Microsoft Entra ID, such as the source Active Directory domain name and the user’s User Principal Name (UPN), to locate a Domain Controller the same way an Active Directory domain-joined device does.</p>
+<p> </p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/30b8ea4937944547/img_0.png"/></button></span>
+<p> </p>
+<p>If the user has signed into Windows using a password, Windows sends the on-premises domain information and user credentials to the Domain Controller to obtain a Kerberos Ticket-Granting Ticket (TGT) or NTLM token, based on the protocol the on-premises resource or application supports. From that point onwards, the TGT is used to get session keys that grant access to resources.</p>
+<p> </p>
+<p>Refer to <a class="lia-external-url" href="https://learn.microsoft.com/entra/identity/devices/device-sso-to-on-premises-resources" rel="noopener noreferrer" target="_blank">How SSO to on-premises resources works on Microsoft Entra joined devices</a> for additional details on how this process works.</p>
+<p> </p>
+<p><strong>Note:</strong> Windows 11, version 24H2 and later releases have removed the NTLMv1 protocol as part of Microsoft's broader initiative to phase out NTLM. Refer to the Microsoft support article on <a class="lia-external-url" href="https://support.microsoft.com/topic/upcoming-changes-to-ntlmv1-in-windows-11-version-24h2-and-windows-server-2025-c0554217-cdbc-420f-b47c-e02b2db49b2e" rel="noopener noreferrer" target="_blank">Upcoming changes to NTLMv1 in Windows 11, version 24H2 and Windows Server 2025</a> for additional details.</p>
+<p> </p>
+<p><a class="lia-external-url" href="https://learn.microsoft.com/entra/identity/authentication/concept-authentication-passwordless#choose-a-passwordless-method" rel="noopener noreferrer" target="_blank">Passwordless authentication</a> mechanisms such as FIDO2 and Windows Hello for Business are a cornerstone of Microsoft’s security vision. Adopting these authentication methods delivers stronger security and better, simpler user experiences. Windows Hello for Business provides phishing-resistant credentials as required by some security guidelines such as the <a class="lia-external-url" href="https://learn.microsoft.com/compliance/anz/e8-mfa-maturity-level-2" rel="noopener noreferrer" target="_blank">Australian Cyber Security Centre ‘Essential Eight’</a>. If you’re not already doing so, deploying cloud-native devices is a great opportunity to start using Windows Hello for Business, especially since it’s enabled by default on these devices. Windows Hello for Business is also a feature which results in a win-win scenario by enhancing security for IT, while also improving the user experience.</p>
+<p> </p>
+<p>While enabling Windows Hello for Business is a simple process, there’s some additional configuration required to enable single sign-on to on-premises Active Directory authenticated resources, and this is where we sometimes see customers running into issues. If username and password work successfully to access an on-premises resource, but Windows Hello for Business credentials don’t then ensure that you’ve setup <a class="lia-external-url" href="https://learn.microsoft.com/windows/security/identity-protection/hello-for-business/deploy/hybrid-cloud-kerberos-trust?tabs=intune" rel="noopener noreferrer" target="_blank">Cloud Kerberos trust</a> to enable single sign-on. Cloud Kerberos Trust removes much of the complexity once associated with configuring Windows Hello for Business, greatly simplifying the deployment process.</p>
+<p> </p>
+<p>When signing in with Windows Hello for Business, the device uses a partial Kerberos TGT issued by Microsoft Entra ID to obtain a full TGT from Active Directory, which in turn is used to get session keys to access resources. Refer to <a class="lia-external-url" href="https://learn.microsoft.com/windows/security/identity-protection/hello-for-business/how-it-works-authentication#microsoft-entra-join-authentication-to-active-directory-using-cloud-kerberos-trust" rel="noopener noreferrer" target="_blank">Microsoft Entra join authentication to Active Directory using cloud Kerberos trust</a> for additional details.</p>
+<p> </p>
+<p>On your Zero Trust journey, if you need to provide access to on-premises applications and services, consider replacing your traditional VPN with a modern solution, enabled by <a class="lia-external-url" href="https://www.microsoft.com/security/business/identity-access/microsoft-entra-private-access" rel="noopener noreferrer" target="_blank">Microsoft Entra Private Access</a>. Doing so will help you ensure secure, fine-grained access to private applications and resources, without exposing your full network - aligned with Microsoft’s three <a class="lia-external-url" href="https://learn.microsoft.com/security/zero-trust/zero-trust-overview" rel="noopener noreferrer" target="_blank">Zero Trust principles</a>: verify explicitly, enforce least privilege, and assume breach. Review <a class="lia-internal-link lia-internal-url lia-internal-url-content-type-blog" data-lia-auto-title="Zero Trust and Cloud-Native Windows" data-lia-auto-title-active="0" href="https://techcommunity.microsoft.com/blog/microsoftintuneblog/zero-trust-and-cloud-native-windows/4435891" target="_blank">Zero Trust and Cloud-Native Windows</a> for a deeper dive into this topic.</p>
+<p> </p>
+<p>On the subject of Zero Trust, did you know that Microsoft has developed a <a class="lia-external-url" href="https://aka.ms/ztworkshop" rel="noopener noreferrer" target="_blank">Zero Trust Workshop</a>? <br/>By adopting Zero Trust, your organization can enhance its security posture and reduce risk and complexity while improving compliance and governance. Navigating the complexities of modern security is challenging and a Zero Trust strategy is the first step in providing clarity and direction. The Zero Trust Workshop is a guided framework to help you translate your Zero Trust strategy into actionable implementation steps which track your deployment progress and align with Microsoft recommendations. We’ve had many customers leverage the workshop to supercharge their Zero Trust journey and realize the full value of their existing security investments. The workshop can be run self-guided or in collaboration with your Microsoft account team or a partner and is vendor agnostic.</p>
+<p> </p>
+<ul>
+<li>If you aren’t already provisioning new Windows devices as cloud-native, check out <a class="lia-external-url" href="https://aka.ms/gocloudnative" rel="noopener noreferrer" target="_blank">Set up and configure a cloud-native Windows endpoint with Microsoft Intune</a> and <a class="lia-internal-link lia-internal-url lia-internal-url-content-type-blog" data-lia-auto-title="Cloud-native Windows endpoints: Begin by beginning" data-lia-auto-title-active="0" href="https://techcommunity.microsoft.com/blog/intunecustomersuccess/cloud-native-windows-endpoints-begin-by-beginning/4358804" target="_blank">Cloud-native Windows endpoints: Begin by beginning</a> to get started with a cloud-native Windows proof of concept today.</li>
+<li>Cloud-native doesn’t mean cloud only, these devices get the benefits of being cloud-first while maintaining the backward compatibility needed to access on-premises resources when necessary.</li>
+<li>Modern identity solutions such as Microsoft Entra ID, Windows Hello for Business, and Zero Trust Network Access can simultaneously enhance security and user experience.</li>
+<li>Be sure to check out our <a class="lia-external-url" href="https://aka.ms/ztworkshop" rel="noopener noreferrer" target="_blank">Zero Trust Workshop</a> to help you plan and implement these and other technologies as part of your Zero Trust strategy.<br/><br/></li>
+</ul>
+<p>If you have any questions, leave a comment below or reach out to us on X <a class="lia-external-url" href="https://aka.ms/IntuneSuppTeam" rel="noopener noreferrer" target="_blank">@IntuneSuppTeam</a>!</p></div></div></div>
+</article>
+</body>
+</html>

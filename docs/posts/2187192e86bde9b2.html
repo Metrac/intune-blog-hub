@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Foundry Copilot Harness and Browser Automation: Portal Demo</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">November 3, 2026</span>
+  </div>
+  <h1>Foundry Copilot Harness and Browser Automation: Portal Demo</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/foundry-copilot-harness-browser-automation-video/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="prose" data-article-body=""><p>My agent was supposed to read the latest posts on my blog. Even that small task needed a narrower scope after two timeouts. The successful response listed three articles. In the traces, I could see that the agent had used Browser Automation and an additional Web Fetch step.</p>
+<p>That is the workflow in this Foundry episode: create a prompt agent with Microsoft Copilot Harness, connect Browser Automation, and inspect how the answer was produced. The recording comes from my Modern Device Management project on 2 November 2026. The video is in German.</p>
+<h2 id="watch-the-video">Watch the video</h2>
+<h2 id="separate-the-two-building-blocks">Separate the two building blocks</h2>
+<p>Copilot Harness is an optional Foundry-managed runtime for prompt agents. The resource remains a prompt agent; the runtime coordinates the model and supported capabilities. You do not operate a separate harness process. In the current public preview, you choose it when creating a new agent. The initial preview does not let you switch an existing agent to it. <a href="https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/use-tools-skills-copilot-harness">Harness configuration in Foundry</a></p>
+<p>Browser Automation adds a managed browser as a tool, backed by an Azure Playwright workspace. That browser runs remotely rather than on my local machine. An agent can use it to open a website and inspect its content. <a href="https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/browser-automation">Browser Automation in Foundry</a></p>
+<p>The harnessâs built-in web capability and a browser operation can therefore appear in the same workflow. An answer containing links does not tell me which route was used.</p>
+<h2 id="create-an-agent-with-the-harness">Create an agent with the harness</h2>
+<p>In the new Foundry portal, I open <strong>Build &gt; Agents</strong>, create an agent, and name it <code>Youtube-Demo-Agent</code>. I keep the interaction mode on <strong>Text</strong>, select <strong>Use the Microsoft Copilot harness</strong>, and open the playground.</p>
+<figure class="technical-figure"><a href="/media/2026/11/foundry-video-releases/harness-create-20261102-v2-original.jpg"><img alt="Foundry creation dialog for Youtube-Demo-Agent with Text interaction mode and Microsoft Copilot Harness selected." src="assets/2187192e86bde9b2/img_0.webp"/></a><figcaption>From the recording: the harness is selected during agent creation.</figcaption></figure>
+<p>The playground already contains Harness Tools. Under <strong>Edit</strong>, I can see File system read, File system write, Web, Shell, and Subagents. The recording shows these selected. For a business workload, I would review each capability against the task.</p>
+<p>An agent summarizing public articles initially needs no shell for arbitrary commands. File reads and writes are separate decisions too. The selected model and permissions on connected resources also need review.</p>
+<figure class="technical-figure"><a href="/media/2026/11/foundry-video-releases/harness-tools-20261102-v2-original.jpg"><img alt="Harness Tools dialog listing file reads, file writes, web access, shell and subagents." src="assets/2187192e86bde9b2/img_1.webp"/></a><figcaption>The tool selection visible in the demo. Limit the capabilities to the work your agent needs.</figcaption></figure>
+<p>My recorded instruction is a short sentence describing a daily support agent. That is enough to demonstrate the interface. For repeatable testing, I would define the task and expected output more precisely:</p>
+<pre class="astro-code github-dark" data-language="text" tabindex="0"><code><span class="line"><span>Open https://jannikreinhard.com and find the three latest published posts.</span></span>
+<span class="line"><span>For each post, return its title, date, and direct link.</span></span>
+<span class="line"><span>Read public pages only. Do not subscribe an email address or change content.</span></span>
+<span class="line"><span>Identify any information you cannot establish reliably.</span></span></code></pre>
+<p>This is a narrower proposed test, not a quotation of my first demo prompt.</p>
+<h2 id="connect-a-playwright-workspace">Connect a Playwright workspace</h2>
+<p>I add Browser Automation through <strong>Add</strong>. The connection dialog needs a Playwright workspace, so I open resource creation, choose the subscription and resource group, give the workspace a unique name, and check its region.</p>
+<figure class="technical-figure"><a href="/media/2026/11/foundry-video-releases/playwright-workspace-20261102-v2-original.jpg"><img alt="Azure Playwright workspace creation form with region and reporting settings." src="assets/2187192e86bde9b2/img_2.webp"/></a><figcaption>Resource selection from the recording. Check regional compatibility with the Foundry execution path you choose.</figcaption></figure>
+<p>I leave reporting disabled in this demo and use public network access. That is not a general network recommendation for internal applications. Their reachability and access boundaries need separate planning.</p>
+<p>Back in Foundry, I refresh the workspace list and select the new workspace. The dialog shows <strong>Agent Identity</strong> as the authentication type and offers browser session recordings. I leave recording off and select <strong>Connect</strong>.</p>
+<figure class="technical-figure"><a href="/media/2026/11/foundry-video-releases/browser-connection-20261102-v2-original.jpg"><img alt="Foundry Add Browser Automation tool dialog with a selected Playwright workspace, Agent Identity and session recording disabled." src="assets/2187192e86bde9b2/img_3.webp"/></a><figcaption>The connection shown in the video. Selecting an identity does not establish its effective permissions.</figcaption></figure>
+<p>Workspace permissions must match the identity used by the supported connection. The current guide distinguishes project identity, agent identity, and key-based connections. Do not copy a broad subscription role as a shortcut. Review the identity, connection type, and required scope together. <a href="https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/browser-automation#choose-an-authentication-type">Authentication and workspace access</a></p>
+<h2 id="save-run-and-narrow-the-task">Save, run, and narrow the task</h2>
+<p>After adding the tool, I save the agent. My initial request was broader: list every post and also subscribe an email address to the newsletter. After two timeouts, I change the task to the latest three posts.</p>
+<p>The result shown is that article list. The recording does not establish a successful newsletter subscription. For an initial test, I would separate research from a write operation like that. I want to know whether reading works before adding another action.</p>
+<p>Foundry also returns a Live View link to the browser session. That session link is hidden in the publication copy of the recording. Do not include session-access links in public screenshots or copied chat logs.</p>
+<h2 id="read-the-traces-before-judging-the-demo">Read the traces before judging the demo</h2>
+<p>In the traces, I open the agent invocation and its downstream tool calls. The sequence includes browser operations and an additional Web Fetch step. Several capabilities contributed to the final article list.</p>
+<figure class="technical-figure"><a href="/media/2026/11/foundry-video-releases/browser-trace-20261102-v2-original.jpg"><img alt="Foundry trace showing the agent invocation, Browser Automation operations and additional tool steps." src="assets/2187192e86bde9b2/img_4.webp"/></a><figcaption>Trace view from the recording. The final answer alone would not reveal this execution path.</figcaption></figure>
+<p>For the next test, I would keep the model and task unchanged while narrowing the available tools. I want to establish which capability was needed, how many calls occurred, and whether the result is repeatable. That gives me more to work with than one successful chat.</p>
+<p>Calling the agent from code can give you more control over orchestration and error handling. It does not automatically eliminate timeouts. Retries, session boundaries, and website availability still need attention.</p>
+<p>Finally, open the three returned links yourself. Do the title and date belong to each article? That is the acceptance check for this research task. A later workflow that changes a business application also needs a readback of its persisted state.</p>
+<p>For the next debugging step, see my <a href="/microsoft-foundry-tracing-evaluation-video/">Foundry Tracing and Evaluation walkthrough</a>. The <a href="/microsoft-foundry-setup-project-model-deployment/">Foundry setup guide</a> covers the project foundation.</p></div></div></div>
+</article>
+</body>
+</html>

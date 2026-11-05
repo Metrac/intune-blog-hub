@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>From the frontlines: Empowering call center agents with Windows 365 Frontline</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Intune Customer Success</span>
+    <span class="date">November 20, 2025</span>
+  </div>
+  <h1>From the frontlines: Empowering call center agents with Windows 365 Frontline</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/intune-customer-success/from-the-frontlines-empowering-call-center-agents-with-windows/ba-p/4465820" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p><strong>By: Tania Lima – Sr Product Manager | Windows 365</strong></p>
+<p> </p>
+<p><em>Editor’s Note - Updated 11/19/25: The new <strong>User Experience</strong> <strong>Sync </strong>for Windows 365 Frontline in shared mode, announced at Ignite, delivers a consistent and seamless experience for users who frequently switch between shared Cloud PCs. This feature ensures that user settings and application data persist across sessions and devices within the same provisioning policy. Included with the Frontline license at no extra cost, it provides fast, transparent sign-ins and allows IT admins to monitor storage quotas and clear user storage when needed to resolve issues. Learn more here: <a class="lia-internal-link lia-internal-url lia-internal-url-content-type-blog" data-lia-auto-title="Windows 365 Frontline updates and Cloud Apps general availability" data-lia-auto-title-active="0" href="https://techcommunity.microsoft.com/blog/windows-itpro-blog/windows-365-frontline-updates-and-cloud-apps-general-availability/4470644" target="_blank">Windows 365 Frontline updates and Cloud Apps general availability</a>.</em></p>
+<p> </p>
+<p>Call centers are dynamic environments where agents often work in shifts, handling customer inquiries around the clock. Providing these frontline employees with secure, consistent, and accessible computing environments is critical to maintaining productivity and excellent service. However, traditional desktop deployments, whether physical PCs or complex virtual desktop infrastructure (VDI), are often challenging to manage and scale for a shift-based workforce.</p>
+<p> </p>
+<p>Microsoft Windows 365 Frontline addresses this challenge by delivering Cloud PCs optimized for shift and part-time workers. With Windows 365 Frontline, organizations give call center agents full Windows desktop experiences from the cloud, while optimizing costs through a flexible licensing model that enables multiple employees to share Cloud PC resources during their respective shifts. This article explores the two modes of Windows 365 Frontline – dedicated and shared – and offers guidance on choosing the right approach for call centers, along with best practices for Microsoft Intune configuration and provisioning in these scenarios.</p>
+<p> </p>
+<p>Windows 365 is Microsoft's Cloud PC service that streams a full Windows desktop to any device. Windows 365 Frontline is a specialized offering within Windows 365 designed for organizations with frontline or shift-based workers – employees who don't need a Cloud PC 24/7, but rather only during working hours or on an intermittent basis. Instead of assigning a traditional one-to-one Cloud PC license per user, Frontline licenses are shared at the tenant level, allowing multiple users to utilize the same Cloud PC resources at different times. This model can significantly reduce costs for call centers and similar environments by ensuring you only pay for the maximum number of concurrent Cloud PC sessions needed, not for every employee in the directory.</p>
+<p> </p>
+<p>Windows 365 Frontline offers two modes of operation to accommodate different use cases: dedicated mode and shared mode. Both modes provide the same secure, high-performance Windows experience via the cloud, integrated with Microsoft Intune for management and Microsoft Entra ID for identity and security. The difference lies in how Cloud PCs are provisioned and used by multiple users.</p>
+<p> </p>
+<p>With Frontline Cloud PC in dedicated mode, each licensed user is provisioned their own personal Cloud PC, the same as a standard Windows 365 Enterprise scenario – with one crucial twist: a single Frontline license entitles up to three Cloud PCs, assigned to three different users, so long as only one Cloud PC is in use at any given time. In other words, one license is equivalent to 3 users (one active session at a time). This non-concurrent licensing is ideal for shift work. For example, if you have three call center agents covering morning, afternoon, and night shifts, you can assign each their own Cloud PC while consuming only one Frontline license. Each agent gets a dedicated, persistent Windows desktop with their apps, settings, and data, which remains available every time they log in.</p>
+<p> </p>
+<p>Because Frontline Cloud PC in dedicated mode is personal to each user, the user experience is consistent and tailored. Agents can customize their desktop, set up applications (or have them deployed via Intune), and retain files or settings from session to session. We recommend this mode or scenarios where employees require a prolonged and consistent desktop experience – for instance, full-time or regular part-time call center employees who work scheduled shifts on a daily basis. It ensures that each agent always returns to their own workspace in the cloud.</p>
+<p> </p>
+<p>To streamline shift handovers, Windows 365 Frontline Cloud PC in dedicated mode includes a built-in concurrency buffer that allows a temporary overlap of active sessions beyond the license limit. This is designed for those situations where one agent hasn't signed off yet and the next shift agent needs to sign in a few minutes early. The concurrency buffer permits exceeding the max concurrent user limit for short periods (up to 1 hour, a few times per day) to avoid blocking users during shift handovers. This means if one agent's session slightly overlaps with another's, both can be connected briefly without needing an extra license, and without being forced to log off. Once the time limit expires, users will be unable to log in until a Cloud PC is available.</p>
+<p> </p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/97ebfaff4b40f328/img_0.png"/></button></span>
+<p> </p>
+<p>In Frontline Cloud PC in shared mode, a Cloud PC is not tied to any single user. Instead, you set up a collection of one or more Frontline Cloud PC in shared mode that a group of users can access one at a time. When someone in the group connects to a shared Cloud PC, they can receive either a persistent or a non-persistent session. Administrators can turn on the new User Experience Sync feature if they want users to enjoy a consistent experience—this ensures that applications storing user settings or app data will keep that information across sessions, including maintaining other Windows features like accessibility options. Alternatively, if preferred, a new user profile is created at each login, and once the user signs out, all session data is erased and the next user to sign in starts with a clean environment. This mode allows a Cloud PC to be truly shared among many users serially. Each Frontline license in shared mode allows you to provision one Cloud PC for the pool (thus one license = one Cloud PC accessible by many users, but still only one active user on that Cloud PC at a time).</p>
+<p> </p>
+<p>Shared mode is well-suited for scenarios where users need only occasional or brief access to a Windows environment rather than a daily dedicated workspace. For example, consider a training workstation in a call center or a kiosk-style PC for supervisors to quickly check reports. Another use case is for temporary staff or contractors who log in infrequently. In a call center context, shared mode could be used for a “floater” Cloud PC that any agent can use when extra capacity is needed, or for machines set aside for specific short tasks such as quality assurance checks by various team members. We don’t recommend shared mode for standard call center agents who have regular shifts, because those users benefit more from a persistent environment and dedicated mode can still provide cost savings in those cases. Instead, shared mode shines for truly ad-hoc access scenarios, where personalization isn't required.</p>
+<p> </p>
+<p>With Frontline Cloud PC in shared mode, since no user profile persists, it's important to ensure apps and configurations needed for the common tasks are pre-installed or available on demand. Users rely on cloud storage (OneDrive, SharePoint, web applications) for any data they need to save, because once they log off a shared Cloud PC, nothing is retained locally. The upside is that IT maintains a singular baseline configuration for all shared sessions and there's zero risk of one user’s data bleeding into the next session – the wipe on logoff provides a clean slate and extra security.</p>
+<p> </p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/97ebfaff4b40f328/img_1.png"/></button></span>
+<p> </p>
+<div class="styles_lia-table-wrapper__h6Xo9 styles_table-responsive__MW0lN"><table border="1" class="lia-align-center lia-indent-margin-left-150px lia-border-style-solid"><tbody><tr><td>
+<p><strong>Feature</strong></p>
+</td><td>
+<p><strong>Frontline Cloud PC in dedicated mode</strong></p>
+</td><td>
+<p><strong>Frontline Cloud PC in shared mode</strong></p>
+</td></tr><tr><td>
+<p><strong>Cloud PCs per license</strong></p>
+</td><td>
+<p>Up to 3 Cloud PCs per license (user-specific). Only 1 Cloud PC can be active at once (per license).</p>
+</td><td>
+<p>1 Cloud PC per license (pooled). Only 1 user session active at once (per Cloud PC).</p>
+</td></tr><tr><td>
+<p><strong>User experience</strong></p>
+</td><td>
+<p>Personalized persistent desktop for each user; data and settings saved between sessions.</p>
+</td><td>
+<p>Non-persistent, generic desktop; user profile and data are reset on sign-out.</p>
+</td></tr><tr><td>
+<p><strong>Suitable use cases</strong></p>
+</td><td>
+<p>Shift workers who need their own space and apps (ex., daily call center agents with dedicated logins).</p>
+</td><td>
+<p>Intermittent or short task usage (ex. shared training PC, occasional contractors or roaming supervisors).</p>
+</td></tr><tr><td>
+<p><strong>Provisioning method</strong></p>
+</td><td>
+<p>Cloud PCs are provisioned per user via Microsoft Entra ID group assignment. Each user gets their own Cloud PC instance.</p>
+</td><td>
+<p>Cloud PCs are provisioned as a static pool (set number of identical Cloud PCs) and assigned to a group of users to share.</p>
+</td></tr><tr><td>
+<p><strong>Intune management</strong></p>
+</td><td>
+<p>Managed like any other individually assigned device. Supports user-targeted configurations.</p>
+</td><td>
+<p>Managed as shared devices. Use device-targeted configs for apps/scripts (via device groups or Autopilot device prep) since users do not retain installs.</p>
+</td></tr><tr><td>
+<p><strong>Data storage</strong></p>
+</td><td>
+<p>Files and data persist on the Cloud PC (roam with user). Still recommended to use OneDrive/SharePoint for backup and mobility.</p>
+</td><td>
+<p>Files and data do NOT persist locally. Must use OneDrive, SharePoint, or other cloud services for any data that needs to be retained.</p>
+</td></tr></tbody></table></div>
+<p> </p>
+<p>Successfully deploying Windows 365 Frontline in a call center scenario requires optimal configuration of Microsoft Intune and adherence to best practices that maximize security and efficiency. Below are key recommendations.</p>
+<p> </p>
+<p>Set up separate Windows 365 provisioning policies for your call center users depending on mode. In the Intune admin center, under <strong>Devices</strong> &gt; <strong>Windows 365</strong> &gt; <strong>Provisioning policies</strong>, choose License type: Frontline, then specify the mode as dedicated or shared.</p>
+<p>For dedicated mode, assign the policy to a Microsoft Entra ID group containing your call center agents – Intune will automatically provision a Cloud PC for each user in the group (up to your license concurrency limits).</p>
+<p>For shared mode, assign the policy to a group of users and define the number of Cloud PC instances to create for that group. Name the shared Cloud PC pool descriptively (ex. "Call Center Training PC") so users recognize it. Use the Microsoft-hosted network unless integration with on-premises networks is needed and select a region close to your users for optimal performance.</p>
+<p> </p>
+<p>Choose a base Cloud PC image that includes your core call center applications to speed up deployment. Microsoft provides gallery images (including options with Microsoft 365 Apps pre-installed). For Frontline Cloud PC in dedicated mode, each user gets this baseline image and can receive additional apps via Intune app deployment or Company Portal. For Frontline Cloud PC in shared mode, it's crucial to preload critical apps since users won't persist installs. Leverage the Windows Autopilot deployment preparation (preview) feature for shared mode provisioning policies. This feature lets you specify device-targeted apps and scripts that Intune should install on each Cloud PC during provisioning, ensuring that even the first user to sign in has all the required software ready. It helps avoid managing custom images while still delivering necessary apps on a clean shared PC each time.</p>
+<p> </p>
+<p>Manage which users can access Cloud PCs by controlling Microsoft Entra ID group membership. Since Frontline licenses are not assigned to individuals but pooled, any user in the provisioning policy’s assignment group will get access. For dedicated mode, ensure the group size aligns with available licenses (3 users per license). If the group has more users than license capacity, some users may not get a Cloud PC provisioned until additional licenses are added. Use the Connected Frontline Cloud PCs report in the Intune admin center to monitor how many Cloud PCs are active and if you’re hitting your license concurrency limit. Adjust group membership or purchase more licenses as needed to meet peak demand.</p>
+<p> </p>
+<p>Configure automatic session timeouts to prevent a user from inadvertently locking a Cloud PC and blocking others. Use Intune to enforce idle session time limits and disconnected session sign-off for Windows 365 Frontline. For example, for a Frontline Cloud PC in shared mode that is idle for 15 minutes, disconnect the session, and for a session that has been disconnected for more than 5 or 10 minutes, sign the user out (ending the session).This ensures a Frontline Cloud PC in shared mode isn’t held by an inactive session, making it available to the next agent. For Frontline Cloud PC in dedicated mode, an idle timeout (e.g., 30 minutes) can free up the license concurrency slot without immediately logging the user off. You configure these settings in the Intune admin center using the settings catalog: Remote Desktop Session Host &gt; Session Time Limits settings. Tuning these values helps balance user convenience with resource availability.</p>
+<p> </p>
+<p>Encourage or enforce the use of OneDrive Known Folder Move for Desktop, Documents, and Pictures so that user files are redirected to cloud storage. In dedicated mode, this ensures that if a user moves to a new Cloud PC or device, their files roam with them. In shared mode, this step is even more critical: when the user logs off, anything saved only on the local profile is erased. With Known Folder Move and cloud-based productivity apps, even a non-persistent session feels seamless as users access their files from OneDrive or SharePoint. Similarly, if users use Outlook, enable cached Exchange mode with cloud mailboxes so that email data isn't lost between sessions. Alternatively, direct users to access the new Outlook or Outlook on the web to avoid local data use.</p>
+<p> </p>
+<p>Treat Cloud PCs as you would any corporate device: apply Microsoft Defender for Endpoint monitoring and security baselines via Intune. One big advantage of Windows 365 for call centers is enhanced security – by default, Cloud PCs keep data off the local machine that the user is connecting from. Use Intune policies or Windows 365 settings to disable clipboard and drive redirection, prevent screenshots, and add watermarking if agents handle highly sensitive information (so data on the Cloud PC can't be easily copied out). Additionally, enforce multi-factor authentication (MFA) for Cloud PC access through Microsoft Entra ID Conditional Access, and limit Cloud PC access to only trusted networks or compliant endpoint devices for an extra layer of protection.</p>
+<p> </p>
+<p>Continuously monitor usage patterns. Windows 365 usage reports help identify if your call center is reaching the concurrent connection limit. If agents frequently find Cloud PCs unavailable (shared mode) or get blocked due to concurrency (dedicated mode), you likely need more Frontline licenses or an adjusted strategy. Aim to have enough Cloud PCs to cover peak usage. Thankfully, adding capacity is straightforward – purchase additional Frontline licenses and update your provisioning policies. For shared mode, increase the Cloud PC count in the pool; for dedicated, new users in the group automatically get Cloud PCs if licenses are available. Likewise, if usage is consistently below capacity, consider reducing the number of provisioned Cloud PCs to optimize costs. Windows 365 provides the flexibility to scale up or down easily as your call center staffing changes, enabling organizations to efficiently adapt to operational fluctuations and changing demands.</p>
+<p> </p>
+<p>When call center agents operate on-site with shared physical PCs or thin clients to connect to their Cloud PCs, configure these physical endpoints appropriately for shared usage. Windows PCs can be set up in Microsoft Entra ID Shared Device Mode or as kiosk devices that only allow launching the Windows App or a web browser for Cloud PC access. This ensures the local device doesn't store data between users and is locked down to its purpose. Intune can manage these Frontline Cloud PC in shared mode with policies to clear temp files on logout, enforce idle sign-out, and automatically launch the Windows App at login. By managing both the Cloud PC and the access device in Intune, IT creates a cohesive, secure experience for rotating call center shifts.</p>
+<p> </p>
+<p>Windows 365 Link devices offer a transformative solution for call centers by simplifying endpoint management and enhancing remote operability. These devices enable seamless access to Cloud PCs with high-fidelity Microsoft Teams support and multimedia redirection, which is critical for voice and video-heavy workflows. Windows 365 Link allows secure connections even to Cloud PCs that have never been signed into before, reducing onboarding friction for third-party agents. This is especially valuable for remote call centers, where maintaining client machines is challenging. Windows 365 Link can be shipped pre-configured, minimizing setup complexity and support overhead. Using Link devices supports scalable, secure, and efficient operations without compromising user experience or enterprise security policies. Windows 365 Link devices are intended to be managed in a manner consistent with other Windows endpoints within Intune; however, they operate on a streamlined Windows Cloud PC OS. This design reduces the range of management actions available, particularly with respect to enrollment and ongoing management actions. For more information visit <a class="lia-external-url" href="https://learn.microsoft.com/windows-365/link/" rel="noopener noreferrer" target="_blank">Windows 365 Link documentation</a>.</p>
+<p> </p>
+<p>If Microsoft Teams is part of the daily workflow for call center agents, we strongly recommend deploying the Microsoft Teams-optimized Windows App to access their Cloud PCs from Windows-based clients, in place of using the standard web-client. This approach ensures better performance, enhanced audio and video quality, and full support for Teams-specific optimizations such as offloading media traffic and reducing latency.</p>
+<p> </p>
+<p>Many large organizations will work with third party call center partners to provide agents to support their customers, either as business as usual, or to provide out of hours and coverage for high call volume events. Ensuring these partner organizations can connect to your infrastructure, and connect to your applications, can be challenging and any changes can take time for your partners to roll out. By using Windows 365, you can deliver a defined list of software and network requirements (Windows App, with access to the Windows Cloud endpoints / Teams / Call Centre software), and minimize the number of changes required as your business evolves. Providing access to a new application, service, or resource is handled within the Cloud PCs that you control with no technical changes needed by the vendor or partner.</p>
+<p> </p>
+<p>Windows 365 empowers organizations to support remote call center agents through secure, scalable Cloud PC deployments that work seamlessly across bring your own device (BYOD) environments. Whether agents use personal laptops, tablets, or mobile phones, Windows 365 ensures secure access to corporate resources via the Windows app or browser-based clients, minimizing infrastructure overhead and simplifying endpoint management. This flexibility is especially valuable for outsourced or third-party call center partners, where device diversity and network variability are common. By centralizing application access within the Cloud PC, organizations enforce consistent security policies, reduce onboarding friction, and deliver reliable user experience, regardless of the agent’s physical location or device type. This model not only enhances operational agility but also strengthens data protection by isolating corporate workloads from unmanaged endpoints.</p>
+<p> </p>
+<p>Windows 365 Frontline represents a transformative approach for call centers seeking to empower their agents with secure, flexible, and cost-effective computing environments. By offering both dedicated and shared modes, organizations can tailor Cloud PC deployments to match the unique needs of shift-based and occasional workers, optimizing resource utilization and reducing operational complexity. With robust integration into Microsoft Intune and Microsoft Entra ID, IT teams can streamline provisioning, enforce security best practices, and ensure seamless user experiences, whether agents are on-site, remote, or using their own devices. Ultimately, Windows 365 Frontline enables call centers to scale efficiently, enhance data protection, and deliver consistent service quality in today’s dynamic work landscape.</p>
+<p> </p>
+<p>This blog is part of the <a class="lia-external-url" data-lia-auto-title="“From the Frontlines”" data-lia-auto-title-active="0" href="https://aka.ms/Intune/FLW-home" rel="noopener noreferrer" target="_blank">“From the Frontlines”</a> series, where we explore different scenarios of how workers in field use devices and how IT admins can enable them. Check the other blog posts for more inspiration!</p>
+<p> </p>
+<p>As always, if you have any questions let us know in the comments or reach out to us on X <a class="lia-external-url" href="https://aka.ms/IntuneSuppTeam" rel="noopener noreferrer" target="_blank">@IntuneSuppTeam</a> or <a class="lia-external-url" href="https://aka.ms/MSIntune" rel="noopener noreferrer" target="_blank">@MSIntune</a>!</p>
+<p> </p>
+<p><strong>Post Updates:</strong><br/>11/19/25: Updates to the "<em>Shared mode: Ephemeral Cloud PCs for occasional use</em>" section highlighting new flexibility in shared Frontline Cloud PCs, including optional user experience persistence and simplified shared licensing.</p></div></div></div>
+</article>
+</body>
+</html>

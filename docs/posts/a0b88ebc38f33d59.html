@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Microsoft IQ Explained: Making Enterprise AI Agents Work</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">November 26, 2025</span>
+  </div>
+  <h1>Microsoft IQ Explained: Making Enterprise AI Agents Work</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/microsoft-iq-the-intelligence-layer-that-finally-makes-ai-agents-useful/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="prose" data-article-body=""><p><strong>Microsoft IQ</strong> covers Work IQ, Fabric IQ and Foundry IQ. This article explains their roles in Microsoft 365, business data and knowledge retrieval, and where they fit in an AI agent architecture.</p>
+<p class="preserved-content"><span id="how-microsoft-iq-makes-enterprise-ai-agents-work"></span></p>
+<h2 id="how-microsoft-iq-makes-enterprise-ai-agents-work">How Microsoft IQ Makes Enterprise AI Agents Work</h2>
+<p><img alt="Diagram of Microsoft IQ intelligence layer for AI agents" decoding="async" fetchpriority="auto" src="assets/a0b88ebc38f33d59/img_0.webp"/></p>
+<p><a href="/why-cli-tools-are-beating-mcp-for-ai-agents/">Building AI agents</a> involves connecting data sources, checking access and evaluating retrieved information. The choice of knowledge layer affects each of these tasks.</p>
+<p>Microsoft presented IQ at Ignite 2025. It spans Microsoft 365, Fabric and Microsoft Foundry. A <a href="/document-manager-using-azure-ai-foundry-or-openai-for-my-paperless-office/">document manager</a> is one example of an application that needs a defined retrieval path.</p>
+<p><strong>Quick answer:</strong> Microsoft IQ is Microsoftâs umbrella intelligence layer for enterprise agents: Work IQ represents work context, Fabric IQ adds governed business semantics, and Foundry IQ retrieves and grounds knowledge for custom agents. These layers provide context for models and agents.</p>
+<p><strong>Last verified:</strong> July 22, 2026</p>
+<p class="preserved-content"><span id="the-three-pillars-of-microsoft-iq"></span></p>
+<h2 id="the-three-pillars-of-microsoft-iq">The Three Pillars of Microsoft IQ</h2>
+<p>The three layers address different sources of context:</p>
+<p><strong>Work IQ</strong> powers <a href="/deep-dive-into-co-pilots-understanding-architecture-llms-and-advanced-concepts/">Microsoft 365 Copilot</a>. It understands how you work, who you work with, and what content youâre collaborating on. Itâs built on your emails, files, meetings, and chats â plus your preferences, habits, and work patterns. It uses that information to provide context and memory across interactions.</p>
+<p><strong>Fabric IQ</strong> brings semantic meaning to your data platform. Itâs essentially a business ontology layer that sits on top of OneLake. Define âCustomer,â âOrder,â or âAssetâ once, and every Power BI report, notebook, and AI agent speaks the same language. Agreeing on these definitions helps teams interpret the same measure consistently.</p>
+<p><strong>Foundry IQ</strong> is a managed knowledge system built on <a href="/azure-ai-search-deploying-a-powerful-ai-powered-search-engine/">Azure AI Search</a> that grounds your AI agents. Instead of building custom RAG pipelines for every project, you get reusable knowledge bases accessible through a single API. You can dig into the architecture in the <a href="https://learn.microsoft.com/en-us/azure/ai-foundry/">official Microsoft Learn documentation</a>.</p>
+<p class="preserved-content"><span id="why-microsoft-iq-actually-matters"></span></p>
+<h2 id="how-the-layers-fit-an-agent-workflow">How the layers fit an agent workflow</h2>
+<p>An agent workflow may need work context, business definitions and document retrieval together.</p>
+<p>Imagine building an agent that needs to answer: âHow is our pipeline trending against last yearâs Q4, and are there any delays flagged in customer conversations?â</p>
+<p>With traditional approaches, youâd need to:</p>
+<ul>
+<li>Query your CRM database</li>
+<li>Search through SharePoint documents</li>
+<li>Parse Teams messages</li>
+<li>Somehow reconcile different definitions of âpipelineâ</li>
+<li>Check sources and calculations</li>
+</ul>
+<p>With the unified Microsoft IQ layer, your agent can query Fabric IQ for structured pipeline data, tap into Work IQ for conversation signals, and use Foundry IQâs agentic retrieval to synthesize it all â with consistent semantic understanding throughout.</p>
+<p class="preserved-content"><span id="foundry-iq-rag-without-the-pain"></span></p>
+<h2 id="foundry-iq-and-agentic-retrieval">Foundry IQ and agentic retrieval</h2>
+<p>Foundry IQ uses agentic retrieval to plan searches and combine retrieved information:</p>
+<ol>
+<li>Plans the query â Understands what information is actually needed</li>
+<li>Iteratively searches â Hits multiple knowledge sources</li>
+<li>Reflects on results â Determines if more searching is needed</li>
+<li>Synthesizes findings â All while respecting user permissions</li>
+</ol>
+<p>Before using a knowledge source, check its supported identity and permission controls. Test access with users who have different rights, and confirm how sensitivity labels affect the retrieval path you plan to use.</p>
+<p class="preserved-content"><span id="work-iq-copilot-gets-memory"></span></p>
+<h2 id="work-iq-copilot-gets-memory">Work IQ: Copilot Gets Memory</h2>
+<p>The Work IQ piece solves something thatâs bothered me about Copilot: context continuity. Through what Microsoft calls âconversational memory,â Copilot can now remember context and important details across sessions.</p>
+<p>It uses your work profile, instructions, preferences, and insights from past chats. You stay in control â you can review or delete these memories anytime. But the practical impact is that Copilot stops asking you the same questions over and over.</p>
+<p>Work IQ also powers model routing. Based on your prompt and intent, it can select the right model for the task â whether thatâs GPT-5, Claude from Anthropic, or specialized fine-tuned models. The available model choices depend on the feature and your organisationâs configuration.</p>
+<p class="preserved-content"><span id="fabric-iq-the-semantic-foundation"></span></p>
+<h2 id="fabric-iq-the-semantic-foundation">Fabric IQ: The Semantic Foundation</h2>
+<p>For those of us whoâve dealt with the chaos of enterprise data, Fabric IQ addresses a fundamental problem: semantic drift. When different teams define the same business concept differently, your AI agents inherit that confusion.</p>
+<p>The new Ontology item in Fabric (now in public preview) lets you:</p>
+<ul>
+<li>Define entity types, properties, and relationships once</li>
+<li>Bind these to actual data sources</li>
+<li>Automatically build a navigable graph</li>
+<li>Share definitions across all analytics, apps, and agents</li>
+</ul>
+<p>For example, an ontology can record what âCustomerâ means and how it relates to other entities. The agent can use those definitions when working with the connected data.</p>
+<p class="preserved-content"><span id="getting-started-with-microsoft-iq"></span></p>
+<h2 id="getting-started-with-microsoft-iq">Getting Started with Microsoft IQ</h2>
+<p>Hereâs what Iâd recommend if you want to explore Microsoft IQ:</p>
+<p>Start with Fabric IQ if youâre already in the Fabric ecosystem. The Ontology item is in public preview â define a few core business entities and see how they propagate through your reports and data agents.</p>
+<p>Check out Foundry IQ if youâre building custom agents. The preview gives you access to knowledge bases and agentic retrieval without the RAG infrastructure headache.</p>
+<p>Work IQ features are rolling out through Copilot updates. The conversational memory is available through the Frontier program if you have access.</p>
+<p class="preserved-content"><span id="microsoft-graph-vs-work-iq-foundation-vs-intelligence"></span></p>
+<h2 id="microsoft-graph-vs-work-iq-foundation-vs-intelligence">Microsoft Graph vs. Work IQ: Foundation vs. Intelligence</h2>
+<p>Microsoft Graph and Work IQ serve different roles in a Microsoft 365 application.</p>
+<p>Microsoft Graph is the Foundation â think of it as the nervous system of Microsoft 365. It connects all your data points: Users, Files, Meetings, Chats, Devices. Through its API, you get raw data access â facts and history. When you query âShow me the last file from Max,â Graph returns <code>Budget_2025.xlsx</code>. Thatâs it.</p>
+<p>Graph is built for developers who want to build apps. Itâs excellent at what it does: providing a unified API to access Microsoft 365 data. But itâs fundamentally a data retrieval system.</p>
+<p>Work IQ is the Intelligence Layer â think of it as the brain sitting on top of Graph. It doesnât just retrieve data; it understands context and patterns. It has long-term memory of your work habits and preferences. When you ask âIs the budget at risk?â, Work IQ can answer: âYes, Max mentioned cuts in an email last week, and the Q3 projections show a 15% shortfall.â</p>
+<p>The key differences:</p>
+<div class="preserved-content"><table class="has-fixed-layout"><tbody><tr><td><span>Aspect</span></td><td><span>Microsoft Graph</span></td><td><span>Work IQ</span></td></tr><tr><td>Role</td><td>Foundation / Nervous System</td><td>Intelligence / Brain</td></tr><tr><td>Output</td><td>Raw Data (Facts, History)</td><td>Insights (Interpretation, Implications)</td></tr><tr><td>Time Focus</td><td>Real-time &amp; Historical</td><td>Contextual &amp; Predictive</td></tr><tr><td>Built For</td><td>Developers (Building Apps)</td><td>Copilot &amp; Agents (Smart Responses)</td></tr></tbody></table></div>
+<p>Work IQ feeds on Graph data, adds reasoning and memory, and powers Copilot and your custom agents. Graph is still there â itâs not going anywhere. Work IQ just makes it smarter.</p>
+<p><img alt="Microsoft IQ connects AI agents with enterprise data" decoding="async" fetchpriority="auto" src="assets/a0b88ebc38f33d59/img_1.webp"/></p>
+<p>And yes, Fabric IQ sits alongside this for Analytics and Big Data use cases â organizing unstructured data for analysis through knowledge graphs, separate from the productivity focus of Work IQ.</p>
+<p class="preserved-content"><span id="the-bottom-line-on-microsoft-iq"></span></p>
+<h2 id="plan-a-first-use-case">Plan a first use case</h2>
+<p>Start by identifying the data and context your agent needs. Map each source to a supported interface and check the required licences and permissions.</p>
+<p>Define the business concepts your use case depends on and record the relevant metadata in SharePoint. Then check how the required layers connect in your environment.</p>
+<p>Test the retrieval path with a small set of documents and a user whose access you can verify. Record the answer, its sources and any missing information before expanding the scope.</p>
+<p>Related reading: <a href="https://epicfusion.com/blog-and-news/frontier-unternehmen-wo-mut-zukunft-schafft">Frontier transformation at Epic Fusion</a>.</p></div></div></div>
+</article>
+</body>
+</html>

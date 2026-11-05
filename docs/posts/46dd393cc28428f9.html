@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RAG Freshness: Stop Agents Reusing Deleted Documents</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">November 3, 2026</span>
+  </div>
+  <h1>RAG Freshness: Stop Agents Reusing Deleted Documents</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/rag-freshness-deleted-documents-agent-memory/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="prose" data-article-body=""><p>You replace a policy PDF. The new document says seven days; the agent still answers thirty. It even cites the right document title.</p>
+<p>That can happen when the title stays the same while an old chunk, cached answer or conversation still contains the previous rule. A fresh-looking citation does not establish which version supplied the answer.</p>
+<p>I would test this explicitly before using a RAG agent for internal IT or company policy. The example below follows one source through Azure AI Search, cached answers and agent memory. The local validation code is tested; the Azure steps are a documented integration path, not a claim of a tenant deletion test. References were checked on 20 October 2026.</p>
+<h2 id="track-the-source-beyond-the-pdf">Track the source beyond the PDF</h2>
+<p>Retrieval-augmented generation, or RAG, brings retrieved information into a modelâs context. Updating the original file is only one part of that informationâs lifecycle.</p>
+<p>For a policy assistant, I would track these surfaces:</p>
+<table>
+<thead>
+<tr>
+<th>Surface</th>
+<th>What can remain stale?</th>
+<th>Verification</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Source repository</td>
+<td>Superseded or deleted edition</td>
+<td>Current revision and publication state</td>
+</tr>
+<tr>
+<td>Search index</td>
+<td>Old chunks or missing permission changes</td>
+<td>Query actual document/chunk keys</td>
+</tr>
+<tr>
+<td>Answer cache</td>
+<td>A previously valid answer</td>
+<td>Recheck source revision and caller access before reuse</td>
+</tr>
+<tr>
+<td>Conversation or memory</td>
+<td>Previously supplied facts</td>
+<td>Do not treat them as current policy evidence</td>
+</tr>
+<tr>
+<td>Saved report</td>
+<td>An old decision based on old policy</td>
+<td>Preserve its historical date rather than presenting it as current</td>
+</tr>
+</tbody>
+</table>
+<p>The <a href="https://www.reddit.com/r/AI_Agents/comments/1x9v98j/which_ai_memory_tools_have_held_up_as_your/">Reddit discussion about growing agent memory</a> asks about quality as history accumulates. For enterprise knowledge, I would add another question: can the system stop reusing a fact when that fact is no longer valid?</p>
+<p>Use stable source IDs plus explicit revisions. In a chunked index, record the parent source ID on every chunk. Without that mapping, retiring one document becomes a search for pieces whose identifiers no longer tell you where they came from.</p>
+<h2 id="test-change-detection-and-deletion-separately">Test change detection and deletion separately</h2>
+<figure class="technical-figure"><a href="/media/2026/10/reddit-guides/captures/originals/rag-freshness-capture.png"><img alt="Actual Search Explorer results from the demo policy index: title, policy ID, synthetic-demo classification and last_modified. This records retrieved metadata, not a completed deletion or permission-revocation test." src="assets/46dd393cc28428f9/img_0.webp"/></a><figcaption>Actual Search Explorer results from the demo policy index: title, policy ID, synthetic-demo classification and last_modified. This records retrieved metadata, not a completed deletion or permission-revocation test.</figcaption></figure>
+<p>Azure Storage indexers use source timestamps to detect changes. Deletion needs its own supported policy; removing a blob does not automatically prove that its search document disappeared. Configure and test the deletion strategy before relying on it. <a href="https://learn.microsoft.com/en-us/azure/search/search-how-to-index-azure-blob-changed-deleted">Change and deletion detection</a></p>
+<p>For a controlled test, create a synthetic policy with a distinctive value. Index it, query it and save the returned keys. Replace the rule, run the indexing path and query again. The old rule should no longer be returned as current evidence.</p>
+<p>Then test deletion. If your application pushes chunks itself, delete the known old chunk keys explicitly. A push request uses each search documentâs key, not an assumed parent-document key:</p>
+<pre class="astro-code github-dark" data-language="http" tabindex="0"><code><span class="line"><span>POST</span><span> https://&lt;search-service&gt;.search.windows.net/indexes/&lt;index&gt;/docs/index?api-version=2026-04-01</span></span>
+<span class="line"><span>Content-Type</span><span>:</span><span> application/json</span></span>
+<span class="line"><span>Authorization</span><span>:</span><span> Bearer &lt;token-for-the-search-service&gt;</span></span>
+<span class="line"></span>
+<span class="line"><span>{</span></span>
+<span class="line"><span>  "value"</span><span>: [</span></span>
+<span class="line"><span>    { </span><span>"@search.action"</span><span>: </span><span>"delete"</span><span>, </span><span>"id"</span><span>: </span><span>"policy-travel-v1-chunk-001"</span><span> },</span></span>
+<span class="line"><span>    { </span><span>"@search.action"</span><span>: </span><span>"delete"</span><span>, </span><span>"id"</span><span>: </span><span>"policy-travel-v1-chunk-002"</span><span> }</span></span>
+<span class="line"><span>  ]</span></span>
+<span class="line"><span>}</span></span></code></pre>
+<p>Replace the key field if your index uses a name other than <code>id</code>. Use an identity authorized to update index data and inspect the per-document results. An HTTP response alone is not the final acceptance test; issue a new retrieval query for the retired rule. <a href="https://learn.microsoft.com/en-us/azure/search/search-how-to-load-search-index">Push indexing and document actions</a></p>
+<p>One-to-many indexing needs special care. Do not assume a source-level deletion policy covers every generated chunk. Microsoft documents limitations for those scenarios in the deletion guide. Keep a manifest of chunk keys or a cleanup process you can verify.</p>
+<h2 id="make-evidence-reuse-depend-on-current-state">Make evidence reuse depend on current state</h2>
+<p>For my application, an answer-cache entry would carry the source ID, revision and a knowledge epoch. The epoch is an application-owned generation number, incremented when relevant knowledge is replaced. It is not an Azure AI Search API property.</p>
+<p>The current-source registry must come from the trusted backend, not from the language model or a request field supplied by the user. Check it before reusing a cached answer.</p>
+<p>This small local example makes the rule explicit. Save it as <code>freshness_check.py</code> and run <code>python3 freshness_check.py</code>:</p>
+<pre class="astro-code github-dark" data-language="python" tabindex="0"><code><span class="line"><span>from</span><span> dataclasses </span><span>import</span><span> dataclass, replace</span></span>
+<span class="line"></span>
+<span class="line"><span>@dataclass</span><span>(</span><span>frozen</span><span>=</span><span>True</span><span>)</span></span>
+<span class="line"><span>class</span><span> Source</span><span>:</span></span>
+<span class="line"><span>    version: </span><span>str</span></span>
+<span class="line"><span>    active: </span><span>bool</span></span>
+<span class="line"><span>    groups: frozenset[</span><span>str</span><span>]</span></span>
+<span class="line"></span>
+<span class="line"><span>@dataclass</span><span>(</span><span>frozen</span><span>=</span><span>True</span><span>)</span></span>
+<span class="line"><span>class</span><span> Evidence</span><span>:</span></span>
+<span class="line"><span>    source_id: </span><span>str</span></span>
+<span class="line"><span>    version: </span><span>str</span></span>
+<span class="line"><span>    epoch: </span><span>int</span></span>
+<span class="line"><span>    observed_at: </span><span>int</span></span>
+<span class="line"></span>
+<span class="line"><span>def</span><span> reusable</span><span>(ref, registry, caller_groups, epoch, now, max_age</span><span>=</span><span>60</span><span>):</span></span>
+<span class="line"><span>    source </span><span>=</span><span> registry.get(ref.source_id)</span></span>
+<span class="line"><span>    return</span><span> bool</span><span>(source </span><span>and</span><span> source.active</span></span>
+<span class="line"><span>        and</span><span> source.version </span><span>==</span><span> ref.version</span></span>
+<span class="line"><span>        and</span><span> ref.epoch </span><span>==</span><span> epoch</span></span>
+<span class="line"><span>        and</span><span> source.groups.intersection(caller_groups)</span></span>
+<span class="line"><span>        and</span><span> 0</span><span> &lt;=</span><span> now </span><span>-</span><span> ref.observed_at </span><span>&lt;=</span><span> max_age)</span></span>
+<span class="line"></span>
+<span class="line"><span>registry </span><span>=</span><span> {</span><span>"policy"</span><span>: Source(</span><span>"v2"</span><span>, </span><span>True</span><span>, </span><span>frozenset</span><span>({</span><span>"staff"</span><span>}))}</span></span>
+<span class="line"><span>current </span><span>=</span><span> Evidence(</span><span>"policy"</span><span>, </span><span>"v2"</span><span>, </span><span>7</span><span>, </span><span>1000</span><span>)</span></span>
+<span class="line"><span>assert</span><span> reusable(current, registry, {</span><span>"staff"</span><span>}, </span><span>7</span><span>, </span><span>1010</span><span>)</span></span>
+<span class="line"><span>assert</span><span> not</span><span> reusable(replace(current, </span><span>version</span><span>=</span><span>"v1"</span><span>), registry, {</span><span>"staff"</span><span>}, </span><span>7</span><span>, </span><span>1010</span><span>)</span></span>
+<span class="line"><span>assert</span><span> not</span><span> reusable(current, {}, {</span><span>"staff"</span><span>}, </span><span>7</span><span>, </span><span>1010</span><span>)</span></span>
+<span class="line"><span>assert</span><span> not</span><span> reusable(current, registry, {</span><span>"guest"</span><span>}, </span><span>7</span><span>, </span><span>1010</span><span>)</span></span>
+<span class="line"><span>assert</span><span> not</span><span> reusable(current, registry, {</span><span>"staff"</span><span>}, </span><span>8</span><span>, </span><span>1010</span><span>)</span></span>
+<span class="line"><span>assert</span><span> not</span><span> reusable(current, registry, {</span><span>"staff"</span><span>}, </span><span>7</span><span>, </span><span>1100</span><span>)</span></span>
+<span class="line"><span>print</span><span>(</span><span>"current evidence accepted; stale evidence rejected"</span><span>)</span></span></code></pre>
+<p>The sixty-second age is a teaching value, not a recommended production service level. A short TTL alone cannot notice an immediate permission change. This example also checks the current registry, revision and permitted groups. For an answer with several sources, every supporting reference must pass the applicable checks.</p>
+<h2 id="revalidate-access-instead-of-caching-permission-forever">Revalidate access instead of caching permission forever</h2>
+<p>An answer can be factually current and still be wrong to return to a particular caller. Consider a staff member who moves out of a group after the first answer was cached.</p>
+<p>Azure AI Search offers application-managed security filtering and supported native permission approaches. Their prerequisites differ; native ACL and sensitivity-label features may be in preview. Choose the supported route for your data source rather than assuming every index inherits SharePoint permissions. <a href="https://learn.microsoft.com/en-us/azure/search/search-document-level-access-overview">Document-level access options</a></p>
+<p>With application-managed filters, the application is responsible for supplying the correct trusted identity/group scope. Do not let a user choose another groupâs filter in the prompt. <a href="https://learn.microsoft.com/en-us/azure/search/search-security-trimming-for-azure-search">Security-filter pattern</a></p>
+<p>Invalidate relevant answer-cache entries on access changes, and check authorization again when serving a result. For sensitive actions, perform the current permission check at the backend that executes the action too.</p>
+<h2 id="include-existing-conversations-in-the-test">Include existing conversations in the test</h2>
+<p>Start one conversation before replacing the policy and another afterward. Ask both the same question after the change.</p>
+<p>The older conversation already contains old material. Treat that material as historical context, retrieve current policy again and identify its effective date. If the application cannot establish the current version, it should say so rather than blending both rules.</p>
+<p>For a strict retirement requirement, decide how the application handles retained conversation state and memory references. Clearing a search index does not erase previously displayed messages, exported reports or screenshots. The control you can test is whether the application retrieves or generates another answer from retired evidence.</p>
+<p>The <a href="/copilot-studio-memory-governance/">Copilot memory-controls article</a> covers a specific productâs controls. This source-lifecycle test belongs in the application regardless of which memory library you choose.</p>
+<h2 id="use-this-acceptance-sequence-before-the-next-release">Use this acceptance sequence before the next release</h2>
+<ol>
+<li>Publish synthetic version one and record its exact chunk IDs.</li>
+<li>Replace it with version two, verify indexing and test both old and new conversations.</li>
+<li>Revoke a test userâs access and repeat retrieval plus cached-answer requests.</li>
+<li>Delete the source through the supported path and verify the retired chunks cannot be retrieved.</li>
+<li>Restore an approved version and verify it can be indexed and retrieved again.</li>
+</ol>
+<p>Record source version, index status, caller, query, answer and citations for each step. A citation with the right title is not enough: the answer must use the right version and remain within the callerâs current access.</p></div></div></div>
+</article>
+</body>
+</html>

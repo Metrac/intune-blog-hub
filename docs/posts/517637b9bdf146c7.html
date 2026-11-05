@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Support tip: Aligning network policy with Microsoft Intune and Zero Trust</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Intune Customer Success</span>
+    <span class="date">November 8, 2025</span>
+  </div>
+  <h1>Support tip: Aligning network policy with Microsoft Intune and Zero Trust</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/intune-customer-success/support-tip-aligning-network-policy-with-microsoft-intune-and/ba-p/4466688" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p><strong>By: Jon Callahan – Sr Product Manager | Microsoft Intune</strong></p>
+<p> </p>
+<p>Cloud services don’t just rely on the network. They redefine it. As organizations adopt Microsoft Intune and advance their Zero Trust strategies, many discover that traditional, perimeter-based architectures no longer align with modern security expectations or the connectivity needs of a distributed workforce.</p>
+<p> </p>
+<p>Zero Trust is built on the principle of "<em>never trust, always verify,</em>” where access decisions are enforced through identity, device health, and compliance signals.  Microsoft Intune strengthens this model by extending security and management through the cloud. By removing dependencies on on-premises infrastructure, it strengthens network resilience and Zero Trust enforcement with policy-driven device management and secure connectivity to Microsoft endpoints.</p>
+<p> </p>
+<p>This is where friction occurs. Traditional enterprise networks were built around a castle-and-moat model of perimeter defense: build high walls around the perimeter and trust everything inside, rather than identity-based access. Centralized egress points, VPNs, proxy servers, and deep packet or TLS inspection worked well when apps, data, and users stayed inside the moat.</p>
+<p> </p>
+<p>Today, work and data are everywhere. Legacy network designs often force traffic into hairpinned routes (indirect paths through central gateways) that add latency, reduce performance, and increase management overhead for Intune, Microsoft 365, and other SaaS apps.</p>
+<p> </p>
+<p>The challenge deepens when network teams try to maintain allow lists for cloud services using static IP addresses. Microsoft’s endpoint IPs can change frequently, especially with CDN-backed services like Intune and Microsoft 365, to strengthen security, improve resilience, and scale globally. This is why Microsoft recommends domain-based egress policies, frequent updates based on the published endpoint lists, and bypassing SSL inspection for <a class="lia-external-url" href="https://learn.microsoft.com/intune/intune-service/fundamentals/intune-endpoints?#access-for-managed-devices" rel="noopener noreferrer" target="_blank">Microsoft-bound traffic that doesn’t support inspection</a>.</p>
+<p> </p>
+<p>The shift to hybrid work environments shows the limits of perimeter-based networks. Users expect fast and reliable access to their apps and data whether at home, in the office, or on the go.</p>
+<p> </p>
+<p>To support this shift, organizations need to modernize their network architecture and policies. Local<strong> </strong>internet egress and optimized paths to trusted services like Intune are essential. Policies built on Zero Trust and cloud-native principles help ensure performance and security. In contrast, controls such as VPN-only access, TLS inspection, or centralized proxies often slow users down and block required endpoints.</p>
+<p> </p>
+<p>When networks get in the way, the impact is noticed:</p>
+<ul>
+<li>Device check-ins and compliance evaluations fail, leaving devices marked as non-compliant</li>
+<li>Enrollments stall or time out</li>
+<li>Apps download slowly, fail to update, or never install</li>
+</ul>
+<p> </p>
+<p>When these failures occur, users often blame Intune or their IT admins, even when the real issue is network policies.</p>
+<p> </p>
+<p>In a Zero Trust model, network policy works alongside identity and device-based signals to enforce access decisions. <strong>Network policy should enable cloud services, not obstruct them</strong>. Adopting cloud-native connectivity and Zero Trust enforcement protects users, devices, and data while improving reliability and user experience.</p>
+<p> </p>
+<p>This approach aligns with Microsoft’s <a class="lia-external-url" href="https://www.microsoft.com/trust-center/security/secure-future-initiative" rel="noopener noreferrer" target="_blank">Secure Future Initiative (SFI)</a> and the principle of “Secure by Design,” which extend Zero Trust principles into the foundation of how services are built and operated. As part of this effort, Intune service endpoints are moving to Azure Front Door to enhance security, reliability, and performance while simplifying firewall management across Microsoft services. For details on required IP addresses and endpoints, see <a class="lia-internal-link lia-internal-url lia-internal-url-content-type-blog" data-lia-auto-title="Support tip: Upcoming Microsoft Intune network changes" data-lia-auto-title-active="0" href="https://techcommunity.microsoft.com/blog/intunecustomersuccess/support-tip-upcoming-microsoft-intune-network-changes/4452738" target="_blank">Support tip: Upcoming Microsoft Intune network changes</a>.</p>
+<p> </p>
+<p>Aligning network policies with Zero Trust and cloud-native architecture can require trade-offs. Outbound traffic management is critical for Intune’s performance, but organizations differ in their compliance needs and tolerance for complexity. Below are three common models we see with our customers.</p>
+<p> </p>
+<p>This model eliminates perimeter bottlenecks by moving enforcement closer to the user, device, and apps, which is the core of Zero Trust. Enforcement happens at the endpoint through identity, compliance, and device health signals, while the network provides fast, direct internet access with minimal restrictive filtering.</p>
+<p> </p>
+<p><strong>Best for:</strong> Organizations ready to adopt a Zero Trust network architecture built on Intune and identity-driven signals, or those with minimal outbound filtering requirements.</p>
+<p> </p>
+<p><strong>How to implement:</strong></p>
+<ul>
+<li><strong>Policy-based enforcement and compliance:</strong> Intune enforces and validates device health and measures device compliance and app protection policies for Microsoft Entra Conditional Access</li>
+<li><strong>Identity-driven enforcement</strong>: Microsoft Entra Conditional Access evaluates signals such as user identity, device compliance, and risk level before granting access to cloud resources</li>
+<li><strong>Threat protection:</strong> Microsoft Defender for Endpoint monitors device risk and blocks compromised endpoints from accessing cloud resources; enforce the built-in firewall on Windows and macOS devices</li>
+<li><strong>Bypass traffic inspection:</strong> Don’t decrypt or inspect Intune and related Microsoft traffic using technologies like proxies, TLS inspection, deep packet inspection, or data loss prevention systems</li>
+<li><strong>Use split-tunnel VPN and local internet egress:</strong> Route Intune and Microsoft 365 traffic locally to avoid unnecessary hairpinning</li>
+</ul>
+<p> </p>
+<p><strong>Benefits</strong>:</p>
+<ul>
+<li>Establishes Zero Trust controls with identity, device, and threat-based enforcement</li>
+<li>Local internet egress and optimized paths to Intune and Microsoft 365 avoid latency and centralized paths</li>
+<li>No allow list or complex firewall rules to manage</li>
+<li>Avoids VPN, proxies, and TLS inspections and reduces the risk of interfering with user experience and device management failures</li>
+</ul>
+<p> </p>
+<p>This model requires strong endpoint management and identity controls to ensure Zero Trust enforcement.</p>
+<p> </p>
+<p>When endpoint-only enforcement doesn’t meet your organization's requirements, Fully Qualified Domain Name (FQDN) filtering offers a middle ground by adding network controls while staying adaptable to dynamic cloud services. This approach should be paired with endpoint enforcement to maintain a Zero Trust architecture.</p>
+<p> </p>
+<p><strong>Best for:</strong> Organizations that need outbound restrictions for compliance, while maintaining reliability and flexibility in cloud services.</p>
+<p> </p>
+<p><strong>How to implement:</strong></p>
+<ul>
+<li><strong>Use domain-based rules:</strong> Filter traffic by FQDN rules that rely on DNS to adapt to changing IP addresses and CDN-backed services.</li>
+<li><strong>Leverage automation:</strong> <span data-teams="true">Leverage the <a aria-label="Link consolidated endpoint list" class="lia-external-url" href="https://learn.microsoft.com/intune/intune-service/fundamentals/intune-endpoints?tabs=north-america#consolidated-endpoint-list" rel="noopener noreferrer" target="_blank">consolidated endpoint list</a>, <a aria-label="Link Azure Firewall service tags" class="lia-external-url" href="https://learn.microsoft.com/azure/virtual-network/service-tags-overview" rel="noopener noreferrer" target="_blank">Azure Firewall service tags</a>, or vendor tools to keep rules up to date.</span></li>
+<li><strong>Bypass traffic inspection for trusted services:</strong> Avoid decrypting or inspecting Intune traffic, which can break certificate pinning and cause service failures.</li>
+<li><strong>Resolve locally:</strong> Use local DNS and Internet egress so devices connect to the closest Microsoft endpoint.</li>
+</ul>
+<p> </p>
+<p><strong>Benefits:</strong></p>
+<ul>
+<li>Builds on endpoint enforced Zero Trust controls</li>
+<li>Easier maintenance than IP-based filtering</li>
+<li>Automatically adapts to Microsoft's dynamic, cloud-hosted services</li>
+<li>Reduces service disruptions when automated</li>
+<li>Aligns with most regulatory and compliance frameworks</li>
+</ul>
+<p> </p>
+<p>This model requires more robust network automation and may introduce additional processing overhead compared to endpoint-enforced access.</p>
+<p> </p>
+<p>This model combines FQDN-based rules with IP filtering for the strictest assurance. It provides maximum control but introduces the most overhead. Like domain enforced filtering, this too should be combined with endpoint enforcement to maintain a Zero Trust posture.</p>
+<p><strong>Best for:</strong> Organizations in highly regulated industries that require dual enforcement with domains and IPs to meet strict audit and assurance needs.</p>
+<p> </p>
+<p><strong>How to implement for Intune:</strong></p>
+<ul>
+<li><strong>Combine domain with IP rules:</strong> Use FQDN alongside IP address ranges to filter traffic.</li>
+<li><strong>Automate aggressively:</strong> <span data-teams="true">Leverage the <a aria-label="Link consolidated endpoint list" class="lia-external-url" href="https://learn.microsoft.com/intune/intune-service/fundamentals/intune-endpoints?tabs=north-america#consolidated-endpoint-list" rel="noopener noreferrer" target="_blank">consolidated endpoint list</a>, <a aria-label="Link Azure Firewall service tags" class="lia-external-url" href="https://learn.microsoft.com/azure/virtual-network/service-tags-overview" rel="noopener noreferrer" target="_blank">Azure Firewall service tags</a>, or vendor tools to keep rules up to date.</span></li>
+<li><strong>Bypass traffic inspection for trusted services:</strong><span> Exclude certificate-pinned services from TLS inspection to avoid breaking Intune functionality.</span></li>
+<li><strong>Optimize performance:</strong><span> Architect your network to use local DNS and internet egress so devices connect to the closest Microsoft endpoint.<br/><br/></span></li>
+</ul>
+<p><strong>Benefits:</strong></p>
+<ul>
+<li>Builds on Zero Trust with the strictest network controls</li>
+<li>Provides dual verification for outbound traffic</li>
+<li>Helps satisfy strict regulatory and compliance requirements</li>
+</ul>
+<p> </p>
+<p>This model introduces the highest administrative overhead and complexity to maintain. It’s also the most likely to cause performance issues and service disruptions if not properly automated. However, for organizations with strict regulatory requirements, these trade-offs may be necessary to meet compliance obligations.</p>
+<p> </p>
+<p>While traditional network models address outbound traffic at the infrastructure layer, a Zero Trust approach uses cloud-native security tools that eliminate many of these challenges. Issues like hairpinning, brittle IP allow lists, TLS inspection conflicts, and complex firewall rules stem from applying perimeter-era tools to cloud-based services. Cloud-first network and security tools reduce friction and strengthen Zero Trust.<br/><br/></p>
+<ul>
+<li><strong>Cloud-delivered secure web gateway (SWG):</strong> Provides secure access to internet and SaaS apps while protecting against internet threats, building on the capabilities of traditional proxies (Microsoft Entra Internet Access)</li>
+<li><strong>Zero Trust Network Access (ZTNA):</strong> Connects users securely from any device and any network without relying on VPNs or central tunneling (Microsoft Entra Private Access)</li>
+<li><strong>Data loss prevention (DLP):</strong> Protects sensitive information across endpoints, Microsoft 365 apps, SaaS services, browsers, and on-premises file shares, with classification and policy enforcement (Microsoft Purview DLP)</li>
+<li><strong>Cloud access security broker (CASB): </strong>Provides SaaS discovery, session control, and real-time policy enforcement (Microsoft Defender for Cloud Apps)</li>
+</ul>
+<p>Managing outbound traffic for cloud services is about more than connectivity. It’s about aligning network policies so they enable cloud services and embrace Zero Trust principles like identity, device health, and compliance signals over legacy perimeter defenses. Microsoft Intune supports through policy-driven device management and security that reinforce Zero Trust and cloud-native adoption. The result is an architecture that secures your environment and delivers the reliability and user experience needed for today’s hybrid work.</p>
+<p> </p>
+<p> </p>
+<p>As always, if you have any questions let us know in the comments or reach out to us on X <a href="https://aka.ms/IntuneSuppTeam" rel="noopener noreferrer" target="_blank">@IntuneSuppTeam</a>!</p>
+<p> </p>
+<p><strong>Post updates:</strong><br/><em>11/06/25: Updated URLs for Automation category (see Domain-Enforced Filtering section).</em></p></div></div></div>
+</article>
+</body>
+</html>

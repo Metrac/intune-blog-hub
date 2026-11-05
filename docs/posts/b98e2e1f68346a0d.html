@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Essential Intune reading list: MVP community content for 2025</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Microsoft Intune Blog</span>
+    <span class="date">December 4, 2025</span>
+  </div>
+  <h1>Essential Intune reading list: MVP community content for 2025</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/microsoft-intune-blog/essential-intune-reading-list-mvp-community-content-for-2025/ba-p/4471897" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p>As we head into the holiday season, I wanted to take a moment to celebrate something truly special: the incredible contributions from our Microsoft Intune MVP community this year. Last year, I released our <a href="https://www.linkedin.com/feed/update/urn:li:activity:7274431599616626688/" rel="noopener nofollow noreferrer" target="_blank"><strong>first Holiday Reading post</strong></a>, which got a lot of traction, and I was asked to do it again this year — so I guess we are starting a new tradition!</p>
+<p>Whether you're a security-focused admin exploring Zero Trust architecture, a Windows specialist diving into the latest policy enforcement mechanisms, a Mac admin navigating the evolving Apple ecosystem, or an automation advocate building the next great community tool, there's something here for you.</p>
+<p>This collection represents the spirit of our community, packed with real-world lessons, practical insights, and suggested solutions from experts in the field. While this is a select set of collected content, I strongly recommend checking out all of the content created by our MVPs — you can find a list of our <a href="https://mvp.microsoft.com/en-US/search?target=Profile&amp;program=MVP" rel="noopener noreferrer">active Intune MVPs</a> here (make sure to set the filter for Microsoft Intune under Technology).</p>
+<p>Know someone who needs to get up to speed on Intune quickly? Share these resources:</p>
+<p><a href="https://andrewstaylor.com/2025/08/20/getting-started-with-intune-some-things-to-watch/" rel="noopener nofollow noreferrer" target="_blank"><strong>Getting started with Intune</strong></a> – Important hints and tips for Intune beginners — settings you won't want to overlook <em>(Andrew Taylor)</em><strong> </strong></p>
+<p><a href="https://www.youtube.com/watch?v=EKDWOGXpFKU" rel="noopener nofollow noreferrer" target="_blank"><strong>12 reasons why Intune</strong></a> – A comprehensive podcast covering Zero Trust-ready, BYOD-friendly endpoint management <em>(Sucheta Gawade)</em></p>
+<p>A stronger security posture is at the top of almost every organization’s wish list. Read and watch what MVPs are recommending:</p>
+<p><a href="https://youtu.be/EJrCy4XrtAo?si=69o2y9fb_jvVD4OF" rel="noopener nofollow noreferrer" target="_blank"><strong>Cloud PKI essentials</strong></a> – A deep dive into what Cloud PKI is, deployment approaches, and where organizations stand today with certificate distribution <em>(Shady Khorshed)</em></p>
+<p><a href="https://www.youtube.com/watch?v=nWixi8ODMG4&amp;list=PLhLCvUkszoFol8WFcxwQQZomqd8LBKQ9d" rel="noopener nofollow noreferrer" target="_blank"><strong>Device-centric Zero Trust with Intune + Defender</strong></a> – Learn how to implement a complete Zero Trust strategy using Intune and Microsoft Defender for Endpoint <em>(Sucheta Gawade)</em></p>
+<p><a href="https://www.linkedin.com/pulse/windows-patching-common-mistake-intune-admins-do-mirochnitchenko-dvllf/" rel="noopener nofollow noreferrer" target="_blank"><strong>Windows patching best practices</strong></a> – Common mistakes Intune admins make and how to patch Windows correctly <em>(Pavel Mirochnitchenko)</em></p>
+<p><a href="https://www.oceanleaf.ch/advanced-conditional-access/" rel="noopener nofollow noreferrer" target="_blank"><strong>Advanced conditional access scenarios</strong></a> – Real-world field experience and best practices for complex conditional access setups <em>(Niklas Tinner)</em></p>
+<p><a href="https://www.vansurksum.com/2025/10/20/balancing-control-and-convenience-preventing-edge-password-sync-on-unmanaged-devices/" rel="noopener nofollow noreferrer" target="_blank"><strong>Edge password sync security</strong></a> – How to manage Edge password sync on unmanaged devices when using Microsoft Password Manager <em>(Kenneth van Surksum)</em></p>
+<p><a href="https://www.nielskok.tech/intune/automate-applocker-configuration-for-intune/" rel="noopener nofollow noreferrer" target="_blank"><strong>AppLocker automation</strong></a> – Automate your AppLocker configuration directly in Intune with scripts <em>(Niels Kok)</em></p>
+<p><a href="https://www.burgerhout.org/navigating-nis2-quality-marks-with-microsoft-security-from-qm10-to-qm30/" rel="noopener nofollow noreferrer" target="_blank"><strong>NIS2 compliance with Microsoft 365</strong></a> – Comprehensive guide to reaching NIS2 compliance using Intune and Azure <em>(Jeroen Burgerhout)</em></p>
+<p><a href="https://smbtothecloud.com/configure-mam-for-ios-android-with-one-script/" rel="noopener nofollow noreferrer" target="_blank"><strong>Mobile Application Management (MAM)</strong></a> – Step-by-step setup for iOS and Android MAM with automation scripts <em>(Gannon Novak)</em></p>
+<p><strong>Master the latest Windows capabilities</strong> with this guidance from our top experts:</p>
+<p><a href="https://intunestuff.com/2025/09/09/windows11-kiosk-windows-app/" rel="noopener nofollow noreferrer" target="_blank"><strong>Windows 11 kiosk multi-app mode</strong></a> – Tackle the XML struggle and get your kiosk devices working with Edge and the Windows App <em>(Joery Van den Bosch)</em></p>
+<p><a href="https://intunestuff.com/2025/08/31/multi-admin-approval/" rel="noopener nofollow noreferrer" target="_blank"><strong>Multi-admin approval in Intune</strong></a> – Set up Intune's multi-admin approval feature with ease, plus insights on the end-user experience <em>(Joery Van den Bosch)</em></p>
+<p><a href="https://intunestuff.com/2025/08/26/windows-backup-intune/" rel="noopener nofollow noreferrer" target="_blank"><strong>Windows Backup for Organizations</strong></a> – Introducing Windows Backup with Intune for smooth device upgrades and refreshes <em>(Joery Van den Bosch)</em></p>
+<p><a href="https://techcaching.com/2025/05/08/windows-11-hotpatching-with-intune/" rel="noopener nofollow noreferrer" target="_blank"><strong>Windows 11 hotpatching</strong></a> – A comprehensive deep-dive into applying critical security updates without reboots using Intune <em>(Sucheta Gawade)</em></p>
+<p><a href="https://joostgelijsteen.com/oma-dm-and-intunes-policy-enforcement/" rel="noopener nofollow noreferrer" target="_blank"><strong>OMA-DM and policy enforcement</strong></a> – Understanding how Intune uses the OMA-DM protocol to manage and enforce policies <em>(Joost Gelijsteen)</em></p>
+<p><a href="https://joostgelijsteen.com/declared-configuration/" rel="noopener nofollow noreferrer" target="_blank"><strong>Declared configuration</strong></a> – The evolution of Windows policy enforcement with MMP-C and declared configuration <em>(Joost Gelijsteen)</em></p>
+<p><a href="https://joostgelijsteen.com/device-query-for-multiple-devices/" rel="noopener nofollow noreferrer" target="_blank"><strong>Device query for multiple devices</strong></a> – Extract device data across your fleet using endpoint analytics <em>(Joost Gelijsteen)</em></p>
+<p><a href="https://www.burgerhout.org/mastering-windows-shared-pcs-with-microsoft-intune" rel="noopener nofollow noreferrer" target="_blank"><strong>Windows shared PCs configuration</strong></a> – Master Windows shared PCs with Intune and understand how it differs from kiosk mode <em>(Jeroen Burgerhout)</em></p>
+<p><a href="https://patchmypc.com/blog/administrator-protection-windows-11-25h2/" rel="noopener nofollow noreferrer" target="_blank"><strong>Administrator protection in Windows 11 25H2</strong></a> – Explore the new isolated privilege model replacing traditional admin elevation <em>(Rudy Ooms)</em></p>
+<p><a href="https://patchmypc.com/blog/windows-finally-translates-entra-group-and-role-sids-to-real-names/" rel="noopener nofollow noreferrer" target="_blank"><strong>Entra group SID translation</strong></a> – Finally! Translate Entra group SIDs into readable names on your devices <em>(Rudy Ooms)</em></p>
+<p><a href="https://patchmypc.com/blog/intune-policy-delivery-debugging-the-8-hour-sync-myth/" rel="noopener nofollow noreferrer" target="_blank"><strong>Intune policy delivery</strong></a> – Debunking the 8-hour sync myth and understanding how policy delivery really works <em>(Rudy Ooms)</em></p>
+<p><a href="https://www.oceanleaf.ch/windows-365-link-experience/" rel="noopener nofollow noreferrer" target="_blank"><strong>Windows 365 Link experience</strong></a> – Best practice configurations and everything you need to know about Windows 365 Link <em>(Niklas Tinner)</em></p>
+<p><a href="https://www.joeyverlinden.com/entra-id-joined-kiosk-or-autologon-device-on-a-budget/" rel="noopener nofollow noreferrer" target="_blank"><strong>Entra ID joined kiosk devices</strong></a> – Deploy fully functional, self-deploying kiosk devices on modern Windows endpoints <em>(Joey Verlinden)</em></p>
+<p><a href="https://ccmexec.com/2025/11/application-control-for-business-and-the-story-of-the-unsigned-wix-dlls/" rel="noopener nofollow noreferrer" target="_blank"><strong>App</strong><strong> Control for Business</strong></a> – Solving unsigned WIX .dll issues with App Control for Business <em>(Jörgen Nilsson)</em></p>
+<p><strong>Apple device management is evolving fast</strong>. The Intune community helps keep you up to date:</p>
+<p><a href="https://intunestuff.com/2025/07/28/macos-laps-intune/" rel="noopener nofollow noreferrer" target="_blank"><strong>macOS LAPS configuration</strong></a> – Complete guide to setting up Local Administrator Password Solution for macOS with Intune <em>(Joery Van den Bosch)</em></p>
+<p><a href="https://youtu.be/EKfTjysk_jw?si=Z2138B6xQ7ndTxl4" rel="noopener nofollow noreferrer" target="_blank"><strong>JUMP-IN: macOS MDM migration tool</strong></a> – Discover this all-in-one macOS MDM migration tool and learn how it's revolutionizing transitions <em>(Shady Khorshed)</em></p>
+<p><a href="https://intuneirl.com/macos-ios-26-for-enterprise-ddm-deployment-and-the-intel-mac-sunset/" rel="noopener nofollow noreferrer" target="_blank"><strong>macOS 26 &amp; iOS 26 for enterprises</strong></a> – Apple's biggest shift in enterprise device management in years — key changes and deadlines for IT admins <em>(Somesh Pathak)</em></p>
+<p><a href="https://intuneirl.com/mac-admins-your-migration-glow-up-just-dropped/" rel="noopener nofollow noreferrer" target="_blank"><strong>macOS migration glow-up</strong></a> – Step-by-step process for switching macOS MDM using the new ABM update <em>(Somesh Pathak)</em></p>
+<p><a href="https://www.burgerhout.org/introduction-to-macos-management-in-intune-beginner-friendly/" rel="noopener nofollow noreferrer" target="_blank"><strong>Introduction to macOS management</strong></a> – Beginner-friendly guide to managing macOS with Intune <em>(Jeroen Burgerhout)</em></p>
+<p><a href="https://www.xplorethecloud.nl/l/ios-app-protection-policy-new-features/" rel="noopener nofollow noreferrer" target="_blank"><strong>iOS app protection policy features</strong></a> – New features in app protection policies for iOS and what they mean for your setup <em>(Arno Van Dijk)</em></p>
+<p>Get tips to keep your devices running smoothly and securely:</p>
+<p><a href="https://www.linkedin.com/pulse/install-update-drivers-microsoft-intune-my-script-ii-mirochnitchenko-mjskf" rel="noopener nofollow noreferrer" target="_blank"><strong>Driver management in Intune</strong></a> – Compare script-based driver updates vs. Intune's Driver Update Management solution <em>(Pavel Mirochnitchenko)</em></p>
+<p><a href="https://www.xplorethecloud.nl/l/blog-series-intune-suite-part-1-enterprise-app-management/" rel="noopener nofollow noreferrer" target="_blank"><strong>Enterprise App Management</strong></a> – Explore the Intune Suite's features for simplified app deployment and maintenance <em>(Arno Van Dijk)</em></p>
+<p><a href="https://www.xplorethecloud.nl/l/remove-default-windows-store-packages/" rel="noopener nofollow noreferrer" target="_blank"><strong>Remove Default Windows Store packages</strong></a> – Control Windows 11 built-in apps using the Settings Catalog without scripts <em>(Arno Van Dijk)</em></p>
+<p><a href="https://www.intunebrew.com/" rel="noopener nofollow noreferrer" target="_blank"><strong>IntuneBrew</strong></a> – Application and patch management for macOS apps made easy <em>(Ugur Koc)</em></p>
+<p>Supercharge your Intune management with these community-created solutions:</p>
+<p><a href="https://intuneassistant.cloud" rel="noopener nofollow noreferrer" target="_blank"><strong>Intune Assistant</strong></a> – Empower yourself with unparalleled efficiency in Intune management through advanced visualization and analysis <em>(Sander Rozemuller)</em></p>
+<p><a href="https://github.com/AllwaysHyPe/IntuneStack" rel="noopener noreferrer" target="_blank"><strong>IntuneStack</strong></a> – Manage Intune policy as code with GitHub Actions, OIDC authentication, and ring-based deployments <em>(Hailey Phillips)</em></p>
+<p><a href="https://github.com/pathaksomesh06/Intune-Log-Reader-for-Windows" rel="noopener noreferrer" target="_blank"><strong>Intune Log Reader for Windows</strong></a> – Real-time analysis and monitoring of Microsoft Intune Management Extension logs on Windows <em>(Somesh Pathak)</em></p>
+<p><a href="https://github.com/pathaksomesh06/Intune-Log-Reader" rel="noopener noreferrer" target="_blank"><strong>Intune Log Reader for macOS</strong></a> – Real-time analysis and monitoring of Microsoft Intune MDM logs on macOS <em>(Somesh Pathak)</em></p>
+<p><a href="https://github.com/pathaksomesh06/ABM-API-Client" rel="noopener noreferrer" target="_blank"><strong>ABM API Client</strong></a> – Native macOS client for Apple Business Manager and Apple School Manager APIs with an intuitive GUI <em>(Somesh Pathak)</em></p>
+<p><a href="https://github.com/pathaksomesh06/Fleetly" rel="noopener noreferrer" target="_blank"><strong>Fleetly</strong></a> – iOS app for IT administrators to manage and monitor Intune-enrolled devices on the go <em>(Somesh Pathak)</em></p>
+<p><a href="https://www.tenuvault.com/" rel="noopener nofollow noreferrer" target="_blank"><strong>TenuVault</strong></a> – Backup and restore for Intune with full automation <em>(Ugur Koc)</em></p>
+<p><a href="https://www.intunedocumentation.com/" rel="noopener nofollow noreferrer" target="_blank"><strong>Intune Documentation Generator</strong></a> – Generate PDF reports of all your Intune configurations in minutes <em>(Ugur Koc)</em></p>
+<p><a href="https://www.joeyverlinden.com/envoy-lightweight-user-environment-manager/" rel="noopener nofollow noreferrer" target="_blank"><strong>Envoy Lightweight UEM</strong></a> – PowerShell-based User Environment Manager designed for Intune-managed Windows machines <em>(Joey Verlinden)</em></p>
+<p><a href="https://openintunebaseline.com/" rel="noopener nofollow noreferrer" target="_blank"><strong>OpenIntuneBaseline</strong></a> – Community-supported security baseline for Intune with real-world best practices <em>(James Robinson)</em></p>
+<p><a href="https://www.intuneqlinks.net/" rel="noopener nofollow noreferrer" target="_blank"><strong>IntuneQLinks</strong></a> – Comprehensive catalog of community articles, blogs, videos, and diagrams — your go-to resource library <em>(Andy Jones)</em></p>
+<p><a href="https://github.com/srozemuller/azavd" rel="noopener noreferrer" target="_blank"><strong>Azure Virtual Desktop PowerShell module</strong></a> – Streamline Azure Virtual Desktop management with this powerful community tool <em>(Sander Rozemuller)</em></p>
+<p><a href="https://dailychecks.euctoolbox.com/" rel="noopener nofollow noreferrer" target="_blank"><strong>Daily Checks</strong></a> – Get a daily digest of what's happening in your tenant via email with this free service <em>(Andrew Taylor)</em></p>
+<p><a href="https://www.linkedin.com/groups/13067571/" rel="noopener nofollow noreferrer" target="_blank"><strong>Microsoft Intune - Android and iOS Admins LinkedIn Group</strong></a> – A focused community for mobile device management with Intune <em>(Andy Jones)</em></p>
+<p>Participate in the Intune community in person at these upcoming events</p>
+<p>Get trusted Intune tips and strategies from these blogs, videos, and podcasts from industry experts.</p>
+<p><a href="https://www.linkedin.com/in/andrew-taylor-41707916/" rel="noopener nofollow noreferrer" target="_blank"><strong>Andrew Taylor</strong></a> Newsletter and blogs - <a href="https://andrewstaylor.com/" rel="noopener nofollow noreferrer" target="_blank"><strong>https://andrewstaylor.com/</strong></a></p>
+<p><a href="https://www.linkedin.com/in/lewis-barry/" rel="noopener nofollow noreferrer" target="_blank"><strong>Lewis Barry</strong></a> - <a href="https://conditionalaccess.uk/" rel="noopener nofollow noreferrer" target="_blank"><strong>https://conditionalaccess.uk/</strong></a></p>
+<p>MsEndpointmgr- <a href="https://www.youtube.com/channel/UC3Kii1MYmVNmla5VgWIGqwA" rel="noopener nofollow noreferrer" target="_blank"><strong>(33) MSEndpointMgr - Jungling the Cloud - YouTube</strong></a></p>
+<p><a href="https://www.linkedin.com/in/peterwoude/" rel="noopener nofollow noreferrer" target="_blank"><strong>Peter van der Woude</strong></a> – All about Microsoft Intune - <a href="https://petervanderwoude.nl/" rel="noopener nofollow noreferrer" target="_blank"><strong>https://petervanderwoude.nl/</strong></a></p>
+<p><a href="https://www.linkedin.com/in/simonskotheimsvik/" rel="noopener nofollow noreferrer" target="_blank"><strong>Simon Skotheimsvik</strong></a> - <a href="https://skotheimsvik.no/" rel="noopener nofollow noreferrer" target="_blank"><strong>https://skotheimsvik.no/</strong></a></p>
+<p><a href="https://www.linkedin.com/in/niklas-tinner/" rel="noopener nofollow noreferrer" target="_blank"><strong>Niklas Tinner</strong></a> - <a href="https://www.oceanleaf.ch/" rel="noopener nofollow noreferrer" target="_blank"><strong>https://www.oceanleaf.ch/</strong></a></p>
+<p><a href="https://www.linkedin.com/in/asquaredozen/" rel="noopener nofollow noreferrer" target="_blank"><strong>Adam Gross</strong></a> Intune Training - <a href="https://www.youtube.com/@IntuneTraining" rel="noopener nofollow noreferrer" target="_blank"><strong>https://www.youtube.com/@IntuneTraining</strong></a></p>
+<p><a href="https://www.linkedin.com/in/jonathanjedwards/" rel="noopener nofollow noreferrer" target="_blank"><strong>Jonathan Edwards</strong></a> M365 Training - <a href="https://www.youtube.com/@bearded365guy" rel="noopener nofollow noreferrer" target="_blank"><strong>https://www.youtube.com/@bearded365guy</strong></a></p>
+<p><a href="https://www.linkedin.com/in/stevew25/" rel="noopener nofollow noreferrer" target="_blank"><strong>Steven Weiner</strong></a> - <a href="https://www.getrubix.com/" rel="noopener nofollow noreferrer" target="_blank"><strong>https://www.getrubix.com/</strong></a></p>
+<p><a href="https://creators.spotify.com/pod/show/wpninjasnl" rel="noopener nofollow noreferrer" target="_blank"><strong>Workplace Ninjas Netherlands Podcast</strong></a> - <strong><a class="lia-external-url" href="https://creators.spotify.com/pod/show/wpninjasnl" rel="noopener nofollow noreferrer" target="_blank"><strong>https://creators.spotify.com/pod/show/wpninjasnl</strong></a></strong></p>
+<p><a href="https://www.youtube.com/@wpninjasnl" rel="noopener nofollow noreferrer" target="_blank"><strong>Workplace Ninja User Group Netherlands Video</strong></a> - <strong><a href="https://www.youtube.com/@wpninjasnl" rel="noopener nofollow noreferrer" target="_blank"><strong>https://www.youtube.com/@wpninjasnl</strong></a></strong></p>
+<p><a href="https://www.meetup.com/workplace-ninja-user-group-india/events/" rel="noopener nofollow noreferrer" target="_blank"><strong>Workplace Ninja User Group India</strong></a> <strong>- <a class="lia-external-url" href="https://www.meetup.com/workplace-ninja-user-group-india/events/" rel="noopener nofollow noreferrer" target="_blank"><strong>https://www.meetup.com/workplace-ninja-user-group-india/events/</strong></a></strong></p>
+<p>Microsoft Cloud and Client Management Community Belgium - <a href="https://www.linkedin.com/company/mc2mcbe/" rel="noopener nofollow noreferrer" target="_blank"><strong>https://www.linkedin.com/company/mc2mcbe/</strong></a></p>
+<p>A heartfelt thank you to all the MVPs who contributed to this year's roundup:</p>
+<p><a href="https://intunestuff.com/" rel="noopener nofollow noreferrer" target="_blank"><strong>Joery Van den Bosch</strong></a> | <a href="https://de.linkedin.com/in/shadykhorshed" rel="noopener nofollow noreferrer" target="_blank"><strong>Shady Khorshed</strong></a> | <a href="https://techcaching.com/" rel="noopener nofollow noreferrer" target="_blank"><strong>Sucheta Gawade</strong></a> | <a href="https://andrewstaylor.com/" rel="noopener nofollow noreferrer" target="_blank"><strong>Andrew Taylor</strong></a> | <a href="https://www.nielskok.tech/" rel="noopener nofollow noreferrer" target="_blank"><strong>Niels Kok</strong></a> | <a href="https://www.joeyverlinden.com/" rel="noopener nofollow noreferrer" target="_blank"><strong>Joey Verlinden</strong></a> | <a href="https://www.oceanleaf.ch/" rel="noopener nofollow noreferrer" target="_blank"><strong>Niklas Tinner</strong></a> | <a href="https://www.linkedin.com/in/pavelmiro/" rel="noopener nofollow noreferrer" target="_blank"><strong>Pavel Mirochnitchenko</strong></a> | <a href="https://www.vansurksum.com/" rel="noopener nofollow noreferrer" target="_blank"><strong>Kenneth van Surksum</strong></a> | <a href="https://www.linkedin.com/in/haileypc/" rel="noopener nofollow noreferrer" target="_blank"><strong>Hailey Phillips</strong></a> | <a href="https://www.burgerhout.org/" rel="noopener nofollow noreferrer" target="_blank"><strong>Jeroen Burgerhout</strong></a> | <a href="https://intuneirl.com/" rel="noopener nofollow noreferrer" target="_blank"><strong>Somesh Pathak</strong></a> | <a href="https://www.petervanderwoude.nl/" rel="noopener nofollow noreferrer" target="_blank"><strong>Peter van der Woude</strong></a> | <strong><a href="https://www.xplorethecloud.nl/" rel="nofollow noopener noreferrer" target="_blank"><span data-contrast="none"><strong>Arno van Dijk</strong></span></a> </strong>| <a href="https://smbtothecloud.com/" rel="noopener nofollow noreferrer" target="_blank"><strong>Gannon Novak</strong></a> | <a href="https://www.intuneqlinks.net/" rel="noopener nofollow noreferrer" target="_blank"><strong>Andy Jones</strong></a> | <a href="https://rozemuller.com/" rel="noopener nofollow noreferrer" target="_blank"><strong>Sander Rozemuller</strong></a> | <a href="https://scloud.work/" rel="noopener nofollow noreferrer" target="_blank"><strong>Florian Salzmann</strong></a> | <a href="https://openintunebaseline.com/" rel="noopener nofollow noreferrer" target="_blank"><strong>James Robinson</strong></a> | <a href="https://call4cloud.nl/" rel="noopener nofollow noreferrer" target="_blank"><strong>Rudy Ooms</strong></a> | <a href="https://joostgelijsteen.com/" rel="noopener nofollow noreferrer" target="_blank"><strong>Joost Gelijsteen</strong></a> | <a href="https://ugurkoc.de/" rel="noopener nofollow noreferrer" target="_blank"><strong>Ugur Koc</strong></a> | <a href="https://ccmexec.com/" rel="noopener nofollow noreferrer" target="_blank"><strong>Jörgen Nilsson</strong></a></p>
+<p>Your expertise, generosity, and passion for sharing knowledge continue to elevate the entire Intune community. Thank you for everything you do. Wishing you a wonderful holiday season and a successful 2026! Stay secure, stay innovative, and be well.</p>
+<p><em>Disclaimer: This content has been created and curated by the community. Readers are encouraged to independently verify technical details and evaluate resources for their specific environments.</em></p>
+<hr/>
+<p>Stay up to date! Bookmark the <a href="https://techcommunity.microsoft.com/category/microsoftintune/blog/microsoftintuneblog" target="_blank">Microsoft Intune Blog</a> and follow us on <a href="https://www.linkedin.com/company/microsoft-intune-product" rel="noopener nofollow noreferrer" target="_blank">LinkedIn</a> or <a href="https://twitter.com/MSIntune" rel="noopener nofollow noreferrer" target="_blank">@MSIntune</a> on X to continue the conversation.</p></div></div></div>
+</article>
+</body>
+</html>
