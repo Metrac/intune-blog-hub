@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intune Newsletter – 6th November 2026</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Andrew Taylor</span>
+    <span class="date">November 6, 2026</span>
+  </div>
+  <h1>Intune Newsletter – 6th November 2026</h1>
+  <div class="orig">Saved for offline reading · <a href="https://andrewstaylor.com/2026/11/06/intune-newsletter-6th-november-2026/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text">
+<p data-pm-slice="1 1 []">Welcome to the first of this new look Intune newsletter in its new home at admin.news</p>
+<p>Lots of exciting content this week and hopefully you like the new setup here, not only is it the first, but it was also largely put together whilst travelling from Switzerland so apologies for anything I have missed.</p>
+<hr/>
+<h2>Community Content</h2>
+<ul>
+<li>📦 App management | <a href="https://leblogmodernworkplace.fr/app-control-for-business-avec-intune-reprendre-la-main-sur-les-applications-autorisees/">App Control for Business avec Intune &gt; reprendre la main sur les applications autorisées</a> • <a href="https://intune.news/authors/jonathan-fievet">Jonathan Fievet</a><br/>
+This end to end deployment guide for App Control for business is worth a read (in French)</li>
+<li>⚙️ Device configuration | <a href="https://modernworkspacehub.com/intune-wallpaper-azure-automation/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=intune-wallpaper-azure-automation">Rotate Intune Wallpaper and Lock Screen Images with the Seasons using Azure Automation</a> • <a href="https://intune.news/authors/alex-durrant">Alex Durrant</a><br/>
+I think by now we have all mastered setting static wallpapers on Intune no matter what licensing you have, but what if you need to rotate them? Alex has a clever solution here using Azure automation</li>
+<li>🚀 Device enrollment | <a href="https://mikemdm.de/2026/11/01/windows-autopilot-device-association-companion-app-for-the-qr-code/">Windows Autopilot device association Companion App for the QR Code</a> • <a href="https://intune.news/authors/michael-meier">Michael Meier</a><br/>
+There are some great tools to import Device Prep apps into your tenant via QR code, but what about industries where everything has to be internal? Learn how to deploy it yourself using a PowerApp here</li>
+<li>🚀 Device enrollment | <a href="https://jjrmilner.substack.com/p/mapped-drives-without-group-policy?r=385je4">Mapped Drives Without Group Policy: Turning an Intune Profile into a Data Channel</a> • <a href="https://intune.news/authors/jj-milner-2">JJ Milner</a><br/>
+If you are migrating to Intune and looking to replicate your drive mappings, this post and accompanying script from Jon are going to help you!</li>
+<li>🚀 Device enrollment | <a href="https://lisabee.tech/jamf-to-intune-beyond-the-migration-script/">Jamf to Intune: Beyond the Migration Script</a> • <a href="https://intune.news/authors/lisa-berenberg">Lisa Berenberg</a><br/>
+Are you currently managing devices with JAMF and looking to switch to Intune? This post and script from Lisa will help you on the path</li>
+<li>🛡️ Device security | <a href="https://msnugget.com/epm-network-settings-standard-users/">Stop Handing Out Local Admin for an IP Address Change</a> • <a href="https://intune.news/authors/florian-salzmann">Florian Salzmann and Jannik Reinhard</a><br/>
+I have always had to use third party executables linked to EPM for those field users who need to change IP address. Fortunately that functionality is now native to EPM!</li>
+<li>✅ Compliance | <a href="https://vansurksum.com/2026/11/03/microsoft-entra-conditional-access-policy-plans-what-problem-do-they-actually-solve/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=microsoft-entra-conditional-access-policy-plans-what-problem-do-they-actually-solve">Microsoft Entra Conditional Access Policy Plans: What Problem Do They Actually Solve?</a> • <a href="https://intune.news/authors/kenneth-van-surksum">Kenneth van Surksum</a><br/>
+If you are unsure about conditional access policy plans in your environment and want to learn more about them, this post from Kenneth is well worth reading</li>
+<li>✅ Compliance | <a href="https://www.simsenblog.dk/2026/11/05/how-to-configure-protected-downloads-in-microsoft-edge/">How to configure Protected Downloads in Microsoft Edge</a> • <a href="https://intune.news/authors/simon-hartmann-eriksen">Simon Hartmann Eriksen</a><br/>
+If you are managing BYOD with Windows and Edge, blocking downloads was always a struggle. There is now functionality available to manage it as covered here by Simon</li>
+<li>✅ Compliance | <a href="https://www.chanceofsecurity.com/post/conditional-access-policy-plans-a-first-look-dub-or-flop">Conditional Access Policy Plans – A First Look: Dub or Flop?</a> • <a href="https://intune.news/authors/sebastian-fl-ng-markdanner">Sebastian Flæng Markdanner</a><br/>
+Another look at Conditional Access Policy plans, this time from Sebastian with his thoughts on if they are worth implementing</li>
+<li>🔄 Device updates | <a href="https://www.nianit.com/why-outdated-software/">Why Does Every IT Inventory Find Outdated Software?</a> • <a href="https://intune.news/authors/niclas-andersson">Niclas Andersson</a><br/>
+There has been a surge in CVEs with everyone using AI to find holes in software and I don’t see it getting better. This is why it’s critical you monitor your software estate as covered here by Niclas</li>
+<li>🔄 Device updates | <a href="https://ccmexec.com/2026/11/finally-we-can-ignore-windows-update-group-policies/">Finally we can Ignore Windows Update Group Policies</a> • <a href="https://intune.news/authors/jorgen-nilsson">Jorgen Nilsson</a><br/>
+Unless you are a completely Entra only greenfield estate, this is a setting you all probably want to configure. Tell your devices to ignore any Windows Update groups policies, those pesky ones which you used to have to bodge with registry keys. Thanks Jorgen for finding this!</li>
+<li>🔄 Device updates | <a href="https://sastu-insights.com/posts/How-Windows-Autopatch-Tattooed-My-Edge-Settings/">How Windows Autopatch Tattooed My Edge Settings</a> • <a href="https://intune.news/authors/sascha-stumpler">Sascha Stumpler</a><br/>
+Who knew tattooing would still be an issue in 2026? This time the culprit is Autopatch with Edge settings and that annoying MDMWinsOverGPO setting</li>
+<li>📒 Tenant administration | <a href="https://dave-randall.com/rbac/day-16/">Day 16: Just-in-time access</a> • <a href="https://intune.news/authors/dave-randall">Dave Randall</a><br/>
+Dave continues the RBAC series, this time looking at how to keep security tighter with just in time access rather than permanent</li>
+<li>📒 Tenant administration | <a href="https://davidmcwee.com/2026/11/02/customer-case-security-copilot-coordination/">Customer Case</a> • <a href="https://intune.news/authors/david-mcwee">David McWee</a><br/>
+For those of you on E7 licenses, learn about co-ordinating, managing and securing your agents</li>
+<li>📒 Tenant administration | <a href="https://dave-randall.com/rbac/day-17/">Day 17: Multi Admin Approval</a> • <a href="https://intune.news/authors/dave-randall">Dave Randall</a><br/>
+Dave’s deep dive into RBAC continues with a look at multi-admin approval</li>
+<li>🪟 Windows | <a href="https://oofhours.com/2026/11/01/still-using-configmgr-read-up-on-version-2609/">Still using ConfigMgr? Read up on version 2609.</a> • <a href="https://intune.news/authors/michael-niehaus">Michael Niehaus</a><br/>
+For those of you still running SCCM, learn about everything added in the 2609 release here (warning, nothing good)</li>
+<li>🪟 Windows | <a href="https://jjrmilner.substack.com/p/drive-mapping-that-heals-itself-the">Drive Mapping That Heals Itself: The Engine Behind the Data Channel</a> • <a href="https://intune.news/authors/jj-milner">JJ Milner</a><br/>
+Following on from last week, this post includes a script to comprehensively manage drive mappings on your Entra only devices</li>
+<li>🪟 Windows | <a href="https://petervanderwoude.nl/post/configuring-windows-ready-print-driver-ranking/">Configuring Windows Ready Print driver ranking</a> • <a href="https://intune.news/authors/peter-van-der-woude">Peter van der Woude</a><br/>
+Printer installation on Windows is always changing, learn about how to configure Ready Print driver ranking in this post</li>
+<li>🤖 Android | <a href="https://www.nickydewestelinck.be/2026/11/03/whats-new-for-android-enterprise-in-microsoft-intune-2610-october-2026-highlights/">What’s New for Android Enterprise in Microsoft Intune 2610: October 2026 Highlights</a> • <a href="https://intune.news/authors/nicky-de-westelinck">Nicky De Westelinck</a><br/>
+For those of you managing Android devices, learn what has been added in the 2610 Intune release here</li>
+<li>🩺 Troubleshooting | <a href="https://msendpointmgr.com/2026/10/31/doctor-do-a-delivery-optimization-troubleshooting-solution/">Doctor DO – A Delivery Optimization Troubleshooting Solution</a> • <a href="https://intune.news/authors/maurice-daly">Maurice Daly</a><br/>
+Delivery optimization is great, configuring it and checking it’s working, not so much. Fortunately Maurice has created yet another excellent tool to check everything is in place and let you monitor it’s success</li>
+<li>☁️ AVD &amp; W365 | <a href="https://www.niallbrady.com/2026/10/31/unable-to-optimize-teams-in-windows-365-on-macos/">Unable to optimize Teams in Windows 365 on macOS</a> • <a href="https://intune.news/authors/ncbrady">ncbrady</a><br/>
+If some of your users are having issues getting Teams optimization working with Windows 365 on macOS, it could be their connection method, find out more here…</li>
+<li>☁️ AVD &amp; W365 | <a href="https://cloudchristoph.com/articles/avd-connection-paths-5-join-type-and-sign-in-rules/">AVD connection paths, part 5: the join type decides your sign-in firewall rules</a> • <a href="https://intune.news/authors/christoph-vollmann">Christoph Vollmann</a></li>
+<li>☁️ AVD &amp; W365 | <a href="https://www.ralpheckhard.com/2026-10-31-the-case-of-the-failing-w365-flex-signins/">The case of the failing W365 Flex SignIns</a> • <a href="https://intune.news/authors/ralph-eckhard">Ralph Eckhard</a><br/>
+This post from Ralph looks at how to fix Windows 365 sign-in dropouts when using a VPN</li>
+<li>☁️ AVD &amp; W365 | <a href="https://cloudchristoph.com/articles/avd-connection-paths-6-reading-the-logs/">AVD connection paths, part 6: reading the logs without being fooled</a> • <a href="https://intune.news/authors/christoph-vollmann">Christoph Vollmann</a><br/>
+Managing AVD? This in-depth post from Christoph digs into logs to review connection speed and issues</li>
+</ul>
+<h2><a id="video"></a>Video Content</h2>
+<h2><a id="microsoft"></a>Microsoft Content</h2>
+<hr/>
+<p>That’s all for this week, have an amazing weekend!</p>
+<hr/>
+<hr/>
+</div>
+</div></div>
+</article>
+</body>
+</html>
