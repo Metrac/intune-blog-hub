@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Build a Foundry Voice Agent with Microsoft Learn MCP</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">November 10, 2026</span>
+  </div>
+  <h1>Build a Foundry Voice Agent with Microsoft Learn MCP</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/foundry-voice-agent-microsoft-learn-video/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="prose" data-article-body=""><p>âHow do I create a policy in Intune?â That is a useful first question for a voice support agent. It should ask for missing details, explain the steps, and use a documentation source. It does not need access to devices or permission to create a policy to do that.</p>
+<p>In this episode, I create that support agent in the Foundry portal, adjust its greeting, review the speech settings, and connect Microsoft Learn through a toolbox. I then start a conversation and listen to the beginning of its Intune explanation.</p>
+<p>The screenshots come from my 2 November 2026 recording in the Modern Device Management project. The video is in German. This is a demo assistant, not a configured support hotline.</p>
+<h2 id="watch-the-video">Watch the video</h2>
+<h2 id="create-an-agent-in-voice-mode">Create an agent in Voice mode</h2>
+<p>I open <strong>Build &gt; Agents &gt; New agent</strong>. The template option offers existing voice scenarios; in the recording, I start with my own agent.</p>
+<p>I name it <code>IT-Support-Agent</code>, select <strong>Voice</strong> as the interaction mode, and give it a short goal: help users with support questions. I then select <strong>Create agent and open playground</strong>.</p>
+<figure class="technical-figure"><a href="/media/2026/11/foundry-video-releases/voice-create-20261102-v2-original.jpg"><img alt="Foundry Create an agent dialog with IT-Support-Agent, Voice interaction mode and a short support goal." src="assets/ef352d243f83e36d/img_0.webp"/></a><figcaption>Creation in the recording. The interface marks the Voice option as preview.</figcaption></figure>
+<p>Foundry generates initial instructions from that goal. I read them before treating them as the agentâs working instructions. For support, I want useful clarifying questions and an explicit boundary: the agent should explain what it knows without claiming access to a device or account.</p>
+<p>The current <a href="https://learn.microsoft.com/en-us/azure/foundry/agents/quickstarts/prompt-voice-agent">voice-agent quickstart</a> covers the managed voice agent and a first spoken test. Check availability in your project. Having a text agent does not establish that every voice configuration is available there.</p>
+<h2 id="adapt-the-behavior-and-greeting-for-a-conversation">Adapt the behavior and greeting for a conversation</h2>
+<p>In the playground, I can review Personality, Environment, and Greeting. The agent cannot automatically see my screen during the call. Its instructions should reflect that limitation.</p>
+<p>For a pilot, I would add something like this:</p>
+<pre class="astro-code github-dark" data-language="text" tabindex="0"><code><span class="line"><span>Help with Microsoft Intune questions.</span></span>
+<span class="line"><span>Ask for the platform and intended outcome when either is missing.</span></span>
+<span class="line"><span>Give short steps and leave room for follow-up questions.</span></span>
+<span class="line"><span>Use Microsoft Learn for product-specific instructions.</span></span>
+<span class="line"><span>You cannot access devices, user accounts, or my tenant.</span></span>
+<span class="line"><span>Do not claim you have checked or changed a setting.</span></span></code></pre>
+<p>That is my proposed tighter support instruction. In the recording, I keep the generated instructions and mainly shorten the fixed greeting to: âHello, Iâm a support assistant. What can I help you with today?â</p>
+<figure class="technical-figure"><a href="/media/2026/11/foundry-video-releases/voice-behavior-20261102-v2-original.jpg"><img alt="Foundry playground showing the support agent's instructions, greeting and voice settings." src="assets/ef352d243f83e36d/img_1.webp"/></a><figcaption>Behavior and greeting from the recording. Short spoken answers leave room for the callerâs next question.</figcaption></figure>
+<p>A complete written procedure can be difficult to follow over audio. I would initially have the agent explain one step, then ask whether the user has reached the expected screen. Long paths and commands also need a suitable text channel.</p>
+<h2 id="check-the-voice-audio-and-turn-taking-settings">Check the voice, audio, and turn-taking settings</h2>
+<p>The recording shows a limited voice selection and a capability-query error. The message identifies a missing data action. I would investigate that action against the calling identity and its permissions rather than treating the message as a general Foundry bug.</p>
+<p>The avatar option is also unavailable in the demonstrated region. Moving regions is not a casual workaround: model choice, processing requirements, supported features, and organizational requirements need to fit together.</p>
+<p>Under <strong>Advanced settings</strong>, I can see Phrase List, Audio Enhancement with Noise Suppression and Echo Cancellation, and Automatic Turn Detection. The interface offers Azure semantic and Basic options.</p>
+<figure class="technical-figure"><a href="/media/2026/11/foundry-video-releases/voice-advanced-20261102-v2-original.jpg"><img alt="Voice-agent Advanced settings with Audio Enhancement, Noise Suppression, Echo Cancellation and Automatic Turn Detection." src="assets/ef352d243f83e36d/img_2.webp"/></a><figcaption>The audio options visible in the recording. This episode does not benchmark their quality.</figcaption></figure>
+<p>In a follow-up test, I would interrupt an answer with a question, then try a longer thinking pause. Both happen in support conversations. The agent should recognize a question without treating every pause as the end of the conversation. The current <a href="https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/configure-voice-agent">voice configuration guide</a> describes the input and output controls.</p>
+<p>A speech interface does not by itself provide current documentation. I select <strong>Add a toolbox</strong>, create one named <code>MSLearn</code>, and search the tool catalog for Microsoft Learn.</p>
+<figure class="technical-figure"><a href="/media/2026/11/foundry-video-releases/learn-catalog-20261102-v2-original.jpg"><img alt="Foundry toolbox tool catalog with a Learn search and the Microsoft Learn MCP Server." src="assets/ef352d243f83e36d/img_3.webp"/></a><figcaption>Finding the documentation connection in the recording.</figcaption></figure>
+<p>I select the Microsoft Learn MCP Server and connect the suggested endpoint:</p>
+<pre class="astro-code github-dark" data-language="text" tabindex="0"><code><span class="line"><span>https://learn.microsoft.com/api/mcp</span></span></code></pre>
+<p>The <a href="https://learn.microsoft.com/en-us/training/support/mcp">official Learn MCP overview</a> describes the documentation connection. It grants no management rights over my Intune tenant. Retrieving instructions and creating a policy are separate operations.</p>
+<p>I also add Tool Search in the demo. For a small voice toolbox, I would then compare it with a configuration without that extra discovery step. Tool calls take conversation time; a long silence is more noticeable in a spoken exchange than in a chat.</p>
+<p>When reviewing the trace, I want to see the actual Learn call and returned material. A plausible answer alone does not prove that the agent consulted the documentation.</p>
+<h2 id="test-the-conversation-with-an-intune-question">Test the conversation with an Intune question</h2>
+<p>After saving, I start the session and ask how to create an Intune policy. The agent begins a spoken explanation and names the Intune admin center. I interrupt the answer in the recording; the video does not show a complete policy rollout.</p>
+<figure class="technical-figure"><a href="/media/2026/11/foundry-video-releases/voice-response-20261102-v2-original.jpg"><img alt="Voice playground chat showing the Intune question and the beginning of the policy-creation explanation." src="assets/ef352d243f83e36d/img_4.webp"/></a><figcaption>The visible test result. The recording also includes the start of the spoken answer.</figcaption></figure>
+<p>For a useful support evaluation, I would next test three variants: a specific Windows question, an incomplete question with no platform, and a question containing an incorrect assumption. The second should produce a clarifying question. For the third, I want a sourced correction rather than a polite confirmation of the mistake.</p>
+<p>Record time to the first useful explanation, interruptibility, source quality, and whether the answer addresses the request. A pleasant voice is not enough to accept a support answer.</p>
+<h2 id="move-from-the-playground-to-a-reachable-channel">Move from the playground to a reachable channel</h2>
+<p>At the end, I look at Traces, Monitoring, and Channels. This episode does not configure a phone number. The current telephony guide describes Teams Phone extensibility and Twilio, each with its own prerequisites and connections. A working playground session is the starting point, not an already reachable phone channel. <a href="https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/voice-agent-teams-phone">Connect a telephony channel</a></p>
+<p>I would first test conversation behavior with the small Learn toolbox. An external channel and more capable actions come after clarifying questions, documentation use, and interruptions work. My <a href="/microsoft-foundry-tracing-evaluation-video/">Foundry Tracing and Evaluation episode</a> is the next reference for reviewing those runs.</p></div></div></div>
+</article>
+</body>
+</html>
