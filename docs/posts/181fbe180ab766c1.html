@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Support tip: Why Windows driver recommendations may vary between deployment rings</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Intune Customer Success</span>
+    <span class="date">November 13, 2026</span>
+  </div>
+  <h1>Support tip: Why Windows driver recommendations may vary between deployment rings</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/intune-customer-success/support-tip-why-windows-driver-recommendations-may-vary-between/ba-p/4572700" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p><strong>By: Dorin Mardari – Sr Technical Support Engineer | Microsoft Intune</strong></p>
+<p>Managing Windows driver updates across deployment rings might give results that seem inconsistent. You might expect the same update to behave the same way everywhere, but Windows Update evaluates updates separately for the devices in each ring. As a result, the update might appear under <strong>Recommended drivers</strong> in one ring and <strong>Other drivers</strong> in another, change classification over time, arrive at different times, or not appear at all even though the manufacturer's website lists it for your devices.</p>
+<p>In most cases, this behavior is expected. This article explains why it happens, what it means when you approve and deploy drivers, and how to tell expected behavior from a problem that needs Microsoft Support.</p>
+<p>For general information about driver update policies, approval modes, and the <strong>Recommended drivers</strong> and <strong>Other drivers</strong> lists, see:</p>
+<p>Intune and Windows Autopatch don't decide whether a driver is recommended.</p>
+<ol>
+<li><strong>First, the publisher submits the driver.</strong> Many drivers are built by a component maker, such as a chipset, audio, or graphics vendor, but published to Windows Update by the original equipment manufacturer (OEM). The publisher decides which hardware the driver targets and whether it's marked as required. Only drivers marked as required can appear under Recommended drivers.</li>
+<li><strong>Windows Update then evaluates each device.</strong> Windows Update decides whether a driver applies, and how it ranks against other drivers that also apply. It bases this on the device's hardware IDs, currently installed drivers, the Windows version, and the publisher's targeting rules.</li>
+<li><strong>Finally, Intune shows the result for each policy.</strong> Each policy's driver list is built from the results for the devices assigned to it.</li>
+</ol>
+<p>A driver isn't classified once for your whole tenant. Instead, it's classified for each policy (ring), based on the devices in that policy. Two devices can get different results for the same driver depending on their model, already installed drivers, and Windows version, even within the same ring. When the devices are in different rings, each ring can show the driver differently. This is especially common for drivers that apply to several device models.</p>
+<p>If a driver is recommended for at least one device in a policy, the policy shows it under Recommended drivers, even if it's only optional for the other devices.</p>
+<p><strong>Example:</strong></p>
+<ul>
+<li>Ring A contains Device 1 and Device 2. The driver is recommended for Device 1 and optional for Device 2, so Ring A shows the driver under Recommended drivers.</li>
+<li>Ring B contains only devices like Device 2, so Ring B shows the same driver under Other drivers.</li>
+</ul>
+<p>Both rings can be managed the same way and contain similar hardware, but they show different results because of one device.</p>
+<p>Each driver published to Windows Update has a unique UpdateID. You can find it in the driver's Update Details in the <a class="lia-external-url" href="https://catalog.update.microsoft.com/home.aspx" rel="noopener noreferrer" target="_blank">Microsoft Update Catalog</a>. The same driver name and version can be published several times, for example for different devices or components, or with different requirements. Each of these publications is a separate update with its own UpdateID.</p>
+<p>Windows Update can also deliver one update to several groups of devices, called flights. Flights are based on details such as the manufacturer, hardware, installed drivers, and Windows version. During a driver's rollout, Windows Update can change how the driver is ranked, for example from optional to recommended. Changes can be triggered by events such as a new driver dependency or an operating system update, and they can apply to the whole update or to one flight only:</p>
+<ul>
+<li>If the change applies to the whole update, the driver moves to <strong>Recommended drivers</strong> in every ring that has devices it applies to.</li>
+<li>If the change applies to one flight only, the driver changes only in the rings that contain devices from that flight.</li>
+</ul>
+<p>This is why a driver can move from <strong>Other drivers</strong> to <strong>Recommended drivers</strong> in one ring, stay unchanged in another, or even move back again later.</p>
+<p><strong>To check which flight a device is in</strong>, run Get-WindowsUpdateLog on the device and search the generated WindowsUpdate.log for the driver's name or UpdateID. The entry shows the UpdateId and the FlightId, for example:</p>
+<pre class="lia-code-sample language-bash"><code>Title=Mediatek Inc. Bluetooth Driver Update (1.1146.0.608), ProductName=(null), UpdateId=09FA9654-A73F-4DF4-8691-81543A9E577E.1, FlightId=RD:000000, DeploymentID=000000000, DeploymentAction=Install, ClientMetadata: audience=(null), admin=(null), update=(null)</code></pre>
+<p>Two devices with the same UpdateId but different FlightIds are in different flights and can show the same driver differently. A device's FlightId can also change after the driver's ranking changes. You can't choose or change a device's flight. Use this information to compare devices across rings, or include it when you contact Microsoft Support.</p>
+<p>For more information about how drivers roll out, see <a class="lia-external-url" href="https://learn.microsoft.com/windows-hardware/drivers/dashboard/gradual-rollout" rel="noopener noreferrer" target="_blank">Gradual rollout – Windows drivers</a>.</p>
+<p>Whether a driver is recommended for a device can depend on what's already installed. For example, a device running a generic driver might get the manufacturer's driver as recommended, while a device that already has a manufacturer driver might get the same update as optional.</p>
+<p>Different versions of a driver often have identical names. The same driver version can also be published more than once, for example with a different driver date or targeting different hardware. Each publication is a separate update, with its own classification and “Applicable devices” count. Use the “Version” and “Release” date columns to make sure you're comparing the same update.</p>
+<p>Driver names in Intune are generated from information in the driver package. Since February 2026, they use the format <em>Provider Class Driver Update (Version)</em>, for example <em>Lenovo Ltd. Firmware Driver Update (1.0.0.31)</em>. Drivers published before then may show an older naming format. Names also might not match the ones used on the manufacturer's website or in other tools – (for example, a BIOS update shows as Firmware).</p>
+<p>To match a driver, compare the version and, if needed, search the <a class="lia-external-url" href="https://www.catalog.update.microsoft.com/Home.aspx" rel="noopener noreferrer" target="_blank">Microsoft Update Catalog</a> for the driver's UpdateID. The UpdateID identifies one specific update, even when several updates share the same name and version. The Catalog's Driver Model field can also help, but its accuracy depends on how clearly the publisher describes the device in the "Models" section of the driver's INF file.</p>
+<p>The Applicable devices count shows how many devices in the policy can install that specific update. It can be lower than the number of devices of the same model for a few reasons:</p>
+<ul>
+<li>The update applies only to devices that match its targeting and don't already have a newer or better-matching driver.</li>
+<li>The same driver might be split across several updates, each with its own count.</li>
+<li>Inventory depends on each device’s Windows Update scan. Healthy devices can take up to 24 hours to complete their daily scan, after which Intune processes the results. This is not a guaranteed 24-hour limit for the complete inventory refresh.</li>
+</ul>
+<p>A previous version's count isn't a reliable indicator of how many devices a new version applies to.</p>
+<p><a class="lia-external-url" href="https://learn.microsoft.com/intune/device-updates/windows/driver-updates-faq" rel="noopener noreferrer" target="_blank">Windows Driver Update Policies FAQs</a>. A driver can also be missing, or arrive later in some rings, for the following reasons:</p>
+<ul>
+<li><strong>Scan and processing timing:</strong> the driver only appears once an applicable device in that ring has scanned and the backend has processed it.</li>
+</ul>
+<ul>
+<li><strong>It doesn't target your devices.</strong> Windows Update checks the device's hardware IDs. For firmware and some other drivers, it also checks computer hardware IDs (CHIDs), which identify the specific system model.</li>
+<ul>
+<li>If the publisher didn't include your model's identifiers, the driver isn't offered to it, even if the manufacturer's website lists it for that model.Only the publisher can fix this by republishing the driver.</li>
+<li>Recommended does not guarantee that the selected update is the OEM’s preferred CHID-targeted release. Windows driver update policies have a documented CHID-targeting limitation. See <a class="lia-external-url" href="https://learn.microsoft.com/intune/device-updates/windows/configure-driver-update-policy#understand-driver-update-approval-behavior" rel="noopener noreferrer" target="_blank">Understand driver update approval behavior</a>. For more information about CHIDs, see <a class="lia-external-url" href="https://learn.microsoft.com/windows-hardware/drivers/dashboard/using-chids" rel="noopener noreferrer" target="_blank">Using Computer Hardware IDs (CHIDs).</a></li>
+</ul>
+<li><strong>A better-matching driver is available for the device,</strong> so this one isn't offered.</li>
+<li><strong>It isn't on Windows Update.</strong> Not every driver on a manufacturer's website is submitted to Windows Update. Some manufacturers also stop publishing newer versions of certain drivers to Windows Update.</li>
+<li><strong>The device is new to the policy.</strong> After a device is assigned, it can take up to 24 hours to register for driver management. Approved drivers are then offered at the device's next update scan.</li>
+<li><a class="lia-external-url" href="https://learn.microsoft.com/intune/device-updates/windows/driver-updates-faq" rel="noopener noreferrer" target="_blank">The Windows driver update policies FAQ</a> has additional information why older drivers disappear from a policy.</li>
+</ul>
+<p>As described and detailed above, this means the following behaviors may be expected:</p>
+<ul>
+<li>The same driver is listed under Recommended drivers in one ring and under Other drivers in another.</li>
+<li>A driver moves between the Recommended drivers and Other drivers lists over time, in some rings but not others.</li>
+<li>A driver appears in one ring before another.</li>
+<li>The number of drivers in a policy goes up and down as drivers are replaced or age out. This is more noticeable in small test groups than in large production rings.</li>
+<li>A driver available on the manufacturer's website doesn't appear in your policies.</li>
+</ul>
+<p>In policies with automatic approval, only drivers in the Recommended drivers list are approved automatically. As a result:</p>
+<ul>
+<li>The same driver can deploy automatically in one ring and wait for review in another.</li>
+<li>A driver can start deploying automatically in a ring if it moves into the Recommended drivers list.</li>
+</ul>
+<p>This can break the release order you planned across your rings. To keep control:</p>
+<ul>
+<li><strong>To deploy a driver to every ring on your planned deployment schedule:</strong> Approve it manually where it's listed under Other drivers, and set the Make available in Windows Update date to match your plan.</li>
+<li><strong>To make sure your rings follow a strict order:</strong> Consider manual approval for later rings, so drivers deploy only when you approve them. Approve each driver after it's validated in earlier rings.</li>
+<ul>
+<li>In Windows Autopatch, you can choose Automatic or Manual mode per deployment ring.</li>
+<li>Switching an existing ring between modes creates new policies and removes existing approvals, paused drivers, and declined drivers for it. Plan the change before you make it. For more information, see <a class="lia-external-url" href="https://learn.microsoft.com/windows/deployment/windows-autopatch/manage/windows-autopatch-manage-driver-and-firmware-updates" rel="noopener noreferrer" target="_blank">Manage driver and firmware updates.</a></li>
+</ul>
+<li><strong>To hold a driver back everywhere:</strong> Pause it in every policy where it's approved. Don't rely on its classification, because it can change.</li>
+<li><strong>Remember that only the latest approved version installs.</strong> If a ring has a newer approved version of the same driver, that version installs instead. More details on the pause behavior: <a class="lia-external-url" href="https://learn.microsoft.com/intune/device-updates/windows/driver-updates-faq#how-quickly-are-paused-updates-actually-paused" rel="noopener noreferrer" target="_blank">How quickly are paused updates actually paused?</a></li>
+<li><strong>To compare rings:</strong> Use the Windows Driver updates report, which shows one driver update across all your policies. For more information, see <a class="lia-external-url" href="https://learn.microsoft.com/intune/device-updates/windows/monitor-driver-updates?tabs=summary" rel="noopener noreferrer" target="_blank">Reports for Windows driver update policies.</a></li>
+<li><strong>Keep each device in one policy.</strong> For more information, see the <a class="lia-external-url" href="https://learn.microsoft.com/intune/device-updates/windows/driver-updates-faq" rel="noopener noreferrer" target="_blank">Windows driver update policies FAQ.</a></li>
+</ul>
+<ul>
+<li><strong>Ask the manufacturer.</strong> Check whether the driver was published to Windows Update for your model, and whether your model's identifiers were included. Only the publisher can check its submission and republish a driver. For more information, see <a class="lia-external-url" href="https://learn.microsoft.com/windows-hardware/drivers/dashboard/technical-support" rel="noopener noreferrer" target="_blank">Get support for the Hardware Program &amp; Hardware Dev Center.</a></li>
+<li><strong>Check what Windows Update offers the device directly.</strong> Run the following commands in an elevated PowerShell window on an affected device. They ask Windows Update for applicable drivers, independently of Intune.</li>
+</ul>
+<pre class="lia-code-sample language-powershell"><code>powershell
+$session  = New-Object -ComObject Microsoft.Update.Session
+$searcher = $session.CreateUpdateSearcher()
+$searcher.ServiceID       = "9482F4B4-E343-43B6-B170-9A65BC822C77"
+$searcher.SearchScope     = 3
+$searcher.ServerSelection = 3
+$results = $searcher.Search("Type='Driver' and IsInstalled=0")
+$results.Updates | Select-Object Title, DriverModel, DriverVerDate, DriverHardwareID</code></pre>
+<p> </p>
+<p>If the driver isn't listed, it's either already installed or Windows Update doesn't consider it applicable to that device, regardless of the management tool. Check the installed driver version (for example, in Device Manager or the device's Windows Update history) before contacting the manufacturer.</p>
+<ul>
+<li><strong>If you need the driver urgently,</strong> deploy it outside of driver update policies, for example as a Win32 app or with the manufacturer's tools.</li>
+<li><strong>If a version is causing problems,</strong> pause it in your policies.</li>
+</ul>
+<p><em>Microsoft Support can't check or speed up a driver submitted by a manufacturer. For publishing status or missing model identifiers, contact the manufacturer directly.</em></p>
+<p>The following symptoms can indicate a service issue rather than expected behavior, so contact Microsoft Support:</p>
+<ul>
+<li><strong>Many drivers disappear from all your policies at the same time,</strong> and they aren't older than the versions installed on your devices.</li>
+<li><strong>New drivers don't appear in any of your policies for an extended period,</strong> although Windows Update offers them to the same models.</li>
+<li><strong>Applicable devices counts stay unexpectedly low for several days</strong> for drivers that the device check shows as applicable.</li>
+<li><strong>An approved driver doesn't show a deployment date,</strong> or isn't installed on applicable devices that are scanning for updates.</li>
+</ul>
+<p>When the same driver shows under Recommended drivers in one ring and under Other drivers in another, it's usually because Windows Update evaluates each device separately and can change a driver's ranking for some devices only. Missing drivers are usually caused by rollout timing or by how the manufacturer published the driver.</p>
+<p>You can't control how a driver is classified, but you can control what's deployed:</p>
+<ul>
+<li>Approve drivers from the Other drivers list where needed.</li>
+<li>Use manual approval where release order matters.</li>
+<li>Pause drivers you don't want.</li>
+</ul>
+<p> </p>
+<p><em>We’d love to hear your feedback! Share your thoughts in the comments below, follow us on <a href="https://aka.ms/IntuneLinked" rel="noopener noreferrer" target="_blank">LinkedIn</a> or reach out to us on X <a href="https://aka.ms/IntuneSuppTeam" rel="noopener noreferrer" target="_blank">@IntuneSuppTeam</a> or <a href="https://aka.ms/MSIntune" rel="noopener noreferrer" target="_blank">@MSIntune</a>.</em></p></div></div></div>
+</article>
+</body>
+</html>

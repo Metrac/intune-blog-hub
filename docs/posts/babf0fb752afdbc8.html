@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intune News – 13 November 2026</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Andrew Taylor</span>
+    <span class="date">November 13, 2026</span>
+  </div>
+  <h1>Intune News – 13 November 2026</h1>
+  <div class="orig">Saved for offline reading · <a href="https://andrewstaylor.com/2026/11/13/intune-news-13-november-2026/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text">
+<p>What a week it has been, you’ve probably noticed I sent this later than usual to give you a chance to clear your Inbox first!</p>
+<p>I’m off to Ignite on Sunday, if you’re there, I’ll be between the Robopack and Microsoft Security booths, always great to say hello</p>
+<p>Enjoy!</p>
+<hr/>
+<h2>Community Content</h2>
+<ul>
+<li>📦 App management | <a href="https://wolkenman.wordpress.com/2026/11/08/update-microsoft-paint-cve-2026-83844/">Update Microsoft Paint (CVE-2026-83844)</a> • <a href="https://intune.news/authors/jan-mulder">Jan Mulder</a><br/>
+What a world we’re living in, a CVE for paint! It will be calculator next. Learn how to patch it here from Jan</li>
+<li>📦 App management | <a href="https://hmaslowski.com/intune-remote-help-windows-macos/">Intune Remote Help for Windows and macOS: Attended and Unattended Sessions</a> • <a href="https://intune.news/authors/hubert-maslowski">Hubert Maslowski</a><br/>
+With Remote Help now included in a lot of licenses, I see many companies test it to save on a license. Find out how to deploy it, configure RBAC and use it here</li>
+<li>⚙️ Device configuration | <a href="https://joeloveless.com/blog/maester-tests-for-cis-benchmarks-in-microsoft-intune/">Maester Tests for CIS Benchmarks in Microsoft Intune</a> • <a href="https://intune.news/authors/joe-loveless">Joe Loveless</a><br/>
+Maester v3 is including support for CIS testing with the new packs as tested here by Joe</li>
+<li>⚙️ Device configuration | <a href="https://malinoski.me/2026/11/12/its-not-just-you-your-app-control-supplementals-arent-attaching-and-how-to-catch-it-with-intune/">It’s Not Just You: Your App Control Supplementals Aren’t Attaching (….and how to catch it with Intune)</a> • <a href="https://intune.news/authors/kevin-malinoski">Kevin Malinoski</a><br/>
+A new series from Kevin here looking at some of those little things that you think you broke, but actually didn’t. Starting with everyone’s favourite, App Control</li>
+<li>⚙️ Device configuration | <a href="https://www.endpointexperience.com/one-big-intune-policy-or-many-small-ones/">One big Intune policy or many small ones?</a> • <a href="https://intune.news/authors/abraham-anteskog">Abraham Anteskog</a><br/>
+Always a tricky subject, do you go for lots of small policies, one massive one, or a bit of both?</li>
+<li>🚀 Device enrollment | <a href="https://aljazperovsek.com/2026/11/03/entra-kerberos-hybrid-autopilot/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=entra-kerberos-hybrid-autopilot">Faster Hybrid Windows Autopilot with Microsoft Entra Kerberos</a> • <a href="https://intune.news/authors/aljaz-perovsek-cloud-journey">Aljaz Perovsek – Cloud Journey</a><br/>
+For the 3 of you still brave enough to be using Hybrid Autopilot, see how Entra Kerberos can help (or better still, don’t use hybrid autopilot…)</li>
+<li>🚀 Device enrollment | <a href="https://idefixwiki.no/post/ubuntu-entra-intune-defender/">Ubuntu, Entra ID, Intune &amp; Defender</a> • <a href="https://intune.news/authors/julian-rasmussen">Julian Rasmussen</a><br/>
+Considering issuing some Linux devices? This post from Julian shows how to build an ISO with all of the M365 bits you need already there</li>
+<li>🚀 Device enrollment | <a href="https://www.burgerhout.org/p/autopilot-self-deploying-waited-30-minutes">Autopilot Self-Deploying waited 30 minutes</a> • <a href="https://intune.news/authors/jeroen-burgerhout">Jeroen Burgerhout</a><br/>
+Are you finding your self-deploying shared PCs are taking an unusually long time to provision? Find the fix here!</li>
+<li>🚀 Device enrollment | <a href="https://oofhours.com/2026/11/12/now-available-next-generation-autopilot-branding/">Now available: Next-generation Autopilot Branding</a> • <a href="https://intune.news/authors/michael-niehaus">Michael Niehaus</a><br/>
+A lot of people are already using the excellent Autopilot Branding script from Michael, but now it has had a massive update which you can learn all about here</li>
+<li>🚀 Device enrollment | <a href="https://www.jeffgilb.com/giving-autopilot-a-proper-landing/">Giving Autopilot a Proper Landing</a> • <a href="https://intune.news/authors/jeff-gilbert">Jeff Gilbert</a><br/>
+Wouldn’t it be great if you could give your users an even better experience on first login, like the custom welcome screen when you enter your hotel room. Jeff has just the thing here with some clever use of Edge</li>
+<li>🚀 Device enrollment | <a href="https://cloudsecop.com/autopilot-v2-troubleshooting-without-clicking-through-two-portals-a-microsoft-graph-approach/">Autopilot device preparation diagnostic</a> • <a href="https://intune.news/authors/aymen-el-jaziri">Aymen EL JAZIRI</a><br/>
+A useful script to troubleshoot your Autopilot Device Prep deployments via Graph</li>
+<li>✅ Compliance | <a href="https://controlaltdeletetechbits.co.uk/conditional-access-filter-for-applications/">Conditional Access Filters With Custom Security Attributes: Target Apps, Not App Lists</a> • <a href="https://intune.news/authors/mark-oldham">Mark Oldham</a><br/>
+You can now use filters and extended attributes in CA policies when targeting applications to make management something you do at the app level instead of the policy level</li>
+<li>✅ Compliance | 📺 <a href="https://www.youtube.com/watch?v=bfTEr5eKesI">Microsoft Just Changed How We Manage Conditional Access</a> • <a href="https://intune.news/authors/nick-ross">Nick Ross</a><br/>
+Nick looks at the new Conditional Access Policy plans too</li>
+<li>✅ Compliance | 📺 <a href="https://www.youtube.com/watch?v=BPuEMmylXzM">Quick overview of Conditional Access Policy Plans</a> • <a href="https://intune.news/authors/john-savill-s-technical-training">John Savill’s Technical Training</a><br/>
+With the release of Conditional Access policy plans, John gives a great overview of how they work here</li>
+<li>🔄 Device updates | <a href="https://blog.lenovocdrt.com/deploying-the-lenovo-usb30-lan-driver-for-docks-with-intune/">Deploying the Lenovo USB3.0 LAN Driver for Docks With Intune</a> • <a href="https://intune.news/authors/philip-jorgensen">Philip Jorgensen</a><br/>
+The Lenovo USB3.0 LAN drivers for docks won’t appear in commercial vantage. If you are using these, find out how to install via Intune here</li>
+<li>🔄 Device updates | <a href="https://www.tbone.se/2026/11/13/autopatch-gets-granular-approvals-and-your-old-gpos-are-officially-ghosted/">Autopatch Gets Granular Approvals, and Your Old GPOs Are Officially Ghosted</a> • <a href="https://intune.news/authors/torbjorn-granheden">Torbjorn Granheden</a><br/>
+Autopatch now has more granular control over your update approvals, something I imagine a lot of you are looking for!</li>
+<li>📒 Tenant administration | <a href="https://dave-randall.com/rbac/day-20/">Day 20: Capstone: the reference architecture</a> • <a href="https://intune.news/authors/dave-randall">Dave Randall</a><br/>
+Dave completes the 20 days of RBAC with a final overview of everything covered in one neat diagram</li>
+<li>🪟 Windows | <a href="https://www.cloudendpoint.ai/blog/building-your-use-case-windows-365-for-agents.html">Building your use case for Windows 365 for Agents</a> • <a href="https://intune.news/authors/jon-jarvis">Jon Jarvis</a><br/>
+Windows 365 agents feel like they aren’t as popular as people expected (or maybe that’s just me). If you want to give them a try but need to convince management, Jon has you covered here</li>
+<li>🪟 Windows | <a href="https://petervanderwoude.nl/post/locking-the-taskbar-position-and-size/">Locking the taskbar position and size</a> • <a href="https://intune.news/authors/peter-van-der-woude">Peter van der Woude</a><br/>
+Now users can move the taskbar themselves, of course we want to be able to lock it down! Learn how here</li>
+<li>🪟 Windows | <a href="https://jjrmilner.substack.com/p/the-token-that-knew-nothing-reading">The Token That Knew Nothing: Reading AD Groups on Entra-Joined PCs Without Locking Anyone Out</a> • <a href="https://intune.news/authors/jj-milner">JJ Milner</a><br/>
+Continuing the series on managing AD objects with Entra devices, this post covers how to read AD groups from a non-AD joined device</li>
+<li>🤖 Android | <a href="https://michaelsendpoint.com/intune/AndroidEnterprise.html">Android Enterprise</a> • <a href="https://intune.news/authors/michael-frank">Michael Frank</a><br/>
+This post from Michael runs through the end to end configuration for deploying Android Enterprise devices, from Google Play right through to end user setup</li>
+<li>🍎 Apple | <a href="https://vansurksum.com/2026/11/12/managing-macos-updates-with-microsoft-intune-using-ddm-update-rings-and-nudge/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=managing-macos-updates-with-microsoft-intune-using-ddm-update-rings-and-nudge">Managing macOS updates with Microsoft Intune using DDM, update rings and Nudge</a> • <a href="https://intune.news/authors/kenneth-van-surksum">Kenneth van Surksum</a><br/>
+A deep dive into macOS update management in this post from Kenneth</li>
+<li>🍎 Apple | <a href="https://vansurksum.com/2026/11/13/upgrading-to-macos-27-your-intune-security-policies-might-not-tell-the-whole-story/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=upgrading-to-macos-27-your-intune-security-policies-might-not-tell-the-whole-story">Upgrading to macOS 27? Your Intune Security Policies Might Not Tell the Whole Story</a> • <a href="https://intune.news/authors/kenneth-van-surksum">Kenneth van Surksum</a><br/>
+If you have noticed the privacy controls are now deprecated in the Intune settings catalog (on macOS), this deep dive from Kenneth is worth a read on how to protect your data</li>
+</ul>
+<h2><a id="video"></a>Video Content</h2>
+<h2><a id="microsoft"></a>Microsoft Content</h2>
+<hr/>
+<p>That’s all for this week, have an amazing weekend!</p>
+<hr/>
+<hr/>
+</div>
+</div></div>
+</article>
+</body>
+</html>
