@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Return of the Maintenance Window</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Call4Cloud (Rudy Ooms)</span>
+    <span class="date">November 16, 2026</span>
+  </div>
+  <h1>The Return of the Maintenance Window</h1>
+  <div class="orig">Saved for offline reading · <a href="https://patchmypc.com/blog/the-return-of-the-maintenance-window/?utm_term=rss" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="post-content">
+<p class="wp-block-paragraph">Microsoft has announced <strong>Maintenance Windows for Windows operating system and driver updates</strong> in <strong><a href="https://learn.microsoft.com/en-us/intune/whats-new/#maintenance-windows-for-operating-system-and-driver-updates-on-windows">Intune’s What’s new</a></strong>.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/11/image-32.png"><img alt="" class="wp-image-200803" data-lazy-sizes="(max-width: 760px) 100vw, 760px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-32.png 760w, https://patchmypc.com/app/uploads/2026/11/image-32-300x99.png 300w" decoding="async" src="assets/1da95cee564def89/img_0.png"/></a></figure>
+<p class="wp-block-paragraph">Here is what the Maintenance Window feature does, how to create a policy, and what the settings could look like based on Microsoft’s documentation.</p>
+<h2 class="wp-block-heading" id="h-maintenance-windows-are-back-in-intune">Maintenance Windows are back in Intune<span class="clth-copy-icon" data-heading-id="h-maintenance-windows-are-back-in-intune"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">I was reading the Intune What’s new notes for the week of November 16, 2026, and one announcement caught my eye:<a href="https://learn.microsoft.com/en-us/intune/device-updates/maintenance-windows"> <strong>Maintenance windows for operating system and driver updates on Windows</strong></a><strong>.</strong></p>
+<p class="wp-block-paragraph">Microsoft now lets us choose which automatic <strong>Windows Update actions should wait for a maintenance window. </strong>We can also set when that window starts, how long it lasts, and whether it repeats. This gives us a new way to plan update activity around the hours when a device needs to be available.</p>
+<figure class="wp-block-image size-full is-resized"><a data-caption="Figure 1. Microsoft Intune What's new announcement, week of November 16, 2026 (service release 2611)." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/11/image-30.png"><picture class="wp-image-200799" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-30.png.webp" type="image/webp"/>
+<img alt="Figure 1. Microsoft Intune What's new announcement, week of November 16, 2026 (service release 2611)." decoding="async" src="assets/1da95cee564def89/img_1.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">For devices that need to stay available during the day, this can make a real difference. Think of shared PCs, kiosks or production devices. Windows can download updates when they are available, but installations and restarts can wait for a planned maintenance period.</p>
+<p class="wp-block-paragraph">Microsoft has published a separate configuration guide alongside the announcement. It explains the policy options and schedules, so let’s look at how Maintenance Windows actually work and how you would configure one in Intune.</p>
+<p class="wp-block-paragraph">I covered the earlier Maintenance Window story in <a href="https://patchmypc.com/blog/maintenance-window-os-drivers-updates-intune/">Maintenance Window Settings for OS, Drivers, and Updates</a> and <a href="https://patchmypc.com/blog/maintenance-window-settings-catalog-and-its-gone/">Maintenance Window Settings Catalog… And It’s Gone</a>.</p>
+<h2 class="wp-block-heading" id="h-this-is-not-the-same-as-active-hours">This is not the same as Active Hours<span class="clth-copy-icon" data-heading-id="h-this-is-not-the-same-as-active-hours"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">As mentioned before, Active Hours help Windows avoid disruptive restarts when people normally use their devices. Maintenance Windows work the other way around. You specify when selected automatic Windows Update actions are allowed to begin.</p>
+<p class="wp-block-paragraph">For example, a shared device might be used all day but be available for servicing overnight. You might allow downloads at any time, while installations and restarts are restricted to a window between 02:00 and 06:00.</p>
+<p class="wp-block-paragraph">Microsoft says the policy covers Windows Update content such as quality updates, feature updates, Hotpatch updates, .NET updates, drivers, and firmware. It does not decide which updates the device receives. Your existing update policies still control that.</p>
+<h2 class="wp-block-heading" id="h-three-options-with-very-different-results">Three options, with very different results<span class="clth-copy-icon" data-heading-id="h-three-options-with-very-different-results"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The update action determines what Windows must wait for. Microsoft documents three choices:</p>
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr><td><strong>Update action</strong></td><td><strong>What can happen outside the window</strong></td></tr><tr><td><strong>Download, install and restart</strong></td><td>None of these automatic actions, unless another policy or event takes priority.</td></tr><tr><td><strong>Install and restart</strong></td><td>Updates can still download outside the window.</td></tr><tr><td><strong>Restart only</strong></td><td>Downloads and installations can happen outside the window.</td></tr></tbody></table></figure>
+<p class="wp-block-paragraph">An important detail: the action only needs to begin inside the window. If Windows starts installing something just before the window closes, it can continue afterward. The window is not a hard stop at 06:00.</p>
+<h2 class="wp-block-heading" id="h-creating-a-maintenance-windows-policy-in-intune">Creating a Maintenance Windows policy in Intune<span class="clth-copy-icon" data-heading-id="h-creating-a-maintenance-windows-policy-in-intune"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Microsoft’s announcement points to<strong> Devices &gt; Manage devices &gt; Maintenance windows</strong>. That is where the new policy type belongs. The screenshot below shows the Maintenance windows page and its Create option. </p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/11/image-31-1024x501.png"><picture class="wp-image-200800" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-31-1024x501.png.webp 1024w, https://patchmypc.com/app/uploads/2026/11/image-31-300x147.png.webp 300w, https://patchmypc.com/app/uploads/2026/11/image-31-766x375.png.webp 766w, https://patchmypc.com/app/uploads/2026/11/image-31-1536x752.png.webp 1536w, https://patchmypc.com/app/uploads/2026/11/image-31.png.webp 1641w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-31-1024x501.png 1024w, https://patchmypc.com/app/uploads/2026/11/image-31-300x147.png 300w, https://patchmypc.com/app/uploads/2026/11/image-31-766x375.png 766w, https://patchmypc.com/app/uploads/2026/11/image-31-1536x752.png 1536w, https://patchmypc.com/app/uploads/2026/11/image-31.png 1641w" decoding="async" src="assets/1da95cee564def89/img_2.png"/>
+</picture>
+</a></figure>
+<p class="has-medium-font-size wp-block-paragraph"><strong>Please note: This is a mock-up based on how it’s described in the “What’s new in Intune”</strong></p>
+<p class="wp-block-paragraph">Selecting Create opens the familiar Intune policy wizard, with Basics, Configuration settings, Scope tags, Assignments and Review + create. Start by giving the policy a name and an optional description.</p>
+<figure class="wp-block-image size-full is-resized"><a data-caption="The Basics step in the Intune Create Policy wizard." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/11/image-30.png"><picture class="wp-image-200798" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-30.png.webp 631w, https://patchmypc.com/app/uploads/2026/11/image-30-300x97.png.webp 300w" sizes="(max-width: 631px) 100vw, 631px" type="image/webp"/>
+<img alt="The Basics step in the Intune Create Policy wizard." data-lazy-sizes="(max-width: 631px) 100vw, 631px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-30.png 631w, https://patchmypc.com/app/uploads/2026/11/image-30-300x97.png 300w" decoding="async" src="assets/1da95cee564def89/img_3.png"/>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-what-maintenance-window-settings-belong-in-the-policy">What Maintenance Window settings belong in the policy?<span class="clth-copy-icon" data-heading-id="h-what-maintenance-window-settings-belong-in-the-policy"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">A Maintenance Windows policy brings several Windows Update settings together in one place. Instead of dealing with separate controls for start time, duration, weekday selection, and monthly schedules, the policy wizard guides you through the options.</p>
+<p class="wp-block-paragraph">A new dedicated policy template (ID: <code>376dba80-ed56-46a7-9975-a655e95ff24c</code>)  brings those Windows settings into one Intune policy. That makes it easier to create and assign a maintenance window without configuring every setting individually.</p>
+<p class="wp-block-paragraph">According to Microsoft’s guide, Configuration settings include Workload type set to Updates, Enable Maintenance windows set to On, the Update action you want to control, and the schedule. After that, you can set scope tags, assign the policy to device groups, and finish with Review + create.</p>
+<p class="wp-block-paragraph">You can use a one-time window or a daily, weekly, or monthly schedule. With a weekly schedule, you choose the days. Monthly schedules can use a specific day from the 1st through the 28th, or something like the second Tuesday of the month. The duration can be 2 to 24 hours, and Windows uses each device’s local time. A start date is required in the admin center.</p>
+<h2 class="wp-block-heading" id="h-so-what-could-the-maintenance-window-settings-page-look-like">So, what could the Maintenance Window settings page look like?<span class="clth-copy-icon" data-heading-id="h-so-what-could-the-maintenance-window-settings-page-look-like"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Based on the settings described in Microsoft’s documentation, I put together the concept below. It shows a weekly window on Monday, Wednesday, and Friday, starting at 02:00 and lasting four hours. The selected action is Install and restart. This is a mockup of a possible layout, not a confirmed screenshot of the final Configuration settings page.</p>
+<figure class="wp-block-image size-full is-resized"><a data-caption="Concept mockup based on Microsoft's documented Maintenance Windows settings. Not a confirmed Microsoft interface" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/11/image-26.jpg"><picture class="wp-image-200797" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-26.jpg.webp 632w, https://patchmypc.com/app/uploads/2026/11/image-26-300x265.png.webp 300w" sizes="(max-width: 632px) 100vw, 632px" type="image/webp"/>
+<img alt="Concept mockup based on Microsoft's documented Maintenance Windows settings. Not a confirmed Microsoft interface" data-lazy-sizes="(max-width: 632px) 100vw, 632px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-26.jpg 632w, https://patchmypc.com/app/uploads/2026/11/image-26-300x265.png 300w" decoding="async" src="assets/1da95cee564def89/img_4.jpg"/>
+</picture>
+</a></figure>
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr><td>CONCEPT MOCKUP, NOT FINAL MICROSOFT UI<br/>Microsoft’s guide includes a Workload type option and specifies the order of the schedule settings. The layout, labels and grouping shown here are an illustration based on those documented settings. The final Intune page may look different.</td></tr></tbody></table></figure>
+<h2 class="wp-block-heading" id="h-what-would-this-example-actually-do">What would this example actually do?<span class="clth-copy-icon" data-heading-id="h-what-would-this-example-actually-do"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">With those settings, Windows could download updates throughout the day. On Monday, Wednesday, and Friday, automatic installation and update-related restarts would be allowed to begin between 02:00 and 06:00, using each device’s local time.</p>
+<p class="wp-block-paragraph">That does not mean every device starts installing at 02:00 or finishes restarting before 06:00. The update needs to be available, the device needs to be online, and Windows must be ready to perform the action. Work that starts inside the window may finish later.</p>
+<h2 class="wp-block-heading" id="h-a-few-things-to-remember-before-rolling-this-out">A few things to remember before rolling this out<span class="clth-copy-icon" data-heading-id="h-a-few-things-to-remember-before-rolling-this-out"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Maintenance Windows are not an absolute block on update activity. Microsoft documents situations that can take priority, including expedited quality updates, expired deadlines and grace periods, required actions during device provisioning and certain other update events. Users may also start update actions outside the window when Windows and the other applicable policies allow it.</p>
+<p class="wp-block-paragraph">Deferrals still matter. If a deferral prevents Windows from offering an update, the maintenance window cannot make it available. Once the update becomes available, a later window may be the first opportunity for the selected actions to begin.</p>
+<p class="wp-block-paragraph">There is also a minimum Windows requirement. Microsoft currently documents support starting with Windows 11, version 24H2 with KB5077181 and build 26100.7840, or later. I would check that first when testing the new policy.</p>
+<h2 class="wp-block-heading" id="h-how-can-you-tell-whether-it-worked">How can you tell whether it worked?<span class="clth-copy-icon" data-heading-id="h-how-can-you-tell-whether-it-worked"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Start with a small group of test devices. From the policy in Intune, check Device and user check-in status, Device assignment status, and Per-setting status. During a gradual service rollout, the exact portal experience may vary between tenants.</p>
+<p class="wp-block-paragraph">These reports tell you whether the policy reached the device. They do not prove an update was installed or that a restart actually happened in the scheduled period. For that, compare Windows Update or Autopatch reporting with the maintenance window and the device’s local time.</p>
+<h2 class="wp-block-heading" id="h-so-are-maintenance-windows-back">So, are Maintenance Windows back?<span class="clth-copy-icon" data-heading-id="h-so-are-maintenance-windows-back"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Yes. Microsoft’s November 16 What’s new announcement introduces Maintenance Windows for operating system and driver updates in Intune, and the configuration guide explains how to create the policy. We can now plan when selected automatic update actions are allowed to start, instead of relying on Active Hours alone.</p>
+<p class="wp-block-paragraph">For shared devices, kiosks, and other systems with busy working hours, that extra control can be useful. Just remember that a maintenance window does not guarantee everything finishes before the window ends, and some update rules can take priority. The Configuration settings image above is our concept based on Microsoft’s documentation, so its final appearance may differ.</p>
+<p class="wp-block-paragraph"><strong>Sources:</strong> <a href="https://learn.microsoft.com/en-us/intune/whats-new/">Intune What’s new</a>   |   <a href="https://learn.microsoft.com/en-us/intune/device-updates/maintenance-windows">Configure maintenance windows</a>   |   <a href="https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-update">Windows Update CSP</a></p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

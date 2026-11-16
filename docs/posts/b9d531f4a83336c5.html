@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Automating Windows Autopilot Pre-provisioning</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Call4Cloud (Rudy Ooms)</span>
+    <span class="date">November 15, 2026</span>
+  </div>
+  <h1>Automating Windows Autopilot Pre-provisioning</h1>
+  <div class="orig">Saved for offline reading · <a href="https://call4cloud.nl/automating-windows-autopilot-pre-provisioning/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p>At MMS Midway I got the same question a couple of times. Could we automate Autopilot pre-provisioning? So that got me curious… I wanted to see if I could run one PowerShell command and come back to a device that had already resealed (when succesfull) and shut down.</p><p data-inserter-version="2" data-placement-location="under_page_title" id="ezoic-pub-ad-placeholder-102"></p>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="What_is_Autopilot_Pre-provisioning"></span>What is Autopilot Pre-provisioning<span class="ez-toc-section-end"></span></h2>
+<p>Windows Autopilot pre-provisioning, also called White Glove and the Technican Phase, lets IT prepare a device before handing it to its user. Windows enrolls the device in Intune, installs device apps, and applies settings while the Enrollment Status Page (ESP) tracks Device Preparation and Device Setup. Once IT reseals it, the user can turn it on, sign in, and finish their part of setup. <a href="https://call4cloud.nl/autopilot-white-glove-pre-provisioning/">My White Glove walkthrough</a></p>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="Pre-Provision_WIth_Windows_Autopilot_Manually"></span>Pre-Provision WIth Windows Autopilot Manually<span class="ez-toc-section-end"></span></h2>
+<h3 class="wp-block-heading"><span class="ez-toc-section" id="1_Open_Pre-provision"></span>1. Open Pre-provision<span class="ez-toc-section-end"></span></h3>
+<p>
+  With the registered device connected to the network during Windows setup (OOBE), press the <strong>Windows logo key five times</strong>. Choose <strong>Pre-provision with Windows Autopilot</strong> and select <strong>Next</strong>. <a href="https://learn.microsoft.com/en-us/autopilot/tutorial/pre-provisioning/azure-ad-join-technician-flow" rel="noopener" target="_blank">Microsoft’s technician flow</a>
+</p><p data-inserter-version="2" data-placement-location="under_first_paragraph" id="ezoic-pub-ad-placeholder-110"></p>
+<figure class="wp-block-image"><img alt="The Autopilot Pre-provisioning menu that appears after five presses of the Windows logo key." class="wp-image-26091" decoding="async" src="assets/b9d531f4a83336c5/img_0.png"/></figure>
+<h3 class="wp-block-heading"><span class="ez-toc-section" id="2_Confirm_the_Autopilot_profile"></span>2. Confirm the Autopilot profile<span class="ez-toc-section-end"></span></h3>
+<p>
+  The next screen shows the organization and deployment profile that Windows found. Check that they match what you expect, then select <strong>Next</strong> to start.
+</p>
+<figure class="wp-block-image"><img alt="The profile confirmation screen. Tenant details and the device QR code are redacted." class="wp-image-26092" decoding="async" src="assets/b9d531f4a83336c5/img_1.png"/></figure>
+<h3 class="wp-block-heading"><span class="ez-toc-section" id="3_Wait_for_Autopilot_setup_and_select_Reseal"></span>3. Wait for Autopilot setup and select Reseal<span class="ez-toc-section-end"></span></h3>
+<p>Let Windows finish Device Preparation and Device Setup. It can restart along the way. When the green success screen appears, select <strong>Reseal</strong>. Windows shuts down the device for handoff. And yes we got back the green screen!!!</p>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="Where_the_idea_came_from"></span>Where the idea came from<span class="ez-toc-section-end"></span></h2>
+<p>
+  Those five key presses reminded me of <strong>Device Association</strong> in Windows Autopilot Device Preparation. I had already written a PowerShell script to collect the device information, register it with Intune, and let Windows finish the association. Could I take the same approach for classic Autopilot pre-provisioning? <a href="https://call4cloud.nl/autopilot-get-device-association/">My Device Association script</a>
+</p><p data-inserter-version="2" data-placement-location="under_second_paragraph" id="ezoic-pub-ad-placeholder-111"></p>
+<figure class="wp-block-image"><img alt="The same setup menu offers Assign device association." class="wp-image-26094" decoding="async" src="assets/b9d531f4a83336c5/img_2.jpg"/></figure>
+<figure class="wp-block-image"><img alt="Windows completes the device association so it can recognize the organization before sign-in." class="wp-image-26095" decoding="async" src="assets/b9d531f4a83336c5/img_3.png"/></figure>
+<figure class="wp-block-image"><img alt="After the user signs in, Device Preparation shows its own progress as it installs apps and policies." class="wp-image-26096" decoding="async" src="assets/b9d531f4a83336c5/img_4.png"/></figure>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="How_the_Autopilot_Pre-Provisioning_script_works"></span>How the Autopilot Pre-Provisioning script works<span class="ez-toc-section-end"></span></h2>
+<figure class="wp-block-image"><img alt="The PowerShell script checks the profile and hands the device over to Windows setup." class="wp-image-26097" decoding="async" src="assets/b9d531f4a83336c5/img_5.png"/></figure>
+<p>The <strong><a href="https://github.com/call4cloud-code/Autopilot-Pre-Provisioning-Automated" rel="noopener" target="_blank">Autopilot Pre-Provisioning Automation </a></strong>PowerShell script checks the profile and hands the device over to Windows setup. </p>
+<h3 class="wp-block-heading"><span class="ez-toc-section" id="1_Check_Windows_setup_and_the_assigned_profile"></span>1. Check Windows setup and the assigned profile<span class="ez-toc-section-end"></span></h3>
+<p>Before it changes Autopilot mode, the script confirms it is on the Windows setup desktop and that the device is ready for a new run. It checks the installed CloudExperienceHost files, the path between the setup screens, and the Windows interface it needs to switch modes. A Windows update can change any of those pieces. <strong><a href="https://github.com/call4cloud-code/Autopilot-Pre-Provisioning-Automated" rel="noopener" target="_blank">Running the script</a></strong> without <strong>-Execute</strong> runs these checks and saves a diagnostic report.</p>
+<p>
+  Windows downloads the assigned Autopilot profile during OOBE and keeps a local copy. PowerShell waits for that copy to be ready, then checks the profile name, tenant details, device registration ID, and Microsoft Entra join type. The script gets the tenant details from the profile and saves a fingerprint of the assignment so it can recognize the same profile after a restart.
+</p>
+<h3 class="wp-block-heading"><span class="ez-toc-section" id="2_Start_the_normal_Windows_setup"></span>2. Start the normal Windows setup<span class="ez-toc-section-end"></span></h3>
+<p>
+  PowerShell switches Autopilot to Canonical (mode 1) for Microsoft Entra join and reads it back to confirm the change. It writes the White Glove start time and opens the device naming step in Windows setup. From there, Windows handles TPM attestation, Intune enrollment, and the Enrollment Status Page (ESP).
+</p><p data-inserter-version="2" data-placement-location="mid_content" id="ezoic-pub-ad-placeholder-112"></p>
+<p>
+  The script saves its progress as it goes, then looks for the live Enrollment Status Page to confirm the handoff. If a failure occurs before the handoff and the mode change has finished, the script can remove its own start time and restore the starting mode. If the mode change is still pending or Windows may have taken over, the script records the state for review.
+</p>
+<h3 class="wp-block-heading"><span class="ez-toc-section" id="3_After_Windows_restarts"></span>3. After Windows restarts<span class="ez-toc-section-end"></span></h3>
+<figure class="wp-block-image"><img alt="The monitor picks up the same run after reboot and presses Reseal when setup succeeds. Autopilot Pre-provisioning" class="wp-image-26098" decoding="async" src="assets/b9d531f4a83336c5/img_6.png"/></figure>
+<p>
+  The monitor picks up the same run after reboot and presses Reseal when setup succeeds.
+</p>
+<h3 class="wp-block-heading"><span class="ez-toc-section" id="4_Pick_up_again_after_a_restart"></span>4. Pick up again after a restart<span class="ez-toc-section-end"></span></h3>
+<p>
+  The scheduled task I tried first stayed queued after reboot. With <strong>-AutoReseal</strong> enabled, the script sets up a temporary Windows service before setup begins. After reboot, the service waits for the same OOBE account to become active, then starts the monitor in that account’s desktop session so it can read the setup screen.
+</p>
+<h3 class="wp-block-heading"><span class="ez-toc-section" id="5_Check_for_success_and_reseal"></span>5. Check for success and reseal<span class="ez-toc-section-end"></span></h3>
+<p>
+  The monitor matches the Windows success result to the saved start time and compares ESP with the status it saved before setup. Both Device Preparation and Device Setup need fresh success results. On my test device, UI Automation found <strong>Reseal</strong> in the setup window, so the monitor checks there as well as on the result page.
+</p><p data-inserter-version="2" data-placement-location="long_content" id="ezoic-pub-ad-placeholder-113"></p>
+<p>
+  When it sees the same enabled button twice in a row, the monitor records the attempt on disk before pressing it. That record limits the run to one automatic attempt across restarts. Windows then reseals and shuts down.
+</p>
+<p>
+  The temporary service tries to unregister when it sees the run is over. If shutdown happens first, it can finish cleanup on a later boot. The original script and the run logs stay available for troubleshooting.
+</p>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="Using_the_script_in_a_staging_workflow"></span>Using the script in a staging workflow<span class="ez-toc-section-end"></span></h2>
+<p>
+  On a staging bench, I would make this one step in the setup workflow. Have your staging tool place the standalone PowerShell file on the device before OOBE. The file already contains the helpers it needs.
+</p>
+<h3 class="wp-block-heading"><span class="ez-toc-section" id="Get_the_device_ready"></span>Get the device ready<span class="ez-toc-section-end"></span></h3>
+<p>
+  Use a network-connected physical device with TPM 2.0 and working device attestation. Register it in classic Windows Autopilot, assign a Microsoft Entra join profile that allows pre-provisioning, and target an Enrollment Status Page (ESP) profile. <a href="https://learn.microsoft.com/en-us/autopilot/pre-provision" rel="noopener" target="_blank">Microsoft’s pre-provisioning requirements</a>
+</p><p data-inserter-version="2" data-placement-location="longer_content" id="ezoic-pub-ad-placeholder-114"></p>
+<p>
+  Run the script with no script options on a test device in OOBE to validate the image before using it on the bench. This release checks Windows 11 build families 26200 and 26300, the reviewed Windows setup components, and English (US) resources. Automatic reseal also uses the installed .NET Framework compiler to build its temporary service.
+</p>
+<h3 class="wp-block-heading"><span class="ez-toc-section" id="Launch_it_once_during_OOBE"></span>Launch it once during OOBE<span class="ez-toc-section-end"></span></h3>
+<p>Configure your staging tool to run this once when the device is online and the interactive OOBE desktop is active. Launch it under the OOBE account in that session using elevated 64-bit Windows PowerShell 5.1. This example uses a file staged in <strong>C:\temp</strong>.</p>
+<p>
+  $helper = ‘C:\temp\Invoke-AutopilotCanonicalBackendPreProvisioning-Standalone.ps1’
+  <br/>
+  powershell.exe -NoProfile -STA -File $helper -Execute -AutoReseal
+</p>
+<p>
+  The script waits for Windows to cache the assigned profile and reads the tenant from it. <strong>-Execute</strong> starts pre-provisioning. <strong>-AutoReseal</strong> sets up the monitor so it can pick up the run after a reboot.
+</p><p data-inserter-version="2" data-placement-location="longest_content" id="ezoic-pub-ad-placeholder-115"></p>
+<figure class="wp-block-embed is-type-video is-provider-youtube wp-block-embed-youtube wp-embed-aspect-4-3 wp-has-aspect-ratio"><p class="wp-block-embed__wrapper">
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/0yAcjO-kp4o?feature=oembed" title="Autopilot Pre-Provisioning / White Glove Automated">VIDEO</iframe>
+</p></figure>
+<h3 class="wp-block-heading"><span class="ez-toc-section" id="Follow_the_run"></span>Follow the run<span class="ez-toc-section-end"></span></h3>
+<p>
+  If the launch command returns exit code 0, the script confirmed that Windows reached ESP. The monitor runs independently and can continue after a reboot ends the launch process. If a device stays on the green screen, run the same command in OOBE in read-only mode with <strong>-CheckReseal</strong> in place of <strong>-Execute -AutoReseal</strong> and check the report’s <strong>Blockers</strong> field.
+</p>
+<p>On my physical Windows 11 test device with a Microsoft Entra join profile, Windows restarted, the green screen appeared, and a few seconds later the laptop sealed and shut itself down. </p>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="Why_automate_the_technician_flow"></span>Why automate the technician flow<span class="ez-toc-section-end"></span></h2>
+<p>One launch in OOBE starts pre-provisioning with the device’s assigned Autopilot profile. Windows handles enrollment, and the monitor picks up after a restart. Once it confirms that Device Preparation and Device Setup succeeded for this run, it presses <strong>Reseal</strong> and Windows shuts down the device for handoff.</p>
+<p>I can see this coming in handy for IT teams staging a batch of laptops, MSPs preparing devices for different customers, and OEMs or resellers getting devices ready to ship. The technician only needs to run the PowerShell script and doesn’t need to go through the steps to start the pre-provisioning </p><p data-inserter-version="2" data-placement-location="incontent_5" id="ezoic-pub-ad-placeholder-116"></p>
+<p></p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
