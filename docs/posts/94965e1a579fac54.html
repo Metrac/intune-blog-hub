@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Build faster, trusted remote support with Diagnostic Data Reports in Remote Help</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Intune Customer Success</span>
+    <span class="date">November 17, 2026</span>
+  </div>
+  <h1>Build faster, trusted remote support with Diagnostic Data Reports in Remote Help</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/intune-customer-success/build-faster-trusted-remote-support-with-diagnostic-data-reports/ba-p/4573942" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p><strong>By: Kara Wang | Product Manager 2, Microsoft Intune &amp; Ingrid Allen | Senior Product Manager, Windows</strong></p>
+<p>Support sessions are most effective when your helpdesk team can quickly start with the right device context. In many cases, helpdesk staff still need to confirm key system details with the user before moving into targeted troubleshooting.</p>
+<p>In attended Windows support sessions, <strong>Diagnostic Data Reports in Remote Help for Windows </strong>is now available to help quickly onboard helpdesk staff with device information while maintaining user trust. In this context, attended sessions are sessions where the user participates and grants helpdesk staff access. These sessions support view only access, full control, and optional User Account Control (UAC) elevation. This capability is currently not available for Windows Remote Help unattended sessions.</p>
+<p>With this feature, your helpdesk team can request diagnostic data directly in the Remote Help session and generate a Diagnostic Data Report to guide troubleshooting. If updated information is needed, the helpdesk staff can refresh the report during the session. The user decides whether to allow sharing, can view what is shared, and can stop sharing at any time. Helpdesk staff receive practical context for faster, more informed troubleshooting, and the user keeps clear control.</p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image &lt;em&gt;Figure 1: Remote Help session with Diagnostic Data Reports available to helpdesk staff.&lt;/em&gt;" aria-labelledby="qwPJsv_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/94965e1a579fac54/img_0.png"/></button><span class="lia-media-caption-text" id="qwPJsv_caption"><em>Figure 1: Remote Help session with Diagnostic Data Reports available to helpdesk staff.</em></span></span>
+<p>When your team starts with structured diagnostic context, helpdesk staff spend less time on discovery and more time on resolution. That improves first pass troubleshooting and reduces repeat clarifying questions.</p>
+<p>You also keep the consent model transparent:</p>
+<ul>
+<li>The user explicitly allows or declines sharing.</li>
+<li>The user can see the shared data.</li>
+<li>The user can stop sharing during the session.</li>
+</ul>
+<p>This balance helps you improve support speed while maintaining confidence in your remote support process.</p>
+<ol>
+<li>For attended Windows device sessions, the helpdesk staff requests diagnostic data collection by selecting the icon in the Remote Help toolbar.<br/><span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image &lt;em&gt;Figure 2: Helpdesk staff requests a Diagnostic Data Report.&lt;/em&gt;" aria-labelledby="uSAkYw_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/94965e1a579fac54/img_1.png"/></button><span class="lia-media-caption-text" id="uSAkYw_caption"><em>Figure 2: Helpdesk staff requests a Diagnostic Data Report.</em></span></span></li>
+<li>The user sees a request asking permission for the helpdesk staff to view and possibly store their device diagnostic data.</li>
+<li>The user chooses Allow or Decline.<br/><span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image &lt;em&gt;Figure 3: &lt;/em&gt;Device
+&lt;em&gt; user consent prompt for diagnostic data sharing.&lt;/em&gt;" aria-labelledby="e8qkF2_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/94965e1a579fac54/img_2.png"/></button><span class="lia-media-caption-text" id="e8qkF2_caption"><em>Figure 3: </em>Device<em> user consent prompt for diagnostic data sharing.</em></span></span></li>
+</ol>
+<p>If the user selects Allow:</p>
+<ul>
+<li>The helpdesk staff sees a report with collapsible sections with options to Refresh, Copy, and Collapse All.</li>
+<li>A View Shared Data button appears on the user’s toolbar.</li>
+<li>When the user selects View Shared Data, the diagnostic panel appears in the Remote Help app.</li>
+<li>The same diagnostic data report is shown to the helpdesk staff and the user.</li>
+</ul>
+<p>If the user selects Decline, helpdesk staff is notified. If the user initially allows the report to be generated and later chooses to turn sharing off, helpdesk staff is notified that the user stopped sharing data.</p>
+<p class="lia-video-container lia-media-is-center lia-media-size-large" data-video-id="https://www.youtube.com/watch?v=qknFzHE8Z5w/1794965553215" data-video-remote-vid="https://www.youtube.com/watch?v=qknFzHE8Z5w/1794965553215"></p>
+<p>When the user allows sharing, the report organizes data into practical categories. These categories help your helpdesk staff move from collecting context to resolving issues.</p>
+<p> </p>
+<div>
+<div class="styles_lia-table-wrapper__h6Xo9 styles_table-responsive__MW0lN"><table border="1"><thead><tr class="lia-background-color-custom-0067b8"><th class="lia-border-color-custom-d2d2d2 lia-border-style-solid" scope="col"><span class="lia-text-color-22"><strong>Category</strong></span></th><th class="lia-border-color-custom-d2d2d2 lia-border-style-solid" scope="col"><span class="lia-text-color-22"><strong>Example data</strong></span></th><th class="lia-border-color-custom-d2d2d2 lia-border-style-solid" scope="col"><span class="lia-text-color-22"><strong>Admin/helpdesk value</strong></span></th></tr></thead><tbody><tr class="lia-background-color-22"><th class="lia-border-color-custom-d2d2d2 lia-vertical-align-top lia-border-style-solid" scope="row">Device overview</th><td class="lia-border-color-custom-d2d2d2 lia-vertical-align-top lia-border-style-solid">OS edition, build and architecture; device model and manufacturer; whether the device is a virtual machine; display language and system locale; kiosk mode.</td><td class="lia-border-color-custom-d2d2d2 lia-vertical-align-top lia-border-style-solid">Confirms baseline environment and quickly rules out mismatched device context.</td></tr><tr class="lia-background-color-custom-f5f9fc"><th class="lia-border-color-custom-d2d2d2 lia-vertical-align-top lia-border-style-solid" scope="row">Hardware</th><td class="lia-border-color-custom-d2d2d2 lia-vertical-align-top lia-border-style-solid">Processor, cores and logical processors; installed memory; disk capacity; neural processing unit (NPU), when reported.</td><td class="lia-border-color-custom-d2d2d2 lia-vertical-align-top lia-border-style-solid">Validates whether hardware limits are contributing to the issue.</td></tr><tr class="lia-background-color-22"><th class="lia-border-color-custom-d2d2d2 lia-vertical-align-top lia-border-style-solid" scope="row">Network</th><td class="lia-border-color-custom-d2d2d2 lia-vertical-align-top lia-border-style-solid">Maximum speed, link speed, and current send and receive rates.</td><td class="lia-border-color-custom-d2d2d2 lia-vertical-align-top lia-border-style-solid">Helps detect low throughput and unstable connectivity conditions.</td></tr><tr class="lia-background-color-custom-f5f9fc"><th class="lia-border-color-custom-d2d2d2 lia-vertical-align-top lia-border-style-solid" scope="row">GPU</th><td class="lia-border-color-custom-d2d2d2 lia-vertical-align-top lia-border-style-solid">Graphics adapter, GPU usage, and dedicated, shared and available GPU memory.</td><td class="lia-border-color-custom-d2d2d2 lia-vertical-align-top lia-border-style-solid">Supports graphics, rendering, and display troubleshooting.</td></tr><tr class="lia-background-color-22"><th class="lia-border-color-custom-d2d2d2 lia-vertical-align-top lia-border-style-solid" scope="row">Performance</th><td class="lia-border-color-custom-d2d2d2 lia-vertical-align-top lia-border-style-solid">Processor time, memory usage, page file, disk activity, network usage, and uptime.</td><td class="lia-border-color-custom-d2d2d2 lia-vertical-align-top lia-border-style-solid">Identifies current system pressure and likely bottlenecks.</td></tr><tr class="lia-background-color-custom-f5f9fc"><th class="lia-border-color-custom-d2d2d2 lia-vertical-align-top lia-border-style-solid" scope="row">Battery</th><td class="lia-border-color-custom-d2d2d2 lia-vertical-align-top lia-border-style-solid">Whether a battery is present, charge level and status, battery health, and design versus full charge capacity.</td><td class="lia-border-color-custom-d2d2d2 lia-vertical-align-top lia-border-style-solid">Useful for mobile device behavior and power-related incidents.</td></tr><tr class="lia-background-color-22"><th class="lia-border-color-custom-d2d2d2 lia-vertical-align-top lia-border-style-solid" scope="row">Security</th><td class="lia-border-color-custom-d2d2d2 lia-vertical-align-top lia-border-style-solid">Antivirus product, whether it's active and its definition status; firewall status for domain, private and public networks; TLS inspection detection.</td><td class="lia-border-color-custom-d2d2d2 lia-vertical-align-top lia-border-style-solid">Surfaces security controls that may affect app or network behavior.</td></tr><tr class="lia-background-color-custom-f5f9fc"><th class="lia-border-color-custom-d2d2d2 lia-vertical-align-top lia-border-style-solid" scope="row">Updates</th><td class="lia-border-color-custom-d2d2d2 lia-vertical-align-top lia-border-style-solid">Windows Update channel, target release version, last check and install dates, counts of pending and failed updates, last restart time, and whether a restart is pending.</td><td class="lia-border-color-custom-d2d2d2 lia-vertical-align-top lia-border-style-solid">Highlights update gaps or pending restart dependencies.</td></tr><tr class="lia-background-color-22"><th class="lia-border-color-custom-d2d2d2 lia-vertical-align-top lia-border-style-solid" scope="row">Storage</th><td class="lia-border-color-custom-d2d2d2 lia-vertical-align-top lia-border-style-solid">For each disk: model, bus and media type, capacity, free space, percentage used, drive letters, boot or system disk, and health status.</td><td class="lia-border-color-custom-d2d2d2 lia-vertical-align-top lia-border-style-solid">Helps isolate disk health and capacity-related failures.</td></tr><tr class="lia-background-color-custom-f5f9fc"><th class="lia-border-color-custom-d2d2d2 lia-vertical-align-top lia-border-style-solid" scope="row">Network interfaces</th><td class="lia-border-color-custom-d2d2d2 lia-vertical-align-top lia-border-style-solid">For each network adapter: type, description, status, speed, whether DHCP is enabled, and whether the adapter is virtual.</td><td class="lia-border-color-custom-d2d2d2 lia-vertical-align-top lia-border-style-solid">Speeds diagnosis of adapter configuration and connectivity issues.</td></tr><tr class="lia-background-color-22"><th class="lia-border-color-custom-d2d2d2 lia-vertical-align-top lia-border-style-solid" scope="row">Devices</th><td class="lia-border-color-custom-d2d2d2 lia-vertical-align-top lia-border-style-solid">Name and status of cameras, audio devices, displays, printers, keyboards, mice, Bluetooth devices and network adapters.</td><td class="lia-border-color-custom-d2d2d2 lia-vertical-align-top lia-border-style-solid">Validates peripheral availability and health for user-facing issues.</td></tr></tbody><colgroup><col/><col/><col/></colgroup></table></div>
+</div>
+<p> </p>
+<span class="lia-media-object lia-media-is-center lia-media-size-medium" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image &lt;em&gt;Figure 4: Diagnostic Data Report categories used for triage.&lt;/em&gt;" aria-labelledby="kIhkae_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/94965e1a579fac54/img_3.png"/></button><span class="lia-media-caption-text" id="kIhkae_caption"><em>Figure 4: Diagnostic Data Report categories used for triage.</em></span></span>
+<p>Diagnostic Data Reports give your helpdesk staff a reliable snapshot of device state to guide each troubleshooting step.</p>
+<ul>
+<li>Diagnostic values are captured as a point in time snapshot.</li>
+<li>Metrics like memory, CPU, and network activity reflect device state at collection time.</li>
+<li>After a change, the helpdesk staff can refresh to collect a current snapshot and validate whether remediation changed the device’s state.</li>
+<li>If a field is missing, this means that the device did not report that value. It does not mean healthy, false, or zero by default.</li>
+</ul>
+<p>This gives your helpdesk staff a clearer context for decision making and helps keep troubleshooting steps grounded in current, observable device data.</p>
+<p>Users can inspect what was shared by selecting <strong>View Shared Data</strong> after they allow sharing. This helps maintain transparency during the session.</p>
+<p>If sharing is turned off, previously collected information remains visible for reference, but refreshing data is unavailable until sharing is turned back on. If the user resumes sharing, the helpdesk staff can refresh to collect a current snapshot.</p>
+<p>This model lets you keep troubleshooting continuity while respecting user control.</p>
+<p>A user reports choppy screen sharing and delayed remote control, even though their connection appears healthy. The helpdesk staff can spend time validating connectivity with separate checks and still struggle to determine whether the issue is network congestion or endpoint resource contention.</p>
+<p>With Diagnostic Data Reports in Remote Help, the helpdesk staff requests the report and reviews Network, Performance, and GPU together in real time. The helpdesk staff confirms stable link speed and normal send and receive throughput but also sees elevated CPU and GPU pressure during the session. This indicates an endpoint bottleneck rather than a bandwidth problem. The helpdesk staff guides the user to close high impact apps and reduce display and graphics load, then refreshes the report to confirm improved responsiveness.</p>
+<p>The result is faster confirmation of whether lag is network related or endpoint related, fewer unnecessary escalations to network teams, and quicker in session recovery with immediate validation after each fix.</p>
+<p>Diagnostic Data Reports are rolling out now and expected to be available to all Intune customers by mid-December, so give them a try in your next Windows attended session and see how much time they save you. We'd love to hear how it goes. If you have feedback or questions, drop us a note in the comments below!</p>
+<p> </p>
+<p><em>Stay up to date! Bookmark the <a class="lia-external-url" href="https://aka.ms/IntuneBlog" rel="noopener noreferrer" target="_blank">Microsoft Intune Blog</a> and <a class="lia-external-url" href="https://aka.ms/IntuneCustomerSuccess" rel="noopener noreferrer" target="_blank">Intune Customer Success Blog</a> and follow us on </em><a class="lia-external-url" href="https://www.aka.ms/IntuneLinked" rel="noopener noreferrer" target="_blank">LinkedIn</a><em> or </em><a class="lia-external-url" href="https://www.aka.ms/MSIntune" rel="noopener noreferrer" target="_blank">@MSIntune</a><em> and </em><a class="lia-external-url" href="https://www.aka.ms/IntuneSuppTeam" rel="noopener noreferrer" target="_blank">@IntuneSuppTeam</a><em> on X to continue the conversation.</em></p></div></div></div>
+</article>
+</body>
+</html>

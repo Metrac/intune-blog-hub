@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Configure Evaluation Frequency For Custom Compliance Scripts</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Call4Cloud (Rudy Ooms)</span>
+    <span class="date">November 17, 2026</span>
+  </div>
+  <h1>Configure Evaluation Frequency For Custom Compliance Scripts</h1>
+  <div class="orig">Saved for offline reading · <a href="https://patchmypc.com/blog/configure-evaluation-frequency-for-custom-compliance-scripts/?utm_term=rss" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="post-content">
+<p class="wp-block-paragraph">Intune has been getting faster. A Windows device can ask for a fresh compliance check when it detects a supported change, such as the firewall turning off. Push notifications also help devices <a href="https://learn.microsoft.com/en-us/intune/whats-new/#faster-delivery-of-windows-scripts">pick up changes to Windows scripts sooner</a>. There was one wait I still wanted Microsoft to tackle. Custom compliance discovery scripts on Windows could go eight hours between scheduled runs. I was happy to see <strong>Configure evaluation frequency for custom compliance scripts on Windows and macOS</strong> show up in <a href="https://learn.microsoft.com/en-us/intune/whats-new/#configure-evaluation-frequency-for-custom-compliance-scripts-on-windows-and-macos">What’s new in Microsoft Intune</a>.</p>
+<p class="wp-block-paragraph">With Intune 2611, the Evaluation Frequency options are <strong>15 minutes, 30 minutes, or 1 to 8 hours</strong>.</p>
+<figure class="wp-block-image size-full"><a data-caption="Microsoft Learn release note for Intune 2611, week of November 16, 2026. View the release note." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/11/image-37.png"><picture class="wp-image-200967" decoding="async">
+<source sizes="(max-width: 953px) 100vw, 953px" srcset="https://patchmypc.com/app/uploads/2026/11/image-37.png.webp 953w, https://patchmypc.com/app/uploads/2026/11/image-37-300x87.png.webp 300w, https://patchmypc.com/app/uploads/2026/11/image-37-766x221.png.webp 766w" type="image/webp"/>
+<img alt="Microsoft Learn release note for Intune 2611, week of November 16, 2026. View the release note." decoding="async" src="assets/8d96c755eb150180/img_0.png"/>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-why-eight-hours-evaluation-frequency-was-too-long-for-custom-compliance-policies">Why eight hours Evaluation Frequency was too long for Custom Compliance Policies<span class="clth-copy-icon" data-heading-id="h-why-eight-hours-evaluation-frequency-was-too-long-for-custom-compliance-policies"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">To understand the delay, start with the custom compliance policy itself. In Intune, we configured a policy for a third-party security agent. Its PowerShell discovery script checked whether the agent’s Windows service was running. The JSON rule expected the script to return true. If the service was stopped when the script ran, Intune marked the device as noncompliant.</p>
+<p class="wp-block-paragraph">Now imagine the script reports that the service is stopped. You fix the problem a minute later and start the service again. The device is healthy, but Intune still has the false result from the previous script run. Fixing the service does not automatically give Intune a fresh result.</p>
+<p class="wp-block-paragraph">Under the old schedule, the next discovery script run could be almost eight hours away. Until that run reported true and Intune processed the new result, the device could remain noncompliant. If Conditional Access required a compliant device, the user could still be blocked long after the actual problem was fixed. Microsoft documents that original Windows cadence in the <a href="https://learn.microsoft.com/en-us/intune/device-security/compliance/custom-settings">custom compliance overview</a>.</p>
+<h2 class="wp-block-heading" id="h-how-we-forced-a-fresh-custom-compliance-result-before">How we forced a fresh Custom Compliance result before<span class="clth-copy-icon" data-heading-id="h-how-we-forced-a-fresh-custom-compliance-result-before"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Before we could configure the evaluation frequency, we needed another way to get a fresh result. The easiest option was Company Portal. On the affected device, the user could open Company Portal, go to Devices, select the device, and choose Check access. This synced the device with the current requirements and re-evaluated its access. For custom compliance, it could also run the discovery script again and pick up the repaired service state.</p>
+<p class="wp-block-paragraph">That worked when you needed to refresh one device. Repeating the same test several times in a lab required a more direct method.</p>
+<p class="wp-block-paragraph">Each custom compliance script has a GUID. You can find it in the script URL in the Intune admin center. On the test device, that GUID is also used below the Execution and Reports branches for the system or user context that ran the script.</p>
+<p class="wp-block-paragraph">HKLM\SOFTWARE\Microsoft\IntuneManagementExtension\SideCarPolicies\Scripts</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/11/image-38.png"><picture class="wp-image-200968" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-38.png.webp 1013w, https://patchmypc.com/app/uploads/2026/11/image-38-300x84.png.webp 300w, https://patchmypc.com/app/uploads/2026/11/image-38-767x215.png.webp 767w" sizes="(max-width: 1013px) 100vw, 1013px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1013px) 100vw, 1013px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-38.png 1013w, https://patchmypc.com/app/uploads/2026/11/image-38-300x84.png 300w, https://patchmypc.com/app/uploads/2026/11/image-38-767x215.png 767w" decoding="async" src="assets/8d96c755eb150180/img_1.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">Clearing the entries for that script and restarting the Intune Management Extension service removed the previous execution and report state. The IME could then treat the script as ready to run again and produce a fresh result.</p>
+<p class="wp-block-paragraph">This was useful for troubleshooting, but it was still a manual reset on one device. It did not give every managed device a shorter and more predictable evaluation schedule.</p>
+<p class="wp-block-paragraph">The original Call4Cloud walkthrough used BitLocker to demonstrate this process. BitLocker made the behavior easy to show, although Intune already provides a built-in Require BitLocker compliance setting. A third-party security service is a better example of why custom compliance is useful because it checks something that the standard compliance policy does not already cover.</p>
+<h2 class="wp-block-heading" id="h-the-hourly-evaluation-frequency-custom-compliance-cadence-we-saw-in-july">The hourly Evaluation Frequency Custom Compliance cadence we saw in July<span class="clth-copy-icon" data-heading-id="h-the-hourly-evaluation-frequency-custom-compliance-cadence-we-saw-in-july"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Getting another result on demand helped when you were working on one device. The July change was about how soon the device could check again on its own. The logs from IME 1.103.101.0 pointed to an hourly schedule when enabled and support for intervals measured in minutes. I covered those findings in <a href="https://patchmypc.com/blog/custom-compliance-policies-and-the-eight-hour-waiting-fix/">Intune Custom Compliance Policies and the Hourly Cadence Fix</a>.</p>
+<p class="wp-block-paragraph">With the hourly schedule enabled, the IME could rerun the discovery script already on the device. If you restarted the service just after a check, the next run could pick up the fix about an hour later. The IME could then send the new result to Intune.</p>
+<p class="wp-block-paragraph">Intune 2611 puts the interval in the policy. One hour is one of the choices. For the same service check, you can also choose 30 minutes or go down to 15 minutes.</p>
+<h2 class="wp-block-heading" id="h-what-a-custom-compliance-policy-checks">What a custom compliance policy checks<span class="clth-copy-icon" data-heading-id="h-what-a-custom-compliance-policy-checks"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Custom compliance lets you write a rule for something specific to your company. On Windows, you add one PowerShell discovery script and a JSON rules file per policy. The script can return several values in one run. Each rule names the value it checks and says what counts as compliant.</p>
+<p class="wp-block-paragraph">For our security agent, the script checks whether its Windows service is running. It calls that value ServiceRunning. When the service is running, the script could return this.</p>
+<p class="wp-block-paragraph">{“ServiceRunning”:true}</p>
+<p class="wp-block-paragraph">The rule looks for ServiceRunning and requires true. The script can run successfully and return false when the service has stopped. Intune can then mark that setting noncompliant. The custom result counts toward device compliance alongside the built in checks. Microsoft lists the rule fields in the <a href="https://learn.microsoft.com/en-us/intune/device-security/compliance/create-custom-json">JSON rules guide</a>.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/11/image-39.png"><picture class="wp-image-200969" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-39.png.webp 923w, https://patchmypc.com/app/uploads/2026/11/image-39-300x154.png.webp 300w, https://patchmypc.com/app/uploads/2026/11/image-39-767x393.png.webp 767w" sizes="(max-width: 923px) 100vw, 923px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 923px) 100vw, 923px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-39.png 923w, https://patchmypc.com/app/uploads/2026/11/image-39-300x154.png 300w, https://patchmypc.com/app/uploads/2026/11/image-39-767x393.png 767w" decoding="async" src="assets/8d96c755eb150180/img_2.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">The script reports what it found on the device. Intune evaluates that value against the rule.</p>
+<h2 class="wp-block-heading" id="h-where-to-set-the-evaluation-frequency-for-custom-compliance-scripts">Where to set the Evaluation Frequency for Custom Compliance Scripts<span class="clth-copy-icon" data-heading-id="h-where-to-set-the-evaluation-frequency-for-custom-compliance-scripts"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">To set the interval for this check, open the Intune admin center and go to <strong>Devices &gt; Manage devices &gt; Compliance &gt; Create policy</strong> and select <strong>Windows 10 and later</strong>.</p>
+<p class="wp-block-paragraph">Under <strong>Compliance settings &gt; Custom Compliance</strong>, set Custom compliance to Require. Select the discovery script, upload your JSON rules, and choose <strong>Custom compliance evaluation frequency</strong>. Microsoft lists the new step in the <a href="https://learn.microsoft.com/en-us/intune/device-security/compliance/create-policy#create-the-policy">Windows policy setup guide</a>.</p>
+<p class="wp-block-paragraph">The added step also appears in the <a href="https://daily.intune.admin.news/changes/2026-11-15/create-policy-01/">November 15 documentation diff</a>.</p>
+<p class="wp-block-paragraph"><strong>Windows policy mockup</strong></p>
+<figure class="wp-block-image size-full"><a data-caption="Mockup of how the interval setting could look. Eight hours is shown as an example selection." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/11/image-40.png"><picture class="wp-image-200970" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-40.png.webp 915w, https://patchmypc.com/app/uploads/2026/11/image-40-300x240.png.webp 300w, https://patchmypc.com/app/uploads/2026/11/image-40-768x615.png.webp 768w" sizes="(max-width: 915px) 100vw, 915px" type="image/webp"/>
+<img alt="Mockup of how the interval setting could look. Eight hours is shown as an example selection." data-lazy-sizes="(max-width: 915px) 100vw, 915px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-40.png 915w, https://patchmypc.com/app/uploads/2026/11/image-40-300x240.png 300w, https://patchmypc.com/app/uploads/2026/11/image-40-768x615.png 768w" decoding="async" src="assets/8d96c755eb150180/img_3.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">For a quick check like this one, I’d start with 15 minutes. An hour can make sense when the script takes more work to run, or the result can wait a bit longer.</p>
+<p class="wp-block-paragraph">The same setup can check whether an application meets your minimum version. The discovery script reports the installed version and the rule sets the minimum. Chrome is the example in our <a href="https://patchmypc.com/blog/intune-custom-compliance-policies/">Patch My PC guide to custom compliance for third party apps</a>.</p>
+<h2 class="wp-block-heading" id="h-how-the-evaluation-frequency-custom-compliance-runs-on-windows">How the Evaluation Frequency custom compliance runs on Windows<span class="clth-copy-icon" data-heading-id="h-how-the-evaluation-frequency-custom-compliance-runs-on-windows"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The custom compliance policy contains the discovery script, JSON rules, assignment, and evaluation frequency. During an IME script check-in, the device receives the script, its version, the execution context, and the selected interval. The IME stores that assignment locally. The JSON rule remains in Intune, ready to evaluate the result the device returns.</p>
+<p class="wp-block-paragraph">The IME reads the previous execution time and adds the selected interval to calculate when the script should run again. It then sets a local timer. When the script becomes due, the IME starts PowerShell, captures the JSON output, records the new execution time, and sends the result to Intune.</p>
+<p class="wp-block-paragraph">Two clocks matter here. The assignment check-in controls when the device learns about a changed script or interval. The local timer controls repeat runs after the assignment arrives. Intune applies the JSON rule after each uploaded result and then updates the compliance state.</p>
+<figure class="wp-block-image size-large"><a data-caption="Intune delivers the assignment and interval. The IME then controls the repeat schedule locally until it sends a new result back for evaluation." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/11/image-41-1024x810.png"><picture class="wp-image-200971" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-41-1024x810.png.webp 1024w, https://patchmypc.com/app/uploads/2026/11/image-41-300x237.png.webp 300w, https://patchmypc.com/app/uploads/2026/11/image-41-767x607.png.webp 767w, https://patchmypc.com/app/uploads/2026/11/image-41.png.webp 1376w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="Intune delivers the assignment and interval. The IME then controls the repeat schedule locally until it sends a new result back for evaluation." data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-41-1024x810.png 1024w, https://patchmypc.com/app/uploads/2026/11/image-41-300x237.png 300w, https://patchmypc.com/app/uploads/2026/11/image-41-767x607.png 767w, https://patchmypc.com/app/uploads/2026/11/image-41.png 1376w" decoding="async" src="assets/8d96c755eb150180/img_4.png"/>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-what-the-ime-keeps-locally">What the IME keeps locally<span class="clth-copy-icon" data-heading-id="h-what-the-ime-keeps-locally"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The IME keeps the assigned script, its schedule, the last execution time, and the latest report on the device. The active timer runs inside the IME service. The execution and report history remain available after the service restarts.</p>
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr><td><strong>Log or store</strong></td><td><strong>What it shows</strong></td></tr><tr><td>HealthScripts.log</td><td>Assignment requests, the minute schedule, calculated due time, scheduled runs and result upload</td></tr><tr><td>AgentExecutor.log</td><td>The PowerShell launch, execution context, output, exit code and script errors</td></tr><tr><td>Execution registry</td><td>LastExecution for the context, policy ID and assignment version</td></tr><tr><td>Reports registry</td><td>The cached result used for comparison and reporting</td></tr></tbody></table></figure>
+<p class="wp-block-paragraph">The key timestamp is LastExecution. After the service restarts, the IME reads the current assignment and that timestamp, calculates the next due time, and rebuilds the local timer.</p>
+<p class="wp-block-paragraph">HKLM\SOFTWARE\Microsoft\IntuneManagementExtension\SideCarPolicies\Scripts\Execution\&lt;context GUID&gt;\&lt;policy ID&gt;_&lt;version&gt;\LastExecution</p>
+<h2 class="wp-block-heading" id="h-the-ten-evaluation-frequency-for-custom-compliance-scripts-steps-in-detail">The Ten Evaluation Frequency for Custom Compliance Scripts steps in detail<span class="clth-copy-icon" data-heading-id="h-the-ten-evaluation-frequency-for-custom-compliance-scripts-steps-in-detail"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The steps below follow the same path from policy delivery to the final compliance result.</p>
+<h3 class="wp-block-heading" id="h-steps-1-to-3-getting-the-custom-compliance-script-assignment">Steps 1 to 3: Getting the Custom Compliance Script assignment<span class="clth-copy-icon" data-heading-id="h-steps-1-to-3-getting-the-custom-compliance-script-assignment"><span class="clth-tooltip">Copy Link</span></span></h3>
+<figure class="wp-block-image size-full"><a data-caption="Steps 1 to 3. The assignment check in delivers the script and interval. It does not run the discovery script itself." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/11/image-42.png"><picture class="wp-image-200972" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-42.png.webp 968w, https://patchmypc.com/app/uploads/2026/11/image-42-300x162.png.webp 300w, https://patchmypc.com/app/uploads/2026/11/image-42-767x415.png.webp 767w" sizes="(max-width: 968px) 100vw, 968px" type="image/webp"/>
+<img alt="Steps 1 to 3. The assignment check in delivers the script and interval. It does not run the discovery script itself." data-lazy-sizes="(max-width: 968px) 100vw, 968px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-42.png 968w, https://patchmypc.com/app/uploads/2026/11/image-42-300x162.png 300w, https://patchmypc.com/app/uploads/2026/11/image-42-767x415.png 767w" decoding="async" src="assets/8d96c755eb150180/img_5.png"/>
+</picture>
+</a></figure>
+<h4 class="wp-block-heading" id="h-step-1-intune-stores-the-custom-compliance-policy">Step 1: Intune stores the Custom Compliance policy<span class="clth-copy-icon" data-heading-id="h-step-1-intune-stores-the-custom-compliance-policy"><span class="clth-tooltip">Copy Link</span></span></h4>
+<p class="wp-block-paragraph">The policy joins four things in the cloud. It has the PowerShell discovery script, the JSON rules, the group assignment, and the evaluation frequency. For our service example, the script returns ServiceRunning and the JSON rule requires true.</p>
+<h4 class="wp-block-heading" id="h-step-2-the-ime-asks-for-script-assignments">Step 2: The IME asks for script assignments<span class="clth-copy-icon" data-heading-id="h-step-2-the-ime-asks-for-script-assignments"><span class="clth-tooltip">Copy Link</span></span></h4>
+<p class="wp-block-paragraph">Shortly after the IME service starts, it schedules a script assignment check in. In IME 1.108.101.0, that first request is spread across roughly one to five minutes. A user sign in can also start the request, and the regular assignment refresh runs every eight hours. Microsoft describes the normal IME check in and manual sync behavior in the <a href="https://learn.microsoft.com/en-us/intune/device-management/tools/management-extension-windows">IME documentation</a>.</p>
+<p class="wp-block-paragraph">The request uses the IME script channel and asks Intune for the assignments that apply to the device and signed in user. In the log, this starts with Requesting health scripts and ends with the number of scripts returned.</p>
+<h4 class="wp-block-heading" id="h-step-3-the-ime-stores-the-assignment">Step 3: The IME stores the assignment<span class="clth-copy-icon" data-heading-id="h-step-3-the-ime-stores-the-assignment"><span class="clth-tooltip">Copy Link</span></span></h4>
+<p class="wp-block-paragraph">The response includes the script identity, assignment version, execution context, content, and schedule. The IME stores that assignment locally so it is ready when the script becomes due. When an administrator changes the interval, the next assignment refresh brings the new value to the device.</p>
+<h3 class="wp-block-heading" id="h-steps-4-to-6-building-the-local-schedule">Steps 4 to 6: Building the local schedule<span class="clth-copy-icon" data-heading-id="h-steps-4-to-6-building-the-local-schedule"><span class="clth-tooltip">Copy Link</span></span></h3>
+<figure class="wp-block-image size-full"><a data-caption="Steps 4 to 6. Each script keeps its own due time. One local timer points to the script that should run first." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/11/image-43.png"><picture class="wp-image-200973" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-43.png.webp 968w, https://patchmypc.com/app/uploads/2026/11/image-43-300x162.png.webp 300w, https://patchmypc.com/app/uploads/2026/11/image-43-767x415.png.webp 767w" sizes="(max-width: 968px) 100vw, 968px" type="image/webp"/>
+<img alt="Steps 4 to 6. Each script keeps its own due time. One local timer points to the script that should run first." data-lazy-sizes="(max-width: 968px) 100vw, 968px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-43.png 968w, https://patchmypc.com/app/uploads/2026/11/image-43-300x162.png 300w, https://patchmypc.com/app/uploads/2026/11/image-43-767x415.png 767w" decoding="async" src="assets/8d96c755eb150180/img_6.png"/>
+</picture>
+</a></figure>
+<h4 class="wp-block-heading" id="h-step-4-the-ime-reads-the-last-custom-compliance-run">Step 4 The IME reads the last Custom Compliance run<span class="clth-copy-icon" data-heading-id="h-step-4-the-ime-reads-the-last-custom-compliance-run"><span class="clth-tooltip">Copy Link</span></span></h4>
+<p class="wp-block-paragraph">The IME looks up LastExecution for the device or user context, policy ID, and assignment version. Including the version matters because a changed script starts with its own execution history.</p>
+<h4 class="wp-block-heading" id="h-step-5-the-next-due-time-is-calculated">Step 5: The next due time is calculated<span class="clth-copy-icon" data-heading-id="h-step-5-the-next-due-time-is-calculated"><span class="clth-tooltip">Copy Link</span></span></h4>
+<p class="wp-block-paragraph">For a minute schedule, the calculation is simple. The IME adds the selected interval to the last recorded execution time. A run recorded at 09:00 with a 15-minute interval becomes due at 09:15.</p>
+<p class="wp-block-paragraph"><strong>Next due time = LastExecution + selected interval</strong></p>
+<p class="wp-block-paragraph">The IME checks the time again just before execution. This keeps each script on its own schedule when another assignment wakes the service earlier.</p>
+<h4 class="wp-block-heading" id="h-step-6-the-ime-sets-the-local-timer">Step 6: The IME sets the local timer<span class="clth-copy-icon" data-heading-id="h-step-6-the-ime-sets-the-local-timer"><span class="clth-tooltip">Copy Link</span></span></h4>
+<p class="wp-block-paragraph">The IME calculates the due time for each cached script and chooses the earliest one. It sets one local timer for that point. When an earlier time is already queued, the IME keeps it. After each pass, the due times are calculated again, and the timer is set for the next script.</p>
+<p class="wp-block-paragraph">This is what turns the new setting into a true 15-minute cadence. Intune delivers the schedule during the assignment check-in. The IME timer starts the repeat runs between those check-ins.</p>
+<h3 class="wp-block-heading" id="h-steps-7-to-10-running-and-reporting">Steps 7 to 10: Running and reporting<span class="clth-copy-icon" data-heading-id="h-steps-7-to-10-running-and-reporting"><span class="clth-tooltip">Copy Link</span></span></h3>
+<figure class="wp-block-image size-full"><a data-caption="Steps 7 to 10. PowerShell collects the value. The IME records and reports it. Intune decides whether the value meets the JSON rule." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/11/image-44.png"><picture class="wp-image-200974" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-44.png.webp 968w, https://patchmypc.com/app/uploads/2026/11/image-44-300x162.png.webp 300w, https://patchmypc.com/app/uploads/2026/11/image-44-767x415.png.webp 767w" sizes="(max-width: 968px) 100vw, 968px" type="image/webp"/>
+<img alt="Steps 7 to 10. PowerShell collects the value. The IME records and reports it. Intune decides whether the value meets the JSON rule." data-lazy-sizes="(max-width: 968px) 100vw, 968px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-44.png 968w, https://patchmypc.com/app/uploads/2026/11/image-44-300x162.png 300w, https://patchmypc.com/app/uploads/2026/11/image-44-767x415.png 767w" decoding="async" src="assets/8d96c755eb150180/img_7.png"/>
+</picture>
+</a></figure>
+<h4 class="wp-block-heading" id="h-step-7-the-timer-selects-the-scripts-that-are-due">Step 7: The timer selects the scripts that are due<span class="clth-copy-icon" data-heading-id="h-step-7-the-timer-selects-the-scripts-that-are-due"><span class="clth-tooltip">Copy Link</span></span></h4>
+<p class="wp-block-paragraph">When the timer fires, the IME reads the cached assignments for the device and signed in users and checks their schedules again. Only scripts that are due continue to execution. The IME also prevents two scheduled passes from processing the same work at the same time.</p>
+<h4 class="wp-block-heading" id="h-step-8-powershell-runs-the-discovery-script">Step 8: PowerShell runs the discovery script<span class="clth-copy-icon" data-heading-id="h-step-8-powershell-runs-the-discovery-script"><span class="clth-tooltip">Copy Link</span></span></h4>
+<p class="wp-block-paragraph">The IME prepares the discovery script and starts PowerShell in the configured system or user context. It waits for the script to finish and captures the output and exit code.</p>
+<p class="wp-block-paragraph">For the stopped security agent, the discovery script can complete successfully and return this value.</p>
+<p class="wp-block-paragraph">{“ServiceRunning”:false}</p>
+<p class="wp-block-paragraph">A successful exit code confirms that PowerShell completed. Intune still applies the JSON rule to decide the state of ServiceRunning.</p>
+<h4 class="wp-block-heading" id="h-step-9-the-ime-records-and-compares-the-result">Step 9: The IME records and compares the result<span class="clth-copy-icon" data-heading-id="h-step-9-the-ime-records-and-compares-the-result"><span class="clth-tooltip">Copy Link</span></span></h4>
+<p class="wp-block-paragraph">After the run, the IME writes a fresh LastExecution value. That happens even when the script returns the same value as before, so the next interval starts from the latest run.</p>
+<p class="wp-block-paragraph">The IME also compares the new result with the cached report. A changed result is saved under Reports and prepared for upload. If the value is the same, the cache already represents the current result.</p>
+<h4 class="wp-block-heading" id="h-step-10-intune-evaluates-the-reported-result">Step 10: Intune evaluates the reported result<span class="clth-copy-icon" data-heading-id="h-step-10-intune-evaluates-the-reported-result"><span class="clth-tooltip">Copy Link</span></span></h4>
+<p class="wp-block-paragraph">The IME sends the result through its normal service connection. A successful upload is marked as sent. A failed upload stays available for another attempt.</p>
+<p class="wp-block-paragraph">Intune matches the returned property names to the JSON rules in the policy. When ServiceRunning is false, and the rule requires true, that setting becomes noncompliant. The result then contributes to the device compliance state used by reporting and Conditional Access.</p>
+<h2 class="wp-block-heading" id="h-first-assignment-and-repeat-runs">First assignment and repeat runs<span class="clth-copy-icon" data-heading-id="h-first-assignment-and-repeat-runs"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">A newly assigned script version has no LastExecution value. The IME therefore treats it as due. In this tested client build, the assignment flow can queue the first run about five minutes later. That short delay is a safety interval used around a first or overdue run.</p>
+<p class="wp-block-paragraph">Once the first run finishes, the normal loop begins. The IME records the execution time, adds the selected interval, and arms the next timer. Service restarts follow the same model because the execution timestamp is kept in the registry.</p>
+<h2 class="wp-block-heading" id="h-what-the-15-minute-setting-controls">What the 15-minute setting controls<span class="clth-copy-icon" data-heading-id="h-what-the-15-minute-setting-controls"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The setting controls when the cached discovery script becomes due on the device. Script startup, PowerShell runtime, connectivity, result upload, and Intune processing happen around that due time. The admin center therefore updates after the local run and service processing have finished.</p>
+<p class="wp-block-paragraph">Say the discovery script reports that the security service is stopped at 09:00. You start the service again at 09:02. With a 15-minute frequency, the next run becomes due at 09:15. That leaves about 13 minutes before the device can discover the fix, followed by the time needed to report and process the new result.</p>
+<figure class="wp-block-image size-full"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/11/image-45.png"><picture class="wp-image-200975" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-45.png.webp 968w, https://patchmypc.com/app/uploads/2026/11/image-45-300x55.png.webp 300w, https://patchmypc.com/app/uploads/2026/11/image-45-766x140.png.webp 766w" sizes="(max-width: 968px) 100vw, 968px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 968px) 100vw, 968px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-45.png 968w, https://patchmypc.com/app/uploads/2026/11/image-45-300x55.png 300w, https://patchmypc.com/app/uploads/2026/11/image-45-766x140.png 766w" decoding="async" src="assets/8d96c755eb150180/img_8.png"/>
+</picture>
+</a></figure>
+<h2 class="wp-block-heading" id="h-summary">Summary<span class="clth-copy-icon" data-heading-id="h-summary"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The new setting gives the IME a supported evaluation interval for custom compliance scripts. The device receives the assignment, reads the last execution time, calculates the next due time, sets a local timer, runs PowerShell, and sends the JSON result to Intune.</p>
+<p class="wp-block-paragraph">That is the improvement we were waiting for. The discovery loop can now repeat in minutes. The registry reset remains useful when a lab test needs an immediate rerun, while production devices can follow the interval selected in the policy.</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

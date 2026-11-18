@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Microsoft Perception helps IT drive outcomes and scale</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Intune Customer Success</span>
+    <span class="date">November 17, 2026</span>
+  </div>
+  <h1>Microsoft Perception helps IT drive outcomes and scale</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/intune-customer-success/microsoft-perception-helps-it-drive-outcomes-and-scale/ba-p/4573285" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><h2 class="styles_text-body__F7QRV MessageIntroduction_lia-message-introduction___mMAN styles_h4__wlzOi">Transforming endpoint management with deeper insights, custom reporting, and intelligent remediation</h2><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p>Attackers now move in hours. The <a class="lia-external-url" href="https://www.microsoft.com/corporate-responsibility/topics/cybersecurity/reports/microsoft-digital-defense-report/" rel="noopener noreferrer" target="_blank">Microsoft Digital Defense Report 2026</a> notes that new vulnerabilities can be weaponized in under a day, and roughly 40,000 CVEs were published in the first half of 2026 alone, a pace on track to roughly double. Unpatched vulnerabilities can leave organizations exposed, making timely identification, prioritization, and remediation essential to endpoint security.</p>
+<p>Security teams often focus on identifying and prioritizing risk, while IT teams manage the deployment of fixes across devices. IT teams roll out fixes at scale but need the context for which risks matter most. The workflows between these two teams are often fragmented across tickets and manual handoffs. And yet, IT is increasingly being asked to protect more: more devices, more apps, and now AI agents. As Hayete Gallot, Executive Vice President of Microsoft Security, wrote when introducing <a class="lia-external-url" href="https://blogs.microsoft.com/blog/2026/07/27/rethinking-security-for-the-age-of-ai/" rel="noopener noreferrer" target="_blank">Project Perception</a>, "<strong><em>approaches built for a world of human actors cannot keep pace</em></strong>" with AI, agents, and machine-speed attacks.</p>
+<p>At Microsoft Ignite, we are introducing <strong>Microsoft Perception</strong> capabilities specifically for IT in <a class="lia-external-url" href="https://www.microsoft.com/security/business/microsoft-intune" rel="noopener noreferrer" target="_blank">Microsoft Intune</a> to help teams scale to meet this expanding set of responsibilities. These capabilities shift IT from chasing tickets and reconciling lists to reviewing plans, approving change, and proving outcomes.</p>
+<p><a class="lia-external-url" href="https://aka.ms/PerceptionWeb" rel="noopener noreferrer" target="_blank">Microsoft Perception</a> is an agentic security system in which red, blue, and green team agents drive security outcomes across the security lifecycle, with humans in the loop. In <a class="lia-external-url" href="https://blogs.microsoft.com/blog/2026/10/19/securing-the-agentic-insider/" rel="noopener noreferrer" target="_blank">October</a>, we extended Perception to secure the agentic insider specialized agents. Perception and <a class="lia-external-url" href="https://www.microsoft.com/en-us/microsoft-agent-365" rel="noopener noreferrer" target="_blank">Microsoft Agent 365</a> now share a unified agent registry, giving IT and security a consistent view of agents and risk.</p>
+<p>We now expand the power of Perception to IT. Perception connects critical workflows and closes the gap between security teams that prioritize risk and IT teams that deploy change.</p>
+<p>For IT pros, Perception brings three connected capabilities into Intune:</p>
+<ol>
+<li><strong>Plain language exploration</strong> converts tenant endpoint data into actionable insights conversationally – no multi-step queries and cross exports needed.</li>
+<li>The <strong>Vulnerability Remediation Agent</strong> in Intune turns prioritized risk into exposure reduction plans ready for approval.</li>
+<li><strong>Custom reports</strong> track progress and verify outcomes in a repeatable manner.</li>
+</ol>
+<p>By bringing shared security context and a path to remediation directly into Intune, these capabilities help IT meet expanding responsibilities, prioritize fixes, and move faster from understanding risk to acting on it. With fewer disconnected steps between security and IT, teams can shift from chasing tickets to reviewing plans, approving change, and proving outcomes.</p>
+<p>Putting shared security context and a path to remediation directly into Intune helps to move from understanding which risks matter most to acting on them faster, with fewer disconnected steps between security and IT.</p>
+<p>It is now incredibly easy to ask deep questions that would otherwise require hand stitching exports. Just ask, “Which non-compliant devices on each OS version have not checked in during the last 30 days?” or “Which devices are still running a vulnerable app version or are missing the latest security update?” Perception returns a table, shows how it arrived at the results, and flags when results are partial.</p>
+<p>Simply open Perception in the Intune admin center, begin a new chat, and describe the required outcome. Perception writes and runs the queries, combines results across data sources, and explains each step with citations. Review the queries behind the answer without having to write them or look up an API.</p>
+<p>To act, add the affected devices or users to a new or existing group and follow through with familiar Intune tools. Data exploration and actions runs as you: you see only the data your role-based permissions allow you to access and act on.</p>
+<p>Better AI answers also depend on better data. Intune platform improvements are moving device data closer to near real time, with faster app inventory and policy reporting on Windows giving Perception a more current picture of your environment to reason from. More current device data can help to provide insights based on recent information, while timestamps show how current is the underlying data.</p>
+<p>In Microsoft Defender, Perception green team agents produce the risk prioritization that tells teams what to fix first. Those rankings and their reasoning aren't locked in another team's console. IT administrators with access to Perception in Microsoft Defender can also review these risk prioritizations and their supporting context.</p>
+<p>The Posture Prioritization Agent, now generally available, scores each exposure on likelihood, potential impact, asset criticality, exploitability, reachability, and how many resources are affected. It looks for single fixes that reduce risk across several assets, and for each item it explains why it matters and which critical assets are involved.</p>
+<p>The Risk Reduction Agent, in public preview, puts that analysis into action through the Reduce exposure risk playbook. When a permanent fix is ready, it coordinates patching through Intune while IT keeps control of deployment. When patching isn't immediately possible, it can shield the vulnerability with targeted, temporary protection, then track progress toward closure.</p>
+<p>Risk scoring now extends to agents, too. Many agents run on endpoints IT manages, contained by controls IT owns, such as execution containers and software compliance policies in Intune. Dynamic Agent Risk combines signals from identity, data, endpoints, cloud, network, runtime, and the agent’s own activity. It scores how securely each agent is configured, what it can reach, its potential impact if something goes wrong, and whether its actions are drifting from the intent of its task. The score updates as behavior changes rather than being set once at onboarding. When an agent’s risk rises, IT can see why and tighten those controls instead of waiting on a ticket from the SOC. Whether the risk is a vulnerable app or a drifting agent, admins arrive in Intune knowing which fix matters most.</p>
+<p>The Vulnerability Remediation Agent in Intune combines Microsoft Defender vulnerability intelligence with Intune device and app context to build prioritized, tenant-specific remediation plans. For every plan, the agent weighs severity and exploit likelihood, and classifies each fix as either an OS update or an app update. OS updates can be expedited at any time; app updates are matched to managed, catalog, or WinGet apps. The agent ranks plans with reasoning. Rather than handing IT a list of CVEs, it focuses on the most impactful vulnerability reduction recommendations. Each recommendation is centered on an action, and one remediation action may address multiple CVEs across affected devices.</p>
+<p>As a standalone agent in Intune, the vulnerability reduction agent gives IT an independent path to act on risk. Admins can review prioritized Defender recommendations, generate remediation plans, and execute them in a single pane, without waiting for a request from the security team. When a broader initiative flags a critical OS update, that fix surfaces as a priority the next time the admin runs the agent.</p>
+<p>The agent also works hand in hand with the Risk Reduction Agent from Perception in Defender. When the Risk Reduction Agent identifies an app or OS vulnerability that needs remediation, IT can run the Vulnerability Remediation Agent in Intune. It combines that context and priority with the tenant’s Intune environment to build a specific, actionable plan grounded in the organization’s device state. IT receives the plan ready for review before any action is taken.</p>
+<p>Faster remediation must be balanced with IT oversight. The agent proposes remediation plans, while administrators retain control over deployment decisions. Admins review and can change every target, exclusion, and safeguard, and nothing runs without a human decision. Approved plans roll out through deployment rings, starting with a ring 0 pilot with success thresholds before moving to ring 1.</p>
+<p>Admins can act only on devices within their role and scope tags. Every run is logged, including agent activity, run results, and when each suggestion was applied.</p>
+<p>An answer is useful once. A report is useful every day. When an investigation is worth repeating, it can be saved as a custom report, with data views and advanced visualizations in one place. The report keeps the recipe behind the answer: the queries, API calls, and analysis steps. Each time it is opened from Custom reports in the Perception pane, it automatically reruns that recipe on the latest data and displays the results. Cards can be added to place related views side by side, such as devices by platform and by OS version.</p>
+<p>That turns one-off investigations into repeatable checkpoints. A Windows upgrade report refreshes and older versions phase out. A remediation rollout report monitors key insights and helps administrators monitor deployment progress, changes in exposure, and understand which devices have received fixes. Custom reports help IT support deceisions with current, traceable data.</p>
+<p><strong>IT scales to meet expanding responsibilities.</strong> As IT takes responsibility for more devices, apps, agents, and containers, these capabilities connect the work of finding, prioritizing, addressing, and verifying exposure. Data exploration scopes exposure without exports, risk scores identify the most important fix, the Vulnerability Remediation Agent turns that priority into a plan to close CVEs, and shielding covers vulnerabilities that cannot yet be patched. Custom reports confirm that exposure has closed, helping teams extend their reach across the environment.</p>
+<p><strong>Prioritize remediation with greater context.</strong> Prioritized recommendations put the most important fix first, one action can close several CVEs, and tenant-specific plans move straight from insight to deployment.</p>
+<p><strong>The work itself changes.</strong> IT moves from chasing tickets and reconciling lists to reviewing plans, approving change, and proving outcomes. Security and IT share context, scope, and accountability in one connected workflow, while safe ring-based rollouts keep users productive.</p>
+<p><strong>AI should do more than provide answers</strong>. It should help IT teams turn security insights into informed remediation decisions and measurable progress.</p>
+<p>Microsoft Perception in Intune, including data exploration, custom reports, and the Vulnerability Remediation Agent, is available in public preview for Intune customers onboarded to Microsoft Perception. If you already use Microsoft Perception, reach out to your account representative to connect with the Intune team. If you are not yet a Perception customer, express your interest in the Intune public preview at <a class="lia-external-url" href="https://aka.ms/IntunePerceptionPreview" rel="noopener noreferrer" target="_blank">aka.ms/IntunePerceptionPreview</a>​, and we will reach out if we are able to onboard you.</p>
+<p>To learn more about Microsoft Perception: <a class="lia-internal-link lia-internal-url lia-internal-url-content-type-blog" data-lia-auto-title="What's new with Microsoft Perception at Ignite 2026" data-lia-auto-title-active="0" href="https://techcommunity.microsoft.com/blog/perception-blog/whats-new-with-microsoft-perception-at-ignite-2026/4571834" target="_blank">What's new with Microsoft Perception at Ignite 2026</a>.</p>
+<p>To see it in action at Microsoft Ignite, join these sessions:</p>
+<p> </p>
+<p><em>Stay up to date! Bookmark the <a class="lia-external-url" href="https://aka.ms/IntuneBlog" rel="noopener noreferrer" target="_blank">Microsoft Intune Blog</a> and <a class="lia-external-url" href="https://aka.ms/IntuneCustomerSuccess" rel="noopener noreferrer" target="_blank">Intune Customer Success Blog</a> and follow us on </em><a class="lia-external-url" href="https://www.aka.ms/IntuneLinked" rel="noopener noreferrer" target="_blank">LinkedIn</a><em> or </em><a class="lia-external-url" href="https://www.aka.ms/MSIntune" rel="noopener noreferrer" target="_blank">@MSIntune</a><em> and </em><a class="lia-external-url" href="https://www.aka.ms/IntuneSuppTeam" rel="noopener noreferrer" target="_blank">@IntuneSuppTeam</a><em> on X to continue the conversation.</em></p></div></div></div>
+</article>
+</body>
+</html>

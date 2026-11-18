@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Microsoft Ignite 2026: AI, Intune and Agent Governance</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">November 18, 2026</span>
+  </div>
+  <h1>Microsoft Ignite 2026: AI, Intune and Agent Governance</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/microsoft-ignite-2026-ai-intune-agent-governance/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="prose" data-article-body=""><p>I spent much of my <a href="/microsoft-build-2026-agentic-stack/">Build 2026 recap</a> on what agents need to work: context, models, identities and somewhere safe to run. At Ignite, those pieces start to look like work for an endpoint team. An Intune policy can mark a device noncompliant when it finds a restricted app. Windows can limit what a supported agent can do inside a container. Entra can retire an agent identity that has outlived its job.</p>
+<p>Those are the announcements Iâd put next to Copilot Autopilot and the new models. If an agent can carry on after you close the chat, someone has to be able to see what it did and stop it when the job is over.</p>
+<p>Microsoft Ignite runs November 17â20. The availability below reflects the opening announcements as of November 18. <a href="https://news.microsoft.com/events/ignite/2026/book-of-news/">Microsoft Ignite 2026 Book of News</a>.</p>
+<figure class="technical-figure"><a aria-label="Open original image â Microsoft Ignite 2026 event artwork." href="https://azure.microsoft.com/en-us/blog/wp-content/uploads/2026/11/Azure-Blog-Image-Ignite_Blog-Hero-6A_3840x2160-scaled.jpg"><img alt="Microsoft Ignite 2026 event artwork." decoding="async" fetchpriority="auto" src="assets/721e0e9b79cb4b10/img_0.webp"/></a><figcaption>Microsoft Ignite 2026 event artwork. <a href="https://azure.microsoft.com/en-us/blog/microsoft-ignite-2026-whats-new-in-azure-the-platform-purpose-built-for-ai/">Image source: Microsoft</a>.</figcaption></figure>
+<h2 id="copilot-home-cowork-and-autopilot">Copilot Home, Cowork and Autopilot</h2>
+<p>Copilot Home brings Chat and Cowork together. Home, Office in Copilot and Copilot Managed Runtime are generally available. Copilot Code is expected to reach GA in the coming weeks. Autopilot is rolling out through Frontier, where Copilot Workspaces is also available. Each Autopilot has a Microsoft Entra Agent ID and an assigned manager. Its sign-ins and actions are logged under its own identity. <a href="https://www.microsoft.com/en-us/copilot/blog/2026/11/17/copilot-at-microsoft-ignite-expanding-whats-possible-with-intelligence-built-for-work/">Microsoft Copilot Blog</a>.</p>
+<p>Iâd start with a recurring task that falls between meetings and email. Let an agent check whether an open item has moved, pull in the relevant documents and prepare a follow-up. Give it permission to draft first. Sending a commitment on your teamâs behalf is a different decision.</p>
+<p>Microsoft announced <strong>MAI Code 2, Code 2 Flash and Cyber 2 Flash</strong>, alongside new image and audio models. Microsoftâs model announcement describes Code 2 Flash in Foundry as a Limited Access Preview. Microsoft-Decision-1.1 is GA and can handle tasks such as classification and routing. I would compare models on the cost of a successfully completed task, including retries and manual cleanup. That is the figure that matters when the same workflow runs every day. <a href="https://microsoft.ai/news/microsoft-ignite-2026/">Microsoft AI</a>, <a href="https://blogs.microsoft.com/blog/2026/11/17/ignite-2026-building-the-frontier-ecosystem/">Microsoftâs keynote roundup</a>.</p>
+<h2 id="microsoft-iq-and-continuous-improvement-in-foundry">Microsoft IQ and continuous improvement in Foundry</h2>
+<p>Microsoft IQ brings together Work IQ, Fabric IQ, Foundry IQ and Web IQ, with more than 350 third-party connectors. The new <strong>Business Plugins</strong> package knowledge, skills and tools for reuse across agents and are available through Frontier. Work IQ Retrieve, real-time meeting context and granular MCP policies are GA. Memory remains in Public Preview. <a href="https://azure.microsoft.com/en-us/blog/introducing-the-new-microsoft-iq-putting-your-organizations-intelligence-to-work-in-every-agent/">Microsoft IQ</a>, <a href="https://azure.microsoft.com/en-us/blog/microsoft-ignite-2026-whats-new-in-azure-the-platform-purpose-built-for-ai/">Azure Ignite roundup</a>.</p>
+<p>If five agents need the same internal policy, Iâd rather have one team maintain the source and set its access rules. Once you copy the policy into five prompts, every policy update becomes five separate jobs. The value of the plugin depends on whether somebody actually owns the source it points to.</p>
+<p>Foundry adds more ways to use production traces and evaluations to improve an agent. <strong>Insights</strong> is GA. Trace annotations, golden datasets, and new skill and cost optimization capabilities are in preview. Agent Optimizer evaluates proposed changes against your own criteria, and your team chooses what to deploy. Thatâs a natural next step after getting <a href="/microsoft-foundry-observability/">agent tracing and evaluation working in Foundry</a>. <a href="https://azure.microsoft.com/en-us/blog/continuous-improvement-comes-to-microsoft-foundry/">Microsoft Foundry</a>.</p>
+<figure class="technical-figure"><a aria-label="Open original image â The continuous improvement cycle in Foundry shows where evaluation and optimization fit." href="https://azure.microsoft.com/en-us/blog/wp-content/uploads/2026/11/Continuous_improvement_visual_simplified-1024x696.webp"><img alt="The continuous improvement cycle in Foundry shows where evaluation and optimization fit." decoding="async" fetchpriority="auto" src="assets/721e0e9b79cb4b10/img_1.webp"/></a><figcaption>The continuous improvement cycle in Foundry shows where evaluation and optimization fit. <a href="https://azure.microsoft.com/en-us/blog/continuous-improvement-comes-to-microsoft-foundry/">Image source: Microsoft</a>.</figcaption></figure>
+<h2 id="intune-controls-for-local-ai-agents">Intune controls for local AI agents</h2>
+<p><strong>Software Compliance</strong> is in Public Preview. If Intune finds a restricted application on a Windows device, it can mark the device noncompliant. Conditional Access can then block that device from protected company resources. It evaluates supported application identifiers, such as MSI product codes or Store package names. Editor extensions, npm packages and standalone executables canât be selected in this preview. <a href="https://techcommunity.microsoft.com/blog/intunecustomersuccess/a-guide-to-governing-local-ai-agents-with-intune/4573284">Intune Customer Success</a>.</p>
+<figure class="technical-figure"><a aria-label="Open original image â Software Compliance in Intune can check for a restricted app using a supported identifier." href="https://techcommunity.microsoft.com/t5/s/gxcuf89792/images/bS00NTcwMDAzLWVNM2NXTA?image-dimensions=999x574&amp;revision=8"><img alt="Software Compliance in Intune can check for a restricted app using a supported identifier." decoding="async" fetchpriority="auto" src="assets/721e0e9b79cb4b10/img_2.webp"/></a><figcaption>Software Compliance in Intune can check for a restricted app using a supported identifier. <a href="https://techcommunity.microsoft.com/blog/microsoftintuneblog/what%E2%80%99s-new-in-microsoft-intune-at-ignite/4570003">Image source: Microsoft</a>.</figcaption></figure>
+<p>That can interrupt access even while the local agent is idle. Before assigning a policy broadly, Iâd try it with a pilot group and check how quickly an employee can restore access after removing the app. The remediation message is part of that test.</p>
+<p><strong>Agent Containment</strong> in Intune sets boundaries for supported agents using Microsoft Execution Containers (MXC). Windows enforces the file and network limits on supported execution. A coding agent might need write access to one repository and no access to a directory containing credentials. Thatâs a boundary Iâd want Windows to enforce. Support depends on the agent and execution method. <a href="https://blogs.windows.com/windowsdeveloper/2026/11/17/enterprise-deployment-of-governed-agents-on-windows/">Windows Developer Blog</a>.</p>
+<figure class="technical-figure"><a aria-label="Open original image â Agent Containment in Intune sets file and network boundaries for supported MXC agents." href="https://techcommunity.microsoft.com/t5/s/gxcuf89792/images/bS00NTcwMDAzLVJPendTOA?image-dimensions=999x562&amp;revision=8"><img alt="Agent Containment in Intune sets file and network boundaries for supported MXC agents." decoding="async" fetchpriority="auto" src="assets/721e0e9b79cb4b10/img_3.webp"/></a><figcaption>Agent Containment in Intune sets file and network boundaries for supported MXC agents. <a href="https://techcommunity.microsoft.com/blog/microsoftintuneblog/what%E2%80%99s-new-in-microsoft-intune-at-ignite/4570003">Image source: Microsoft</a>.</figcaption></figure>
+<p>MXC has been GA on Windows 11 since October. The new Intune controls and process container improvements are in preview. Learning and Permissive Modes are GA, and Local Micro VMs are experimental. <a href="https://blogs.windows.com/windowsexperience/2026/11/17/microsoft-ignite-2026-building-windows-for-the-next-era-of-work/">Windows Experience Blog</a>, <a href="https://techcommunity.microsoft.com/blog/agent-365-blog/whats-new-in-microsoft-agent-365-ignite-2026/4571753">Agent 365 Blog</a>.</p>
+<h2 id="agent-365-and-entra-agent-id">Agent 365 and Entra Agent ID</h2>
+<p>Agent 365 is extending management to more platforms and to supported local and previously unsanctioned agents. <strong>Dynamic Agent Risk</strong> (Preview) combines runtime signals with what an agent can reach and what it could affect. The Tool Registry brings plugins, skills, MCP servers and connectors together. Microsoft expects the Action Center for inactive and ownerless agents to enter private preview in December. <a href="https://techcommunity.microsoft.com/blog/agent-365-blog/whats-new-in-microsoft-agent-365-ignite-2026/4571753">Agent 365 Blog</a>, <a href="https://news.microsoft.com/events/ignite/2026/book-of-news/">Book of News</a>.</p>
+<figure class="technical-figure"><a aria-label="Open original image â The Agent 365 Tool Registry lists plugins, skills, MCP servers and connectors." href="https://techcommunity.microsoft.com/t5/s/gxcuf89792/images/bS00NTcxNzUzLTU3Ync0cQ?image-dimensions=900x434&amp;revision=11"><img alt="The Agent 365 Tool Registry lists plugins, skills, MCP servers and connectors." decoding="async" fetchpriority="auto" src="assets/721e0e9b79cb4b10/img_4.webp"/></a><figcaption>The Agent 365 Tool Registry lists plugins, skills, MCP servers and connectors. <a href="https://techcommunity.microsoft.com/blog/agent-365-blog/whats-new-in-microsoft-agent-365-ignite-2026/4571753">Image source: Microsoft</a>.</figcaption></figure>
+<p>Iâd review the tools when approving the agent, and again when a connector changes. Adding a tool that can update a record changes the agentâs reach, even if its original instructions stay the same. I covered where the management responsibilities sit in <a href="/microsoft-365-agents-explained-what-agents-365-means/">Agent 365 vs. Microsoft 365 Agents</a>.</p>
+<p>Entraâs automated lifecycle policies for agent identities are GA. They can check sponsorship and recent activity, then act according to the policy. In Preview, separate Conditional Access policies for supported assistive agents can restrict the risky agent while the employee keeps working. The <strong>MCP Firewall</strong> is also in Preview. Iâd include agent ownership in offboarding. If a person leaves, which of their agents should keep running, and who is taking them over? <a href="https://techcommunity.microsoft.com/blog/microsoft-entra-blog/ai-is-changing-access-see-how-microsoft-entra-helps-you-stay-ahead-/4556456">Microsoft Entra Blog</a>.</p>
+<p>Microsoft Perception is generally available as a security platform. The <strong>Vulnerability Remediation Agent in Intune</strong> remains in limited Public Preview for eligible customers onboarded to Perception. It combines vulnerability findings from Defender with Intuneâs device and app context. Admins can validate targets and exclusions, approve the plan and roll the fix out in rings. Roles and scope tags still apply. <a href="https://www.microsoft.com/en-us/security/blog/2026/11/17/security-for-the-agentic-era-powered-by-microsoft-perception/">Microsoft Security Blog</a>, <a href="https://techcommunity.microsoft.com/blog/intunecustomersuccess/microsoft-perception-helps-it-drive-outcomes-and-scale/4573285">Intune Customer Success</a>.</p>
+<figure class="technical-figure"><a aria-label="Open original image â The Vulnerability Remediation Agent in Intune prepares a plan for app and OS updates." href="https://techcommunity.microsoft.com/t5/s/gxcuf89792/images/bS00NTcwMDAzLXZhZlJxMA?image-dimensions=936x498&amp;revision=8"><img alt="The Vulnerability Remediation Agent in Intune prepares a plan for app and OS updates." decoding="async" fetchpriority="auto" src="assets/721e0e9b79cb4b10/img_5.webp"/></a><figcaption>The Vulnerability Remediation Agent in Intune prepares a plan for app and OS updates. <a href="https://techcommunity.microsoft.com/blog/microsoftintuneblog/what%E2%80%99s-new-in-microsoft-intune-at-ignite/4570003">Image source: Microsoft</a>.</figcaption></figure>
+<p>This is one I would pilot. Between a Defender finding and an update on the right devices, someoneâs usually matching affected versions to packages and working out where to deploy first. If the agent gives the endpoint team a plan they can verify, Iâd measure how long it takes to reduce the exposure and how many targeted devices still need the fix after rollout.</p>
+<h2 id="windows-server-in-intune-and-the-endpoint-updates-worth-tracking">Windows Server in Intune and the endpoint updates worth tracking</h2>
+<p><strong>Windows Server management in Intune</strong> is available through the Windows Server Insider program for eligible scenarios, including branch and edge servers. The preview covers selected configuration and compliance policies, Win32 app deployments and updates with Windows Autopatch. Microsoft describes testing supported Insider builds in a separate environment. <a href="https://techcommunity.microsoft.com/blog/intunecustomersuccess/manage-windows-servers-alongside-pcs-with-microsoft-intune/4572643">Intune Customer Success</a>.</p>
+<figure class="technical-figure"><a aria-label="Open original image â The Intune device inventory lists Windows Server devices and Windows clients together." href="https://techcommunity.microsoft.com/t5/s/gxcuf89792/images/bS00NTcwMDAzLXQwQXcwUw?image-dimensions=999x563&amp;revision=8"><img alt="The Intune device inventory lists Windows Server devices and Windows clients together." decoding="async" fetchpriority="auto" src="assets/721e0e9b79cb4b10/img_6.webp"/></a><figcaption>The Intune device inventory lists Windows Server devices and Windows clients together. <a href="https://techcommunity.microsoft.com/blog/microsoftintuneblog/what%E2%80%99s-new-in-microsoft-intune-at-ignite/4570003">Image source: Microsoft</a>.</figcaption></figure>
+<p>Before enrolling a test server, Iâd check what is already assigned to <strong>All devices</strong>, which scope tags apply and which team owns each setting. Azure Arc still covers infrastructure management and hybrid use cases. Agree on which tool owns each workload when both teams manage the same server.</p>
+<p><strong>Enterprise App Management</strong> is expanding automatic updates to more eligible, verified apps, including apps the IT team didnât originally deploy. That and App-in-use Detection are in Private Preview. Device-level app inventory is in Public Preview. Microsoft announced CIS benchmark auditing for Public Preview in November. In Limited Public Preview, Company Portal can show app installation and compliance progress after Windows Autopilot device preparation. <a href="https://techcommunity.microsoft.com/blog/microsoftintuneblog/what%E2%80%99s-new-in-microsoft-intune-at-ignite/4570003">Microsoft Intune Blog</a>.</p>
+<p>The app update announcement is easy to miss. If your team spends time chasing outdated software that it never deployed, that is a good candidate for a small test once you have access.</p>
+<h2 id="agent-365-business-analytics-and-ai-spending">Agent 365 Business Analytics and AI spending</h2>
+<p>Agent 365 Business Analytics is rolling out in Frontier. Microsoftâs detailed launch post specifies at least 50 Microsoft 365 Copilot licenses at launch for analytics on Microsoft services, with access expanding to tenants with one or more licenses by mid-December. Connected non-Microsoft services require Agent 365 and/or ME7. <strong>Assisted Hours</strong> estimates the share of work AI helped complete. Compare it with the time and cost your process actually incurred. <a href="https://techcommunity.microsoft.com/blog/ai-finops-blog/introducing-microsoft-agent-365-business-analytics-turn-ai-investment-into-busin/4574149">Agent 365 Business Analytics</a>.</p>
+<figure class="technical-figure"><a aria-label="Open original image â Agent 365 Business Analytics shows AI use, spend and estimated value." href="https://techcommunity.microsoft.com/t5/s/gxcuf89792/images/bS00NTcxNzUzLXRnNmR1VA?image-dimensions=900x586&amp;revision=11"><img alt="Agent 365 Business Analytics shows AI use, spend and estimated value." decoding="async" fetchpriority="auto" src="assets/721e0e9b79cb4b10/img_7.webp"/></a><figcaption>Agent 365 Business Analytics shows AI use, spend and estimated value. <a href="https://techcommunity.microsoft.com/blog/agent-365-blog/whats-new-in-microsoft-agent-365-ignite-2026/4571753">Image source: Microsoft</a>.</figcaption></figure>
+<p>Iâd keep the first pilotâs measures simple. How many jobs finished successfully? How much review did they need? What did each completed job cost? A busy agent can look healthy on a usage chart while creating work for somebody downstream.</p>
+<h2 id="microsoft-ignite-2026-availability-at-a-glance">Microsoft Ignite 2026 availability at a glance</h2>
+<p>GA means generally available. Preview access can depend on enrollment, licensing and supported scenarios. Status as of November 18, 2026.</p>
+<table>
+<thead>
+<tr>
+<th>Announcement</th>
+<th>Availability</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Copilot Home, Office in Copilot and Managed Runtime</td>
+<td>GA</td>
+</tr>
+<tr>
+<td>Copilot Code</td>
+<td>GA expected in the coming weeks</td>
+</tr>
+<tr>
+<td>Copilot Autopilot and Workspaces</td>
+<td>Frontier</td>
+</tr>
+<tr>
+<td>Microsoft-Decision-1.1 and Foundry Insights</td>
+<td>GA</td>
+</tr>
+<tr>
+<td>Microsoft Execution Containers on Windows 11</td>
+<td>GA since October, with new process container features in Preview</td>
+</tr>
+<tr>
+<td>Intune Software Compliance</td>
+<td>Public Preview</td>
+</tr>
+<tr>
+<td>Intune Agent Containment and Dynamic Agent Risk</td>
+<td>Preview</td>
+</tr>
+<tr>
+<td>Entra automated lifecycle for agent identities</td>
+<td>GA</td>
+</tr>
+<tr>
+<td>Microsoft Perception</td>
+<td>GA</td>
+</tr>
+<tr>
+<td>Vulnerability Remediation Agent in Intune</td>
+<td>Limited Public Preview, onboarding required</td>
+</tr>
+<tr>
+<td>Windows Server in Intune</td>
+<td>Windows Server Insider Preview for eligible scenarios</td>
+</tr>
+<tr>
+<td>Expanded automatic app updates in Enterprise App Management</td>
+<td>Private Preview</td>
+</tr>
+<tr>
+<td>Agent 365 Business Analytics</td>
+<td>Frontier Preview</td>
+</tr>
+</tbody>
+</table>
+<h2 id="where-id-start-after-ignite">Where Iâd start after Ignite</h2>
+<p>Pick one small agent workflow. Write down who owns it, which data and tools it can use, where it runs and which steps need approval. Run a good case and a case that should be denied. Then revoke access and check whether the agent can still run. Thatâs the part Iâd want demonstrated before widening the pilot.</p>
+<p>If the device team already has a long list of unpatched apps, run an endpoint pilot alongside it. Iâd take a verifiable improvement in patch coverage while the agent team works out its controls.</p>
+<p>For the full set of announcements and session coverage, see the <a href="https://news.microsoft.com/events/ignite/2026/book-of-news/">Microsoft Ignite 2026 Book of News</a>.</p></div></div></div>
+</article>
+</body>
+</html>

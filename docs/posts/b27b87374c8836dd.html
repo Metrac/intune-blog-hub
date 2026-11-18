@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A guide to governing local AI agents with Intune</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Intune Customer Success</span>
+    <span class="date">November 17, 2026</span>
+  </div>
+  <h1>A guide to governing local AI agents with Intune</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/intune-customer-success/a-guide-to-governing-local-ai-agents-with-intune/ba-p/4573284" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><h2 class="styles_text-body__F7QRV MessageIntroduction_lia-message-introduction___mMAN styles_h4__wlzOi">See how Microsoft Intune helps discover supported local AI agents, govern access, protect work data, and set boundaries.</h2><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p>Local AI agents are becoming part of everyday work. Employees may use them on managed devices to access repositories, analyze files, automate tasks, or interact with external services. IT needs to understand which agents are present, decide how to handle them, and apply controls that match their approved use.</p>
+<p>Our Ignite 2026 roundup of <a class="lia-external-url" href="https://aka.ms.intuneatignite/" rel="noopener noreferrer" target="_blank">what's new in Microsoft Intune</a> introduced new controls for agent governance and containment on managed devices. This hands-on follow-up explains how to put them to work.</p>
+<p>No single control fits every agent or task. Coverage depends on the agent, host app, platform, and available signals. As always, test policies to understand behavior before deploying broadly.</p>
+<p>Microsoft Agent 365 combines available inventory and runtime signals from Microsoft Defender, Intune, and Microsoft Entra to help IT identify supported local AI agents on Windows devices. Intune’s <a class="lia-external-url" href="https://learn.microsoft.com/intune/app-management/deployment/enhanced-app-inventory" rel="noopener noreferrer" target="_blank">application inventory</a> can help IT identify how and where discovered agents are installed. Admins can create a configuration profile that specifies which app inventory properties to collect and assign it to device or user groups. App inventory collects registered Win32 and Windows Store apps from Windows 10/11 devices that are Intune enrolled and Entra joined.</p>
+<p>For an unwanted agent or app, note the <strong>Platform-specific app ID </strong>attribute. This is the MSI product code for Win32 apps or the package full name for Store apps. Admins can use this value to enable restrictions with a <strong>software compliance policy</strong>.</p>
+<p>Local AI agents do not always map one-to-one with a host app. Currently, only host apps installed as Win32 or Windows Store apps appear in Intune’s app inventory.</p>
+<p><strong>Intune software compliance policy</strong>, available in public preview, can help restrict device access to protected company resources when a specified unwanted application is detected and applicable Conditional Access requirements are configured.</p>
+<p>Software compliance evaluates installed apps by supported identifiers, not agent identifiers directly. Agents with multiple supported host apps may need multiple restricted software entries. Review these relationships before assigning the policy. In this preview, editor extensions, npm packages, and standalone executables aren't available to select.</p>
+<p>Using the MSI product code or package full name of an unwanted app:</p>
+<ol>
+<li>Create a software compliance policy in the Intune console</li>
+<li>Add the app’s identifier as a restricted software entry</li>
+<li>Assign the policy to a device or user group</li>
+<li>Ensure a Conditional Access policy is configured to require that devices are compliant to access corporate resources</li>
+</ol>
+<p>Once deployed, Intune marks targeted devices non-compliant if restricted software is found, allowing Conditional Access to block access to protected corporate resources across the entire device, even while the agent is inactive. After uninstalling the software, employees can immediately request a compliance check; once Intune confirms compliance with applicable requirements, access can be restored according to the organization’s Conditional Access policies.</p>
+<p>To provide instructions for the employee, admins can create a custom message explaining why the device is out of compliance and how to fix it. The IT team can then use reporting to see which devices still need attention and adjust the policy as needs change.</p>
+<p>App protection policies help control how work data is accessed and transferred within supported AI apps on iOS/iPadOS and Android, with or without device enrollment. Supported AI applications, including eligible offerings from Microsoft and third-party developers, can integrate with Intune app protection policies through the Intune App SDK. To get started:</p>
+<ul>
+<li>Check the Microsoft Intune protected apps list, the Apple App Store, or Google Play to confirm which AI apps support Intune app protection policies.</li>
+<li>Create or update an app protection policy for iOS/iPadOS and Android that includes those apps.</li>
+<li>Configure data protection settings, such as limiting cut, copy, and paste and saving to personal storage, and access requirements such as a PIN.</li>
+<li>Add conditional launch checks, then assign the policy to the user groups that use those apps.</li>
+</ul>
+<p>An agent may be approved for a task without needing access to everything on the device.</p>
+<p><a class="lia-external-url" href="https://learn.microsoft.com/windows/apps/develop/mxc/" rel="noopener noreferrer" target="_blank">Microsoft Execution Containers (MXC)</a>, now generally available on Windows 11, lets developers run each agent task inside a policy-driven execution boundary. Windows enforces the configured execution boundary independently of the agent, helping prevent supported agents and their generated code from exceeding the permissions established for the container. Developers choose how to contain their agents; IT sets the guardrails through the new agent containment policy in Intune.</p>
+<p>On managed Windows devices, this policy defines the most an MXC-enabled agent can do. Setting the guardrails takes three steps:</p>
+<ol>
+<li>Define the ceiling in the Intune admin center under Endpoint security, in Agent containment.</li>
+<li>Configure folder access as deny, read-only, or read-write. Decide whether the agent gets network access, such as local loopback or external connections.</li>
+<li>Target the policy to all known MXC-enabled agents, or to a specific supported agent.</li>
+</ol>
+<p>When an agent asks Windows to create a container, Windows compares the request with the Intune ceiling. Requests within the ceiling are granted. Requests that exceed it are denied, and the agent gets enough information back to adjust.</p>
+<p>For example, IT might allow an agent to work in a project repository while denying access to a credentials folder. Initial coverage includes process containers and MXC-enabled agents that Microsoft Defender identifies, beginning with GitHub Copilot CLI and OpenAI Codex CLI.</p>
+<p>The <a class="lia-external-url" href="https://learn.microsoft.com/windows-365/agents/windows365foragentssecuritybaseline" rel="noopener noreferrer" target="_blank">Windows 365 for Agents security baseline</a> provides Microsoft-recommended device security settings for agent Cloud PCs. Protections apply as soon as a Cloud PC is provisioned and enrolled in Intune, before the agent signs in and starts working. The baseline provides Microsoft-recommended settings for Windows 11, Microsoft Edge, and Microsoft Defender for Endpoint, covering Defender Antivirus, Defender Firewall, attack surface reduction, credential protection, browser security, and OS hardening.</p>
+<p>In the Intune admin center, go to Endpoint security &gt; Security baselines and select Windows 365 for Agents Security Baseline. Review and adjust the default settings. Assign the profile to the device groups that contain the agent Cloud PCs. Restrict unneeded agent runtimes on Windows devices.</p>
+<p>Many local AI agents rely on runtime environments like Node.js or Windows Subsystem for Linux (WSL). On Windows devices where these runtimes aren't needed, the Local AI Agent Baseline - OpenClaw (Preview), introduced in May 2026, can help disable or restrict them. It configures Windows Subsystem for Linux (WSL) settings and adds two firewall rules that block outbound TCP connections from Node.js executables.</p>
+<p>Test the baseline configuration before deployment. Disabling WSL or blocking Node.js network traffic may impact more than OpenClaw and could be disruptive for employees who use these runtimes. To deploy it in the Intune admin center:</p>
+<ol>
+<li>Go to Endpoint security &gt; Security baselines, select Local AI Agent Baseline - OpenClaw (Preview), and create a profile.</li>
+<li>Review each setting and turn off any that would disrupt legitimate work, such as on developer devices that rely on Node.js or WSL.</li>
+<li>Assign the profile to a pilot group first, then expand.</li>
+</ol>
+<p>Intune can restrict agent execution on supported Macs and enable runtime protections for supported agents on Windows.</p>
+<p>On supervised Macs running macOS 27 or later, Allowed Binaries and Denied Binaries control which apps and command-line tools can execute. For approved agents that support managed configuration, Intune can deliver policies governing tool permissions, MCP connections, approval requirements, and supported sandbox settings. Applicable macOS privacy controls provide another layer around access to sensitive data and device capabilities. The new app privacy permission defaults streamline consent, but they are not enforced restrictions.</p>
+<p>For customers using Microsoft Entra Internet Access, <strong>Global Secure Access</strong> adds outbound network controls. Intune can deploy and configure the Mac client, while Entra policies restrict destinations for traffic routed through the service. Customers should configure traffic acquisition, bypass rules, and connection-failure behavior to match their security requirements.</p>
+<p>These controls do not create a universal containment boundary around every agent or integration: coverage depends on the agent’s supported policies, its execution environment, and the traffic captured for enforcement.</p>
+<p>Use Intune to enable <a class="lia-internal-link lia-internal-url lia-internal-url-content-type-blog" data-lia-auto-title="Microsoft Defender AI agent runtime protections" data-lia-auto-title-active="0" href="https://techcommunity.microsoft.com/blog/MicrosoftThreatProtectionBlog/now-generally-available-discover-local-ai-agents-with-microsoft-defender/4568216" target="_blank">Microsoft Defender AI agent runtime protections</a> on managed Windows devices. For supported agents and event interfaces, such as Claude Code, Codex CLI, and GitHub Copilot CLI, Defender inspects designated interaction points to help identify prompt injection attempts. It can also block certain detected high-risk actions before execution.</p>
+<p>Before starting, confirm that the organization has a Microsoft Defender for Endpoint Plan 2, Microsoft 365 E5, Microsoft Agent 365, or Microsoft 365 E7 license. Devices need to be onboarded to Defender for Endpoint.  Microsoft Defender Antivirus needs to be in active mode, with real-time protection turned on.</p>
+<p>Admins can follow these steps:</p>
+<ul>
+<li>In the Intune admin center, go to Endpoint security <strong>&gt;</strong> Antivirus and select<br/>‘Create policy’.</li>
+<li>For Platform, select Windows. For Profile, select Microsoft Defender AI agent runtime protection.</li>
+<li>Set AI Agent Protection to Audit and assign the policy to a small group of devices where supported agents are actively used.</li>
+<li>Review detections in the Microsoft Defender portal for one to two weeks. In audit mode, informational alerts show what would have been blocked.</li>
+<li>When the detections look accurate, change the setting to Block for the device groups where enforcement is required.</li>
+<li>Confirm the effective setting on the device page in the Defender portal, then run the AI agent runtime protection demonstration on a test device.</li>
+</ul>
+<p>With runtime protection enabled in block mode, employees can continue using supported agents, although certain detected requests or actions may be blocked according to the configured protection settings.</p>
+<p>When Defender detects a prompt injection attempt inside a prompt or tool response, it can block the request before the agent acts. In Claude Code, the employee sees a Microsoft Defender block message and a Windows notification. The detection appears in Windows Security under Protection history. The security team sees a Suspicious AI prompt injection alert in the Defender portal.</p>
+<p>Choose the controls that apply to the devices and agents. This checklist follows the post's structure rather than a required deployment sequence.</p>
+<ol>
+<li>Use app and local AI agent inventory in Intune, along with Defender and Agent 365 discovery.</li>
+<li>Use software compliance policies with Conditional Access to block access to company resources until compliance is restored. Protect work data with app protection policies for supported AI apps built with the Intune App SDK.</li>
+<li>Preview the agent containment policy for MXC-enabled agents. Ask agent vendors to support MXC and expose settings IT can manage. For agents running in Windows 365 for Agents Cloud PCs, deploy the Windows 365 for Agents security baseline.</li>
+<li>Deploy the Local AI Agent security baseline on Windows devices where agent runtimes aren't needed.</li>
+<li>On managed macOS devices, use denied binaries to block unwanted agents. Deploy configurations and enable network settings for approved agents.</li>
+</ol>
+<p>With software compliance in preview, start with a small group of Windows devices. Before expanding assignments, validate host-app detection, the resulting compliance state, and how configured Conditional Access policies restrict and restore access. Agree how endpoint and security teams will handle findings and exceptions. </p>
+<p>For the broader agent security story, read <a class="lia-external-url" href="https://aka.ms/Securityblog_Ignite26" rel="noopener noreferrer" target="_blank">Ignite Security Blog</a> and the <a class="lia-external-url" href="https://blogs.microsoft.com/blog/2026/10/19/securing-the-agentic-insider/" rel="noopener noreferrer" target="_blank">Securing the agentic insider</a> blog. Watch these on-demand Microsoft Ignite sessions on the capabilities covered here:</p>
+<p> </p>
+<p><em>Stay up to date! Bookmark the <a class="lia-external-url" href="https://aka.ms/IntuneBlog" rel="noopener noreferrer" target="_blank">Microsoft Intune Blog</a> and <a class="lia-external-url" href="https://aka.ms/IntuneCustomerSuccess" rel="noopener noreferrer" target="_blank">Intune Customer Success Blog</a> and follow us on </em><a href="https://www.aka.ms/IntuneLinked" rel="noopener noreferrer" target="_blank"><em>LinkedIn</em></a><em> or </em><a href="https://www.aka.ms/MSIntune" rel="noopener noreferrer" target="_blank"><em>@MSIntune</em></a><em> and </em><a href="https://www.aka.ms/IntuneSuppTeam" rel="noopener noreferrer" target="_blank"><em>@IntuneSuppTeam</em></a><em> on X to continue the conversation.</em></p></div></div></div>
+</article>
+</body>
+</html>

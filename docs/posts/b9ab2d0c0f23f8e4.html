@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Manage Windows Servers alongside PCs with Microsoft Intune</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Intune Customer Success</span>
+    <span class="date">November 17, 2026</span>
+  </div>
+  <h1>Manage Windows Servers alongside PCs with Microsoft Intune</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/intune-customer-success/manage-windows-servers-alongside-pcs-with-microsoft-intune/ba-p/4572643" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><h2 class="styles_text-body__F7QRV MessageIntroduction_lia-message-introduction___mMAN styles_h4__wlzOi">Another way into the cloud: Test Intune management for eligible Windows Servers alongside your PCs.</h2><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p>Microsoft enables organizations to bring more of their workloads into the cloud, but the path looks different for every organization. Some Windows Servers, including servers used as workstations, remote desktop session hosts, and branch-office servers, still run mission-critical workloads and may continue to be managed with traditional tools such as Configuration Manager, Group Policy, and scripts.</p>
+<p>Microsoft is extending familiar endpoint-management workflows to these eligible Windows Servers through Microsoft Intune. Available through the Windows Server Insider program, this preview allows endpoint administrators to manage supported servers in Intune alongside the Windows clients and other devices they already manage.</p>
+<p>With this preview, endpoint administrators will be able to apply configuration and compliance policies, deploy apps, manage updates, and use device compliance as a signal for Conditional Access on eligible Windows Servers. Intune roles and scope tags help control who can view and manage these servers. These familiar workflows give endpoint teams a more consistent way to manage supported Windows Servers alongside their Windows clients. To explore the preview, enroll eligible non-production servers running a supported Windows Server Insider build in a test environment and share feedback with Microsoft.<br/><br/></p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image &lt;p&gt;&lt;em&gt;Figure 1: A list of enrolled Windows and Windows Server devices in the Intune admin center.&lt;/em&gt;&lt;/p&gt;" aria-labelledby="Dx4Kq7_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/b9ab2d0c0f23f8e4/img_0.png"/></button><span class="lia-media-caption-text" id="Dx4Kq7_caption">
+<p><em>Figure 1: A list of enrolled Windows and Windows Server devices in the Intune admin center.</em></p>
+</span></span>
+<p>For endpoint teams already managing Windows 11 PCs, bringing Windows Server management into Intune is a natural extension. Intune becomes a single pane of glass for both servers and Windows endpoints as many of these servers are managed by the same teams that run Intune for their endpoints. If your Azure team manages both the cloud and on-premise servers, we recommend using Azure Arc.</p>
+<p>Intune-eligible scenarios include Active Directory–joined servers in environments that use Microsoft Entra Connect, and servers that join Microsoft Entra ID. Here are some examples:</p>
+<ul>
+<li><strong>Windows Server used as workstations:</strong> privileged access workstations and jump boxes for reaching production environments, remote desktop session hosts, development and test systems, and factory-floor terminals.</li>
+<li><strong>Edge, branch, and distributed Windows Server:</strong> servers in retail sites, branch offices, and other remote locations where generalist IT teams manage local services alongside PCs.</li>
+<li><strong>Persistent virtual desktop sessions:</strong> Windows Server RDSH sessions in hybrid virtual desktop environments, such as <a class="lia-external-url" href="https://learn.microsoft.com/azure/virtual-desktop/hybrid-overview" rel="noopener noreferrer" target="_blank">Azure Virtual Desktop Hybrid</a>. Intune manages each session as a device and applies user policies; the virtualization platform continues to manage host pools and images. Multiple concurrent sessions are outside the scope of this preview.</li>
+</ul>
+<p> </p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image &lt;p&gt;&lt;em&gt;Figure 2: Device details of an enrolled Windows Server.&lt;/em&gt;&lt;/p&gt;" aria-labelledby="bUilgN_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/b9ab2d0c0f23f8e4/img_1.png"/></button><span class="lia-media-caption-text" id="bUilgN_caption">
+<p><em>Figure 2: Device details of an enrolled Windows Server.</em></p>
+</span></span>
+<p>Servers such as privileged access workstations and jump boxes often hold the keys to production environments, so who can manage them matters as much as how they are managed. Intune gives you control at each step:</p>
+<ul>
+<li><strong>Windows Server enrollment is opt-in. </strong>Server enrollment is off by default.</li>
+</ul>
+<p>To enroll servers, change the Windows Server devices setting from Block to Allow; existing custom Windows restrictions continue to block servers until changed. Entra groups and assignment filters give you granular control over who can enroll.</p>
+<p> </p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image &lt;p&gt;&lt;em&gt;Figure 3: Server devices restricted from enrolling by default.&lt;/em&gt;&lt;/p&gt;" aria-labelledby="ClTERV_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/b9ab2d0c0f23f8e4/img_2.png"/></button><span class="lia-media-caption-text" id="ClTERV_caption">
+<p><em>Figure 3: Server devices restricted from enrolling by default.</em></p>
+</span></span>
+<ul>
+<li><strong>Identity and compliance gate access.</strong> Enrolled Windows Servers join Microsoft Entra ID. You can evaluate them against compliance policies and use Conditional Access to require a compliant device before users reach protected apps and resources.</li>
+<li><strong>Roles and scope tags determine who can act</strong>. Existing Intune roles and scope tags apply to servers. Admins who manage PCs today may be able to see and act on servers after they enroll. Plan role assignments and scope tags before enrollment so server management stays with the right admins.</li>
+<li><strong>Filters keep policies where they belong</strong>. Use assignment filters with the operatingSystemSKU property to target server policies precisely and keep PC policies off servers.</li>
+</ul>
+<p> </p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image &lt;p&gt;&lt;em&gt;Figure 4: New assignment filters for Windows Server SKUs.&lt;/em&gt;&lt;/p&gt;" aria-labelledby="heaj5P_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/b9ab2d0c0f23f8e4/img_3.png"/></button><span class="lia-media-caption-text" id="heaj5P_caption">
+<p><em>Figure 4: New assignment filters for Windows Server SKUs.</em></p>
+</span></span>
+<p>To determine eligibility for servers, weigh team ownership alongside your organization’s existing management approach. Use these questions to guide the decision:</p>
+<ul>
+<li><strong>Ownership:</strong> Which team is responsible for the server?</li>
+<li><strong>Team scope:</strong> Does the team operating the server also manage endpoints?</li>
+<li><strong>Azure readiness:</strong> Is your organization already using Azure, or ready to adopt it?</li>
+<li><strong>Standardization:</strong> Is standardization of management tools across endpoints and servers a priority?</li>
+<li><strong>Infrastructure needs:</strong> Does the server need Azure-based governance and services?</li>
+</ul>
+<p>Intune and Azure provide complementary management capabilities. Intune brings endpoints and eligible Windows Servers into the same device-management workflows, while Azure provides infrastructure management across environments—whether resources are hosted in Azure, on-premises, or in other clouds.</p>
+<p>For example, an endpoint team can use Intune to deploy applications, apply supported security configurations, deploy patches, and evaluate device compliance on a Windows Server. The infrastructure team can connect that same Windows Server to Azure through Azure Arc, making it available as an Azure resource. They can then use Azure Monitor to monitor server health and performance, and Azure Policy to audit supported configurations against infrastructure governance requirements.</p>
+<p>Together, these capabilities let each team manage the same server through the lens relevant to its role. Clear ownership of administrative responsibilities is essential to keep Windows Server behavior predictable. Intune and Azure can manage different areas of the same server, but they should not enforce competing policies for the same settings or workload.</p>
+<p>Intune and Azure are both cloud-native and serve different management needs. Intune brings eligible Windows Servers into the endpoint-management workflows that endpoint teams already use, while Azure provides infrastructure management, monitoring, and governance for production and business-critical servers, wherever they run. For customers already operating in Azure and looking to manage on-premise servers, Azure Arc remains Microsoft’s recommended management plane for on-premises and hybrid servers.</p>
+<p>The preview supports selected Windows management workflows on eligible servers, as outlined below. Before planning a rollout, review the documentation for supported settings, app types, and device actions.</p>
+<p> </p>
+<div class="styles_lia-table-wrapper__h6Xo9 styles_table-responsive__MW0lN"><table border="1" class="lia-border-style-solid"><thead><tr class="lia-background-color-custom-0078d4"><th class="lia-border-color-custom-0078d4 lia-border-style-solid" scope="col"><span class="lia-text-color-22"><strong>Task</strong></span></th><th class="lia-border-color-custom-0078d4 lia-border-style-solid" scope="col"><span class="lia-text-color-22"><strong>What you can test</strong></span></th></tr></thead><tbody><tr class="lia-background-color-22"><td class="lia-border-color-custom-e1e1e1 lia-vertical-align-top lia-border-style-solid"><strong>Opt in</strong></td><td class="lia-border-color-custom-e1e1e1 lia-vertical-align-top lia-border-style-solid"><strong>Server enrollment is off by default.</strong> In the Intune admin center, device platform restrictions include a <strong>Server devices</strong> setting initially set to <strong>Block</strong>. To opt in, change it to <strong>Allow</strong> in the default restriction or in a custom Windows restriction assigned to users who will enroll servers. Existing custom Windows restrictions continue to block servers until you change them.</td></tr><tr class="lia-background-color-custom-f5f7fa"><td class="lia-border-color-custom-e1e1e1 lia-vertical-align-top lia-border-style-solid"><strong>Enroll</strong></td><td class="lia-border-color-custom-e1e1e1 lia-vertical-align-top lia-border-style-solid">On the server, <strong>add a work or school account</strong> to join Microsoft Entra ID and enroll in Intune. <strong>Automatic enrollment</strong> is also supported for hybrid-joined servers.</td></tr><tr class="lia-background-color-22"><td class="lia-border-color-custom-e1e1e1 lia-vertical-align-top lia-border-style-solid"><strong>Find and organize</strong></td><td class="lia-border-color-custom-e1e1e1 lia-vertical-align-top lia-border-style-solid">Enrolled servers appear under the <strong>Windows</strong> platform and in <strong>All devices</strong> alongside PCs. Use groups and <strong>assignment filters - </strong>including the <strong>operatingSystemSKU</strong> property - to include or exclude servers. Supported remote actions are also available.</td></tr><tr class="lia-background-color-custom-f5f7fa"><td class="lia-border-color-custom-e1e1e1 lia-vertical-align-top lia-border-style-solid"><strong>Update</strong></td><td class="lia-border-color-custom-e1e1e1 lia-vertical-align-top lia-border-style-solid">Manage server updates with supported <strong>update ring settings</strong> and <strong>maintenance window policies</strong> using <strong>Windows Autopatch</strong>.</td></tr><tr class="lia-background-color-22"><td class="lia-border-color-custom-e1e1e1 lia-vertical-align-top lia-border-style-solid"><strong>Configure</strong></td><td class="lia-border-color-custom-e1e1e1 lia-vertical-align-top lia-border-style-solid">Apply supported server settings from the <strong>settings catalog</strong>. Where settings apply to both, manage them with a <strong>single policy</strong>, or author <strong>separate server and PC policies</strong> if you need to. Each setting’s server applicability determines where settings apply.</td></tr><tr class="lia-background-color-custom-f5f7fa"><td class="lia-border-color-custom-e1e1e1 lia-vertical-align-top lia-border-style-solid"><strong>Protect access</strong></td><td class="lia-border-color-custom-e1e1e1 lia-vertical-align-top lia-border-style-solid">Extend existing <strong>Conditional Access</strong> policies to servers where applicable, or create separate policies for servers. Require a <strong>compliant device</strong> for supported access to protected apps and resources.</td></tr><tr class="lia-background-color-22"><td class="lia-border-color-custom-e1e1e1 lia-vertical-align-top lia-border-style-solid"><strong>Deploy apps</strong></td><td class="lia-border-color-custom-e1e1e1 lia-vertical-align-top lia-border-style-solid">Deploy supported <strong>Win32 apps</strong> and monitor their deployment status.</td></tr></tbody><colgroup><col/><col/></colgroup></table></div>
+<p> </p>
+<p>This preview covers core scenarios only. Windows Autopilot doesn't apply to servers, and MDM-only enrollment, bulk enrollment, and automatic enrollment for co-managed devices aren't available yet.</p>
+<p>Complete these checks before enrolling your first servers:</p>
+<ol>
+<li><strong>Review All devices assignments.</strong> Enrolled servers appear in All devices. <br/>During the preview, existing configuration policies do not apply to servers until you edit them. Review other All devices assignments before enrollment.</li>
+<li><strong>Create server assignment filters.</strong> Use operatingSystemSKU to target server SKUs with a server policy or exclude them from a PC policy.</li>
+<li><strong>Check roles and scope tags.</strong> Existing Intune roles and scope tags apply to servers, so admins who manage your PCs today may be able to see and act on servers after they enroll. Plan scope tags before enrollment to keep server management with the right admins.</li>
+<li><strong>Start with a pilot in a test environment.</strong> Enroll a few non-production servers in a test tenant first. If Configuration Manager, Group Policy, or Azure Arc also manages them, decide which tool is the authority for each workload.</li>
+</ol>
+<p>This preview brings core server-management scenarios to Intune so organizations can test them on non-production servers. Microsoft will continue building on the preview based on customer feedback.</p>
+<p>As with any Insider Preview build, test the capabilities in a separate environment rather than the tenant used to manage production devices.</p>
+</div></div></div>
+</article>
+</body>
+</html>
