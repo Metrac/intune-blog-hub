@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HotPatch and MSI installations Issues</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Call4Cloud (Rudy Ooms)</span>
+    <span class="date">November 19, 2026</span>
+  </div>
+  <h1>HotPatch and MSI installations Issues</h1>
+  <div class="orig">Saved for offline reading · <a href="https://call4cloud.nl/hotpatch-msi-msiexec-issues/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p>
+  We were tagged in a conversation about Citrix installations failing after the November Windows update. Some devices were having problems, while others seemed to be fine. There was no clear explanation for the difference.
+</p><p data-inserter-version="2" data-placement-location="under_page_title" id="ezoic-pub-ad-placeholder-102"></p>
+<p>
+  We started testing it ourselves and eventually saw the same behaviour. The installer would start, then disappear again. No useful error on screen. Even the exit code suggested that everything had completed successfully.
+</p>
+<p>
+  We wanted to know how far the installer was actually getting. We tried starting Windows Installer on its own and looked at what Windows recorded at the same time. One event in the Application log gave us a reason to look closer.
+</p><p data-inserter-version="2" data-placement-location="under_first_paragraph" id="ezoic-pub-ad-placeholder-110"></p>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="The_first_useful_clue_was_in_the_Application_log"></span>The first useful clue was in the Application log<span class="ez-toc-section-end"></span></h2>
+<p>
+  The Application log on that failing boot included an event from a source called Hotpatch-Loader. That was a reason to look at what Windows was doing while the installer started. The name of an application in a deployment failure does not tell us which component stopped first.
+</p>
+<p>In Event Viewer, the location is Windows Logs &gt; Application. Filter for source Hotpatch-Loader and Event ID 153, then open Details &gt; XML View. This shortened example is from the controlled test described later: Hotpatching failed </p>
+<figure class="wp-block-image size-full"><img alt="" class="wp-image-26136" decoding="async" src="assets/f21bc9e71345976d/img_0.png"/></figure>
+<p>
+  There were two leads here. Windows was reporting a hotpatch failure inside an installer process, and it supplied a status code. The checksum and timestamp also gave us a way to identify the affected Windows image. Those fields would let us match the event to a file instead of guessing from the application name.
+</p><p data-inserter-version="2" data-placement-location="under_second_paragraph" id="ezoic-pub-ad-placeholder-111"></p>
+<p>
+  Event Viewer can put a distracting message above these details saying the event description cannot be found. The raw failure information was still present in our event. That missing description alone did not establish that the MSI files were corrupt.
+</p>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="Why_hotpatch_was_worth_a_closer_look"></span>Why hotpatch was worth a closer look<span class="ez-toc-section-end"></span></h2>
+<p>This isn’t the first time I’ve written about Windows Hotpatch and the unexpected problems that can come with it. Back in <a href="https://patchmypc.com/blog/windows-11-hotpatch-rebootless-updates/" rel="noopener" target="_blank">November 2024</a>, I looked at how hotpatch works and how Windows can install security updates without requiring a restart. Sounds great, right? But what happens when other parts of Windows still depend on the normal update process?</p>
+<p>In <a href="https://patchmypc.com/blog/windows-11-hotpatch-updates-secure-boot-and-the-reset-this-pc-problem/" rel="noopener" target="_blank">April 2026</a>, I wrote about exactly that. Microsoft confirmed that devices with hotpatch enabled could fail when using <strong>Reset this PC</strong>. Instead of resetting, Windows would restart back to the desktop with the message “There was a problem resetting your PC. No changes were made.”</p>
+<p>In that same article, I also covered how Secure Boot certificate updates still depended on the normal baseline update. Hotpatch could keep Windows security fixes current, but other components still needed the regular servicing cycle. Microsoft documented a mitigation for the reset issue in <a href="https://support.microsoft.com/help/5079471" rel="noopener" target="_blank">KB5079471</a>.</p><p data-inserter-version="2" data-placement-location="mid_content" id="ezoic-pub-ad-placeholder-112"></p>
+<p>And now, a few months later, we have another interesting problem. This time, Windows Installer itself can fail because Windows cannot prepare the hotpatch for<strong> <code>msi.dll</code>.</strong></p>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="What_Windows_is_doing_when_it_hotpatches_code"></span>What Windows is doing when it hotpatches code<span class="ez-toc-section-end"></span></h2>
+<p>
+  A normal Windows update can need a restart to replace code that is already in use. Hotpatching allows supported security fixes to take effect while Windows keeps running. Windows loads updated code into memory and redirects calls from the original functions to their replacements.
+</p>
+<p>
+  A function is a small piece of code that performs a job. An application can ask a Windows DLL to do part of its work by calling one of those functions. With a hotpatch applied, that call can take a new route to the updated function.
+</p>
+<figure class="wp-block-image"><img alt="Figure 1  Hotpatching redirects a call to updated code" class="wp-image-26126" decoding="async" src="assets/f21bc9e71345976d/img_1.png"/></figure>
+<p>
+  Windows keeps these routes in a Hotpatch Address Table, or HPAT. Each entry is a small redirect telling a call where to go next. I will call an entry a slot. The updated code can also call functions that remain in the original DLL, so Windows needs routes in both directions, held in separate tables.
+</p><p data-inserter-version="2" data-placement-location="long_content" id="ezoic-pub-ad-placeholder-113"></p>
+<p>
+  Hotpatch still has a servicing cycle. Baseline updates require a restart, while eligible hotpatch updates between baselines can apply without one. Some changes still depend on a normal update and reboot. <a href="https://learn.microsoft.com/en-us/intune/device-updates/windows/configure-hotpatch" rel="noopener" target="_blank">Microsoft explains the current cycle and requirements</a>.
+</p>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="Following_the_MSIEXEC_installer_through_a_trace"></span>Following the MSIEXEC installer through a trace<span class="ez-toc-section-end"></span></h2>
+<p>
+  The Application event gave us a failure and a fingerprint. An ETL recording could show more of the surrounding activity: the process starting, the DLL loading, the patch being prepared and the result. The recordings discussed here were made during the controlled tests later in this article.
+</p>
+<p>
+  I used Logman, the recording tool included with Windows. ETL is the recording file; ETW is the Windows tracing system supplying the events. The capture required administrator access and enabled two event sources. Kernel-Mm supplied hotpatch operations and result codes. Kernel-Process supplied process starts, exits and DLL loads.
+</p>
+<p>-Start a short recording <br/>-Start fresh 32 bit and 64 bit MSI processes <br/>-Stop recording and save the ETL <br/>-Follow each process ID and match the DLL details</p><p data-inserter-version="2" data-placement-location="longer_content" id="ezoic-pub-ad-placeholder-114"></p>
+<p>Matching the process ID with the checksum, timestamp and patch path connected the Application event to the 32-bit msi.dll and its msi_hotpatch.dll. </p>
+<figure class="wp-block-image size-large"><img alt="" class="wp-image-26137" decoding="async" src="assets/f21bc9e71345976d/img_2.png"/></figure>
+<p>The recording showed hotpatch preparation fail with C0000099. Our DLL-loading probe then received a null handle. This placed the failure in the Windows DLL-loading work that the installer needs before it can install a package. </p>
+<p>
+  That also explains why an Intune app deployment can draw attention to the package while its child installer is failing in Windows. The Intune Management Extension service remained running during this investigation.
+</p>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="The_error_led_to_a_size_check"></span>The error led to a size check<span class="ez-toc-section-end"></span></h2>
+<p>
+  The status C0000099 is named STATUS_ALLOTTED_SPACE_EXCEEDED. The name suggests a space problem, but it does not identify the particular limit. I needed to connect it to the code handling this hotpatch operation.
+</p><p data-inserter-version="2" data-placement-location="longest_content" id="ezoic-pub-ad-placeholder-115"></p>
+<p>
+  The relevant Windows code counts the table entries a patch needs, works out the required pages, and compares that size with a reserved area. If the table would exceed the reservation, the code selects the same status we saw in the recording. The important part reads like this:
+</p>
+<p>-Work out how much table space the patch needs <br/>-Compare it with the space already reserved <br/> -If the table would not fit stop preparing the hotpatch and return 0xC0000099</p>
+<p>
+  We now had a specific explanation to test. The installer needed its MSI DLL, Windows was preparing that DLL’s hotpatch, and the preparation could stop at a table-space check. The next lead was the reservation itself. Where did Windows get that amount?
+</p>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="The_next_lead_was_in_the_boot_code"></span>The next lead was in the boot code<span class="ez-toc-section-end"></span></h2>
+<p>
+  Following the reservation back to its starting point led into the boot loader. Windows reads a DWORD during startup and uses it to calculate the space available for hotpatch tables. The value in that read was named HotPatchTableSize.
+</p><p data-inserter-version="2" data-placement-location="incontent_5" id="ezoic-pub-ad-placeholder-116"></p>
+<p>
+  A proposed registry workaround had already been shared with us. Finding how Windows used this setting gave that suggestion an explanation we could check. It connected the value to the same reservation involved in the failure check.
+</p>
+<p>The value is stored here: HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management <br/> <br/><strong>Value name HotPatchTableSize <br/>Value type REG_DWORD</strong></p>
+<figure class="wp-block-image size-full"><img alt="" class="wp-image-26135" decoding="async" src="assets/f21bc9e71345976d/img_3.png"/></figure>
+<p>
+  The room in this case is a reserved address range associated with a DLL image. Windows uses physical memory pages as it fills the table. In the boot path examined here, it rounds the registry value up to a 4 KB boundary and doubles it for paired code and data pages. The code pages hold small jumps, and the data pages hold their destination addresses.
+</p>
+<p>
+  This also made the restart requirement understandable. The reservation size is chosen during Windows startup and used as images load later. Changing the registry in a running session does not rebuild that boot state.
+</p><p data-inserter-version="2" data-placement-location="incontent_6" id="ezoic-pub-ad-placeholder-117"></p>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="Counting_what_the_Hotpatch_actually_needs"></span>Counting what the Hotpatch actually needs<span class="ez-toc-section-end"></span></h2>
+<p>
+  The reservation explained the limit. The patch files supplied the other half of the comparison. This 32-bit MSI patch has 129 function redirects toward the updated code and 526 redirects back toward functions in the original image. Those are separate tables, so adding the two counts together would give the wrong comparison.
+</p>
+<p>
+  The table needing 526 entries exceeds a 512-slot reservation by 14. Because Windows grows these tables in paired pages, that table needs 16 KB. An 8 KB reservation cannot accommodate it. The corresponding table in the 64-bit patch needs 511 entries, which fits within 512 slots.
+</p>
+<p>
+  This was the reason to test a larger value. For these files, 0x2000 provides 1,024 slots and enough space for the 526-entry table. The trace did not print the number 526 or the registry value. Those came from checking the patch contents and the Windows sizing code. Successful ETW events showing 129 forward entries refer to the other table.
+</p>
+<figure class="wp-block-image"><img alt="Figure 2  The patch requirements explain why the smaller reservation can fail" class="wp-image-26127" decoding="async" src="assets/f21bc9e71345976d/img_4.png"/></figure>
+<p>
+  One pair of pages supports 512 slots. The two values we tested therefore gave these capacities:
+</p>
+<figure class="wp-block-table"><table class="has-fixed-layout"><thead><tr><th><p><strong>Hexadecimal value</strong>
+</p></th><th><p><strong>Total reserved space per image</strong>
+</p></th><th><p><strong>Available slots</strong>
+</p></th></tr></thead><tbody><tr><td><p>
+  0x1000
+</p></td><td><p>
+  8 KB
+</p></td><td><p>
+  512
+</p></td></tr><tr><td><p>
+  0x2000
+</p></td><td><p>
+  16 KB
+</p></td><td><p>
+  1,024
+</p></td></tr></tbody></table></figure>
+<figure class="wp-block-image"><img alt="Figure 3  The complete startup flow after connecting the trace the table requirement and the boot setting" class="wp-image-26128" decoding="async" src="assets/f21bc9e71345976d/img_5.png"/></figure>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="Putting_the_explanation_to_the_test"></span>Putting the explanation to the test<span class="ez-toc-section-end"></span></h2>
+<p>
+  There was an important detail about the test PC: it already had 0x2000 and worked. That gave us a baseline, rather than an example of a device that had arrived in a broken state.
+</p><p data-inserter-version="2" data-placement-location="incontent_7" id="ezoic-pub-ad-placeholder-118"></p>
+<p>
+  I recorded the working case, deliberately lowered the value to 0x1000, then restarted. With a short recording running, I started fresh MSI processes and a probe that only loaded MSI and read a diagnostic package. The 32-bit test used C:\Windows\SysWOW64\msiexec.exe; the 64-bit comparison used C:\Windows\System32\msiexec.exe.
+</p>
+<p>
+  The smaller-reserve boot reproduced the failure. The 32-bit DLL load failed, and the trace recorded C0000099 against the matching MSI image and patch. The 64-bit probe continued to work. Even the failing 32-bit msiexec help process returned exit code 0, which showed why the process exit code alone was a poor success test.
+</p>
+<figure class="wp-block-image"><img alt="Figure 4  Changing the boot input reproduced the failure and restoring it brought successful hotpatching back" class="wp-image-26129" decoding="async" src="assets/f21bc9e71345976d/img_6.png"/></figure>
+<p>
+  I restored 0x2000 and rebooted again. The kernel events showed successful MSI hotpatch operations for the same files. With tracing stopped, fresh 32-bit and 64-bit loading probes passed. Real diagnostic MSI packages then installed and uninstalled successfully for both architectures, and their temporary files were removed.
+</p>
+<p>
+  One recovery probe timed out, and the cleanup script later failed while another process was exiting. I did not count those API checks as passes. The successful kernel events and the separate installation tests established recovery. All six MSI engine, executable and hotpatch files kept their original hashes and valid Microsoft signatures.
+</p>
+<p>
+  The useful trace data came from the direct Logman recording. A supplemental Windows Performance Recorder capture contained mostly metadata and did not provide usable stacks. We matched the failure status, files and processes; we did not capture a call stack stopping at the exact size-comparison instruction.
+</p><p data-inserter-version="2" data-placement-location="incontent_8" id="ezoic-pub-ad-placeholder-119"></p>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="Why_an_upgrade_remains_a_possibility"></span>Why an upgrade remains a possibility<span class="ez-toc-section-end"></span></h2>
+<p>
+  The test explains how two devices with different reservations could behave differently with this patch. It does not establish how another device acquired its setting. My PC had 0x2000 before the experiment; I set the smaller value deliberately.
+</p>
+<p>
+  An older image, setup script or Windows installation could have carried a setting forward through an upgrade. To describe that as the cause on a particular PC, we would need evidence from that device, such as an earlier registry capture or setup records. Event 153 does not record the registry value or the upgrade history.
+</p>
+<p>
+  Boot state matters too. Our recovery task restored the on-disk value before we recorded the failing boot, but the running system still used the smaller reservation chosen at startup. It took the next reboot to use the restored setting. Reading 0x2000 from the registry during that failing boot would not have told the whole story.
+</p>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="What_to_check_on_an_affected_device"></span>What to check on an affected device<span class="ez-toc-section-end"></span></h2>
+<p>Start with the Application log and the actual installer process. A matching Hotpatch-Loader event, status C0000099 and MSI fingerprint justify following this lead. A different status or image needs its own investigation.  Read the current registry value with PowerShell:<br/></p>
+<p>
+  $memoryKey = ‘HKLM:\SYSTEM\CurrentControlSet\Control\’ +
+  <br/>
+               ‘Session Manager\Memory Management’
+  <br/>
+  Get-ItemPropertyValue -Path $memoryKey -Name HotPatchTableSize
+</p><p data-inserter-version="2" data-placement-location="incontent_9" id="ezoic-pub-ad-placeholder-120"></p>
+<p>
+  The output is normally decimal: 4096 means 0x1000, and 8192 means 0x2000. In Registry Editor, the tested larger setting is hexadecimal 2000. Decimal 2000 would still round to the smaller reservation in this boot path.
+</p>
+<p>
+  On the tested configuration, setting the DWORD to hexadecimal 2000 and rebooting restored MSI loading. Record the original value and validate the change on a representative device before applying it more widely. After rebooting, check a fresh installer process, a real MSI transaction and new matching events.
+</p>
+<p>
+  The lab used Windows 11 Enterprise 25H2, build 26200.9911, on Intel x64, with November hotpatch KB5132043 installed and MSI hotpatch DLL version 5.0.26100.9911. As of 19 November 2026, the <a href="https://support.microsoft.com/en-gb/servicing/os/hotpatch/windows-11/2026/november-kb5132043-windows-11-24h2-25h2-26h2-security-update" rel="noopener" target="_blank">Microsoft KB page</a> listed no known issues and did not document this registry workaround. This finding does not establish that every failure after that update has the same cause, including the separate Citrix LTSR setup error seen earlier.
+</p>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="Fixing_the_HotPatchTableSize"></span>Fixing the HotPatchTableSize<span class="ez-toc-section-end"></span></h2>
+<p>Now that we know what caused the failure, how can we check whether another device has the same problem? And more importantly, how can we fix it without changing something that is already working?</p>
+<p>In our tests, the problem appeared when <code>HotPatchTableSize</code> was set to <code>0x1000</code>. That gave Windows room for 512 entries, while the 32 bit MSI hotpatch needed 526.</p><p data-inserter-version="2" data-placement-location="incontent_10" id="ezoic-pub-ad-placeholder-121"></p>
+<p>Increasing the value to <code>0x2000</code> gave Windows room for 1,024 entries. After restarting the device, MSI loading worked again. But that does not mean we should simply set every device to <code>0x2000</code>.</p>
+<p>If a device already has <code>0x2000</code>, there is nothing to increase for this particular issue. The same applies to <code>0x4000</code>, which already provides a larger reservation. Changing those values would not address the limit we reproduced.</p>
+<p>There is also an important difference between decimal and hexadecimal values. For example, <code>4000</code> decimal is <code>0xFA0</code>, which Windows rounds up to <code>0x1000</code> in the boot path we examined. That is still the smaller reservation.</p>
+<h3 class="wp-block-heading"><span class="ez-toc-section" id="Checking_the_current_value_with_PowerShell"></span>Checking the current value with PowerShell<span class="ez-toc-section-end"></span></h3>
+<p>The following script first checks the existing registry value and shows it in both decimal and hexadecimal. It calculates the effective reservation using the same 4 KB rounding we observed in the Windows boot code.</p>
+<p>If the reservation is already large enough, it does nothing. If it is too small, the script can increase the registry value to <code>0x2000</code>. By default, the script only checks the configuration. Nothing is changed unless you explicitly use the <code>-Apply</code> parameter.</p><p data-inserter-version="2" data-placement-location="incontent_11" id="ezoic-pub-ad-placeholder-122"></p>
+<pre class="wp-block-code"><code>param(
+    [switch]$Apply
+)
+
+$path = 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management'
+$name = 'HotPatchTableSize'
+$target = 0x2000
+
+$key = Get-Item -Path $path -ErrorAction Stop
+
+if ($key.GetValueNames() -notcontains $name) {
+    Write-Host 'HotPatchTableSize is not configured.'
+    Write-Host 'No changes made.'
+    return
+}
+
+if ($key.GetValueKind($name) -ne 'DWord') {
+    Write-Warning 'Unexpected registry value type.'
+    return
+}
+
+$current = [uint32]$key.GetValue($name)
+
+Write-Host ("Current value: {0} decimal (0x{0:X})" -f $current)
+
+if ($current -eq 0) {
+    Write-Warning 'Unexpected zero value. No changes made.'
+    return
+}
+
+# Windows rounds the value up to a 4 KB boundary
+$effective = [uint64]([math]::Ceiling($current / 4096.0) * 4096)
+
+Write-Host ("Effective value: 0x{0:X}" -f $effective)
+
+if ($effective -ge $target) {
+    Write-Host 'Reservation already meets the tested minimum.'
+    Write-Host 'No changes required.'
+    return
+}
+
+if (-not $Apply) {
+    Write-Host 'Reservation is below the tested minimum.'
+    Write-Host 'Run with -Apply to update it to 0x2000.'
+    return
+}
+
+# Save the original value before changing it
+$backupFolder = Join-Path $env:ProgramData 'HotPatchBackup'
+New-Item -Path $backupFolder -ItemType Directory -Force | Out-Null
+
+$backupFile = Join-Path $backupFolder (
+    'HotPatchTableSize_{0}.json' -f (Get-Date -Format 'yyyyMMdd_HHmmss_fffffff')
+)
+
+[pscustomobject]@{
+    OriginalDecimal = $current
+    OriginalHex = ('0x{0:X}' -f $current)
+    ComputerName = $env:COMPUTERNAME
+    Date = (Get-Date).ToString('o')
+} | ConvertTo-Json | Set-Content -Path $backupFile -ErrorAction Stop
+
+# Update the registry
+New-ItemProperty -Path $path -Name $name `
+    -Value $target -PropertyType DWord `
+    -Force -ErrorAction Stop | Out-Null
+
+Write-Host 'HotPatchTableSize updated to 0x2000.'
+Write-Host "Original value saved to: $backupFile"
+Write-Host 'Restart Windows for the change to take effect.'</code></pre>
+<h2 class="wp-block-heading"><span class="ez-toc-section" id="What_happens_after_changing_it"></span>What happens after changing it?<span class="ez-toc-section-end"></span></h2>
+<p>A restart is required. Windows determines the reservation during startup, so changing the registry alone does not change the reservation already in use.</p>
+<p>After restarting, test the affected MSI installation again. Check for new Hotpatch Loader events with status <code>0xC0000099</code> and confirm whether the installation succeeds.</p>
+<p>If the reservation was already <code>0x2000</code> or larger and the same failure still occurs, increasing this value further is not something our tests support. At that point, we need to examine the actual hotpatch failure rather than assume the table is still too small.</p>
+<p><strong>This workaround was validated for the specific MSI hotpatch failure we reproduced. It should not be treated as a general fix for every Windows Installer failure.</strong></p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

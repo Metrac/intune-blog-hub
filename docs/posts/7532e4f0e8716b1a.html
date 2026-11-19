@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Remote Device Lock for Windows Devices</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Call4Cloud (Rudy Ooms)</span>
+    <span class="date">November 19, 2026</span>
+  </div>
+  <h1>Remote Device Lock for Windows Devices</h1>
+  <div class="orig">Saved for offline reading · <a href="https://patchmypc.com/blog/remote-device-lock-for-windows-devices/?utm_term=rss" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="post-content">
+<p class="wp-block-paragraph">A Windows laptop goes missing. You place it in a Remote Lock group in Intune. When the Remote Lock policy reaches the device, Windows signs out the user and replaces the ordinary sign-in options with a Device locked message.</p>
+<p class="wp-block-paragraph">That sounds simple, but two important things are happening. First, Windows stores the lock state and ends the active sessions. Then a separate part of Windows checks that state whenever the sign-in screen is built. This is why the lock can remain in place even when the device restarts or loses its internet connection.</p>
+<p class="wp-block-paragraph">So what actually happens between assigning the policy in Intune and seeing the locked screen?</p>
+<h2 class="wp-block-heading" id="h-how-remote-lock-for-windows-devices-looks">How Remote Lock For Windows Devices Looks<span class="clth-copy-icon" data-heading-id="h-how-remote-lock-for-windows-devices-looks"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Microsoft’s default Remote Lock screen gives the user an explanation, but no way to sign in. The example below recreates the layout of the official Windows screen so the message is readable.</p>
+<figure class="wp-block-image size-large"><a data-caption="Visual recreation of the default Windows Remote Lock screen. Microsoft’s real screenshot is linked below" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/11/image-49-1024x576.png"><picture class="wp-image-201265" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-49-1024x576.png.webp 1024w, https://patchmypc.com/app/uploads/2026/11/image-49-300x169.png.webp 300w, https://patchmypc.com/app/uploads/2026/11/image-49-767x432.png.webp 767w, https://patchmypc.com/app/uploads/2026/11/image-49.png.webp 1494w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="Visual recreation of the default Windows Remote Lock screen. Microsoft’s real screenshot is linked below" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-49-1024x576.png 1024w, https://patchmypc.com/app/uploads/2026/11/image-49-300x169.png 300w, https://patchmypc.com/app/uploads/2026/11/image-49-767x432.png 767w, https://patchmypc.com/app/uploads/2026/11/image-49.png 1494w" decoding="async" src="assets/7532e4f0e8716b1a/img_0.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">The important part is what is missing. This is a new secure sign-in screen with only an informational tile, not a warning placed over the old desktop. The user cannot choose another account or switch to password, PIN, or Windows Hello. The optional LockReason and RecoveryHint settings replace the default explanatory and support text.</p>
+<p class="wp-block-paragraph">The old desktop session has been signed out. When an administrator unlocks the device, the user signs in to a new session. Any unsaved work in apps that were closed during sign-out may be lost.</p>
+<h2 class="wp-block-heading" id="h-what-remote-lock-for-windows-devices-does">What Remote Lock for Windows Devices does<span class="clth-copy-icon" data-heading-id="h-what-remote-lock-for-windows-devices-does"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Remote Lock is intended for managed devices that are lost, stolen or need to be taken out of use temporarily. It blocks normal interactive sign in without wiping Windows or deleting the user’s files. It also leaves the device enrolled and available for management.</p>
+<p class="wp-block-paragraph">This is not an account disable action. The user’s identity still works elsewhere, and Remote Lock does not replace BitLocker, Secure Boot or network isolation. It controls who can sign in to this Windows installation.</p>
+<h2 class="wp-block-heading" id="h-why-not-just-remote-wipe-the-device">Why not just Remote wipe the device?<span class="clth-copy-icon" data-heading-id="h-why-not-just-remote-wipe-the-device"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">If a Windows device is lost or stolen, the obvious reaction is Remote Wipe. And if the goal is to remove the data and reset the device completely, that can still be the right choice.</p>
+<p class="wp-block-paragraph">But a Remote Wipe still depends on Windows being able to complete the reset successfully.</p>
+<p class="wp-block-paragraph">I have already run into situations where the wipe was delivered but Windows could not finish the reset. In one case, WinRE could not access the disk correctly because the required storage driver was missing. In another, the reset failed with 0x800f0991 and the device could remain usable even though its Intune state had already changed. I covered those cases in <a href="https://patchmypc.com/blog/there-was-a-problem-resetting-your-pc-remote-wipe/">Intune Remote Wipe: There was a problem resetting your PC</a> and <a href="https://patchmypc.com/blog/remote-wipe-there-was-a-problem-resetting-your-pc/">Intune Remote Wipe ending up in There was a problem resetting your PC 0x800f0991</a>.</p>
+<p class="wp-block-paragraph">Simply deleting the Intune device object is not the same thing as securing the device either. In an older Windows test, deleting the Intune object removed the BitLocker policy and BitLocker protection became suspended. That was observed in that specific setup and should not be treated as a promise about every current Windows build, but it shows why removing the management relationship is not a replacement for locking or wiping. I documented that behavior in <a href="https://call4cloud.nl/bitlocker-suspended-deleted-intune-object/">Forgive Us Our BitLocker suspension</a>.</p>
+<p class="wp-block-paragraph">Remote Lock gives us a less destructive first step. The device stays enrolled, BitLocker remains the protection for data at rest, and Intune can still manage the device. Windows blocks normal interactive sign in while you decide what should happen next.</p>
+<h2 class="wp-block-heading" id="when-should-you-use-remote-lock">When should you use Remote Lock?<span class="clth-copy-icon" data-heading-id="when-should-you-use-remote-lock"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Remote Lock makes the most sense when you still want to keep control of the device instead of immediately destroying its state.</p>
+<p class="wp-block-paragraph"><strong>Lost but potentially recoverable.</strong> A laptop left at an airport, hotel, taxi or office is a good example. Lock it first, keep it managed and wait to see if it comes back.</p>
+<p class="wp-block-paragraph"><strong>Stolen but still reachable.</strong> If the device is online or reconnects, Remote Lock can block normal sign in while IT investigates and decides whether a wipe is really needed.</p>
+<p class="wp-block-paragraph"><strong>Offboarded employee who still has the laptop.</strong> Remote Lock gives IT another control while the device is being returned, without immediately resetting Windows.</p>
+<p class="wp-block-paragraph"><strong>You need time before making a destructive decision.</strong> Remote Lock keeps the management relationship intact while you investigate, locate the device or prepare the next action.</p>
+<h3 class="wp-block-heading" id="remote-lock-is-not-enough-in-every-situation">Remote Lock is not enough in every situation.<span class="clth-copy-icon" data-heading-id="remote-lock-is-not-enough-in-every-situation"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph"><strong>The device never comes online.</strong> Intune still has to deliver the new lock state. If a stolen device is immediately kept offline, a new Remote Lock command cannot reach it. Once the lock has been applied, Windows can enforce it locally.</p>
+<p class="wp-block-paragraph"><strong>The device is permanently gone and the goal is data removal.</strong> Trust on Bitlocker????</p>
+<p class="wp-block-paragraph"><strong>You are protecting the disk against offline access.</strong> That remains a BitLocker and Secure Boot problem. Remote Lock protects the interactive Windows sign in experience; it does not replace data at rest protection.</p>
+<p class="wp-block-paragraph"><strong>Someone has full physical control of the hardware.</strong> Remote Lock does not stop someone from replacing or wiping the storage and reinstalling Windows. It is an access control for the installed Windows environment, not an anti theft mechanism.</p>
+<p class="wp-block-paragraph"><strong>You are considering broad production deployment today.</strong> Remote Lock is still a preview feature in this article. I would test it first and wait for Microsoft to move the feature forward before treating it as a production standard.</p>
+<p class="wp-block-paragraph"><strong>Lost device  →  Remote Lock  →  investigate or recover  →  Remote Unlock or Wipe</strong></p>
+<p class="wp-block-paragraph">That is the real value of Remote Lock. It gives IT another option between doing nothing and immediately performing a destructive wipe.</p>
+<h2 class="wp-block-heading" id="h-first-configure-the-remote-lock-policy-in-intune">First, configure the Remote Lock policy in Intune<span class="clth-copy-icon" data-heading-id="h-first-configure-the-remote-lock-policy-in-intune"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">In the current preview, Remote Lock is configured through a custom Windows configuration profile, rather than a dedicated Lock button. Create one profile that sets LockState to 1 and assign it to a device group for locked devices. Create a second profile with LockState set to 0 for unlocking. Moving the device between the appropriate groups changes the requested state.</p>
+<p class="wp-block-paragraph">At the time of writing, this preview applies to Windows 11 Pro, Enterprise and Education devices that are Microsoft Entra joined, hybrid joined or MDM-enrolled. Microsoft introduced it in Windows 11 Insider Experimental (Future Platforms) build 29708.1003 and is enabling it through a gradual Controlled Feature Rollout. A qualifying edition and enrollment state do not guarantee that the CSP is present: a production build, or an Experimental device outside the rollout, can still reject the RemoteDeviceLock URI.</p>
+<p class="wp-block-paragraph"><strong>The main OMA URI is: ./Device/Vendor/MSFT/RemoteDeviceLock/LockState</strong></p>
+<figure class="wp-block-image size-full is-resized"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/11/image-46.png"><picture class="wp-image-201250" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-46.png.webp 571w, https://patchmypc.com/app/uploads/2026/11/image-46-300x127.png.webp 300w" sizes="(max-width: 571px) 100vw, 571px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 571px) 100vw, 571px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-46.png 571w, https://patchmypc.com/app/uploads/2026/11/image-46-300x127.png 300w" decoding="async" src="assets/7532e4f0e8716b1a/img_1.png"/>
+</picture>
+</a></figure>
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr><td><strong>Setting</strong></td><td><strong>Type</strong></td><td><strong>What it controls</strong></td></tr><tr><td>LockState</td><td>Integer</td><td>1 locks the device. 0 unlocks it.</td></tr><tr><td>LockReason</td><td>String</td><td>Optional message explaining why the device was locked.</td></tr><tr><td>RecoveryHint</td><td>String</td><td>Optional information telling the user who to contact.</td></tr><tr><td>Status</td><td>Read only integer</td><td>0 unlocked, 1 locked, 2 pending, 3 error.</td></tr></tbody></table></figure>
+<p class="wp-block-paragraph">LockReason supports up to 1,024 characters, and RecoveryHint supports up to 256. If the optional messages are not included in a new lock request, Windows can remove the older messages instead of showing information left over from a previous lock.</p>
+<h2 class="wp-block-heading" id="h-two-remote-lock-profiles-are-required-for-now">Two Remote Lock profiles are required for now…?<span class="clth-copy-icon" data-heading-id="h-two-remote-lock-profiles-are-required-for-now"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Use a custom Windows profile for the lock and a separate custom profile for the unlock. Both use the same LockState OMA URI. The only required difference is the integer value: 1 to lock and 0 to unlock.</p>
+<p class="wp-block-paragraph">Assign the lock profile to a dedicated lock device group. When it is safe to restore access, remove the device from that group and add it to the unlock group. Avoid assigning both profiles to the same device. A profile assignment is only the request; Windows must receive and process it before the screen changes.</p>
+<p class="wp-block-paragraph">A native Windows lock and unlock action in the Intune console would make this workflow much simpler. The Remote lock entry that currently appears under Secure uses the existing Graph remoteLock action for supported Android and Apple platforms, so it remains disabled on Windows, including on the 29708.1003 test VM. Windows administrators must currently maintain the two custom profiles and move devices between the lock and unlock groups.</p>
+<p class="wp-block-paragraph">Configuration example: custom profile, OMA URI LockState, Integer value 1. For the unlock profile, use value 0.</p>
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr><td><strong>Setting</strong></td><td><strong>Lock profile</strong></td><td><strong>Unlock profile</strong></td></tr><tr><td>Name</td><td>Remote Lock ON</td><td>Remote Lock OFF</td></tr><tr><td>LockState value</td><td>1</td><td>0</td></tr><tr><td>Data type</td><td>Integer</td><td>Integer</td></tr><tr><td>Group</td><td>Lock devices</td><td>Unlock devices</td></tr></tbody></table></figure>
+<h2 class="wp-block-heading" id="h-why-isn-t-remote-lock-an-on-demand-device-action"><strong>Why isn’t Remote Lock an on-demand device action?</strong><span class="clth-copy-icon" data-heading-id="h-why-isn-t-remote-lock-an-on-demand-device-action"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">There is one part of the current preview I would like to see changed. If a Windows laptop is reported missing, I do not want to create or move devices between configuration profile assignments just to lock it. Remote Lock is something an administrator needs to do on demand.</p>
+<p class="wp-block-paragraph">Intune already has a Remote lock device action for supported Android devices. An administrator selects a device, chooses Secure &gt; Remote lock and confirms the request. I think Windows should offer the same straightforward starting point from the device overview, with both Remote lock and Remote unlock available as administrative actions.</p>
+<p class="wp-block-paragraph">This is what I imagine the Windows device page could look like. An administrator would choose Remote lock, optionally enter a reason and recovery instructions, and confirm. Intune would send the lock request to the device and show whether the action is pending, completed, or failed. There would be no need to manage separate lock and unlock groups for a one-time response.</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/11/image-55-1024x768.png"><picture class="wp-image-201279" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-55-1024x768.png.webp 1024w, https://patchmypc.com/app/uploads/2026/11/image-55-300x225.png.webp 300w, https://patchmypc.com/app/uploads/2026/11/image-55-768x576.png.webp 768w, https://patchmypc.com/app/uploads/2026/11/image-55.png.webp 1448w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-55-1024x768.png 1024w, https://patchmypc.com/app/uploads/2026/11/image-55-300x225.png 300w, https://patchmypc.com/app/uploads/2026/11/image-55-768x576.png 768w, https://patchmypc.com/app/uploads/2026/11/image-55.png 1448w" decoding="async" src="assets/7532e4f0e8716b1a/img_2.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">There is an important difference from Android. On supported Android devices, the user can normally unlock Remote lock with their existing PIN or passcode. Windows Remote Lock blocks the sign in options until an administrator sends an unlock request. A Windows device action would need to preserve that behaviour, not offer a local PIN unlock.</p>
+<p class="wp-block-paragraph">For now, the supported Windows preview still uses custom OMA URI profiles with LockState = 1 to lock and LockState = 0 to unlock. The image above is a suggestion for a simpler administrative experience, not a current portal screenshot or a promise of a future release.</p>
+<h2 class="wp-block-heading" id="h-from-intune-assignment-to-a-remote-lock-screen">From Intune assignment to a  Remote Lock screen<span class="clth-copy-icon" data-heading-id="h-from-intune-assignment-to-a-remote-lock-screen"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The complete process is easier to understand when each part has its own lane. The first part is management traffic. Most of what follows happens locally in Windows.</p>
+<figure class="wp-block-image size-large"><a data-caption="Figure 1. The ten steps from an Intune assignment to local enforcement and the later remote unlock." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/11/image-50-1024x799.png"><picture class="wp-image-201266" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-50-1024x799.png.webp 1024w, https://patchmypc.com/app/uploads/2026/11/image-50-300x234.png.webp 300w, https://patchmypc.com/app/uploads/2026/11/image-50-768x599.png.webp 768w, https://patchmypc.com/app/uploads/2026/11/image-50-1536x1198.png.webp 1536w, https://patchmypc.com/app/uploads/2026/11/image-50.png.webp 1733w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="Figure 1. The ten steps from an Intune assignment to local enforcement and the later remote unlock." data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-50-1024x799.png 1024w, https://patchmypc.com/app/uploads/2026/11/image-50-300x234.png 300w, https://patchmypc.com/app/uploads/2026/11/image-50-768x599.png 768w, https://patchmypc.com/app/uploads/2026/11/image-50-1536x1198.png 1536w, https://patchmypc.com/app/uploads/2026/11/image-50.png 1733w" decoding="async" src="assets/7532e4f0e8716b1a/img_3.png"/>
+</picture>
+</a></figure>
+<h3 class="wp-block-heading" id="h-1-intune-delivers-the-lock-instruction">1. Intune delivers the lock instruction<span class="clth-copy-icon" data-heading-id="h-1-intune-delivers-the-lock-instruction"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">Assigning the profile does not instantly change the screen. Windows still needs to receive the setting. A push notification can wake device management, after which the Windows MDM client starts an OMA DM check in and retrieves the policy. I explained how this push notification wakes up Windows and starts an MDM session in my earlier blog, <a href="https://patchmypc.com/blog/what-really-happens-when-you-press-remote-sync-in-intune/?utm_source=chatgpt.com">What Really Happens When You Press Remote Sync in Intune</a>.</p>
+<p class="wp-block-paragraph">The important detail is that the push is only a wake-up signal. It does not lock the user session on its own. The MDM client obtains the new LockState value and passes it to the Windows Remote Device Lock configuration service provider, or CSP.</p>
+<p class="wp-block-paragraph">In the supplied capture, one earlier management session only read the current state. A later push started the session that actually applied the lock. A successful status read is not proof that Windows has locked the device. That happens when Windows saves the state and begins signing out users.</p>
+<h3 class="wp-block-heading" id="h-2-windows-saves-the-lock-before-signing-the-user-out">2. Windows saves the lock before signing the user out<span class="clth-copy-icon" data-heading-id="h-2-windows-saves-the-lock-before-signing-the-user-out"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">When the CSP receives LockState = 1, it processes the current lock message, saves the state in the local Windows registry, and flushes that change to disk. Only then does Windows start disconnecting and signing out interactive user sessions.</p>
+<p class="wp-block-paragraph">The state is stored under: <strong>HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\RemoteDeviceLock</strong></p>
+<figure class="wp-block-image size-large"><a data-caption="Figure 2. The saved state comes first; session removal follows." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/11/image-51-1024x422.png"><picture class="wp-image-201267" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-51-1024x422.png.webp 1024w, https://patchmypc.com/app/uploads/2026/11/image-51-300x124.png.webp 300w, https://patchmypc.com/app/uploads/2026/11/image-51-766x316.png.webp 766w, https://patchmypc.com/app/uploads/2026/11/image-51-1536x633.png.webp 1536w, https://patchmypc.com/app/uploads/2026/11/image-51.png.webp 2008w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="Figure 2. The saved state comes first; session removal follows." data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-51-1024x422.png 1024w, https://patchmypc.com/app/uploads/2026/11/image-51-300x124.png 300w, https://patchmypc.com/app/uploads/2026/11/image-51-766x316.png 766w, https://patchmypc.com/app/uploads/2026/11/image-51-1536x633.png 1536w, https://patchmypc.com/app/uploads/2026/11/image-51.png 2008w" decoding="async" src="assets/7532e4f0e8716b1a/img_4.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">On the device used for this article, the registry write occurred at 22:45:45.863. The key was flushed about ten milliseconds later. Windows started disconnecting the user session at 22:45:45.880, just 17 milliseconds after the write.</p>
+<p class="wp-block-paragraph">That is when disconnection began, not when the entire sign-out finished. In this capture, the user session finished logging off at 22:46:05. This distinction matters when you compare the management timeline with the Windows event log.</p>
+<p class="wp-block-paragraph">Anything running in that interactive session will be closed as part of the sign-out. Remote Lock is not a pause button that preserves an open desktop for later.</p>
+<h3 class="wp-block-heading" id="h-3-windows-builds-a-new-secure-sign-in-screen">3. Windows builds a new secure sign-in screen<span class="clth-copy-icon" data-heading-id="h-3-windows-builds-a-new-secure-sign-in-screen"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">After disconnecting the current session, Windows creates a new secure sign in environment. Winlogon starts LogonUI, the same Windows component responsible for the regular sign in screen.</p>
+<p class="wp-block-paragraph">LogonUI checks which credential providers are available. Normally, those providers give you options such as password, PIN, Windows Hello, security key, or smart card. Remote Lock adds a dedicated provider and filter to this process.</p>
+<figure class="wp-block-image size-large"><a data-caption="Figure 3. Winlogon creates the sign-in session, and LogonUI applies the Remote Lock filter." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/11/image-52-1024x440.png"><picture class="wp-image-201268" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-52-1024x440.png.webp 1024w, https://patchmypc.com/app/uploads/2026/11/image-52-300x129.png.webp 300w, https://patchmypc.com/app/uploads/2026/11/image-52-768x330.png.webp 768w, https://patchmypc.com/app/uploads/2026/11/image-52-1536x660.png.webp 1536w, https://patchmypc.com/app/uploads/2026/11/image-52.png.webp 1919w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="Figure 3. Winlogon creates the sign-in session, and LogonUI applies the Remote Lock filter." data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-52-1024x440.png 1024w, https://patchmypc.com/app/uploads/2026/11/image-52-300x129.png 300w, https://patchmypc.com/app/uploads/2026/11/image-52-768x330.png 768w, https://patchmypc.com/app/uploads/2026/11/image-52-1536x660.png 1536w, https://patchmypc.com/app/uploads/2026/11/image-52.png 1919w" decoding="async" src="assets/7532e4f0e8716b1a/img_5.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">The filter reads the LockState value that the CSP saved earlier. When it finds the device locked, it hides the normal authentication providers and allows the Remote Lock information tile to be displayed.</p>
+<p class="wp-block-paragraph">That means the CSP doesn’t keep a window open and doesn’t have to stay connected to Intune. LogonUI makes its own decision using the state already stored on the device.</p>
+<h3 class="wp-block-heading" id="h-4-why-the-user-cannot-just-choose-another-sign-in-method">4. Why the user cannot just choose another sign-in method<span class="clth-copy-icon" data-heading-id="h-4-why-the-user-cannot-just-choose-another-sign-in-method"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">A locked device does not simply cover the desktop with a warning. Windows removes the usable sign in choices from the secure screen. The remaining Device locked tile is informational. It can display the reason and recovery hint, but it has no username box, password box, PIN field or submit action.</p>
+<figure class="wp-block-image size-full is-resized"><a data-caption="Figure 4. The provider filter removes ordinary sign in options, and the information tile cannot sign in." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/11/image-34.jpg"><picture class="wp-image-201252" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-34.jpg.webp 650w, https://patchmypc.com/app/uploads/2026/11/image-34-300x107.png.webp 300w" sizes="(max-width: 650px) 100vw, 650px" type="image/webp"/>
+<img alt="Figure 4. The provider filter removes ordinary sign in options, and the information tile cannot sign in." data-lazy-sizes="(max-width: 650px) 100vw, 650px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-34.jpg 650w, https://patchmypc.com/app/uploads/2026/11/image-34-300x107.png 300w" decoding="async" src="assets/7532e4f0e8716b1a/img_6.jpg"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">This explains why changing from password to PIN, Windows Hello or a security key does not help. Those options are not offered while the locked state is active. A local administrator tile is not a supported way around it either.</p>
+<h3 class="wp-block-heading" id="h-5-why-the-lock-survives-a-restart-or-lost-connection">5. Why the lock survives a restart or lost connection<span class="clth-copy-icon" data-heading-id="h-5-why-the-lock-survives-a-restart-or-lost-connection"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">The decisive step happened earlier, when Windows wrote and flushed LockState = 1. That value is stored locally. When LogonUI starts again, including after a reboot, it can read the existing state and apply the same restriction.</p>
+<figure class="wp-block-image size-large"><a data-caption="Figure 5. The locally saved lock survives loss of internet, the end of an MDM session and a restart." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/11/image-53-1024x371.png"><picture class="wp-image-201269" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-53-1024x371.png.webp 1024w, https://patchmypc.com/app/uploads/2026/11/image-53-300x109.png.webp 300w, https://patchmypc.com/app/uploads/2026/11/image-53-767x278.png.webp 767w, https://patchmypc.com/app/uploads/2026/11/image-53-1536x557.png.webp 1536w, https://patchmypc.com/app/uploads/2026/11/image-53.png.webp 1573w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="Figure 5. The locally saved lock survives loss of internet, the end of an MDM session and a restart." data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-53-1024x371.png 1024w, https://patchmypc.com/app/uploads/2026/11/image-53-300x109.png 300w, https://patchmypc.com/app/uploads/2026/11/image-53-767x278.png 767w, https://patchmypc.com/app/uploads/2026/11/image-53-1536x557.png 1536w, https://patchmypc.com/app/uploads/2026/11/image-53.png 1573w" decoding="async" src="assets/7532e4f0e8716b1a/img_7.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">This is also why losing the management connection after the device has locked is inconvenient. The device does not automatically unlock. It needs another successful management session to receive the unlock state.</p>
+<p class="wp-block-paragraph">There is a small difference between a request that has not arrived and a request that has already been committed. If management never delivers LockState = 1, nothing new is locked. If the state is already saved, a later network problem does not reverse it.</p>
+<h3 class="wp-block-heading" id="h-6-unlocking-reverses-the-state-not-the-old-user-session">6. Unlocking reverses the state, not the old user session<span class="clth-copy-icon" data-heading-id="h-6-unlocking-reverses-the-state-not-the-old-user-session"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">Unlocking uses the same management path. Intune delivers LockState = 0, Windows stores the unlocked state, and the secure sign-in screen refreshes. The normal credential providers can then appear again.</p>
+<figure class="wp-block-image size-large is-resized"><a data-caption="Figure 6. Unlock restores ordinary authentication choices but does not recover the previously signed out session." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/11/image-54-1024x417.png"><picture class="wp-image-201270" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-54-1024x417.png.webp 1024w, https://patchmypc.com/app/uploads/2026/11/image-54-766x312.png.webp 766w, https://patchmypc.com/app/uploads/2026/11/image-54-300x122.png.webp 300w, https://patchmypc.com/app/uploads/2026/11/image-54-1536x626.png.webp 1536w, https://patchmypc.com/app/uploads/2026/11/image-54.png.webp 1618w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="Figure 6. Unlock restores ordinary authentication choices but does not recover the previously signed out session." data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-54-1024x417.png 1024w, https://patchmypc.com/app/uploads/2026/11/image-54-766x312.png 766w, https://patchmypc.com/app/uploads/2026/11/image-54-300x122.png 300w, https://patchmypc.com/app/uploads/2026/11/image-54-1536x626.png 1536w, https://patchmypc.com/app/uploads/2026/11/image-54.png 1618w" decoding="async" src="assets/7532e4f0e8716b1a/img_8.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">The user still has to sign in again. Windows does not restore the interactive session that Remote Lock previously signed out.</p>
+<p class="wp-block-paragraph">Do not rely on simply removing the LockState = 1 assignment to unlock a device. The preview documentation describes applying the explicit value 0 through a separate unlock profile.</p>
+<h2 class="wp-block-heading" id="h-what-the-timing-looked-like-on-one-windows-device">What the timing looked like on one Windows device<span class="clth-copy-icon" data-heading-id="h-what-the-timing-looked-like-on-one-windows-device"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">These are selected timestamps from the supplied Windows 11 Enterprise Insider Preview build 29708.1003 investigation. They describe one device and are not a guaranteed delivery time or service level.</p>
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr><td><strong>Time</strong></td><td><strong>What happened</strong></td></tr><tr><td>22:45:27.433</td><td>Push notification arrived for the lock side session.</td></tr><tr><td>22:45:45.863</td><td>Windows wrote the RemoteDeviceLock state.</td></tr><tr><td>22:45:45.873</td><td>Windows flushed the saved state.</td></tr><tr><td>22:45:45.880</td><td>The existing interactive session started disconnecting.</td></tr><tr><td>22:45:48.326</td><td>A new LogonUI process started.</td></tr><tr><td>22:45:50.230</td><td>LogonUI loaded the Remote Lock credential provider.</td></tr><tr><td>22:46:05.078</td><td>The previous user session finished logging off.</td></tr></tbody></table></figure>
+<p class="wp-block-paragraph">From the captured push to the local state write took about 18.4 seconds on this device. LogonUI loaded the Remote Lock provider about 22.8 seconds after the push. These values exclude any delay before the push and are not a guarantee of overall policy delivery speed. The new sign-in environment was being prepared before the old session finished logging off; the exact first visible locked frame was not captured.</p>
+<p class="wp-block-paragraph">Of course, how quickly Windows starts processing a push notification also matters. Microsoft has improved the Windows MDM notification path, which I covered in <a href="https://patchmypc.com/blog/intune-device-actions-microsoft-brings-back-instant-remote-actions/?utm_source=chatgpt.com">Intune Device Actions: Microsoft Brings Back Instant Remote Actions</a>.</p>
+<h2 class="wp-block-heading" id="h-what-to-check-when-remote-lock-does-not-work">What to check when Remote Lock does not work<span class="clth-copy-icon" data-heading-id="h-what-to-check-when-remote-lock-does-not-work"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Start with policy delivery. Confirm that the device is in the intended assignment group and that the custom profile contains the correct device OMA URI and integer value. The device must check in to receive it.</p>
+<p class="wp-block-paragraph">Next, check Windows device management events to see whether the setting was processed successfully. If the policy arrived but the device still shows normal sign in options, the saved state and the new LogonUI session are the next useful places to investigate.</p>
+<p class="wp-block-paragraph">The read-only Status node reports Windows effective state: 0 unlocked, 1 locked, 2 pending, and 3 error. This is different from whether Intune reports that a profile has been assigned. Finally, a locked device cannot be unlocked through normal user or local administrator sign in. The unlock profile must be applied to Windows through management.</p>
+<h2 class="wp-block-heading" id="h-remote-lock-is-not-a-replacement-for-other-security-controls">Remote Lock is not a replacement for other security controls<span class="clth-copy-icon" data-heading-id="h-remote-lock-is-not-a-replacement-for-other-security-controls"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Remote Lock closes interactive user sessions, so unsaved work in those apps can be lost. It does not wipe user files, revoke a Microsoft Entra account, isolate the network or stop alternate boot and recovery paths. Its purpose is to prevent normal interactive sign in to the installed Windows environment. Keep BitLocker and Secure Boot enabled, and use separate identity and device security actions when required.</p>
+<h2 class="wp-block-heading" id="h-executive-summary">Executive summary<span class="clth-copy-icon" data-heading-id="h-executive-summary"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Remote Lock is most useful when you still want control of the device. It gives IT a middle step between doing nothing and immediately wiping Windows.</p>
+<p class="wp-block-paragraph">1: If a laptop is lost but might be recovered, stolen but still reachable, or still with an offboarded employee, locking it first lets you block normal sign in while keeping the device enrolled and manageable.</p>
+<p class="wp-block-paragraph">2:If the device is permanently gone and the goal is to remove the data, Remote Wipe may still be the right choice</p>
+<p class="wp-block-paragraph">3:If the device never reconnects after it disappears, neither a new lock nor a new wipe can be delivered. Remote Lock also does not replace BitLocker or Secure Boot for offline and physical access.</p>
+<p class="wp-block-paragraph">Once the lock reaches Windows, the story changes. Windows stores the state locally, signs out the active user, and LogonUI removes the normal credential choices. That separation is why the lock can survive a restart and continue working even without a continuous Intune connection.</p>
+<p class="wp-block-paragraph">Today the preview still uses custom configuration profiles. For an incident response feature like this, I think the final experience should be an on demand Remote lock and Remote unlock action directly on the Windows device page in Intune.</p>
+<p class="wp-block-paragraph"><strong>Lost device  →  Remote Lock  →  investigate or recover  →  Remote Unlock or Wipe</strong></p>
+<p class="wp-block-paragraph">The behaviour and timings described here come from a Windows 11 Insider Preview device. Remote Lock was still in preview when this article was written, so exact Windows internals and the final Intune experience can change between builds.</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

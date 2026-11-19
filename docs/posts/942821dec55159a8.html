@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Microsoft Intune Extends Device Management to Windows Servers with Policy App and Update Management</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">HTMD / Anoop C Nair</span>
+    <span class="date">November 19, 2026</span>
+  </div>
+  <h1>Microsoft Intune Extends Device Management to Windows Servers with Policy App and Update Management</h1>
+  <div class="orig">Saved for offline reading · <a href="https://www.anoopcnair.com/intune-device-management-to-windows-servers/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text"><p class="code-block code-block-6">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins>
+</p><h2 class="wp-block-heading"><strong>Key Takeaways</strong></h2><ul class="wp-block-list has-medium-font-size"><li>Microsoft Intune introduces management support for eligible <strong>Windows Server Insider</strong> Preview builds.</li><li>Apply supported <strong>configuration </strong>policies and evaluate server compliance using Microsoft Intune.</li><li>Deploy supported <strong>Win32 applications</strong> and monitor their installation status.</li><li>Manage supported Windows Server update settings using <strong>Windows Autopatch.</strong></li><li>Use <strong>Microsoft Entra Conditional Access</strong> to require compliant devices for supported access to organizational resources.</li></ul><p class="wp-block-paragraph">In this post we are discussing the Microsoft Intune Extends Device Management to Windows Servers with Policy App and Update <strong>Management</strong>. Microsoft has introduced Windows Server management support in Microsoft Intune, allowing organizations to manage eligible <strong><a href="https://www.anoopcnair.com/windows-server-2022-moves-to-extended-support/" rel="noreferrer noopener" target="_blank">Windows Server</a></strong> devices alongside their existing Windows PCs. This new capability was announced at<strong> Microsoft Ignite 2026 </strong>and is currently available as an<strong> Insider Preview </strong>for testing. Many organizations continue to use Windows Servers for important business operations, including remote desktop sessions, branch-office services, development environments, and privileged access workstations.</p><details class="wp-block-details has-contrast-3-background-color has-background is-layout-flow wp-block-details-is-layout-flow"><summary><strong>Table of Contents</strong></summary>
+</details><h2 class="wp-block-heading"><strong>Microsoft Intune Extends Device Management to Windows Servers with Policy App and Update Management</strong></h2><p class="wp-block-paragraph">These servers are often managed separately using traditional tools such as <strong>Group Policy</strong>, Configuration Manager, and <strong>PowerShell scripts</strong>. Microsoft is now extending familiar endpoint management capabilities to eligible <strong>Windows Servers</strong> through Intune. With this preview, IT administrators can use Microsoft Intune to configure supported server settings, manage device compliance, deploy applications, and manage updates.</p><p class="wp-block-paragraph">Administrators can also use device compliance with <strong>Microsoft Entra Conditional Access</strong> to help control access to organizational resources. These capabilities bring <strong>Windows Server management</strong> closer to the existing Windows <strong>endpoint management </strong>experience.</p><h2 class="wp-block-heading"><strong>What’s New in this Update</strong></h2><p class="wp-block-paragraph">Microsoft is bringing <strong>Windows Server management</strong> to Microsoft Intune, allowing administrators to manage eligible servers alongside <strong>Windows PCs</strong>. With this preview, administrators can configure server settings, check device compliance, deploy applications, and manage updates using Intune. They can also use <strong>assignment filters, </strong>roles, and scope tags to control which servers are managed and who can access them. This makes it easier for IT teams to manage both Windows Servers and PCs from the same<strong> Intune admin center.</strong></p><div class="code-block code-block-13">
+<a href="https://patchmypc.com/third-party-patch-management-for-sccm-and-intune?utm_campaign=mvp-blogs&amp;utm_source=anoopcnair&amp;utm_medium=referral&amp;utm_content=banner-ad&amp;utm_term=learn-more" rel="noreferrer noopener nofollow" target="_blank"><img alt="Patch My PC" class="wp-image-42673" data-lazyloaded="1" src="assets/942821dec55159a8/img_0.webp"/></a></div><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins>
+</p><figure class="wp-block-table aligncenter"><table class="has-contrast-3-background-color has-background has-fixed-layout"><thead><tr><th>Update</th><th>Info</th></tr></thead><tbody><tr><td><strong>Announcement</strong></td><td>Microsoft Intune now supports managing eligible Windows Server devices alongside Windows PCs through a <strong>Windows Server Insider Preview</strong>.</td></tr><tr><td><strong>Management Capabilities</strong></td><td>Deploy<strong> Settings Catalog</strong> policies, compliance policies, Win32 apps, Windows updates, and Conditional Access policies to Windows Servers.</td></tr><tr><td><strong>Azure Arc Relationship</strong></td><td>Intune and <strong>Azure Arc</strong> are complementary. Intune focuses on endpoint-style management, while Azure Arc remains the <strong>primary </strong>platform for infrastructure, governance, and hybrid server management.</td></tr></tbody></table><figcaption class="wp-element-caption">Microsoft Intune Extends Device Management to Windows Servers with Policy App and Update Management – Table.1</figcaption></figure><h2 class="wp-block-heading"><strong>Identify Windows Server Devices in the Intune Admin Center</strong></h2><p class="wp-block-paragraph">After enrolling eligible <strong>Windows Server</strong> devices, administrators can find them under <strong>Devices </strong>&gt; <strong>All devices </strong>in the Microsoft Intune admin center. The device list displays a SKU family column that helps identify the device type. Windows Server devices appear with the Server SKU family, while <strong>Windows client devices</strong> can appear with the Enterprise <strong>SKU family</strong>. This makes it easier for administrators to identify and manage enrolled servers alongside their existing Windows devices.</p><div class="wp-block-image"><figure class="aligncenter size-large"><img alt="Microsoft Intune Extends Device Management to Windows Servers with Policy App and Update Management- Fig.1Creds to MS" class="wp-image-386749" data-lazyloaded="1" data-sizes="(max-width: 1024px) 100vw, 1024px" decoding="async" src="assets/942821dec55159a8/img_1.avif" title="Microsoft Intune Extends Device Management to Windows Servers with Policy App and Update Management 1"/><figcaption class="wp-element-caption">Microsoft Intune Extends Device Management to Windows Servers with Policy App and Update Management- Fig.1 Creds to MS</figcaption></figure></div><h2 class="wp-block-heading"><strong>Check Windows Server Operating System Details</strong></h2><p class="wp-block-paragraph"><strong>Administrators </strong>can select an enrolled Windows Server device from the All devices page to view its details. Under the Overview section, expand Operating system to <strong>check information </strong>such as the operating system name, version, language, and edition. The Operating system edition field identifies the device as Server, helping administrators distinguish <strong>Windows Server</strong> devices from Windows client devices.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins>
+</p><div class="wp-block-image"><figure class="aligncenter size-full"><img alt="Microsoft Intune Extends Device Management to Windows Servers with Policy App and Update Management- Fig.2 Creds to MS" class="wp-image-386750" data-lazyloaded="1" data-sizes="(max-width: 1021px) 100vw, 1021px" decoding="async" src="assets/942821dec55159a8/img_2.avif" title="Microsoft Intune Extends Device Management to Windows Servers with Policy App and Update Management 2"/><figcaption class="wp-element-caption">Microsoft Intune Extends Device Management to Windows Servers with Policy App and Update Management- Fig.2 Creds to MS</figcaption></figure></div><h2 class="wp-block-heading"><strong>Allow Windows Server Enrollment using Intune Enrollment Restrictions</strong></h2><p class="wp-block-paragraph">Windows Server enrollment is disabled by <strong>default </strong>in Intune. Administrators must explicitly allow server enrollment through enrollment restrictions before eligible servers can enroll. Navigate to <strong>Devices </strong>&gt; Enrollment &gt; <strong>Enrollment restrictions </strong>and edit the required device type <strong>restriction</strong>. Under Platform settings, locate the Server devices column for <strong>Windows </strong>(MDM) and change the setting from Block to Allow. Existing custom Windows enrollment restrictions must also be updated if they are configured to block server devices.</p><div class="wp-block-image"><figure class="aligncenter size-large"><img alt="Microsoft Intune Extends Device Management to Windows Servers with Policy App and Update Management- Fig.3 Creds to MS" class="wp-image-386751" data-lazyloaded="1" data-sizes="auto, (max-width: 1024px) 100vw, 1024px" decoding="async" src="assets/942821dec55159a8/img_3.avif" title="Microsoft Intune Extends Device Management to Windows Servers with Policy App and Update Management 3"/><figcaption class="wp-element-caption">Microsoft Intune Extends Device Management to Windows Servers with Policy App and Update Management- Fig.3 Creds to MS</figcaption></figure></div><h2 class="wp-block-heading"><strong>Intune Assignment Filter</strong></h2><p class="wp-block-paragraph">Intune <strong>assignment filter </strong>using the <strong>operatingSystemSKU</strong> property to identify and target specific Windows Server editions separately from Windows client devices. The highlighted values, such as <strong>ServerStandard</strong>, <strong>ServerDatacenter</strong>, ServerTurbine (Azure Edition), and evaluation versions, allow administrators to create server-specific filters and assign policies, applications, updates, or compliance settings only to <strong>Windows Servers. </strong></p><p class="wp-block-paragraph">This capability is important with Intune’s new server management support because it helps organizations <strong>prevent servers </strong>from <strong>accidentally</strong> receiving device policies intended for <strong>Windows PCs</strong>, enabling a clear separation between server and endpoint management within the same Intune environment.</p><ul class="wp-block-list has-medium-font-size"><li><strong>Identity and compliance improve security.</strong> Enrolled Windows Servers connect to Microsoft Entra ID, allowing organizations to check compliance and control access to company apps and resources.</li><li><strong>Roles and scope tags control server management.</strong> Existing Intune permissions and scope tags apply to servers, helping organizations ensure the right administrators can view and manage them.</li><li><strong>Filters help target the right devices.</strong> Using the <strong>operatingSystemSKU</strong> property, administrators can create server-specific filters so server policies apply only to Windows Servers and not to Windows PCs.</li></ul><div class="wp-block-image"><figure class="aligncenter size-full"><img alt="Microsoft Intune Extends Device Management to Windows Servers with Policy App and Update Management- Fig.4 Creds to MS" class="wp-image-386752" data-lazyloaded="1" data-sizes="auto, (max-width: 898px) 100vw, 898px" decoding="async" src="assets/942821dec55159a8/img_4.avif" title="Microsoft Intune Extends Device Management to Windows Servers with Policy App and Update Management 4"/><figcaption class="wp-element-caption">Microsoft Intune Extends Device Management to Windows Servers with Policy App and Update Management- Fig.4 Creds to MS</figcaption></figure></div><h2 class="wp-block-heading"><strong>Need Further Assistance or Have Technical Questions?</strong></h2><p class="has-contrast-3-background-color has-background wp-block-paragraph">Join the <a href="https://www.linkedin.com/company/how-to-manage-devices/" rel="nofollow noopener" target="_blank"><strong>LinkedIn Page</strong></a> and <a href="https://t.me/+Q9lE6G1_BO_bGq97" rel="nofollow"><strong>Telegram group</strong></a> to get the latest step-by-step guides and news updates. Join our <a href="https://www.meetup.com/htmd-community-meetup-group/" rel="nofollow noopener" target="_blank"><strong>Meetup Page</strong></a> to participate in User group meetings. Also, join the <a href="https://htmd.in/WACM2" rel="nofollow noopener" target="_blank"><strong>WhatsApp Community</strong></a>  and the <a href="https://htmd.in/whatsapp_channel" rel="nofollow noopener" target="_blank"><strong>Whatsapp channel</strong></a> to get the latest news on Microsoft Technologies. We are there on <a href="https://www.reddit.com/r/ImpMSNews/" rel="nofollow noopener" target="_blank"><strong>Reddit</strong></a> as well.</p><p class="code-block code-block-2">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="5973571089" data-full-width-responsive="true"></ins>
+</p><h2 class="wp-block-heading"><strong>Author</strong></h2><p class="wp-block-paragraph"><a href="https://www.linkedin.com/in/anoopcnair/" rel="nofollow noopener" target="_blank"><strong>Anoop C Nair</strong></a>  is Workplace Technology solution architect with 25+ years of experience in global enterprise organizations such as JP Morgan, Capgemini, etc. He is Microsoft Certified Trainer. Microsoft MVP from 2015 onwards for consecutive 11 years! He also conducts Intune and modern workplace tech training for enterprise organizations. He is Blogger, Speaker, and Founder of HTMD Community and HTMD Conference. His focus is on Device Management technologies such as Intune, Windows, Cloud PC. He writes about technologies like Intune, SCCM, Windows, Cloud PC, Windows, Entra, Microsoft Security.</p><p class="code-block code-block-8">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="1286776600" data-full-width-responsive="true"></ins>
+</p><p class="code-block code-block-9">
+<ins class="adsbygoogle" data-ad-client="ca-pub-7680568378289021" data-ad-format="auto" data-ad-slot="8125570634" data-full-width-responsive="true"></ins>
+</p></div></div></div>
+</article>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intune 2610 Push for Scripts: Check Delivery Before Success</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">November 19, 2026</span>
+  </div>
+  <h1>Intune 2610 Push for Scripts: Check Delivery Before Success</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/intune-push-script-delivery-endpoints/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="prose" data-article-body=""><p>Start in <strong>Devices &gt; Scripts and remediations</strong> and open <strong>Platform scripts</strong>. I checked this again in my Modern Device Management tenant: the platform scripts and the Remediations packages sit behind different tabs. Which one are you troubleshooting? I want to know that before I open a single log file.</p>
+<p>Intune 2610 adds <a href="https://learn.microsoft.com/en-us/intune/whats-new/">push notifications for Windows script changes</a>. Iâll use a simple lab case: the script is assigned, one pilot device is online, and the other has been disconnected. The job is to find the first missing piece of evidence, from the policy change to the result on Windows. The portal views are real; I didnât trigger a new run.</p>
+<figure class="technical-figure"><a href="/media/2026/11/editorial-review-20261113/intune-scripts.webp"><img alt="Intune Scripts and remediations with Platform scripts selected beside the separate Remediations tab." src="assets/709964ccf0eeaf21/img_0.webp"/></a><figcaption>Modern Device Management on 13 November. The Assigned column is useful for finding a script with assignments; it is not the per-device run status.</figcaption></figure>
+<h2 id="keep-the-script-workload-straight">Keep the script workload straight</h2>
+<p>The Intune management extension handles several workloads, including platform scripts and Remediations. A platform scriptâs execution conditions are not the same as a scheduled detection/remediation package. Microsoft documents platform-script run behavior separately. <a href="https://learn.microsoft.com/en-us/intune/device-management/tools/run-powershell-scripts-windows">Platform script execution</a></p>
+<figure class="technical-figure"><a href="/media/2026/11/batch10-intune-scripts-remediations-original.jpg"><img alt="Intune Scripts and remediations page with the existing remediation packages in the Modern Device Management tenant." src="assets/709964ccf0eeaf21/img_1.webp"/></a><figcaption><p>Actual Scripts and remediations view, 2 November 2026. I inspected the existing packages; I did
+not deploy, edit or run one for this article.</p></figcaption></figure>
+<p>For the pilot, record which workload you are testing, the object identifier, script version or file hash, assignments and execution context. Check user versus system context, signature settings and PowerShell architecture before blaming delivery.</p>
+<p>Keep custom compliance separate. Its discovery-script behavior has its own schedule; Microsoft documents an eight-hour cycle and says push cannot force those custom compliance scripts on demand. Do not extend a Windows-script delivery announcement to every script-driven feature. <a href="https://learn.microsoft.com/en-us/intune/device-security/compliance/custom-settings">Custom compliance behavior</a></p>
+<p>My <a href="/intune-management-channels-reference/">Intune management-channel reference</a> helps identify the responsible channel. Use the current synchronization behavior below when validating this release.</p>
+<h2 id="correlate-the-four-stages">Correlate the four stages</h2>
+<figure class="technical-figure"><p><a aria-label="Enlarge graphic: Follow the script to the device" class="editorial-graphic-link" href="/media/2026/11/editorial-graphics-final-20261113/jr13-batch10-push-en-desktop.webp"><picture class="editorial-graphic" data-graphic="g156-en"><source media="(max-width: 600px)" srcset="/media/2026/11/editorial-graphics-final-20261113/jr13-batch10-push-en-mobile.webp"><img alt="Intune script troubleshooting through assignment, delivery, execution, and independently verified device state." decoding="async" src="assets/709964ccf0eeaf21/img_2.webp"/></source></picture></a></p><figcaption>Follow the same script version across all four stages. The first missing record tells you where to look next.</figcaption></figure>
+<h3 id="where-i-would-stop-and-investigate">Where I would stop and investigate</h3>
+<ul>
+<li><strong>I can see the assignment, but nothing new on the device.</strong> Compare the pilot device with the target group, then check its last contact and notification path. No matching receipt means it is too early to debug the script body.</li>
+<li><strong>The notification arrived, but execution is missing.</strong> Check the actual policy identifier and whether the client retrieved that version. A notification can be present while the relevant workload still hasnât reached the executor.</li>
+<li><strong>The executor finished.</strong> Save the timestamp, context and exit information. Then read the result the script was supposed to leave behind. A zero exit code tells me what the script returned, not whether the result is still present.</li>
+<li><strong>Only the online device succeeded.</strong> Keep the offline device in the report as pending or unknown. On its next connection, compare the version and time again instead of including it in the completed count.</li>
+</ul>
+<p>Use a harmless synthetic marker in a dedicated pilot script if a new execution test is authorized. Give each version a unique marker so an old run cannot be mistaken for the new one. Keep the marker out of business configuration.</p>
+<p>If the script is already idempotent, verify that repeating it leaves the same desired state. Faster refresh makes accidental repeated work more visible; it does not fix a non-idempotent implementation.</p>
+<h2 id="read-the-relevant-ime-logs">Read the relevant IME logs</h2>
+<p>The documented log directory is <code>C:\ProgramData\Microsoft\IntuneManagementExtension\Logs</code>. Relevant files include the main IME log, <code>AgentExecutor.log</code>, <code>HealthScripts.log</code> for Remediations and <code>NotificationInfra.log</code> for real-time notifications. Use their timestamps and workload identifiers together. <a href="https://learn.microsoft.com/en-au/intune/device-management/tools/management-extension-windows">IME operation and log reference</a></p>
+<p>I would first confirm that the files are current, then inspect the relevant time range. A log copied last week cannot explain todayâs push behavior. Preserve rotated files if they contain the beginning of the test.</p>
+<p>For a script that changes an application setting, perform a separate read of that setting under the intended user or system context. A return code of zero only tells you the script reported successful execution. A script can return zero after skipping a required action or modifying a different userâs profile.</p>
+<p>Do not paste a complete endpoint log into a public issue or an AI prompt by default. Extract the minimum permitted evidence and remove identifiers that are not needed for the investigation.</p>
+<p>A simple worksheet for the support engineer needs only one line per device and change: script version, assignment time, client receipt, execution time and observed result. Keep the time zone in the exported timestamps. On a disconnected device, the portal may display the previous result while the client has not seen the current change. Both records can be correct for their own dates. My <a href="/deploy-an-win32-app-with-intune-cmtrace/">CMTrace packaging guide</a> shows how I keep a log reader at hand for this kind of work.</p>
+<h2 id="add-the-new-endpoint-through-the-normal-network-process">Add the new endpoint through the normal network process</h2>
+<p>Microsoft now lists <code>*.trouter.communications.svc.cloud.microsoft</code> for the relevant Windows push scenarios. The endpoint documentation specifies TCP 443 and applies the entry across regions. Review the complete Intune endpoint requirements as well; this is an addition, not a replacement allowlist. <a href="https://learn.microsoft.com/en-gb/intune/fundamentals/endpoints?tabs=north-america">Intune network endpoints</a></p>
+<p>Send the exact service requirement to the network team. Include the affected Windows pilot group, proxy path and a validation window. A firewall entry existing in a management console is not proof that the device process can establish the required connection.</p>
+<p>Do not try to resolve the wildcard itself. Inspect the concrete destination used by a pilot device through approved network evidence. A TCP test to a real destination only establishes that connection layer; it does not validate application authentication, proxy behavior or script delivery.</p>
+<pre class="astro-code github-dark" data-language="powershell" tabindex="0"><code><span class="line"><span>param</span><span>([</span><span>Parameter</span><span>(</span><span>Mandatory</span><span>)][</span><span>string</span><span>]$ObservedPushHost)</span></span>
+<span class="line"></span>
+<span class="line"><span>if</span><span> (</span><span>-not</span><span> $ObservedPushHost.EndsWith(</span></span>
+<span class="line"><span>    '.trouter.communications.svc.cloud.microsoft'</span><span>,</span></span>
+<span class="line"><span>    [</span><span>System.StringComparison</span><span>]::OrdinalIgnoreCase)) {</span></span>
+<span class="line"><span>    throw</span><span> 'Use a concrete push hostname observed on the approved pilot device.'</span></span>
+<span class="line"><span>}</span></span>
+<span class="line"><span>Resolve-DnsName</span><span> -</span><span>Name $ObservedPushHost</span></span>
+<span class="line"><span>Test-NetConnection</span><span> -</span><span>ComputerName $ObservedPushHost </span><span>-</span><span>Port </span><span>443</span></span></code></pre>
+<p>This read-only diagnostic example has no invented hostname and makes no firewall changes. Use the actual proxy and network diagnostics appropriate to your estate; a direct TCP probe can differ from the serviceâs authenticated proxy path.</p>
+<h2 id="treat-sync-as-a-request-then-inspect-its-progress">Treat Sync as a request, then inspect its progress</h2>
+<p>The current IME documentation describes broader on-demand synchronization through Company Portal, Windows Settings and the admin-center Sync action, including MDM and IME-related workloads. Older shorthand that every admin-center Sync only reaches MDM is no longer a safe generalization. <a href="https://learn.microsoft.com/en-au/intune/device-management/tools/management-extension-windows">Current synchronization behavior</a></p>
+<p>That still does not mean every assigned script immediately executes again. Keep the workloadâs run rules and current applicability in the test. Inspect device sync status and client evidence rather than repeatedly clicking Sync and counting the clicks as progress.</p>
+<h2 id="include-offline-and-degraded-network-cases">Include offline and degraded-network cases</h2>
+<p>Use the same pilot version in these scenarios:</p>
+<ul>
+<li>Online device on the normal corporate path.</li>
+<li>Online device through the approved proxy or remote network path.</li>
+<li>Device offline when the change is made, then reconnected.</li>
+<li>Device with an unhealthy or stopped IME, investigated without changing the script.</li>
+<li>Script that starts but reports a controlled failure.</li>
+</ul>
+<p>Record time to receipt, start, finish, verified state and portal reporting separately. An offline device cannot be rescued by a faster notification channel while it remains offline. Report it as pending or unverified rather than silently removing it from the success denominator.</p>
+<p>For a rollout decision, compare those timings with a baseline under equivalent conditions. I have not measured a fleet-wide improvement here. The useful immediate work is to validate the new network requirement and make the existing troubleshooting evidence precise enough to distinguish delayed delivery from failed execution.</p></div></div></div>
+</article>
+</body>
+</html>
