@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intune’s journey to faster device management</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge official">Microsoft Intune Blog</span>
+    <span class="date">November 18, 2026</span>
+  </div>
+  <h1>Intune’s journey to faster device management</h1>
+  <div class="orig">Saved for offline reading · <a href="https://techcommunity.microsoft.com/t5/microsoft-intune-blog/intune-s-journey-to-faster-device-management/ba-p/4574234" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="styles_lia-g-message-body__LkV7_ styles_clearfix__xFEoC styles_lia-g-message-body-blog__TUnqH styles_text-body__F7QRV"><p>A new employee’s first morning should be about getting started, not waiting for their laptop to complete management tasks. Every day after that, apps and policy changes should reach the device with fewer unnecessary delays. IT needs timely information coming back to see what completed and where to focus next.</p>
+<p>Responsiveness has two parts: how quickly a change reaches the device and how quickly the result becomes visible in Microsoft Intune. Recent improvements address both, from initial provisioning to everyday management and troubleshooting.</p>
+<p>Newly enrolled devices check in more frequently to pick up configuration, and compliance policies, along with other assignments before settling into their normal cadence.</p>
+<p>Before, finishing enrollment could still leave a device waiting for dynamic group membership processing before the right apps and policies became available. With <a class="lia-external-url" href="https://learn.microsoft.com/intune/device-enrollment/setup-time-grouping" rel="noopener noreferrer" target="_blank">enrollment time grouping</a>, Intune can establish that targeting during enrollment, helping newly enrolled devices receive their assigned apps and policies sooner. By removing that intermediate wait, newly enrolled devices can get to work quickly on Windows, Apple and Android platforms.</p>
+<p>But responsiveness continues beyond the initial device provisioning. Previously, reaching the desktop could leave remaining assignments waiting for another routine check. Now, completing the Enrollment Status Page or Windows Autopilot device preparation prompts an immediate check for remaining required app assignments on both Windows and macOS.</p>
+<p>The result? These changes help reduce the wait between enrollment and receiving the apps and policies assigned to the device.</p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image Figure 1: Microsoft Intune enrollment and compliance timings, with the activity and supporting improvements shown for each stage." aria-labelledby="3OfUHO_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/b0f3aee93b41e16d/img_0.png"/></button><span class="lia-media-caption-text" id="3OfUHO_caption">Figure 1: Microsoft Intune enrollment and compliance timings, with the activity and supporting improvements shown for each stage.</span></span>
+<p>The same improvement in responsiveness matters after initial setup. The idea that every Intune change waits for an eight-hour device check-in is a common misconception. Eight hours describes the routine maintenance cadence, not the delivery cadence for every change.</p>
+<p>Scheduled check-ins are one part of delivery. Intune uses push notifications to prompt device check-ins for supported platforms and management scenarios, helping devices receive changes without relying solely on scheduled check-ins. <span data-contrast="none">When </span><span data-contrast="none">a </span><span data-contrast="none">server-side</span><span data-contrast="none"> change occurs, </span><span data-contrast="none">such as a policy update by an administrator, an Entra membership change, or an App Store app update, Intune can automatically identify affected devices and send a notification prompting the devi</span><span data-contrast="none">ce to check in</span><span data-contrast="none">.</span></p>
+<p>Push notifications are now available for workloads delivered through the Intune Management Extension (IME) including Win32 apps, scripts and remediations. Online devices connect to Intune, retrieve and apply all pending changes and report updated status. Scheduled check-ins provide another opportunity to connect after a missed notification or a period offline.</p>
+<p>Intune can prioritize supported check-ins based on security, compliance, and productivity considerations, helping reduce delays for time-sensitive management actions. In addition, for Windows platforms, Intune supplements Windows Notification Services (WNS) with an additional notification channel through the IME to help improve notification delivery and responsiveness.</p>
+<p>Our blog post on <a class="lia-internal-link lia-internal-url lia-internal-url-content-type-blog" data-lia-auto-title="how Intune helps IT prioritize time-sensitive actions" data-lia-auto-title-active="0" href="https://techcommunity.microsoft.com/blog/IntuneCustomerSuccess/speed-where-it-matters-how-microsoft-intune-helps-it-prioritize-time-sensitive-a/4515942" target="_blank">how Intune helps IT prioritize time-sensitive actions</a> describes in more detail how Intune prioritizes important changes so devices do not have to rely on maintenance.</p>
+<p>Device compliance state can change even when assigned policies stay the same. Firewall settings might change, or antivirus protection might be disabled after Intune’s last evaluation.</p>
+<p>Instead of relying only on periodic checks, Windows combines scheduled monitoring with event-driven detection for supported compliance signals. Client-driven compliance evaluation gives the device a way to speak up when its state changes. For supported compliance signals, Windows devices can detect changes and initiate a check-in for reevaluation without waiting for the next scheduled evaluation. Those signals include firewall and antivirus state, BitLocker, Microsoft Defender status, Windows build version, real-time protection, and Secure Boot.</p>
+<p>When a supported signal indicates that protection has returned to a healthy state, the device can request another check-in for reevaluation rather than wait for the next scheduled evaluation.</p>
+<p>For compliance settings beyond the built-in templates, Intune supports configurable evaluation intervals for custom compliance scripts on managed Windows and macOS devices. Admins can choose intervals from 15 minutes all the way to eight hours. This flexibility helps align compliance evaluation frequency with security and operational needs. For more details read <a class="lia-external-url" href="https://learn.microsoft.com/en-us/intune/device-security/compliance/ref-windows-settings#compliance-recalculation-triggers" rel="noopener noreferrer" target="_blank">Device compliance settings for Windows in Intune</a>.</p>
+<p>Getting a change to a device is half of the story. Admins also need to see what happened in Intune. Reporting improvements focus on reducing that second delay.</p>
+<p>Faster reporting starts with how Intune processes device updates. Intune has introduced processing improvements designed to reduce delays in supported policy-related reports, helping administrators see updated device information sooner. Combining recent changes with previously processed data also helps reflect updates sooner on certain reports.</p>
+<p>A report that refreshes quickly can still contain an older device observation. Alongside reporting speed, admins need to understand how recent the data is and whether the view covers the devices and properties relevant to the decision. Report timestamps are rolling out to make data freshness visible rather than something administrators are left guessing. Further improvements are underway to distinguish the configuration administrators expect from the state actually reported by devices, helping teams validate outcomes.</p>
+<p>Results should also be consistent across summary views, individual device details, and reports in the same domain. When those views show different counts, admins have to investigate the report before they can investigate the problem. We have delivered specific improvements to keep these views consistent, so administrators can spend less time comparing numbers and more time troubleshooting the devices that need it.</p>
+<p>When investigating a compliance issue or an app that hasn’t reached the device, admins can use Device Sync action to request a fresh check-in. Historically, selecting Sync did not always make clear what happened next, leaving three questions to work through <span data-teams="true">across Windows, macOS, iOS, iPadOS, and tvOS:</span></p>
+<ol>
+<li>Did the notification reach the device?</li>
+<li>Did the device respond and check-in with Intune?</li>
+<li>Did all the relevant workloads synchronize?</li>
+</ol>
+<p>Success at one stage does not prove success at the next. This distinction matters on Windows because Intune management spans two clients: the built-in Windows MDM client and the Intune Management Extension (IME).</p>
+<p>The original Windows remote Sync action primarily worked the Windows MDM stack, using Windows Push Notification Services (WNS) to notify the device, but didn’t necessarily prompt the IME, which handles workloads such as Win32 apps, scripts, and remediations.</p>
+<p>With the improved Sync action, a single request initiates check-ins for both supported management components, bringing configuration and compliance work together with IME workloads. The components still process their work independently, but admins have less need to coordinate separate check-ins when troubleshooting spans both.</p>
+<span class="lia-media-object lia-media-is-center lia-media-size-default" data-image-alt=""><button aria-haspopup="true" aria-label="Enlarge Image Figure 2: Microsoft Intune device sync status showing completed synchronization of policies, applications, and scripts." aria-labelledby="7GxwEX_caption" class="lia-media-unstyled-btn" type="button"><img alt="" src="assets/b0f3aee93b41e16d/img_1.png"/></button><span class="lia-media-caption-text" id="7GxwEX_caption">Figure 2: Microsoft Intune device sync status showing completed synchronization of policies, applications, and scripts.</span></span>
+<p>Visibility has been another source of frustration: selecting Sync showed the requested action, but not necessarily how far the device had progressed. The updated experience brings the action and its reporting closer together, providing more timely progress information to help admins follow the request.</p>
+<p>That progress information helps guide the next troubleshooting step, alongside the relevant deployment and compliance results. For a device that remains out of compliance, admins can review the resulting compliance evaluation. For a Win32 app that hasn’t arrived, its deployment state, requirements, dependencies, and detection can help explain where attention is needed. For more details, <a class="lia-external-url" href="https://learn.microsoft.com/intune/device-management/actions/sync" rel="noopener noreferrer" target="_blank">check out the device action: sync documentation</a>.</p>
+<p>Enhanced app inventory introduces more frequent collection and incremental updates, helping administrators access fresher application information on eligible devices. Eligible devices can now report inventory several times a day. Once the initial inventory is uploaded, the device sends only what changed: additions, updates, and removals. These delta uploads are designed to limit repeated transmission of unchanged inventory information. More frequent collection does not require the device to resend an unchanged application list each time.</p>
+<p>Another familiar frustration was finding that the device had completed a change while a report still showed an earlier state. App inventory includes two useful dates. Last updated describes when the app record was last updated. Last checked describes when the device last reported app inventory data. Together, these dates distinguish the age of an app record from the freshness of the inventory report.</p>
+<p>Beyond app name and version, inventory can include architecture, install scope, installation location, and estimated size for device-level and per-user installations. The result is not just faster inventory. It is fresher, richer evidence of what is installed on the device. The <a class="lia-external-url" href="https://learn.microsoft.com/intune/app-management/deployment/enhanced-app-inventory" rel="noopener noreferrer" target="_blank">Windows app inventory guidance</a> explains the properties and collection behavior. Supported properties are selected through a Properties catalog policy and are specific per platform.</p>
+<p>From a new employee’s first morning to the changes that happen every day afterward, device management should not be defined by waiting. Intune is reducing unnecessary delays in getting work to devices while making the resulting state visible to admins sooner. Together, those improvements make management more responsive, predictable, and transparent. <span data-teams="true">Explore how to build a trusted device and app foundation for AI at scale in our <a class="lia-external-url" href="https://aka.ms/Ignite26_Intune_BRK328" rel="noopener noreferrer" target="_blank">Microsoft Ignite session</a>⁠.</span></p>
+<p> </p>
+<hr/>
+<p><em>Stay up to date! Bookmark the <a data-lia-auto-title="Microsoft Intune Blog" data-lia-auto-title-active="0" href="https://techcommunity.microsoft.com/category/microsoftintune/blog/microsoftintuneblog" target="_blank">Microsoft Intune Blog</a> and follow us on <a href="https://www.linkedin.com/company/microsoft-intune-product" rel="noopener nofollow noreferrer" target="_blank">LinkedIn </a>or <a href="https://twitter.com/MSIntune" rel="noopener nofollow noreferrer" target="_blank">@MSIntune </a>and <a href="https://x.com/IntuneSuppTeam" rel="noopener nofollow noreferrer" target="_blank">@IntuneSuppTeam </a>on X to continue the conversation.</em></p></div></div></div>
+</article>
+</body>
+</html>

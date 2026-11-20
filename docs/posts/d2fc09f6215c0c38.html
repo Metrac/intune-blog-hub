@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OneDrive and the Explorer of Doom</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">MSEndpointMgr</span>
+    <span class="date">November 20, 2026</span>
+  </div>
+  <h1>OneDrive and the Explorer of Doom</h1>
+  <div class="orig">Saved for offline reading · <a href="https://msendpointmgr.com/2026/11/20/onedrive-and-the-explorer-of-doom/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content">
+<p class="wp-block-paragraph" data-block-type="core">Every so often a problem lands on your desk that looks simple and turns out to be a labyrinth. You go in expecting a quick fix, and days later you are still pacing dark corridors, stepping round traps and following clues that lead nowhere. This is the story of one of those: File Explorer grinding to a halt inside a OneDrive folder, and the hunt for what was really going on underneath. OneDrive was in the frame from day one, but it was not the culprit.</p>
+<h2 class="wp-block-heading" id="0-the-quest-begins-something-is-not-right-here"><a aria-hidden="true" class="aal_anchor" href="#the-quest-begins-something-is-not-right-here" id="the-quest-begins-something-is-not-right-here"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a><strong>The quest begins: something is not right</strong> here</h2>
+<p class="wp-block-paragraph" data-block-type="core">The machine at the centre of this story was no underpowered laptop. In this case it was a Windows 11 workstation with 32 logical processors and 128 GB of RAM, running the OneDrive for Business client (26.212.1029.0006) with Files On-Demand enabled and Known Folder Move redirecting Desktop, Documents and Pictures into OneDrive. A perfectly ordinary managed device, just with more horsepower than most.</p>
+<p class="wp-block-paragraph" data-block-type="core">And yet opening the Documents folder had become an act of faith and patience, as I ended up waiting anywhere from 2 seconds to nearly a minute for things to actually be usable;</p>
+<figure class="wp-block-image size-large" data-block-type="core"></figure>
+<p class="wp-block-paragraph" data-block-type="core"><em>The above screen is a mock up for demonstration purposes</em></p>
+<p class="wp-block-paragraph" data-block-type="core">Click into a folder inside the OneDrive sync root and Explorer would freeze. The window frosted over, the title bar gained the dreaded “(Not Responding)” suffix and the cursor spun. Sometimes it recovered; sometimes it stayed stuck long enough for Windows to give up and close it.</p>
+<p class="wp-block-paragraph" data-block-type="core">The other funny thing is, this was not happening on other devices with the same content synced..</p>
+<h2 class="wp-block-heading" id="1-the-clues-on-the-walls-"><a aria-hidden="true" class="aal_anchor" href="#the-clues-on-the-walls" id="the-clues-on-the-walls"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a><strong>The clues on the walls</strong></h2>
+<p class="wp-block-paragraph" data-block-type="core">Once we started paying attention, the signs were everywhere. In the Details view, every file had its familiar OneDrive status glyph: the cloud for online-only, the green tick for locally available. The folders sat blank, or showed a sync arrow that never went away. Files were fine, folders were not. That asymmetry turned out to be one of the most important clues of the whole expedition, although we did not appreciate it at the time.</p>
+<figure class="wp-block-image size-large" data-block-type="core"></figure>
+<p class="wp-block-paragraph" data-block-type="core"><em>The above screen is a mock up for demonstration purposes</em></p>
+<h2 class="wp-block-heading" id="2-cpu-spikes-when-browsing-er-what-"><a aria-hidden="true" class="aal_anchor" href="#cpu-spikes-when-browsing-er-what" id="cpu-spikes-when-browsing-er-what"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a><strong>CPU spikes when browsing… Er.. What..</strong> </h2>
+<p class="wp-block-paragraph" data-block-type="core">Task Manager told its own story. The OneDrive process sat at roughly 10% of a core continuously, even when nothing appeared to be syncing, and CPU usage jumped every time we browsed into a folder. On a 32-thread machine, listing a few dozen items should not do that.</p>
+<figure class="wp-block-image size-large" data-block-type="core"></figure>
+<p class="wp-block-paragraph" data-block-type="core"><em>The above screen is a mock up for demonstration purposes</em></p>
+<p class="wp-block-paragraph" data-block-type="core">The event logs gave some clue with application event 1002 kept appearing: “explorer.exe stopped interacting with Windows and was closed”. The interesting part was the hang type, recorded as <strong>**”Cross-thread;Cross-process”**</strong>. Explorer was not busy doing work of its own, it was waiting on <em>*another process*</em> to answer. That one line was a fragment of the map, pointing away from Explorer and towards whatever it was talking to.</p>
+<h2 class="wp-block-heading" id="3-the-cost-to-the-person-at-the-keyboard-"><a aria-hidden="true" class="aal_anchor" href="#the-cost-to-the-person-at-the-keyboard" id="the-cost-to-the-person-at-the-keyboard"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a><strong>The cost to the person at the keyboard</strong></h2>
+<p class="wp-block-paragraph" data-block-type="core">It is easy to describe a problem like this in event IDs and process names, but the real impact is human.</p>
+<p class="wp-block-paragraph" data-block-type="core">Each freeze might last a few seconds or the best part of a minute, in exactly the places where work lives. Opening a project folder, saving an attachment, browsing in a Save As dialog: all of it goes through the same shell namespace, and all of it could stall. A problem like this breeds rituals: restarting Explorer from Task Manager, pasting paths into the address bar, leaving a window open rather than risk navigating again. None of them fix anything.</p>
+<p class="wp-block-paragraph" data-block-type="core">When the freezing only happens in OneDrive folders and the status icons are missing, the conclusion writes itself: “sync is stuck”. People start wondering whether their files have really uploaded and keeping local copies “just in case”, precisely the behaviour a managed cloud storage rollout is meant to eliminate.</p>
+<p class="wp-block-paragraph" data-block-type="core">For whoever supports the device, every symptom points at the OneDrive client: reset it, relink it, sync less. The worst case here is that the helpdesk gets another one of those calls beginning with “My machine is very slow..”. Lets face it, we have all heard this in the past, even if the machine in question was more then capable.</p>
+<h2 class="wp-block-heading" id="4-into-the-temple-the-investigation-"><a aria-hidden="true" class="aal_anchor" href="#into-the-temple-the-investigation" id="into-the-temple-the-investigation"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a><strong>Into the temple: the investigation</strong></h2>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#drawing-the-map-process-monitor-aimed-at-onedrive-and-explorer" id="drawing-the-map-process-monitor-aimed-at-onedrive-and-explorer"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a><strong>Drawing the map: Process Monitor, aimed at OneDrive and Explorer</strong></h3>
+<p class="wp-block-paragraph" data-block-type="core">Process Monitor is the obvious first tool for “Explorer hangs”, but used naively it is a trap of its own.Left wide open on a busy workstation it records millions of events a minute, and the one moment you care about, the freeze, is buried somewhere in the middle. </p>
+<p class="wp-block-paragraph" data-block-type="core">So rather than click Capture and hope, I wrapped it in a script that does four things: records the scene, narrows the capture, marks the moment and does the first pass of analysis.</p>
+<h4 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#what-youll-need-before-you-set-out" id="what-youll-need-before-you-set-out"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a><strong>What you’ll need before you set out</strong></h4>
+<p class="wp-block-paragraph" data-block-type="core"><strong>Process Monitor itself.</strong><br/>It isn’t bundled with the script (Sysinternals licensing doesn’t allow redistribution). Download it from [Microsoft Sysinternals](<a href="https://learn.microsoft.com/sysinternals/downloads/procmon" rel="noreferrer noopener" target="_blank">https://learn.microsoft.com/sysinternals/downloads/procmon</a>) and extract it next to `Invoke-ExplorerHangTrace.ps1`, or point the script at it with `-ProcmonPath`. The script picks `Procmon64a.exe` on ARM64, `Procmon64.exe` on x64 and falls back to `Procmon.exe`. No installation is needed; the EULA is accepted for you with `/AcceptEula`.</p>
+<p class="wp-block-paragraph" data-block-type="core"><strong>Administrator rights</strong><br/>Procmon loads a kernel driver, so the script relaunches itself elevated (expect a UAC prompt). Analysing an existing capture with `-AnalyzePml` doesn’t need elevation.</p>
+<p class="wp-block-paragraph" data-block-type="core"><strong>No other Procmon session</strong><br/>The script runs `Procmon /Terminate` before and after the capture, which <strong>**closes any Procmon window already open**</strong><br/>Your Procmon settings are backed up and restored.</p>
+<p class="wp-block-paragraph" data-block-type="core"><strong>A driver your security stack allows</strong><br/>Procmon extracts and loads its own signed driver at runtime. Strict application control (WDAC/App Control) or some EDR products may block it; if the capture never starts, check there first.</p>
+<p class="wp-block-paragraph" data-block-type="core"><strong>Disk space outside OneDrive</strong><br/>Raw captures can run to hundreds of megabytes or more, and the CSV conversion roughly doubles that. The default output folder is `C:\ExplorerHangTrace`; keep it off synced folders.</p>
+<p class="wp-block-paragraph" data-block-type="core"><strong>Symbols, only if you want call stacks</strong><br/>The CSV analysis doesn’t need them. To inspect stacks in the raw PML (`-IncludePml`), Procmon uses Windows’ `dbghelp.dll` and the Microsoft public symbol server, so internet access is required.</p>
+<p class="wp-block-paragraph" data-block-type="core">Now with those met.. lets continue..</p>
+<ol class="wp-block-list" data-block-type="core">
+<li data-block-type="core"><strong>Record the scene before touching anything.</strong> Before Procmon starts, the script takes a snapshot of everything that could plausibly sit between Explorer and a OneDrive folder:
+<ol class="wp-block-list" data-block-type="core">
+<li data-block-type="core">OneDrive client version and process state, and the user’s OneDrive accounts and sync folders</li>
+<li data-block-type="core">The sync roots registered with the Cloud Files API (`SyncRootManager`), the layer Explorer and OneDrive use to talk about placeholders and status</li>
+<li data-block-type="core">File system minifilter drivers (`fltmc filters`), antivirus roducts, mapped drives and the Windows Search service;</li>
+<li data-block-type="core">Non-Microsoft shell extensions registered with Explorer</li>
+<li data-block-type="core"><strong>Cash and hang events from the Application log for the last 14 days</strong>: event <strong>**1000**</strong> (application error, i.e. a crash) and event <strong>**1002**</strong> (application hang) for `explorer.exe`, `OneDrive.exe`, `FileCoAuth.exe` and `dllhost.exe`. This is where the “Cross-thread;Cross-process” hang type first surfaced.<br/></li>
+</ol>
+</li>
+<li data-block-type="core"><strong>Narrow the capture to the shell and its helpers.</strong><br/>The script loads its own Procmon configuration with two important additions to the default columns: 
+<ol class="wp-block-list" data-block-type="core">
+<li data-block-type="core"><strong>**Duration**</strong>, so slow operations can be measured rather than guessed</li>
+<li data-block-type="core"><strong>**Thread ID**</strong>, so individual Explorer threads can be followed</li>
+<li data-block-type="core">In the default <em>*Focused*</em> mode it keeps only the processes involved in browsing a OneDrive folder: `explorer.exe`, `OneDrive.exe`, `OneDrive.Sync.Service.exe`, `FileCoAuth.exe`, `dllhost.exe`, `prevhost.exe`, the Windows Search processes (`SearchIndexer.exe`, `SearchProtocolHost.exe`, `SearchFilterHost.exe`), `RuntimeBroker.exe` and Microsoft Defender. It also drops Procmon’s own activity and NTFS metadata noise such as `$Mft` and `pagefile.sys`, and discards filtered events rather than storing them. </li>
+<li data-block-type="core">A <em>*Full*</em> mode is available if a third-party agent is suspected. Procmon runs minimised to a backing file, and your own Procmon settings are backed up and restored afterwards.<br/></li>
+</ol>
+</li>
+<li data-block-type="core"><strong>Mark the moment explorer hung.</strong> While the capture runs, the user simply works as normal. The instant Explorer freezes, or as soon as it recovers, they press <strong>**H**</strong>, and the script records a timestamped hang marker. <strong>**S**</strong> stops the capture. Those markers are what turn a haystack of events into a handful of short windows worth reading.<br/></li>
+<li data-block-type="core"><strong>Do the first pass of analysis.</strong> The script converts the PML file to CSV and works through it looking for:
+<ol class="wp-block-list" data-block-type="core">
+<li data-block-type="core"><strong>Slow operations</strong>: anything taking 500 ms or more, per process and per path.</li>
+<li data-block-type="core"><strong>Explorer thread stalls</strong>: any Explorer thread that goes silent for 2 seconds or more and then resumes, with the last operation before the silence and the first one after it.</li>
+<li data-block-type="core"><strong>Activity around each marker</strong>: every operation of 50 ms or more that overlaps the 20 seconds before each <strong>**H**</strong> press.</li>
+<li data-block-type="core"><strong>Errors that matter</strong>: sharing violations, timeouts, network failures and the `CLOUD FILE …` results the Cloud Files API returns when OneDrive can’t satisfy a request.</li>
+<li data-block-type="core"><strong>Cloud Files activity</strong>, <strong>network (UNC) access</strong> and <strong>non-Microsoft DLLs loaded into shell processes</strong>.</li>
+<li data-block-type="core">Waits that are long by design, such as directory change notifications, oplocks and named pipes, are excluded from the duration checks so they don’t swamp the results. Everything is written to CSV files and a readable summary, then zipped for review:</li>
+</ol>
+</li>
+</ol>
+<figure class="wp-block-image size-large" data-block-type="core"></figure>
+<p class="wp-block-paragraph" data-block-type="core">Focused capture (default): press H when Explorer hangs, S to stop<br/>.\Invoke-ExplorerHangTrace.ps1</p>
+<p class="wp-block-paragraph" data-block-type="core">Capture every process, stop after 3 minutes, keep the raw PML for call stacks<br/>.\Invoke-ExplorerHangTrace.ps1 -CaptureMode Full -DurationSeconds 180 -IncludePml</p>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#the-output" id="the-output"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a>The Output</h3>
+<p class="wp-block-paragraph" data-block-type="core"><strong>system-context.txt</strong><br/>The scene: OneDrive version, sync roots, filter drivers, AV, shell extensions, recent crash/hang events.</p>
+<p class="wp-block-paragraph" data-block-type="core"><strong>explorer-thread-stalls.csv</strong> <br/>Explorer threads that went silent, and what they did either side of the silence.</p>
+<p class="wp-block-paragraph" data-block-type="core"><strong>activity-near-markers.csv</strong><br/>Everything slow in the 20 seconds before each hang marker.</p>
+<p class="wp-block-paragraph" data-block-type="core"><strong>slow-operations*.csv</strong><br/>Every operation over the slow threshold, raw and grouped</p>
+<p class="wp-block-paragraph" data-block-type="core"><strong>cloud-files-activity.csv, non-success-results.csv</strong><br/>Cloud Files API traffic and error results.</p>
+<p class="wp-block-paragraph" data-block-type="core"><strong>third-party-modules-in-shell.csv, network-paths.csv</strong><br/>Non-Microsoft DLLs in Explorer, and any UNC access.</p>
+<p class="wp-block-paragraph" data-block-type="core">There is one limitation worth knowing before you set out. Procmon sees file system, registry, process and network activity; it does <strong>**not**</strong> see a thread blocked on a COM or ALPC call to another process. When Explorer hangs waiting for someone else, the trace doesn’t show a slow operation. It shows an Explorer thread that simply stops, then carries on as if nothing had happened. In this hunt, that silence turned out to be the most important clue of all.</p>
+<h3 class="wp-block-heading" id="5-trap-one-the-trace-that-looked-innocent-"><a aria-hidden="true" class="aal_anchor" href="#trap-one-the-trace-that-looked-innocent" id="trap-one-the-trace-that-looked-innocent"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a><strong>Trap one: the trace that looked innocent</strong></h3>
+<p class="wp-block-paragraph" data-block-type="core">The capture mostly told us what was <em>*not*</em> wrong. Explorer’s disk I/O was quick, under 20 ms per operation; when it froze, it simply went quiet, waiting. Over six minutes there were around 1.3 million registry reads, many of them checking whether a path belonged to a sync root. Busy, but not blocked.</p>
+<p class="wp-block-paragraph" data-block-type="core">One by one the usual suspects were ruled out:</p>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core"><strong>Microsoft Defender</strong> was active, but none of its operations were slow.</li>
+<li data-block-type="core"> <strong>Network shares</strong> were never touched.</li>
+<li data-block-type="core"> <strong>Third-party shell extensions</strong> (a screen capture tool, an archiver, a GPU driver extension) were loaded but did not line up with the hangs.</li>
+</ul>
+<p class="wp-block-paragraph" data-block-type="core">There was also a booby trap of our own making. The first version of the trace script wrote its log, 500 MB and more, to the Desktop. With Known Folder Move, the Desktop lives in OneDrive, so the trace was generating the very sync load we were trying to measure. Its default output now goes to `C:\ExplorerHangTrace`, well away from anything synced.</p>
+<h3 class="wp-block-heading" id="6-trap-two-blame-the-sync-engine-"><a aria-hidden="true" class="aal_anchor" href="#trap-two-blame-the-sync-engine" id="trap-two-blame-the-sync-engine"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a><strong>Trap two: blame the sync engine</strong></h3>
+<p class="wp-block-paragraph" data-block-type="core">An earlier clean-up that moved a large number of developer files out of OneDrive, taking the synced file count from around 159,000 to around 56,000, helped but did not cure the problem. OneDrive’s `SyncDiagnostics.log` confirmed the clean-up had been processed (86,402 file deletes and 7,935 folder deletes) and showed `ChangesToProcess = 0` and `syncStallDetected = 0`. Sync was idle and healthy. Explorer still hung.</p>
+<h3 class="wp-block-heading" id="7-trap-three-the-handle-count-"><a aria-hidden="true" class="aal_anchor" href="#trap-three-the-handle-count" id="trap-three-the-handle-count"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a><strong>Trap three: the handle count</strong></h3>
+<p class="wp-block-paragraph" data-block-type="core">OneDrive.exe was holding around 88,000 handles. That looks alarming, but the number was stable rather than climbing. Not a leak; another false lead.</p>
+<h2 class="wp-block-heading" id="8-the-hidden-chamber-folder-status-"><a aria-hidden="true" class="aal_anchor" href="#the-hidden-chamber-folder-status" id="the-hidden-chamber-folder-status"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a><strong>The hidden chamber: folder status</strong></h2>
+<p class="wp-block-paragraph" data-block-type="core">Procmon showed Explorer <em>*waiting*</em>, so the question became: waiting for what? I stopped watching Explorer and started imitating it. The `Shell.Application` COM object uses the same shell namespace as Explorer, so we could ask for exactly what Explorer asks for and time it.</p>
+<p class="wp-block-paragraph" data-block-type="core">Plain enumeration was fine: 114 items in OneDrive\Documents came back in 152 ms. The interesting part was `System.StorageProviderUIStatus`, the property behind the OneDrive status icon and the Status column:</p>
+<pre class="wp-block-code" data-block-type="core"><code>$shell  = New-Object -ComObject Shell.Application
+
+$folder = $shell.Namespace("$env:OneDriveCommercial\Documents")
+
+foreach ($item in $folder.Items()) {
+
+    $sw = [Diagnostics.Stopwatch]::StartNew()
+
+    $null = $item.ExtendedProperty('System.StorageProviderUIStatus')
+
+    $sw.Stop()
+
+    '{0,-6} {1,8} ms  {2}' -f ($(if ($item.IsFolder) {'Folder'} else {'File'})), $sw.ElapsedMilliseconds, $item.Name
+
+}</code></pre>
+<p class="wp-block-paragraph" data-block-type="core">Files answered in 3-11 ms. Folders took between 2,180 ms and 48,346 ms <strong>**each**</strong>, and one never returned at all. Every one of the 24 folders measured was slow. That single result explained both headline symptoms: the blank status icons next to folders, and an Explorer window that stopped responding while it waited for them.</p>
+<p class="wp-block-paragraph" data-block-type="core">A probe process stuck on one of those folders showed a thread in `Wait:LpcReply` (waiting on a reply from another process), with `Windows.Storage.Search.dll` and `cldapi.dll` loaded. That matched the cross-process hang type in event 1002, and the DLL name hinted at where to dig next.</p>
+<h2 class="wp-block-heading" id="9-the-treasure-the-windows-search-index-"><a aria-hidden="true" class="aal_anchor" href="#the-real-treasure-the-windows-search-index" id="the-real-treasure-the-windows-search-index"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a><strong>The real treasure: the Windows Search index</strong></h2>
+<p class="wp-block-paragraph" data-block-type="core">Here is the part that is not obvious. </p>
+<p class="wp-block-paragraph" data-block-type="core">A file’s OneDrive status is a property of that one file, so it is cheap to read. A <em>*folder’s*</em> status is a summary of everything beneath it: is anything inside still uploading, in error or online-only? For cloud files sync roots, Windows aggregates that summary through <strong>**Windows Search**</strong> rather than walking every file in the tree. If the index answers slowly, every folder status in view waits for it, and so does Explorer.</p>
+<p class="wp-block-paragraph" data-block-type="core">So we went straight to the indexer with an ADODB query against `SYSTEMINDEX` (provider `Search.CollatorDSO`). Each query took 2,706-3,448 ms, even when scoped to Downloads, which is not in OneDrive at all. A healthy index answers the same query in around 100 ms. The problem was not OneDrive; it was the index underneath it.</p>
+<p class="wp-block-paragraph" data-block-type="core">The indexer itself confirmed it. SearchIndexer.exe was using around 17 GB of memory (17,194 MB) only about 2.5 hours after the service had started. On disk, `Windows.db` in `C:\ProgramData\Microsoft\Search\Data\Applications\Windows` was 1,651 MB, with `Windows-gather.db` at 160 MB: 1,817 MB in total.</p>
+<figure class="wp-block-image size-large" data-block-type="core"></figure>
+<p class="wp-block-paragraph" data-block-type="core"><em>Mock-up: Task Manager Details tab for a fictional Contoso user, with SearchIndexer.exe holding around 17 GB. The memory figure reflects the real investigation; PIDs and other values are illustrative.</em></p>
+<p class="wp-block-paragraph" data-block-type="core">This also gives a plausible explanation for the CPU spikes: every folder Explorer draws in a sync root needs a status, and every one of those lookups lands on an indexer that was already struggling.</p>
+<h2 class="wp-block-heading" id="10-claiming-the-treasure-rebuilding-the-index-"><a aria-hidden="true" class="aal_anchor" href="#claiming-the-treasure-rebuilding-the-index" id="claiming-the-treasure-rebuilding-the-index"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a><strong>Claiming the treasure: rebuilding the index</strong></h2>
+<p class="wp-block-paragraph" data-block-type="core">The fix was to rebuild the Windows Search index. From an elevated PowerShell prompt:</p>
+<ol class="wp-block-list" data-block-type="core">
+<li data-block-type="core">Stop the Windows Search service: `Stop-Service WSearch`. Be patient; ours took over a minute to stop.</li>
+<li data-block-type="core">Tell Windows to rebuild on next start: set `SetupCompletedSuccessfully` to `0` under `HKLM:\SOFTWARE\Microsoft\Windows Search`.</li>
+<li data-block-type="core">Delete the contents of `C:\ProgramData\Microsoft\Search\Data\Applications\Windows` (check the `DataDirectory` value in the same registry key if the index has been moved).</li>
+<li data-block-type="core">Start the service again: `Start-Service WSearch`.</li>
+</ol>
+<p class="wp-block-paragraph" data-block-type="core">Windows then re-indexes in the background. Expect Windows Search results (Start, Explorer, Outlook) to be incomplete for anything from a few minutes to a couple of hours.</p>
+<h2 class="wp-block-heading" id="11-before-and-after-"><a aria-hidden="true" class="aal_anchor" href="#before-and-after" id="before-and-after"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a><strong>Before and after</strong></h2>
+<p class="wp-block-paragraph" data-block-type="core">Results speak for themselves, so I’ll leave you to look over them..</p>
+<figure class="wp-block-table" data-block-type="core"><table class="has-fixed-layout"><tbody><tr><td>Test</td><td>Before</td><td>After</td></tr><tr><td>Windows Search query<br/>(TOP 50, Downloads)</td><td>2700ms</td><td><strong>107ms</strong></td></tr><tr><td> Status of 82 folders<br/>in Documents</td><td>2-48 s each, one never returned</td><td><strong>472 ms total (max 20 ms)</strong></td></tr><tr><td>Desktop (4 folders) </td><td>–</td><td><strong>34 ms total</strong></td></tr><tr><td>SearchIndexer memory</td><td>17GB</td><td><strong>40MB</strong></td></tr></tbody></table></figure>
+<p class="wp-block-paragraph" data-block-type="core"><strong>Folder status lookups went from seconds, or forever, to milliseconds. </strong>With nothing left to wait for, the folder icons appear promptly alongside the files, and the cross-process call Explorer had been blocking on now answers almost instantly.</p>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#standing-guard-keeping-windows-search-pruned-with-intune" id="standing-guard-keeping-windows-search-pruned-with-intune"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a><strong>Standing guard: keeping Windows Search pruned with Intune</strong></h2>
+<p class="wp-block-paragraph" data-block-type="core">Rebuilding one index by hand is a fix. Making sure no index in the estate quietly grows back into a 17 GB chamber is upkeep, and that is what the Remediation pair is for. Think of it as keeping the vines cut back: every device is checked on a schedule, healthy ones are left alone, and only an index that has become bloated or slow is rebuilt.</p>
+<p class="wp-block-paragraph" data-block-type="core"><strong> How the loop works</strong></p>
+<ol class="wp-block-list" data-block-type="core">
+<li data-block-type="core"><strong>Detect</strong> on the schedule you set. A healthy device exits 0 and nothing happens; the run costs a couple of seconds.</li>
+<li data-block-type="core"><strong>Remediate</strong> only when the SearchIndexer is above `$MemoryThresholdGB`, or Windows Search queries are slower than `$QueryThresholdMs` or time out.</li>
+<li data-block-type="core"><strong>Detect again.</strong> Intune re-runs detection straight after remediation. The fresh index is small and fast, and the cool-down marker written by the remediation keeps it from asking for a second rebuild while the new index fills, so the device reports as fixed.</li>
+<li data-block-type="core"><strong>Hold off</strong> for `$RebuildCooldownHours` (72 by default). If the device is still unhealthy after that, it is rebuilt again, and that repeat tells you something (see below).</li>
+</ol>
+<figure class="wp-block-image size-large" data-block-type="core"></figure>
+<h3 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#rolling-it-out" id="rolling-it-out"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a><strong>Rolling it out</strong></h3>
+<p class="wp-block-paragraph" data-block-type="core"><strong>Start in report-only mod</strong>e. Deploy with `$WhatIfMode = $true` in the remediation script to a pilot group. Detection still reports which devices are unhealthy and why, and the remediation logs what it <em>*would*</em> do without touching anything. It is a cheap way to find out how many of your devices are already in the temple.</p>
+<p class="wp-block-paragraph" data-block-type="core"><strong>Then enable the rebuild</strong> for the pilot, and finally for everyone. All the thresholds live in the detection script; the remediation simply acts on its verdict, so tune them in one place.</p>
+<p class="wp-block-paragraph" data-block-type="core"><strong>Schedule it daily, outside core hours.</strong> While an index rebuilds, Start menu, Explorer and Outlook search results are incomplete for a while. A run at the end of the working day keeps that out of people’s way, and missed runs catch up when the device is next online. More frequent runs add little: devices fetch Remediation policy roughly every eight hours, and the cool-down limits rebuilds anyway.</p>
+<p class="wp-block-paragraph" data-block-type="core"><strong>Give the service desk a direct option.</strong> For a user who is stuck <em>*now*</em>, <strong>**Run remediation (preview)**</strong> on the device’s page in the Intune admin center runs the package on demand, without waiting for the schedule.</p>
+<p class="wp-block-paragraph" data-block-type="core"><strong>Tuning the thresholds</strong></p>
+<p class="wp-block-paragraph" data-block-type="core">The defaults (4 GB of indexer memory, 1,000 ms per query) are deliberately conservative: our unhealthy device was at 17 GB and around 3 seconds, while a healthy index answered in about 100 ms. Devices with very large mailboxes or heavily indexed file shares can legitimately run a bigger index, so check the exported report before lowering anything. Raise `$IndexSizeWarnGB` if large indexes are normal for you; it only adds a warning to the log.</p>
+<p class="wp-block-paragraph" data-block-type="core"><strong>Where the scripts write: log and registry locations</strong></p>
+<p class="wp-block-paragraph" data-block-type="core">Contained within the detection and remediation scripts are defined locations at the top of each script. The block is deliberately identical in both, because detection and remediation share a log and a registry marker. If you change a value, change it in both scripts.</p>
+<p class="wp-block-paragraph" data-block-type="core"><strong> `$LogFolder` | `%ProgramData%\Microsoft\IntuneManagementExtension\Logs` </strong><br/>Folder for the CMTrace log. The default sits alongside the Intune Management Extension logs, so <strong>**Collect diagnostics**</strong> picks it up automatically. Point it anywhere SYSTEM can write, for example a central `C:\ProgramData\&lt;YourOrg&gt;\Logs`. </p>
+<p class="wp-block-paragraph" data-block-type="core"><strong> `$LogFileName` | `Detect-ExplorerOfDoom.log` </strong><br/>One log shared by both scripts, so a detect, remediate and re-detect cycle reads as a single timeline in CMTrace (filter on the `Detection` or `Remediation` component). </p>
+<p class="wp-block-paragraph" data-block-type="core"><strong>`$MaxLogSizeMB` | `4` </strong><br/>When the log passes this size it is rolled over to `ExplorerOfDoom.lo_`, the same convention Configuration Manager uses, and a fresh log is started.</p>
+<p class="wp-block-paragraph" data-block-type="core"><strong>`$MarkerRegistryKey` | `HKLM:\SOFTWARE\ExplorerOfDoom` </strong><br/>Written by the remediation after a successful rebuild: `LastRebuildUtc` (ISO 8601 UTC timestamp) and `LastRebuildBefore` (indexer memory, index size and query time before the rebuild). Detection reads `LastRebuildUtc` to enforce the cool-down. Rename it to sit under your own organisation’s key if you prefer. |</p>
+<p class="wp-block-paragraph" data-block-type="core"><strong>`$WindowsSearchRegistryKey` | `HKLM:\SOFTWARE\Microsoft\Windows Search` </strong><br/>Microsoft’s Windows Search configuration key. The scripts read `DataDirectory` to find the index (so a relocated index is handled) and the remediation sets `SetupCompletedSuccessfully` to `0` to force the rebuild. Leave this alone unless Windows itself changes. |</p>
+<p class="wp-block-paragraph" data-block-type="core">A few behaviours worth knowing:</p>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core"><strong>Fallback logging.</strong> If `$LogFolder` can’t be created or written to, the scripts log to `%TEMP%\ExplorerOfDoom.log` instead. As SYSTEM, that is usually `C:\Windows\Temp`. A logging problem never stops detection or remediation from running.</li>
+<li data-block-type="core"><strong>Checking a device by hand.</strong> `Get-ItemProperty ‘HKLM:\SOFTWARE\ExplorerOfDoom’` shows when the index was last rebuilt and what it looked like beforehand, which is handy when a user reports that search “went quiet” for a while.</li>
+<li data-block-type="core"><strong>Resetting the cool-down.</strong> Delete the `LastRebuildUtc` value (or the whole key), and the next detection run will evaluate the device from scratch.</li>
+<li data-block-type="core"><strong>Nothing personal is stored.</strong> The log records the account context (`NT AUTHORITY\SYSTEM`), measurements and paths under `ProgramData`. It contains no user names, and the one-line output Intune collects never includes file paths.</li>
+</ul>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#keeping-the-temple-sealed" id="keeping-the-temple-sealed"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a><strong>Keeping the temple sealed</strong></h2>
+<p class="wp-block-paragraph" data-block-type="core">Now equipped with the ability to actually do work, there are a couple of thing we can look out for;</p>
+<ul class="wp-block-list" data-block-type="core">
+<li data-block-type="core"><strong>Keep OneDrive lean.</strong> Large, fast-changing working sets and scratch data belong in a local, non-synced folder. Of course what I am talking about here is ensuring that people such as dev’s don’t use OneDrive for Git synced folders, as storing Git repos in OneDrive synced folders risks repo corruption, locked files, sync conflicts and duplicates, broken online-only files and constant sync traffic. Use Git as intended, with repositories that keep your changes.</li>
+<li data-block-type="core"><strong>Watch SearchIndexer memory.</strong> Several GB is a warning sign; run the script on a schedule or as an Intune Remediation to spot it early.</li>
+<li data-block-type="core"><strong>Use Indexing Options exclusions where appropriate.</strong> If content does not need to be searchable, keep it out of the index rather than letting the index carry it.</li>
+<li data-block-type="core"><strong>Check the index before blaming the sync client.</strong> If folder status is slow while `ChangesToProcess` is 0, look at Windows Search first.</li>
+</ul>
+<h2 class="wp-block-heading"><a aria-hidden="true" class="aal_anchor" href="#the-treasure-recovered" id="the-treasure-recovered"><svg aria-hidden="true" class="aal_svg" version="1.1" viewbox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z" fill-rule="evenodd"></path></svg></a><strong>The treasure, recovered</strong></h2>
+<p class="wp-block-paragraph" data-block-type="core">Looking back, the clues were there from the start: Explorer was hanging while it waited on another process, folders never got their status icons, and OneDrive had a solid alibi the whole time. OneDrive wasn’t the problem. </p>
+<p class="wp-block-paragraph" data-block-type="core">The real culprit was the Windows Search index, which had grown to 17 GB and was making every folder wait its turn. If your users are stuck in their own Explorer of Doom, you can skip the dead ends we went down. Check the size of the search index, time how long a folder takes to show its status, and if the index has grown to gigabytes, rebuild it. Things should feel a lot quicker afterwards.</p>
+<p class="wp-block-paragraph" data-block-type="core">I hope you find this blog useful, and you’ll find all of the scripts on my GitHub repo here – <a href="https://github.com/maurice-daly/PowerShell/tree/master/Intune/ExplorerOfDoom" rel="noopener" target="_blank">PowerShell/Intune/ExplorerOfDoom at master · maurice-daly/PowerShell</a></p>
+<p class="wp-block-paragraph" data-block-type="core"></p>
+<p class="post-views content-post post-27144 entry-meta pvc-container pvc-views load-static" data-pvc-id="27144" data-pvc-metric="views" data-pvc-period="total" data-pvc-server-formatted="true" data-pvc-type="post"><span aria-hidden="true" class="pvc-icon"></span> <span class="post-views-label pvc-label">Views:</span> <span class="post-views-count pvc-count">15</span></p>
+<p class="entry-tags">
+<a href="https://msendpointmgr.com/tag/explorer/" rel="tag">Explorer</a> <a href="https://msendpointmgr.com/tag/hanging/" rel="tag">Hanging</a> <a href="https://msendpointmgr.com/tag/onedrive/" rel="tag">OneDrive</a> </p>
+</div>
+</div></div>
+</article>
+</body>
+</html>

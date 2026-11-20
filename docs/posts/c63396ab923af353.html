@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intune Newsleter – 20th November 2026</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Andrew Taylor</span>
+    <span class="date">November 20, 2026</span>
+  </div>
+  <h1>Intune Newsleter – 20th November 2026</h1>
+  <div class="orig">Saved for offline reading · <a href="https://andrewstaylor.com/2026/11/20/intune-newsleter-20th-november-2026/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text">
+<p>Welcome back to what has been a very busy week over here at Ignite.  It was great to meet so many of you, but I’m definitely looking forward to a good nights sleep in my own bed now!</p>
+<p>Anyway, this is why you are here, enjoy!</p>
+<hr/>
+<h2>Community Content</h2>
+<ul>
+<li>⚙️ Device configuration | <a href="https://www.jeffgilb.com/one-wallpaper-url-two-experiences-making-bginfo-play-nice-with-the-personalization-csp/">One Wallpaper URL, Two Experiences: Making BGInfo Play Nice with the Personalization CSP</a> • <a href="https://intune.news/authors/jeff-gilbert">Jeff Gilbert</a><br/>
+If you want to use BGinfo but also use Intune to manage the wallpaper itself, Jeff has the answer for you here</li>
+<li>⚙️ Device configuration | <a href="https://malinoski.me/2026/11/18/intune-preflight-take-control-from-day-zero/">Tool Update: Take control of devices from Day-Zero with Intune Preflight</a> • <a href="https://intune.news/authors/kevin-malinoski">Kevin Malinoski</a><br/>
+A new tool here from Kevin to show you what policies will hit an Intune managed device</li>
+<li>⚙️ Device configuration | <a href="https://joostgelijsteen.com/cis-audit-baseline-in-intune-what-cis-compliant-actually-means-for-your-devices/">CIS audit baseline in Intune: what “CIS compliant” actually means for your devices</a> • <a href="https://intune.news/authors/joost-gelijsteen">Joost Gelijsteen</a><br/>
+Dig into all things CIS compliance and what is actually means</li>
+<li>🚀 Device enrollment | <a href="https://manima.de/blog/2026/11/18/who-is-actually-using-this-device-repairing-the-intune-primary-user/">Who is actually using this device? Repairing the Intune primary user</a> • <a href="https://intune.news/authors/martin-himken">Martin Himken</a><br/>
+Finding your device primary users don’t actually match the end-user on the device itself? Martin has a script here just for you</li>
+<li>🚀 Device enrollment | <a href="https://www.xplorethecloud.nl/l/your-windows-device-is-deployed-but-is-it-really-ready/">Windows Autopilot: Keep Windows and Apps Updated During Enrollment</a> • <a href="https://intune.news/authors/johan-adreaan-van-dijk">Johan Adreaan van Dijk</a><br/>
+This post from Arno looks at what you should be considering to make sure your devices complete enrollment as ready as possible</li>
+<li>🚀 Device enrollment | <a href="https://call4cloud.nl/automating-windows-autopilot-pre-provisioning/">Automating Windows Autopilot Pre-provisioning</a> • <a href="https://intune.news/authors/rudy-ooms">Rudy Ooms</a><br/>
+Rudy goes digging into Autopilot Pre-Prov and how far it can be automated</li>
+<li>🛡️ Device security | <a href="https://jannikreinhard.com/microsoft-ignite-2026-ai-intune-agent-governance/">Microsoft Ignite 2026: Intune, Copilot and Agent Governance</a> • <a href="https://intune.news/authors/jannik-reinhard">Jannik Reinhard</a><br/>
+Jannik also looks at the Ignite announcements, with a focus on the AI and Intune bits</li>
+<li>🛡️ Device security | <a href="https://www.nickydewestelinck.be/2026/11/17/securing-local-admins-deploying-administrator-protection-with-microsoft-intune/">Securing Local Admins: Deploying Administrator Protection with Microsoft Intune</a> • <a href="https://intune.news/authors/nicky-de-westelinck">Nicky De Westelinck</a><br/>
+Looking to deploy Admin Protection to protect your admin accounts better? If so, this post from Nicky is well worth reading!</li>
+<li>🛡️ Device security | <a href="https://petervanderwoude.nl/post/changing-network-settings-as-standard-user-using-endpoint-privilege-management/">Changing network settings as standard user using Endpoint Privilege Management</a> • <a href="https://intune.news/authors/peter-van-der-woude">Peter van der Woude</a><br/>
+Learn how to let your users change network settings with EPM in this post</li>
+<li>🛡️ Device security | <a href="https://joostgelijsteen.com/rmau-used-in-intune-for-security-reassons/">Restricted management administrative units (RMAU) and why your Intune setup needs it</a> • <a href="https://intune.news/authors/joost-gelijsteen">Joost Gelijsteen</a><br/>
+For those key security policies which you really don’t want people changing, locking down assignments is critical. Learn how to use restricted management admin units to help here</li>
+<li>🛡️ Device security | <a href="https://www.burgerhout.org/p/windows-sandbox-on-a-cis-hardened-intune-device-why-there-was-no-network">Windows Sandbox on a CIS-hardened Intune device: why there was no network</a> • <a href="https://intune.news/authors/jeroen-burgerhout">Jeroen Burgerhout</a><br/>
+Having problems getting network connectivity on your device? If you’re also running CIS based policies, Jeroen may have your answer here</li>
+<li>✅ Compliance | <a href="https://blog.thomasmarcussen.com/intune-ai-agent-compliance-ignite-2026/">Intune AI Agent Compliance: Gating Shadow AI on Windows After Ignite 2026</a> • <a href="https://intune.news/authors/thomas-marcussen">Thomas Marcussen</a><br/>
+Find out about the new AI Agent compliance option now available for Windows devices, quickly flag devices as non-compliant if they have unwanted AI</li>
+<li>✅ Compliance | <a href="https://www.simsenblog.dk/2026/11/19/msignite-2026-top10-news-endpointmanagement/">Microsoft Ignite 2026: Top 10 News for Endpoint Management</a> • <a href="https://intune.news/authors/simon-hartmann-eriksen">Simon Hartmann Eriksen</a><br/>
+Simon also looks at the new Intune announcements from Ignite here</li>
+<li>🔄 Device updates | <a href="https://maisondasilva.com.br/2026/11/15/windows-10-como-corrigir-avisos-persistentes-do-windows-update-em-computadores-elegiveis-ao-esu/">Windows 10: como corrigir avisos persistentes do Windows Update em computadores elegíveis ao ESU</a> • <a href="https://intune.news/authors/maison-da-silva">Maison da Silva</a><br/>
+For those of you running Windows 10 with ESU, if you are finding constant messages in Windows update, you can find a fix here</li>
+<li>🔄 Device updates | <a href="https://intunestuff.com/2026/11/18/ignite-2026-whats-new-intune/">Intune at Ignite 2026: What’s New and What’s Coming</a> • <a href="https://intune.news/authors/joery-van-den-bosch">Joery Van den Bosch</a><br/>
+It’s Ignite week, Joery looks at all of the Intune announcements from the event here</li>
+<li>🔄 Device updates | <a href="https://call4cloud.nl/hotpatch-msi-msiexec-issues/">HotPatch and MSI installations Issues</a> • <a href="https://intune.news/authors/rudy-ooms">Rudy Ooms</a><br/>
+If you are noticing issues with MSI installs recently, it could be due to Hotpatch table size, fortunately Rudy has a fix here</li>
+<li>🪟 Windows | <a href="https://jamesvincent.co.uk/2026/11/18/microsoft-ignite-2026-day-1-intune-device-management-roundup/">Microsoft Ignite 2026 Day 1: My Intune and Device Management Roundup</a> • <a href="https://intune.news/authors/james-vincent">James Vincent</a><br/>
+A look at the day 1 Ignite announcements here from James</li>
+<li>🪟 Windows | <a href="https://www.burgerhout.org/p/microsoft-ignite-2026-the-intune-bits-of-the-book-of-news">Microsoft Ignite 2026: the Intune bits of the Book of News</a> • <a href="https://intune.news/authors/jeroen-burgerhout">Jeroen Burgerhout</a><br/>
+Have a look at the Intune only announcements from the Ignite book of news here</li>
+<li>🪟 Windows | <a href="https://jamesvincent.co.uk/2026/11/19/microsoft-ignite-2026-day-2-intune-device-management-roundup/">Microsoft Ignite 2026 Day 2: My Intune and Device Management Roundup</a> • <a href="https://intune.news/authors/james-vincent">James Vincent</a><br/>
+James also looks at the announcements from day 2 at Ignite</li>
+<li>🪟 Windows | <a href="https://blog.thomasmarcussen.com/windows-365-for-agents-on-premises-access/">Windows 365 for Agents: Giving Agents Access to Your On-Premises Apps</a> • <a href="https://intune.news/authors/thomas-marcussen">Thomas Marcussen</a><br/>
+This post from Thomas looks at the Ignite announcements around Windows 365 for Agents</li>
+<li>🪟 Windows | <a href="https://timmyit.com/2026/11/17/is-bare-metal-deployment-with-windows-cloud-rebuild-possible/">Is bare metal deployment with Windows Cloud rebuild possible ?</a> • <a href="https://intune.news/authors/timmy-andersson">Timmy Andersson</a><br/>
+Timmy runs through the new Cloud Rebuild functionality with a look at how it works and a run-through of the process itself</li>
+<li>🩺 Troubleshooting | <a href="https://sastu-insights.com/posts/First-Tests-with-Windows-Cloud-Rebuild-and-a-Log-Parser/">First Tests with Windows Cloud Rebuild – and a Log Parser to Make Sense of It</a> • <a href="https://intune.news/authors/sascha-stumpler">Sascha Stumpler</a><br/>
+Sascha gives the Windows Cloud Rebuild functionality a run through here, a useful solution for your bare metal rebuilds</li>
+<li>☁️ AVD &amp; W365 | <a href="https://nielskok.tech/entra/entra-cloud-sync-with-ad-joined-avd/">Entra Cloud Sync with Active Directory Joined Azure Virtual Desktop</a> • <a href="https://intune.news/authors/niels-kok">Niels Kok</a><br/>
+Wanting to deploy AD joined AVD machines, but still sync them to the cloud? Find out how here from Niels</li>
+<li>Uncategorized | <a href="https://blog.tugi.ch/scripts-and-tools/deployment-editor-v3-0-now-built-on-rust-with-new-ui">Deployment Editor v3.0 – Now built on Rust with new UI</a> • <a href="https://intune.news/authors/tugay-taskin">Tugay Taskin</a><br/>
+We have a new UI for deployment editor here from Tugay</li>
+</ul>
+<h2><a id="video"></a>Video Content</h2>
+<h2><a id="microsoft"></a>Microsoft Content</h2>
+<hr/>
+<p>That’s all for this week, have an amazing weekend!</p>
+<hr/>
+<hr/>
+</div>
+</div></div>
+</article>
+</body>
+</html>
