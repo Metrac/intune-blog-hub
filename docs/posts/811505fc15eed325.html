@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intune Software Compliance Policy: How It Works</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Call4Cloud (Rudy Ooms)</span>
+    <span class="date">November 21, 2026</span>
+  </div>
+  <h1>Intune Software Compliance Policy: How It Works</h1>
+  <div class="orig">Saved for offline reading · <a href="https://patchmypc.com/blog/how-the-intune-software-compliance-policy-checks-installed-apps/?utm_term=rss" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="post-content">
+<p class="wp-block-paragraph">At Microsoft Ignite, Microsoft showed how an Intune software compliance policy can check Windows devices for applications your organization does not allow. You identify each application by its MSI product code or Windows package full name. Intune then uses its presence as part of the device compliance decision.</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/11/image-58-1024x349.png"><picture class="wp-image-201561" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-58-1024x349.png.webp 1024w, https://patchmypc.com/app/uploads/2026/11/image-58-300x102.png.webp 300w, https://patchmypc.com/app/uploads/2026/11/image-58-767x261.png.webp 767w, https://patchmypc.com/app/uploads/2026/11/image-58.png.webp 1087w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-58-1024x349.png 1024w, https://patchmypc.com/app/uploads/2026/11/image-58-300x102.png 300w, https://patchmypc.com/app/uploads/2026/11/image-58-767x261.png 767w, https://patchmypc.com/app/uploads/2026/11/image-58.png 1087w" decoding="async" src="assets/811505fc15eed325/img_0.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">When Intune finds restricted software, it can mark the device noncompliant. Conditional Access can then block access to company resources if your policy requires a compliant device. Microsoft used AI agents to demonstrate the scenario, but the policy checks the installed application and its identifiers. <sup>[1, 3]</sup>. Microsoft announced Software Compliance Policies in public preview. Once the restrictions are configured, Windows needs to receive the rules, check the installed software, and return a result. <sup>[1]</sup></p>
+<p class="wp-block-paragraph">App Inventory supplies the local application data. Software Compliance compares that data with the restrictions and prepares its own result for Intune.  Let’s follow that process from the policy in the admin center to the check on Windows, and then back to the compliance decision.</p>
+<h2 class="wp-block-heading" id="h-how-we-did-software-compliance-with-a-custom-compliance-policy">How we did Software Compliance with A Custom Compliance Policy<span class="clth-copy-icon" data-heading-id="h-how-we-did-software-compliance-with-a-custom-compliance-policy"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">We could already use installed applications in a compliance policy. With custom compliance,, a PowerShell discovery script could check whether an application was installed or read its version. The script returned the result as JSON, and a JSON rule defined what counted as compliant. <sup>[7, 8]</sup></p>
+<p class="wp-block-paragraph">For example, a script could report whether an unwanted app was present, with the rule requiring it to be absent. Intune could then mark the device noncompliant, and Conditional Access could restrict access if a compliant device was required. <sup>[8]</sup>. Our guide to <a href="https://patchmypc.com/blog/intune-custom-compliance-policies/">custom compliance for third party applications</a> shows that script and rules approach using application versions.</p>
+<p class="wp-block-paragraph">The new software compliance policy gives us a dedicated way to configure restricted applications using supported MSI product codes and Windows package full names. We can define those entries without writing our own discovery script. Custom compliance remains useful for minimum version checks, service checks and other conditions the software policy does not cover.</p>
+<p class="wp-block-paragraph">App Inventory supplies the local application data. Software Compliance compares that data with the restrictions and prepares its own result for Intune. Let’s follow that process from the policy in the admin center to the check on Windows, and then back to the compliance decision.</p>
+<h2 class="wp-block-heading" id="h-what-the-software-compliance-policy-checks">What the software compliance policy checks<span class="clth-copy-icon" data-heading-id="h-what-the-software-compliance-policy-checks"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">A software compliance policy contains a list of restricted applications. Each entry has a readable name and one or more discovery instances that tell Windows how to identify the application. The policy shown at Ignite supports MSI product codes and Windows package full names. <sup>[3]</sup></p>
+<figure class="wp-block-image size-large"><a data-caption="Figure 1. The Windows software compliance policy selector. The preview interface can change as the feature develops." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/11/image-59-1024x248.png"><picture class="wp-image-201562" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-59-1024x248.png.webp 1024w, https://patchmypc.com/app/uploads/2026/11/image-59-300x73.png.webp 300w, https://patchmypc.com/app/uploads/2026/11/image-59-765x185.png.webp 765w, https://patchmypc.com/app/uploads/2026/11/image-59-1536x371.png.webp 1536w, https://patchmypc.com/app/uploads/2026/11/image-59.png.webp 1907w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="Figure 1. The Windows software compliance policy selector. The preview interface can change as the feature develops." data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-59-1024x248.png 1024w, https://patchmypc.com/app/uploads/2026/11/image-59-300x73.png 300w, https://patchmypc.com/app/uploads/2026/11/image-59-765x185.png 765w, https://patchmypc.com/app/uploads/2026/11/image-59-1536x371.png 1536w, https://patchmypc.com/app/uploads/2026/11/image-59.png 1907w" decoding="async" src="assets/811505fc15eed325/img_1.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">The check is about whether the configured software is installed. Closing the application leaves its installation in place, so that alone does not resolve the restriction. Microsoft’s guide describes the device remaining subject to the access restriction even while the unwanted application is inactive. <sup>[2]</sup></p>
+<p class="wp-block-paragraph">The software evaluator reports what it finds. Intune processes that result for compliance, and Conditional Access can enforce the configured access requirements. Detecting an application does not itself terminate its processes or uninstall it. The public preview also has limits on what can be selected. Microsoft lists editor extensions, npm packages, and standalone executables outside the supported selection experience. An agent delivered through several supported host applications may need several restricted entries. <sup>[2]</sup></p>
+<h2 class="wp-block-heading" id="h-the-software-compliance-policy-overview">The Software Compliance Policy overview<span class="clth-copy-icon" data-heading-id="h-the-software-compliance-policy-overview"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The Windows side follows five stages. It receives and stores the software rules, starts an eligible collection, gathers the application data, matches the configured identifiers, and uploads the software result. The overview keeps those stages together so we can follow the same path through the rest of the article.</p>
+<figure class="wp-block-image size-large"><a data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/11/image-60-1024x764.png"><picture class="wp-image-201563" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-60-1024x764.png.webp 1024w, https://patchmypc.com/app/uploads/2026/11/image-60-300x224.png.webp 300w, https://patchmypc.com/app/uploads/2026/11/image-60-768x573.png.webp 768w, https://patchmypc.com/app/uploads/2026/11/image-60.png.webp 1028w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="" data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-60-1024x764.png 1024w, https://patchmypc.com/app/uploads/2026/11/image-60-300x224.png 300w, https://patchmypc.com/app/uploads/2026/11/image-60-768x573.png 768w, https://patchmypc.com/app/uploads/2026/11/image-60.png 1028w" decoding="async" src="assets/811505fc15eed325/img_2.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">The local application snapshot is the link between App Inventory and Software Compliance. It provides the installation records needed for matching. The software result then follows its own reporting path back to Intune. The Windows component flow and scheduling values in this article describe Device Inventory Agent Client details can change during the public preview.</p>
+<h2 class="wp-block-heading" id="h-give-intune-an-application-it-can-identify">Give Intune an application it can identify<span class="clth-copy-icon" data-heading-id="h-give-intune-an-application-it-can-identify"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The application name makes the policy readable. The discovery identifier does the matching. Before adding a restriction, find the MSI product code or package full name for the installation you want Windows to recognize.  App Inventory exposes the platform-specific app ID. Depending on the application, this supplies the MSI product code or Store package full name. App Inventory can also show the installation scope and other details that help identify the correct entry. <sup>[4]</sup></p>
+<p class="wp-block-paragraph">The screenshots below use Microsoft EPM as a configuration example because its MSI product code is visible in the uninstall entry. It is simply the application named by the example rule. The Device Inventory Agent performs the software check.</p>
+<figure class="wp-block-image size-full"><a data-caption="Figure 3. The MSI product code appears in the uninstall information. Use the GUID as the discovery value. {FCB7F8FE-DE55-4EC8-A8D4-DFBCD1DA34FC}" data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/11/image-61.png"><picture class="wp-image-201564" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-61.png.webp 953w, https://patchmypc.com/app/uploads/2026/11/image-61-300x81.png.webp 300w, https://patchmypc.com/app/uploads/2026/11/image-61-765x207.png.webp 765w" sizes="(max-width: 953px) 100vw, 953px" type="image/webp"/>
+<img alt="Figure 3. The MSI product code appears in the uninstall information. Use the GUID as the discovery value. {FCB7F8FE-DE55-4EC8-A8D4-DFBCD1DA34FC}" data-lazy-sizes="(max-width: 953px) 100vw, 953px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-61.png 953w, https://patchmypc.com/app/uploads/2026/11/image-61-300x81.png 300w, https://patchmypc.com/app/uploads/2026/11/image-61-765x207.png 765w" decoding="async" src="assets/811505fc15eed325/img_3.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">In the software entry, give the application a name, open Edit instance, select MSI product code, and add that GUID. The complete Msiexec command is not needed.</p>
+<figure class="wp-block-image size-full is-resized"><a data-caption="Figure 4. A restricted software entry with an MSI product code discovery instance." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/11/image-62.png"><picture class="wp-image-201565" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-62.png.webp 1013w, https://patchmypc.com/app/uploads/2026/11/image-62-300x113.png.webp 300w, https://patchmypc.com/app/uploads/2026/11/image-62-768x288.png.webp 768w" sizes="(max-width: 1013px) 100vw, 1013px" type="image/webp"/>
+<img alt="Figure 4. A restricted software entry with an MSI product code discovery instance." data-lazy-sizes="(max-width: 1013px) 100vw, 1013px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-62.png 1013w, https://patchmypc.com/app/uploads/2026/11/image-62-300x113.png 300w, https://patchmypc.com/app/uploads/2026/11/image-62-768x288.png 768w" decoding="async" src="assets/811505fc15eed325/img_4.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">One software entry can contain several discovery instances. For example, you can include identifiers for several installations that should count as the same restricted application. A match against any one of those instances establishes that the software is present.</p>
+<p class="wp-block-paragraph">For Windows packages, use the package full name. A package family name is a different identifier. An application’s friendly name is also insufficient for this comparison.</p>
+<p class="wp-block-paragraph">Keep those identifiers current. If an update changes a product code or package full name, an older entry does not automatically identify the replacement. The rule needs to cover the installations you intend to restrict.</p>
+<h2 class="wp-block-heading" id="h-import-several-software-compliance-policy-entries">Import several software compliance policy entries<span class="clth-copy-icon" data-heading-id="h-import-several-software-compliance-policy-entries"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The import option lets you add the same software definitions in JSON. It is useful when you have several entries to prepare. The JSON contains application names and discovery information; it does not contain a PowerShell discovery script.</p>
+<p class="wp-block-paragraph">The example below represents the MSI entry shown in the screenshots. The software item holds the readable name, while discoveryInstances contains the information used to recognize the installation.</p>
+<p class="wp-block-paragraph">{<br/>  “restrictedSoftwareItems”: [<br/>    {<br/>      “displayName”: “Microsoft EPM”,<br/>      “discoveryInstances”: [<br/>        {<br/>          “@odata.type”:<br/>            “#microsoft.graph.windowsMsiProductCodeDiscovery”,<br/>          “productCode”:<br/>            “{FCB7F8FE-DE55-4EC8-A8D4-DFBCD1DA34FC}”<br/>        }<br/>      ]<br/>    }<br/>  ]<br/>}</p>
+<p class="wp-block-paragraph">Every entry needs a name and at least one valid discovery instance. Empty rows still need to be completed or removed, even when another application in the list is valid.</p>
+<figure class="wp-block-image size-full"><a data-caption="Figure 5. Each restricted software entry needs a name and at least one valid discovery instance." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/11/image-63.png"><picture class="wp-image-201566" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-63.png.webp 885w, https://patchmypc.com/app/uploads/2026/11/image-63-300x153.png.webp 300w, https://patchmypc.com/app/uploads/2026/11/image-63-768x392.png.webp 768w" sizes="(max-width: 885px) 100vw, 885px" type="image/webp"/>
+<img alt="Figure 5. Each restricted software entry needs a name and at least one valid discovery instance." data-lazy-sizes="(max-width: 885px) 100vw, 885px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-63.png 885w, https://patchmypc.com/app/uploads/2026/11/image-63-300x153.png 300w, https://patchmypc.com/app/uploads/2026/11/image-63-768x392.png 768w" decoding="async" src="assets/811505fc15eed325/img_5.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">After defining the software, the policy follows the familiar actions for noncompliance and assignment steps. The import JSON describes the restrictions entered in the portal. Windows receives those rules through policy delivery.</p>
+<h2 class="wp-block-heading" id="h-software-compliance-policies-delivery-step-by-step">Software Compliance Policies Delivery Step By Step <span class="clth-copy-icon" data-heading-id="h-software-compliance-policies-delivery-step-by-step"><span class="clth-tooltip">Copy Link</span></span></h2>
+<h3 class="wp-block-heading" id="h-step-1-deliver-and-store-the-software-rules">Step 1 Deliver and store the software rules<span class="clth-copy-icon" data-heading-id="h-step-1-deliver-and-store-the-software-rules"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">Windows needs the restricted software definitions before it can evaluate an application. Policy delivery supplies that information and stores it locally, ready for the next applicable collection.</p>
+<figure class="wp-block-image size-full is-resized"><a data-caption="Figure 6. Windows configuration passes the signed software rules through InventoryAdaptor to InventoryService for validation and storage." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/11/image-56.png"><picture class="wp-image-201555" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-56.png.webp" type="image/webp"/>
+<img alt="Figure 6. Windows configuration passes the signed software rules through InventoryAdaptor to InventoryService for validation and storage." decoding="async" src="assets/811505fc15eed325/img_6.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">InventoryAdaptor is the handoff into the inventory components. It passes the configuration to InventoryService, which validates the signed policy and its software metadata before storing the rules.</p>
+<p class="wp-block-paragraph">SoftwareComplianceMetadata identifies the software definitions within that policy. The signed policy store is held in InventoryServiceHarvesterDatabase.sqlite, in the DeviceInventorySignedSettingHarvesterPolicy table. The evaluator later reads the usable software rules from that store. This explains why receiving a policy and evaluating it are separate steps. A policy tells Windows what to check. A collection determines when the software definitions are processed and compared with application data.</p>
+<p class="wp-block-paragraph">A new or updated policy can also notify the collection scheduler that work is available. The rules are stored first, so the collection can use the configuration that was delivered. If there are no active software definitions, the evaluator has no restricted list to compare. That is different from evaluating a valid list and finding that none of its applications is installed.</p>
+<h3 class="wp-block-heading" id="h-step-2-start-the-right-software-compliance-policy-collection">Step 2 Start the right Software Compliance Policy collection<span class="clth-copy-icon" data-heading-id="h-step-2-start-the-right-software-compliance-policy-collection"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">The collection scheduler runs inside InventoryService. It checks whether a full collection is due and whether additional work has been requested. Software Compliance participates when the collection includes its rules and evaluation work.</p>
+<figure class="wp-block-image size-full"><a data-caption="Figure 7. Scheduled work, a policy change and an on demand request can lead to a software check. Application events have a separate App Inventory path." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/11/image-64.png"><picture class="wp-image-201567" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-64.png.webp 945w, https://patchmypc.com/app/uploads/2026/11/image-64-300x217.png.webp 300w, https://patchmypc.com/app/uploads/2026/11/image-64-768x555.png.webp 768w" sizes="(max-width: 945px) 100vw, 945px" type="image/webp"/>
+<img alt="Figure 7. Scheduled work, a policy change and an on demand request can lead to a software check. Application events have a separate App Inventory path." data-lazy-sizes="(max-width: 945px) 100vw, 945px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-64.png 945w, https://patchmypc.com/app/uploads/2026/11/image-64-300x217.png 300w, https://patchmypc.com/app/uploads/2026/11/image-64-768x555.png 768w" decoding="async" src="assets/811505fc15eed325/img_7.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">Two timing values in Device Inventory Agent 6.2611.2.1 describe different parts of that process. The scheduler interval is five minutes. The normal full collection interval is 240 minutes, or four hours. A scheduler pass does not mean a full software evaluation runs on every pass.</p>
+<figure class="wp-block-table"><table class="has-fixed-layout"><thead><tr><td><strong>Trigger or interval</strong></td><td><strong>What it means in this agent version</strong></td></tr></thead><tbody><tr><td>Five minute scheduler interval</td><td>The wait between scheduler passes.</td></tr><tr><td>Four hour full collection interval</td><td>The normal deadline for the next full collection.</td></tr><tr><td>New or updated policy</td><td>Can bring a full collection forward.</td></tr><tr><td>On demand software check</td><td>Queues an additional targeted collection.</td></tr><tr><td>Application installation or removal</td><td>Refreshes App Inventory through its application event path.</td></tr></tbody></table></figure>
+<p class="wp-block-paragraph">The targeted request is useful when another software check is needed before the next full collection. It adds work to the queue without resetting the normal full collection deadline.</p>
+<p class="wp-block-paragraph">Application events need a separate explanation. An installation or removal can refresh App Inventory, but that event alone does not establish that a Software Compliance evaluation also ran. The relevant software collection still needs to take place.</p>
+<p class="wp-block-paragraph">These intervals describe collection scheduling. They do not promise that Intune, the device compliance state and an access decision will all update within the same period.</p>
+<h3 class="wp-block-heading" id="h-step-3-collect-installed-application-data">Step 3 Collect installed application data<span class="clth-copy-icon" data-heading-id="h-step-3-collect-installed-application-data"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">Once the software rules participate in a collection, the evaluator needs application data for that run. This is where App Inventory fits into the software compliance flow.</p>
+<figure class="wp-block-image size-large"><a data-caption="Figure 8. The evaluator reuses the current collection’s application snapshot or gathers the local application records it needs." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/11/image-65-1024x689.png"><picture class="wp-image-201568" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-65-1024x689.png.webp 1024w, https://patchmypc.com/app/uploads/2026/11/image-65-300x202.png.webp 300w, https://patchmypc.com/app/uploads/2026/11/image-65-767x516.png.webp 767w, https://patchmypc.com/app/uploads/2026/11/image-65.png.webp 1028w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="Figure 8. The evaluator reuses the current collection’s application snapshot or gathers the local application records it needs." data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-65-1024x689.png 1024w, https://patchmypc.com/app/uploads/2026/11/image-65-300x202.png 300w, https://patchmypc.com/app/uploads/2026/11/image-65-767x516.png 767w, https://patchmypc.com/app/uploads/2026/11/image-65.png 1028w" decoding="async" src="assets/811505fc15eed325/img_8.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">If App Inventory has already collected the applications during the same run, Software Compliance can reuse that snapshot. Otherwise, it can request application collection for the software check. Both paths supply local installation data for the comparison. Windows provides that data through two main sources. Win32 installation records come from the uninstall registry locations. Windows package registrations provide information about Store applications. These are also the collection sources Microsoft documents for App Inventory. <sup>[4]</sup></p>
+<p class="wp-block-paragraph">The MSI comparison uses identifiers classified as MSI product codes. The Windows package comparison uses package full names. The application’s friendly display name helps an administrator read the policy, but it is not the matching value. In this agent version, collecting the application data also depends on an App Inventory policy. App Inventory itself requires an assigned configuration policy to enable collection, as described in Microsoft’s inventory documentation. <sup>[4]</sup></p>
+<p class="wp-block-paragraph">The useful distinction is between local collection and cloud reporting. Software Compliance can use the application snapshot for the current collection. It does not have to perform its local comparison against the application report displayed in the admin center.</p>
+<h3 class="wp-block-heading" id="h-step-4-software-compliance-policies-will-match-the-restricted-software">Step 4  Software Compliance Policies Will Match the restricted software<span class="clth-copy-icon" data-heading-id="h-step-4-software-compliance-policies-will-match-the-restricted-software"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">The evaluator now has both inputs: the restricted software definitions and the installed application identifiers. It compares them and produces a result for each configured software item.</p>
+<figure class="wp-block-image size-full"><a data-caption="Figure 9. A matching identifier establishes presence. Without a match, relevant errors determine whether the result is NotPresent or Error." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/11/image-66.png"><picture class="wp-image-201569" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-66.png.webp 968w, https://patchmypc.com/app/uploads/2026/11/image-66-300x214.png.webp 300w, https://patchmypc.com/app/uploads/2026/11/image-66-768x549.png.webp 768w" sizes="(max-width: 968px) 100vw, 968px" type="image/webp"/>
+<img alt="Figure 9. A matching identifier establishes presence. Without a match, relevant errors determine whether the result is NotPresent or Error." data-lazy-sizes="(max-width: 968px) 100vw, 968px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-66.png 968w, https://patchmypc.com/app/uploads/2026/11/image-66-300x214.png 300w, https://patchmypc.com/app/uploads/2026/11/image-66-768x549.png 768w" decoding="async" src="assets/811505fc15eed325/img_9.png"/>
+</picture>
+</a></figure>
+<figure class="wp-block-table"><table class="has-fixed-layout"><thead><tr><td><strong>Local result</strong></td><td><strong>What Windows established</strong></td></tr></thead><tbody><tr><td><strong>Present</strong></td><td>At least one configured discovery identifier matched an installed application.</td></tr><tr><td><strong>NotPresent</strong></td><td>No configured identifier matched, and no relevant error prevents a reliable absence result.</td></tr><tr><td><strong>Error</strong></td><td>No match established presence, and an error prevents a reliable absence result.</td></tr></tbody></table></figure>
+<p class="wp-block-paragraph">Multiple discovery instances use OR logic. One matching identifier is enough to establish that the configured software is present. Windows does not need every instance to match the same installation. Errors matter when establishing absence. If the required application information cannot be read reliably, a failed check must not become a clean NotPresent result. A confirmed match, however, already establishes presence even if another discovery attempt encounters a problem.</p>
+<p class="wp-block-paragraph">These are application presence results. Intune still needs to process them as part of the policy and device compliance state. Present supplies the evidence for a restricted application; it is not the complete state of every compliance requirement on the device. The check also needs to see the installed application records. Starting an installer does not mean the final result changes at that instant. The applicable collection must run and collect the resulting installation information.</p>
+<h3 class="wp-block-heading" id="h-step-5-save-and-upload-the-compliance-policy-result">Step 5 Save and upload the Compliance Policy result<span class="clth-copy-icon" data-heading-id="h-step-5-save-and-upload-the-compliance-policy-result"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">After the comparison, the agent prepares a software compliance report. It includes a snapshot identifier, a collection time, and the application results. Each application result identifies the software and records its state and any error.</p>
+<figure class="wp-block-image size-large"><a data-caption="Figure 10. The result is stored, read by the uploader, and sent to the resolved reporting endpoint using the device certificate." data-fancybox="post-gallery" href="https://patchmypc.com/app/uploads/2026/11/image-67-1024x748.png"><picture class="wp-image-201570" decoding="async">
+<source data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-67-1024x748.png.webp 1024w, https://patchmypc.com/app/uploads/2026/11/image-67-768x561.png.webp 768w, https://patchmypc.com/app/uploads/2026/11/image-67-300x219.png.webp 300w, https://patchmypc.com/app/uploads/2026/11/image-67.png.webp 1028w" sizes="(max-width: 1024px) 100vw, 1024px" type="image/webp"/>
+<img alt="Figure 10. The result is stored, read by the uploader, and sent to the resolved reporting endpoint using the device certificate." data-lazy-sizes="(max-width: 1024px) 100vw, 1024px" data-lazy-srcset="https://patchmypc.com/app/uploads/2026/11/image-67-1024x748.png 1024w, https://patchmypc.com/app/uploads/2026/11/image-67-768x561.png 768w, https://patchmypc.com/app/uploads/2026/11/image-67-300x219.png 300w, https://patchmypc.com/app/uploads/2026/11/image-67.png 1028w" decoding="async" src="assets/811505fc15eed325/img_10.png"/>
+</picture>
+</a></figure>
+<p class="wp-block-paragraph">The Software Compliance Policy result is saved in InventoryUploader.sqlite in the SoftwareComplianceSnapshot table. This is separate from the signed policy store. One holds the rules received from Intune; the other holds the results produced by the local check. Software Compliance has a dedicated upload route for those results. The uploader uses the discovered InventoryUpload address and sends the software report with the device’s MDM certificate. Application inventory reporting remains a separate operation.</p>
+<p class="wp-block-paragraph">That separation matters during a targeted check. Windows can collect the application information needed for compliance without also sending the ordinary App Inventory report as part of that same targeted operation. The agent can also avoid repeating an unchanged report. It compares the application results with the previous snapshot and tracks the snapshot that was uploaded. Another collection therefore does not always require uploading identical results again.</p>
+<p class="wp-block-paragraph">For troubleshooting, follow the result through these stages: a software result was produced, a snapshot was stored, the upload was accepted, and the relevant compliance status was processed. A collection finishing is only one part of that sequence.</p>
+<h2 class="wp-block-heading" id="h-from-software-presence-to-device-compliance">From software presence to device compliance<span class="clth-copy-icon" data-heading-id="h-from-software-presence-to-device-compliance"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">The software result becomes part of the device’s compliance state. Microsoft describes Software Compliance as marking a targeted device noncompliant when restricted software is detected. A Conditional Access policy requiring a compliant device can then restrict access to protected company resources. <sup>[1]</sup></p>
+<p class="wp-block-paragraph">Take an application your organization has placed on the restricted list. Windows finds an identifier that matches the rule and reports Present. Intune processes the result for the software policy. If the device is noncompliant, the configured Conditional Access requirements can affect its access. The user then needs a clear explanation of what is wrong and what to do next. Microsoft’s guidance describes a custom message that identifies the problem and explains the required action. <sup>[2]</sup></p>
+<p class="wp-block-paragraph">After removing the application, the user can request another compliance check. A successful compliance evaluation can establish that the restricted software is no longer present. Intune then processes the updated result, and access follows the organization’s Conditional Access requirements. Other compliance requirements still apply. <sup>[2]</sup></p>
+<p class="wp-block-paragraph">This is also why application detection, device compliance and Conditional Access should stay visible as separate stages in the explanation. They contribute to the same outcome, but they have different responsibilities.</p>
+<h2 class="wp-block-heading" id="h-more-improvements-to-intune-compliance">More improvements to Intune compliance<span class="clth-copy-icon" data-heading-id="h-more-improvements-to-intune-compliance"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Software Compliance joins two other compliance improvements I recently covered.</p>
+<p class="wp-block-paragraph">With local compliance detection, a supported Windows device can notice a change, such as the firewall being switched off, and ask Intune to check again. Intune still evaluates the compliance policy. I covered that flow in <a href="https://patchmypc.com/blog/intune-faster-compliance-updates-for-windows-devices/">Faster compliance updates for Windows devices</a>.</p>
+<p class="wp-block-paragraph">Custom compliance has also gained a configurable schedule. Intune 2611 lets you choose 15 minutes, 30 minutes or 1 to 8 hours between discovery script runs. <a href="https://patchmypc.com/blog/configure-evaluation-frequency-for-custom-compliance-scripts/">Configure Evaluation Frequency For Custom Compliance Scripts</a> explains how the IME receives that schedule and returns a fresh result.</p>
+<p class="wp-block-paragraph">Those changes improve when Intune receives updated information. Software Compliance adds another thing you can check: whether restricted software is installed. Each follows its own collection and reporting path.</p>
+<h2 class="wp-block-heading" id="h-a-dedicated-software-compliance-policy-for-restricted-software">A dedicated Software Compliance policy for restricted software<span class="clth-copy-icon" data-heading-id="h-a-dedicated-software-compliance-policy-for-restricted-software"><span class="clth-tooltip">Copy Link</span></span></h2>
+<p class="wp-block-paragraph">Software Compliance gives us a dedicated policy for restricted applications. App Inventory provides the local application records. Windows checks those records against your restrictions, then returns a separate software result to Intune.</p>
+<p class="wp-block-paragraph">That is the process behind the experience Jason showed at Ignite. If an application is added or removed and the expected status has not appeared, follow the same path: policy delivery, collection, matching, upload and the final compliance decision.</p>
+<h3 class="wp-block-heading" id="h-sources-and-version-context">Sources and version context<span class="clth-copy-icon" data-heading-id="h-sources-and-version-context"><span class="clth-tooltip">Copy Link</span></span></h3>
+<p class="wp-block-paragraph">Microsoft describes Software Compliance as public preview. The public announcement and session explain the feature and intended user experience. The Windows architecture, local stores and timing values described here refer to Device Inventory Agent 6.2611.2.1.</p>
+<p class="wp-block-paragraph">[1] <a href="https://techcommunity.microsoft.com/blog/microsoftintuneblog/what%E2%80%99s-new-in-microsoft-intune-at-microsoft-ignite/4570003">What’s new in Microsoft Intune at Microsoft Ignite</a>. Microsoft Intune Blog. 17 November 2026.</p>
+<p class="wp-block-paragraph">[2] <a href="https://techcommunity.microsoft.com/blog/intunecustomersuccess/a-guide-to-governing-local-ai-agents-with-intune/4573284">A guide to governing local AI agents with Intune</a>. Microsoft Intune Customer Success. 17 November 2026.</p>
+<p class="wp-block-paragraph">[3] <a href="https://www.youtube.com/watch?v=XhDqfjq4ha8&amp;t=2309s">What’s New in Intune Secure Patch and Scale BRK404</a>. Jason Roszak at Microsoft Ignite. Software Compliance at 38:29 and policy demonstration at 39:20.</p>
+<p class="wp-block-paragraph">[4] <a href="https://learn.microsoft.com/en-us/intune/app-management/deployment/enhanced-app-inventory">App inventory for Windows devices in Microsoft Intune</a>. Microsoft Learn. Accessed 21 November 2026.</p>
+<p class="wp-block-paragraph">[5] <a href="https://patchmypc.com/blog/intune-faster-compliance-updates-for-windows-devices/">Inside Intune: Faster compliance updates for Windows devices</a>. Rudy Ooms, Patch My PC. 7 October 2026.</p>
+<p class="wp-block-paragraph">[6] <a href="https://patchmypc.com/blog/configure-evaluation-frequency-for-custom-compliance-scripts/">Configure Evaluation Frequency For Custom Compliance Scripts</a>. Rudy Ooms, Patch My PC. 17 November 2026.</p>
+<p class="wp-block-paragraph">[7] <a href="https://patchmypc.com/blog/intune-custom-compliance-policies/">Configuring Intune Custom Compliance Policies for Third Party Applications</a>. Raunak Desai, Patch My PC. 1 January 2024.</p>
+<p class="wp-block-paragraph">[8] <a href="https://learn.microsoft.com/en-us/intune/device-security/compliance/custom-settings">Custom compliance settings in Microsoft Intune</a>. Microsoft Learn. Accessed 21 November 2026.</p>
+</div>
+</div></div>
+</article>
+</body>
+</html>
