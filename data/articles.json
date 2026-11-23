@@ -1,5 +1,47 @@
 [
   {
+    "id": "https://www.anoopcnair.com/?p=386981",
+    "title": "Microsoft Introduces Intune for Servers with Full Cloud-Based Management",
+    "link": "https://www.anoopcnair.com/intune-for-servers-with-full-cloud-based/",
+    "source": "HTMD / Anoop C Nair",
+    "source_category": "Community",
+    "published": "2026-11-23T12:53:59+00:00",
+    "summary": "Hello - Here is the new HTMD Blog Article for you. Enjoy reading it. Subscribe to YouTube Channel https://www.youtube.com/c/AnoopCNairSCCM?sub_confirmation=1 and LinkedIn page for latest updates https://www.linkedin.com/company/how-to-manage-devices/ The post Microsoft Introduces Intune for Servers with Full…",
+    "first_seen": "2026-11-23T16:35:51.501737+00:00",
+    "offline_path": "posts/a7fe83b868f8e1db.html",
+    "scraped_at": "2026-11-23T16:35:56.547566+00:00",
+    "image_count": 6,
+    "scrape_error": null
+  },
+  {
+    "id": "https://www.anoopcnair.com/?p=386982",
+    "title": "Microsoft Entra PIM for App Roles to Enable Just-in-Time Access and Reduce Persistent Application Privileges",
+    "link": "https://www.anoopcnair.com/microsoft-entra-pim-for-app-roles-to-enable/",
+    "source": "HTMD / Anoop C Nair",
+    "source_category": "Community",
+    "published": "2026-11-23T10:20:22+00:00",
+    "summary": "Hello - Here is the new HTMD Blog Article for you. Enjoy reading it. Subscribe to YouTube Channel https://www.youtube.com/c/AnoopCNairSCCM?sub_confirmation=1 and LinkedIn page for latest updates https://www.linkedin.com/company/how-to-manage-devices/ The post Microsoft Entra PIM for App Roles to Enable Just-in-Time…",
+    "first_seen": "2026-11-23T16:35:51.501737+00:00",
+    "offline_path": "posts/36df3d6053adfe53.html",
+    "scraped_at": "2026-11-23T16:35:58.037800+00:00",
+    "image_count": 2,
+    "scrape_error": null
+  },
+  {
+    "id": "https://msendpointmgr.com/?p=27175",
+    "title": "Deep Dive: How Intune GRS retries required and failed apps",
+    "link": "https://msendpointmgr.com/2026/11/22/deep-dive-how-intune-grs-retries-required-and-failed-apps/",
+    "source": "MSEndpointMgr",
+    "source_category": "Community",
+    "published": "2026-11-22T17:23:57+00:00",
+    "summary": "After a required Win32 app’s first run, whether the install succeeded or failed, the Intune Management Extension (IME) evaluates it again roughly every 8 hours, re-running its detection and requirement checks. It will only try to install it again once 24 hours have passed, and only if the app still isn’t detected and…",
+    "first_seen": "2026-11-23T16:35:51.501737+00:00",
+    "offline_path": "posts/85580032cb36c63a.html",
+    "scraped_at": "2026-11-23T16:35:59.273661+00:00",
+    "image_count": 0,
+    "scrape_error": null
+  },
+  {
     "id": "https://call4cloud.nl/intune-software-compliance-policy-how-it-works/",
     "title": "Intune Software Compliance Policy: How It Works",
     "link": "https://patchmypc.com/blog/how-the-intune-software-compliance-policy-checks-installed-apps/?utm_term=rss",
