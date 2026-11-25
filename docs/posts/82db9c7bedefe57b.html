@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to test Foundry Browser Automation with a helpdesk ticket</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">November 24, 2026</span>
+  </div>
+  <h1>How to test Foundry Browser Automation with a helpdesk ticket</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/foundry-browser-automation-ga/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="prose" data-article-body=""><p>To change the category of a helpdesk ticket you open the ticket, select the new category and click <strong>Save</strong>. Easy enough if you are sitting in front of the browser. But how do you know that an agent changed the right ticket? In this blog I want to show you how you can check that with Foundry Browser Automation.</p>
+<p>For the first part I opened the connection form in my Modern Device Management tenant. The screenshot is from there. For the rest weâll use a sample ticket you can try in your own helpdesk. I left the form unsaved and didnât start a browser session. You can find Microsoftâs release details in the <a href="https://devblogs.microsoft.com/foundry/browser-automation-tool-ga/">GA announcement</a>.</p>
+<p aria-hidden="true" id="connect-a-browser-service-not-a-website-account"></p>
+<h2 id="1-connect-foundry-to-a-playwright-workspace">1. Connect Foundry to a Playwright workspace</h2>
+<p>First we need a Playwright workspace. Check which regions you can use with your Foundry project, then open the project. <a href="https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/browser-automation">Browser tool setup</a></p>
+<ul>
+<li>Open the projectâs <strong>Tools</strong>.</li>
+<li>Choose <strong>Browser Automation</strong>.</li>
+<li>Select the Playwright workspace you want the agent to use. The connection uses the workspaceâs remote MCP capability.</li>
+</ul>
+<figure class="technical-figure"><a href="/media/2026/11/batch10-foundry-browser-connection-original.jpg"><img alt="Foundry Browser Automation connection form with an empty Playwright workspace selector, Agent Identity authentication and recording options." src="assets/82db9c7bedefe57b/img_0.webp"/></a><figcaption><p>Modern Device Management, 2 November 2026. This unsaved connection form shows Agent Identity and
+the workspace selector. Connect remains disabled; no browser infrastructure was created.</p></figcaption></figure>
+<p>Here you can see why <strong>Connect</strong> is greyed out in my tenant. The workspace field is still empty. The other field, <strong>Agent Identity</strong>, tells you how the agent connects to the browser service. Youâll still need an account to sign in to the helpdesk. The developer who sets up the connection also has separate permissions. <a href="https://learn.microsoft.com/en-us/azure/app-testing/playwright-cloud-browsers/how-to-playwright-workspaces-remote-mcp">Remote MCP authentication</a></p>
+<p>For this example, give the helpdesk account access to your test tickets only. If you are signed in as Global Administrator, use a separate session. Before a real customer ticket appears on screen, check who can watch the session and open its recording.</p>
+<p aria-hidden="true" id="pick-a-task-with-an-observable-end-state"></p>
+<h2 id="2-prepare-the-ticket-and-approve-the-category-change">2. Prepare the ticket and approve the category change</h2>
+<p>Next we need something we can change and read back. My example is ticket <code>DEMO-1842</code>, currently at version 7. Its category is <strong>Unclassified</strong>. We want the agent to change it to <strong>Device access</strong>, once someone at the helpdesk has approved that change.</p>
+<p>Iâve written those three values down here so we can check them again at the end.</p>
+<pre class="astro-code github-dark" data-language="json" tabindex="0"><code><span class="line"><span>{</span></span>
+<span class="line"><span>  "record"</span><span>: </span><span>"DEMO-1842"</span><span>,</span></span>
+<span class="line"><span>  "before"</span><span>: { </span><span>"category"</span><span>: </span><span>"Unclassified"</span><span>, </span><span>"version"</span><span>: </span><span>7</span><span> },</span></span>
+<span class="line"><span>  "requested"</span><span>: { </span><span>"category"</span><span>: </span><span>"Device access"</span><span> },</span></span>
+<span class="line"><span>  "write_requires_approval"</span><span>: </span><span>true</span><span>,</span></span>
+<span class="line"><span>  "success_requires"</span><span>: [</span><span>"correct_record"</span><span>, </span><span>"persisted_category"</span><span>, </span><span>"single_change"</span><span>]</span></span>
+<span class="line"><span>}</span></span></code></pre>
+<p>You can keep the JSON next to your ticket number. Itâs a note for the person running the test.</p>
+<p>Why use the browser here? In this example the category is only available on the form. If your helpdesk already lets you change it through a supported API or connector, Iâd use that.</p>
+<p aria-hidden="true" id="separate-observation-approval-and-verification"></p>
+<h3 id="the-approval-before-save">The approval before Save</h3>
+<p>Foundry lets you follow the browser live and take over if you need to. For our ticket the important moment is just before <strong>Save</strong>. This is where Iâd use the toolâs approval controls. <a href="https://devblogs.microsoft.com/foundry/browser-automation-tool-ga/">Supervision capabilities</a></p>
+<ul>
+<li>Have the agent show the ID, current category and proposed category.</li>
+<li>Ask the reviewer to approve the specific change: âChange DEMO-1842 from Unclassified to Device access.â</li>
+<li>If someone edits the record while approval is pending, read it again and ask for a fresh approval.</li>
+</ul>
+<figure class="technical-figure"><p><a aria-label="Enlarge graphic: A click is not the final result" class="editorial-graphic-link" href="/media/2026/11/editorial-review-20261113/jr13-batch10-browser-en-desktop.webp"><picture class="editorial-graphic" data-graphic="g149-en"><source media="(max-width: 600px)" srcset="/media/2026/11/editorial-review-20261113/jr13-batch10-browser-en-mobile.webp"><img alt="Four browser-agent gates: inspect the record, approve the specific write, execute once and verify the persisted result." decoding="async" src="assets/82db9c7bedefe57b/img_1.webp"/></source></picture></a></p><figcaption><p>Proposed acceptance flow. Approval and final-state verification are separate decisions.</p></figcaption></figure>
+<p>Set the approval on the tool or in the ticket system. If you have also connected an MCP tool that can edit tickets, check that path too. Otherwise the agent can still reach the same field without that approval.</p>
+<p>I wrote down how I check who the MCP tool runs as and what it can change in the <a href="/five-gates-mcp-tool-production/">five gates I use for production MCP tools</a>.</p>
+<p>If you take over and change the ticket yourself, have the agent reopen it when you hand back control.</p>
+<p>Suppose a colleague edits the same ticket while you are approving version 7. Have the application check that version when it saves. Reading the page a second time still leaves a gap before the click. If the form canât check the version, keep the save manual or use an API that can.</p>
+<p aria-hidden="true" id="read-the-application-after-the-click"></p>
+<h2 id="3-reopen-the-ticket-and-check-what-was-saved">3. Reopen the ticket and check what was saved</h2>
+<p>Now we can look at what arrived in the helpdesk. Keep the ticket ID, the two categories, the approval and the save attempt together, then open the ticket again.</p>
+<ul>
+<li>Reopen <code>DEMO-1842</code> in a fresh view. You can also use the applicationâs read API or audit record.</li>
+<li>Check the ticket ID again.</li>
+<li>Read the saved category. On the approved example ticket you should now see <strong>Device access</strong>. The <strong>Saved</strong> notification alone canât show you which record changed.</li>
+</ul>
+<p>What if the page times out just after the click? Look up <code>DEMO-1842</code> again before asking the agent to repeat it. The helpdesk may already have saved the new category. If it supports idempotency, use it so it can recognize the same request a second time.</p>
+<p aria-hidden="true" id="put-failures-into-the-first-test-run"></p>
+<h3 id="what-if-someone-declines-or-the-browser-times-out">What if someone declines or the browser times out?</h3>
+<p>Once the usual case works, try the following with the same agent version and helpdesk role.</p>
+<ul>
+<li>Open two tickets with similar subjects. Approve only <code>DEMO-1842</code> and check the other ticket afterwards.</li>
+<li>Decline a change. The old category should still be there and the audit log should show no write.</li>
+<li>Interrupt the connection just after Save. When the session resumes, the agent should read the ticket before attempting another save.</li>
+</ul>
+<p>Then try signing in again after the session expires. You can also put an export request in the ticket text. Reading that sentence should never grant the agent permission to export. If somebody edits the ticket during takeover, ask for approval on the changed ticket.</p>
+<p aria-hidden="true" id="keep-recordings-useful-and-proportionate"></p>
+<h3 id="which-records-would-i-keep">Which records would I keep?</h3>
+<p>A recording can include personal information, tokens or customer documents. Decide who can open it and when it will be deleted. Foundry also has separate permissions for sensitive trace content. <a href="https://learn.microsoft.com/en-us/azure/foundry/observability/how-to/traces-sensitive-content">Trace-content access</a></p>
+<p>For a failed change Iâd keep the ticket fields and the correlation ID. Iâd also write down how long the session ran, how often it retried and how long someone had to take over. You wonât find that time in the token count.</p>
+<p>Thatâs it for our test ticket. If you try this in your own helpdesk, start by declining the first change. Open the ticket again. It should still say <strong>Unclassified</strong>. I hope this helps you try Browser Automation with a ticket you can check yourself.</p>
+<p><em>Stay healthy, Cheers<br/>
+Jannik</em></p></div></div></div>
+</article>
+</body>
+</html>
