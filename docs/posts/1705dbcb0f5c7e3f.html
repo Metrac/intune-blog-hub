@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Roborepo in Robopack: What Changes for Intune Patching</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Jannik Reinhard</span>
+    <span class="date">November 26, 2026</span>
+  </div>
+  <h1>Roborepo in Robopack: What Changes for Intune Patching</h1>
+  <div class="orig">Saved for offline reading · <a href="https://jannikreinhard.com/roborepo-robopack-intune-patching/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="prose" data-article-body=""><p>Robopack now maintains its own application repository. If you use it to patch Intune apps, you can keep your existing flows. The useful work is checking which package you are getting and what happens after that package reaches the catalogue.</p>
+<p>I opened my Modern Device Management lab to look at two examples: FortiClient, where the edition changes what you deploy, and Firefox, where an existing inactive flow explains why a newer catalogue version has not moved through that flow.</p>
+<p><strong>Advertisement.</strong> This article was prepared for the Friends of Robopack programme, which offers rewards for eligible contributions. The product link is a personal tracking link.</p>
+<h2 id="1-check-the-tenant-before-looking-at-the-catalogue">1. Check the tenant before looking at the catalogue</h2>
+<p>Sign in to Robopack with the Entra account for your demo or management organisation. Open <strong>Settings &gt; Tenants</strong> and check the tenant name, domain and connection state.</p>
+<p>For this walkthrough I used <code>ModernDevMgmt.onmicrosoft.com</code>. The existing connection showed <strong>AUTHORIZED</strong>. I reused it and did not change permissions, create packages or start deployments for the screenshots.</p>
+<figure class="technical-figure"><a href="/media/2026/11/moderndevmgmt-authorized-20261126-original.jpg"><img alt="Robopack Settings Tenants filtered to Modern Device Management, showing the ModernDevMgmt.onmicrosoft.com domain and AUTHORIZED state." decoding="async" fetchpriority="auto" src="assets/1705dbcb0f5c7e3f/img_0.webp"/></a><figcaption>The existing Modern Device Management connection on 26 November 2026. The tenant list is filtered to this lab.</figcaption></figure>
+<p>If your tenant is not connected yet, follow the <a href="https://docs.robopack.com/docs/tutorials/connecting-your-intune-tenant/">tenant connection guide</a> with the administrator responsible for that connection. Reading the shared catalogue and granting an application permission to write Intune apps are different tasks. You do not need to reconnect a working tenant to inspect Roborepo.</p>
+<h2 id="2-what-changed-on-8-november">2. What changed on 8 November</h2>
+<p>Roborepo replaced Robopackâs previous Winget-based application source on <strong>8 November 2026</strong>. Robopack now maintains those packages itself. The Microsoft Store remains a separate source. Robopack says existing Instant Apps, Robopatch flows and deployments continue without reconfiguration. The <a href="https://docs.robopack.com/blog/roborepo/">9 November announcement</a> explains the change.</p>
+<p>In <strong>Whatâs new &gt; Introducing Roborepo</strong>, the portal also dates the change to 8 November. For the update interval, Robopack says it checks for releases every 30 minutes and usually makes a new vendor version available in the catalogue within four hours. I would use that as a supplierâs usual delivery interval, not as a guaranteed deadline for installation on a laptop.</p>
+<p>Robopack also <a href="https://hn.linkedin.com/company/robopack-aps/">announced 420 additional apps that were not available in Winget</a>. That is Robopackâs count at launch. I have not independently compared all 420. Instead, I checked a specific application below.</p>
+<h2 id="3-pick-the-right-forticlient-edition">3. Pick the right FortiClient edition</h2>
+<p>Open <strong>Instant apps</strong> and search for <code>FortiClient</code>.</p>
+<p>In my session, the search returned <strong>FortiClient</strong> and <strong>FortiClient VPN</strong>. Open the first result and read its description before selecting a build. A familiar vendor logo is too little information to choose an endpoint security package.</p>
+<figure class="technical-figure"><a href="/media/2026/11/forticlient-search-20261126-original.jpg"><img alt="Robopack Instant Apps search for FortiClient with separate results for FortiClient and FortiClient VPN; the first result carries the Roborepo source label." decoding="async" fetchpriority="auto" src="assets/1705dbcb0f5c7e3f/img_1.webp"/></a><figcaption>Two separate catalogue entries. The Roborepo label on FortiClient identifies its source; the second result should not be treated as the same edition.</figcaption></figure>
+<p>The <strong>FortiClient</strong> entry showed these values:</p>
+<ul>
+<li>Identifier: <code>Fortinet.FortiClient</code>, labelled <strong>Robopack Repository</strong>.</li>
+<li>Version: <code>7.4.8.2066</code>.</li>
+<li>Description: the unified endpoint agent, <strong>ZTNA Edition</strong>, managed through FortiClient EMS.</li>
+<li>Installer choice: <strong>Executable</strong>, <strong>X64</strong>, <strong>Machine</strong>.</li>
+</ul>
+<figure class="technical-figure"><a href="/media/2026/11/forticlient-ztna-details-20261126-original.jpg"><img alt="FortiClient package detail in Robopack showing Fortinet.FortiClient, version 7.4.8.2066, the EMS-managed ZTNA description and an x64 machine-scope executable." decoding="async" fetchpriority="auto" src="assets/1705dbcb0f5c7e3f/img_2.webp"/></a><figcaption>The Roborepo entry inspected on 26 November. The visible date is catalogue metadata; it does not establish when a device installed the app.</figcaption></figure>
+<p>I could not find a matching <code>Fortinet.FortiClient</code> manifest in the public Winget repository during this check. I inspected the complete <code>manifests/f</code> subtree at <a href="https://github.com/microsoft/winget-pkgs/tree/e97eb5f1956add6e0a86e149b1e175862f2d2855/manifests/f">commit e97eb5f</a> and searched the repository for FortiClient. Neither returned a matching package. This is a dated comparison with Microsoftâs public repository, not a claim about every private Winget source or future additions.</p>
+<p>That repository check compares catalogue coverage. For the Robopack workflow below, select the package from Roborepo in the portal.</p>
+<p>For an Intune admin managing this edition, having the package in Roborepo could remove a separate custom-packaging task. It still needs the correct licence, configuration and upgrade path for the environment. Fortinet distinguishes its enterprise and VPN-only offerings on the <a href="https://www.fortinet.com/support/product-downloads">FortiClient download page</a>. I would involve the person managing EMS before replacing or upgrading that client through another tool.</p>
+<h2 id="4-review-the-package-before-importing-it-into-intune">4. Review the package before importing it into Intune</h2>
+<p>From the chosen version, <strong>Analyze &amp; Build</strong> starts Robopackâs packaging workflow. The <a href="https://docs.robopack.com/docs/features/instant-apps/">Instant Apps documentation</a> describes the generated install and uninstall commands, detection method and PSADT wrapper. I stopped at the catalogue inspection for this example; the FortiClient screenshots do not show a completed build or deployment.</p>
+<p>When you continue in your own lab, keep the edition from the previous step throughout the process:</p>
+<ol>
+<li>Select the required architecture, language and installation scope.</li>
+<li>Review the installation and detection information produced for that package.</li>
+<li>Check the destination Intune tenant before importing.</li>
+<li>Start with a small, explicit test audience.</li>
+<li>Open the imported app again in Intune and inspect its properties and assignments.</li>
+</ol>
+<p>For FortiClient, I would test an upgrade from the version actually in use, with the existing EMS configuration. After the upgrade, check that the service runs, the expected configuration remains and the device reconnects to EMS. Those are acceptance tests to perform, not results from this catalogue walkthrough.</p>
+<p>The same approach applies to less sensitive applications: carry one package identity from source to installer to detection. If the app changes from user scope to machine scope, or from one edition to another, treat that as a deployment decision rather than a routine version increase. Microsoftâs <a href="https://learn.microsoft.com/en-us/intune/app-management/deployment/add-win32">Win32 app guide</a> explains the corresponding Intune settings.</p>
+<h2 id="5-follow-firefox-from-catalogue-to-flow">5. Follow Firefox from catalogue to flow</h2>
+<p>Firefox gives us a second check using something that already exists in my lab.</p>
+<p>Open <strong>Instant apps &gt; Mozilla Firefox</strong> and expand the newest Roborepo version. The page listed <code>161.0</code> with the displayed timestamp <code>2026-11-24 15:21</code>, followed by x86 and x64 machine-scope installers. Firefox also has a separate Microsoft Store version list. Use the entry for the source you intend to deploy.</p>
+<figure class="technical-figure"><a href="/media/2026/11/firefox-versions-20261126-original.jpg"><img alt="Expanded Firefox 161.0 catalogue version in Robopack, dated 24 November 2026 at 15:21, showing x86 and x64 machine-scope installers." decoding="async" fetchpriority="auto" src="assets/1705dbcb0f5c7e3f/img_3.webp"/></a><figcaption>Firefox 161.0 in the repository version list. The timestamp is reproduced as shown; the screen does not identify its timezone or provide the vendorâs release timestamp.</figcaption></figure>
+<p>Next, open <strong>Robopatch &gt; Patch flows</strong> and select the existing Firefox flow. Mine showed <strong>Inactive</strong>, with a <code>147.0</code> deployment still marked <strong>Pending</strong>. Its settings included <strong>Start new versions automatically</strong>, but the flow itself was inactive.</p>
+<figure class="technical-figure"><a href="/media/2026/11/firefox-flow-details-20261126-original.jpg"><img alt="Existing Mozilla Firefox patch flow with Start new versions automatically listed, an Inactive state and a pending 147.0 deployment." decoding="async" fetchpriority="auto" src="assets/1705dbcb0f5c7e3f/img_4.webp"/></a><figcaption>The existing lab flow. An automatic-start option does not establish that an inactive flow has processed the newer catalogue version.</figcaption></figure>
+<p>I left that flow unchanged. There is no measured vendor-to-device patch time in this example. What we can see is the newer package in the catalogue and the separate state of the old flow. If a version has not reached Intune, this is where I would start investigating before blaming the repository.</p>
+<h2 id="6-check-version-handling-before-restarting-a-flow">6. Check version handling before restarting a flow</h2>
+<p>Open <strong>Edit flow &gt; Show flow options</strong> to review the saved choices. In my existing flow, the form showed automatic start, waiting until the final wave before starting a new version, and keeping three superseded versions. <strong>Match newer versions in detection method</strong> was not selected.</p>
+<figure class="technical-figure"><a href="/media/2026/11/firefox-flow-options-unsaved-20261126-original.jpg"><img alt="Existing Firefox flow options including Start automatically, Wait until final wave before starting new version, Keep last 3 superseded versions and an unchecked Match newer versions in detection method option." decoding="async" fetchpriority="auto" src="assets/1705dbcb0f5c7e3f/img_5.webp"/></a><figcaption>I opened the existing form, expanded its options and cancelled without saving. Review these choices before activating an old lab or production flow.</figcaption></figure>
+<p>If an application also updates itself, test how its installed version interacts with detection. An exact-version rule and an equal-or-newer rule give different results when the device has already moved ahead. Keep the generated detection logic in that test; checking only the version in the portal misses the behaviour on the endpoint.</p>
+<p>For the rollout, I would use a small pilot with known-online devices and a manual release decision for a business-critical client. Robopackâs <a href="https://docs.robopack.com/docs/features/robopatch/">wave documentation</a> calculates thresholds from devices that have picked up the assignment, not total group membership. A successful wave percentage therefore needs an audience-coverage check alongside it.</p>
+<p>I would also review the <a href="https://docs.robopack.com/docs/known-limitations/">current limitations</a> before moving an existing package. Dependencies added directly in Intune are not preserved through Robopack updates. Pausing a Robopack wave also leaves its existing Intune assignment active. If you need to stop delivery, inspect the assignment as well as the flow state.</p>
+<h2 id="7-measure-the-path-to-the-device">7. Measure the path to the device</h2>
+<p>For the next update you test, record these four events for the same application version. This is the measurement sheet I would use:</p>
+<table>
+<thead>
+<tr>
+<th>Event</th>
+<th>Evidence to save</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Vendor publishes the release</td>
+<td>Vendor release timestamp and the exact version, architecture and edition</td>
+</tr>
+<tr>
+<td>Version becomes available in Roborepo</td>
+<td>First observed catalogue availability, with timezone recorded</td>
+</tr>
+<tr>
+<td>Package reaches Intune</td>
+<td>Intune app ID, package version, assignment and import/deployment time</td>
+</tr>
+<tr>
+<td>Device completes the update</td>
+<td>Per-device installation result, installed version and functional check</td>
+</tr>
+</tbody>
+</table>
+<p>Keep observation time separate from release time. If you first open the catalogue at 16:00, that proves availability at 16:00; it does not tell you when the package first appeared. If the vendor publishes only a date, you cannot calculate an accurate hourly delay from that date.</p>
+<p>Then inspect the application in <strong>Intune &gt; Apps &gt; All apps</strong>. Review its device installation status and investigate failed or missing results. On a representative endpoint, verify the installed version and whether the application still performs its job. For a VPN or ZTNA client, include connectivity in that check. An offline device remains an open rollout item even if the responding pilot devices succeeded.</p>
+<p>If you use Radar for targeting, allow for its separate inventory cycle: Robopack <a href="https://docs.robopack.com/docs/features/radar-tracking/">documents a 24-hour refresh</a> based on Intune Discovered Apps. I would not use a newly opened Radar view as a real-time installation receipt.</p>
+<p>Roborepo gives me a catalogue entry for the FortiClient edition I could not find in the public Winget repository. My next step would be a controlled upgrade test for that exact edition, followed by a review of the Intune result. If you already use Robopack, pick one application your team still packages manually and make that comparison with its full product name and identifier.</p>
+<p>For the earlier setup and deployment walkthroughs, see my <a href="/robopack-a-bis-z-alles-was-du-wissen-musst/">Robopack A to Z series</a>.</p>
+<p>You can find product information at <a href="https://robopack.com/?utm_source=friends&amp;utm_medium=referral&amp;utm_campaign=jannikreinhard-d47f03" rel="sponsored">Robopack</a>.</p>
+<p><em>Stay healthy, Cheers<br/>
+Jannik</em></p></div></div></div>
+</article>
+</body>
+</html>

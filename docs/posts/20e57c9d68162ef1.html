@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intune Newsletter – 27th November 2026</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1b2430; --muted: #5d6b7d;
+    --border: #e2e8f0; --accent: #0b6efd; --accent-soft: #e7f0ff;
+    --official: #0b6efd; --community: #2fa37a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141b; --card: #19212c; --text: #e6edf5; --muted: #93a1b3;
+      --border: #2a3543; --accent: #4d97ff; --accent-soft: #1b2a40;
+      --official: #4d97ff; --community: #43c39b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .bar {
+    position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .bar a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .bar a:hover { text-decoration: underline; }
+  article { max-width: 760px; margin: 26px auto 80px; padding: 0 22px; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .badge.official { color: var(--official); }
+  .badge.community { color: var(--community); }
+  .date { color: var(--muted); font-size: 13px; }
+  h1 { font-size: 28px; line-height: 1.25; letter-spacing: -0.01em; margin: 4px 0 14px; }
+  .orig { font-size: 13px; }
+  .orig a { color: var(--accent); }
+  .content { margin-top: 22px; }
+  .content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 16px 0; }
+  .content pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13.5px;
+  }
+  .content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .content :not(pre) > code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+  }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--border); color: var(--muted);
+  }
+  .content table { border-collapse: collapse; max-width: 100%; overflow-x: auto; display: block; }
+  .content th, .content td { border: 1px solid var(--border); padding: 6px 10px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+</style>
+</head>
+<body>
+<div class="bar"><a href="../index.html">← Back to Intune Blog Hub</a></div>
+<article>
+  <div class="meta">
+    <span class="badge community">Andrew Taylor</span>
+    <span class="date">November 27, 2026</span>
+  </div>
+  <h1>Intune Newsletter – 27th November 2026</h1>
+  <div class="orig">Saved for offline reading · <a href="https://andrewstaylor.com/2026/11/27/intune-newsletter-27th-november-2026/" target="_blank" rel="noopener">Open original ↗</a></div>
+  <hr>
+  <div class="content"><div><div class="entry-content" itemprop="text">
+<p>Welcome back, it’s been a busy week, but I think I’m finally over the jet-lag after Ignite.  I don’t know about you, but the run up to Christmas always gets really busy in the evenings and weekends, definitely looking forward to the Christmas break!</p>
+<p>Plenty of content for you to enjoy this week too</p>
+<p>Enjoy!</p>
+<hr/>
+<h2>Community Content</h2>
+<ul>
+<li>📦 App management | <a href="https://msendpointmgr.com/2026/11/22/deep-dive-how-intune-grs-retries-required-and-failed-apps/">Deep Dive: How Intune GRS retries required and failed apps</a> • <a href="https://intune.news/authors/ben-whitmore">Ben Whitmore</a><br/>
+Have you ever wondered about the app retries from Intune, timings and the mysterious GRS keys? Wonder no more, Ben covers absolutely everything you could possibly need in this deep dive</li>
+<li>⚙️ Device configuration | <a href="https://hmaslowski.com/block-vs-code-forks-app-control-for-business-intune/">App Control for Business: Block VS Code Forks like Cursor and VSCodium</a> • <a href="https://intune.news/authors/hubert-maslowski">Hubert Maslowski</a><br/>
+Worried about VS Code forks sneaking into your environment (they do mostly install in the user context after all). Use App Control for Business to block them by following this guide from Hubert</li>
+<li>⚙️ Device configuration | <a href="https://hmaslowski.com/stop-malicious-vs-code-browser-extensions-intune-defender/">Stop malicious VS Code and Browser Extensions with Intune and Defender</a> • <a href="https://intune.news/authors/hubert-maslowski">Hubert Maslowski</a><br/>
+Now you have your code editor locked down to VS Code, you will want to manage the extensions available. Fortunately Hubert has you covered for that as well</li>
+<li>🚀 Device enrollment | <a href="https://oofhours.com/2026/11/23/yes-there-was-actually-some-windows-autopilot-news-at-ignite/">Yes, there was actually some Windows Autopilot news at Ignite</a> • <a href="https://intune.news/authors/michael-niehaus">Michael Niehaus</a><br/>
+A nice break for the AI heavy announcements at Ignite, Michael looks at all of the Autopilot related news, announcements and items which have been released recently</li>
+<li>🚀 Device enrollment | 📺 <a href="https://www.youtube.com/watch?v=g9TZ11Xoqpg">Fix Autopilot and Intune Enrollment Blocked by Conditional Access</a> • <a href="https://intune.news/authors/steve-weiner">Steve Weiner</a><br/>
+Having issues with your Intune enrollment? It could be your Conditional Access policies as covered here by Steve</li>
+<li>🛡️ Device security | <a href="https://www.jorgeasaur.us/export-bitlocker-keys-before-deleting-stale-entra-devices">Export BitLocker recovery keys before deleting stale Entra devices</a> • <a href="https://intune.news/authors/jorge-suarez">Jorge Suarez</a><br/>
+If you need to backup your BitLocker keys securely, check out this script from Jorge</li>
+<li>🛡️ Device security | <a href="https://evil365.com/intune/MDMWinsOverGP-Doesnt-Win-As-Often-As-You-Think/">MDMWinsOverGP doesn’t win as often as you think</a> • <a href="https://intune.news/authors/mads-johansen">Mads Johansen</a><br/>
+I’m sure this setting causes more issues than it resolves! There are many places where MDM does not Win over anything which you should definitely read about in this post</li>
+<li>🛡️ Device security | <a href="https://scloud.work/en/cloud-pki-vs-certificate-connector/">Intune Cloud PKI vs Certificate Connector: Which to Choose?</a> • <a href="https://intune.news/authors/florian-salzmann">Florian Salzmann</a><br/>
+If you are using certs and considering Cloud PKI vs the alternatives, check out this post from Florian</li>
+<li>✅ Compliance | <a href="https://jamesvincent.co.uk/2026/11/23/microsoft-ignite-2026-day-3-intune-device-management-roundup/">Microsoft Ignite 2026 Day 3: My Intune and Device Management Roundup</a> • <a href="https://intune.news/authors/james-vincent">James Vincent</a><br/>
+A look at the day 3 Ignite announcements for Intune here from James</li>
+<li>✅ Compliance | <a href="https://www.simsenblog.dk/2026/11/21/introducing-intunescope/">Introducing IntuneScope — Every assignment. One view.</a> • <a href="https://intune.news/authors/simon-hartmann-eriksen">Simon Hartmann Eriksen</a><br/>
+An excellent new tool from Simon to quickly see everything in Intune and what assignments it has</li>
+<li>✅ Compliance | <a href="https://blog.pryrotech.com/2026/11/windows-server-and-cloud-native-future.html">Windows Server and the Cloud-Native Future: Microsoft Entra Join and Intune Management Arrive for Servers</a> • <a href="https://intune.news/authors/colby-pryor">Colby Pryor</a><br/>
+Another look at the server management announcement from Ignite here from Colby</li>
+<li>✅ Compliance | <a href="https://leblogmodernworkplace.fr/back-to-ignite-gerez-les-serveurs-windows-avec-microsoft-intune-la-preview-qui-fait-reagir/">Back to Ignite : Gérez les serveurs Windows avec Microsoft Intune, la preview qui fait réagir</a> • <a href="https://intune.news/authors/jonathan-fievet">Jonathan Fievet</a><br/>
+Jonathan looks at server management here (in French) including a filter for your All Devices assignment to ignore any enrolled servers</li>
+<li>📈 Endpoint analytics | <a href="https://nicolasuter.ch/kusto-advent-riddle-2026/">Kusto Advent Riddle 2026: The KQL Advent Calendar</a> • <a href="https://intune.news/authors/nicola-suter">Nicola Suter</a><br/>
+Some festive fun, but knowing KQL is always useful when dealing with Intune or Defender! Might as well make the learning more interesting</li>
+<li>🔄 Device updates | <a href="https://msnugget.com/windows-update-maintenance-windows/">Give Windows Updates a Maintenance Window in Intune</a> • <a href="https://intune.news/authors/florian-salzmann">Florian Salzmann and Jannik Reinhard</a><br/>
+Finally we have maintenance windows for updates, one many of us have been waiting for!</li>
+<li>🔄 Device updates | <a href="https://blog.devicemetal.com/intune-maintenance-windows/">Intune Maintenance Windows for Windows Updates: Setup, Behavior and Autopatch</a> • <a href="https://intune.news/authors/anders-green">Anders Green</a><br/>
+Anders Green also looks at the maintenance windows in Autopatch including how to configure them</li>
+<li>🔄 Device updates | <a href="https://petervanderwoude.nl/post/getting-started-with-maintenance-windows-for-windows-updates/">Getting started with maintenance windows for Windows updates</a> • <a href="https://intune.news/authors/peter-van-der-woude">Peter van der Woude</a><br/>
+Another look at maintenance windows here from Peter</li>
+<li>🔄 Device updates | <a href="https://joostgelijsteen.com/maintenance-windows-for-windows-in-intune/">Maintenance windows for Windows updates in Intune</a> • <a href="https://intune.news/authors/joost-gelijsteen">Joost Gelijsteen</a><br/>
+Maintenance windows are a popular topic this week and this post from Joost takes a look at what, why and when you should use them</li>
+<li>🪟 Windows | <a href="https://jeffreyappel.nl/cis-benchmark-auditing-in-microsoft-intune-explained/">CIS Benchmark Auditing in Microsoft Intune Explained</a> • <a href="https://intune.news/authors/jeffrey-appel">Jeffrey Appel</a><br/>
+We finally have a useful Security Baseline in Intune, a CIS audit for your tenant against Level 1 and Level 2 baselines</li>
+<li>🪟 Windows | <a href="https://blog.thomasmarcussen.com/windows-app-mam-for-windows-public-preview/">Windows App Gets MAM for Windows: Protecting Cloud PC Access from Personal PCs</a> • <a href="https://intune.news/authors/thomas-marcussen">Thomas Marcussen</a><br/>
+This is one I have already deployed and tested. We have another option in the Select Apps area on a MAM policy for Windows devices. No more can you only select Edge, now you can also protect the Windows App</li>
+<li>🪟 Windows | <a href="https://www.ccmtune.fr/2026/11/how-to-remotely-lock-windows-11-device.html">How to Remotely Lock a Windows 11 Device with Microsoft Intune</a> • <a href="https://intune.news/authors/christopher-mogis">Christopher Mogis</a><br/>
+Learn how to create custom CSP policies to lock and unlock Windows devices remotely by just dropping someone into an Entra group</li>
+<li>🪟 Windows | <a href="https://msendpointmgr.com/2026/11/20/onedrive-and-the-explorer-of-doom/">OneDrive and the Explorer of Doom</a> • <a href="https://intune.news/authors/maurice-daly">Maurice Daly</a><br/>
+If your explorer.exe is ruining your life when browsing OneDrive synchronised documents, you must check out this post from Maurice</li>
+<li>🤖 Android | <a href="https://blog.deployment.mx/?p=6066">Microsoft Defender for Endpoint en móviles con Intune: guía completa para Android e iOS</a> • <a href="https://intune.news/authors/jesus-octavio-rdz-de-santiago">Jesus Octavio Rdz de Santiago</a><br/>
+For those of you managing Android and iOS devices, this end to end guide from Octavio demonstrates how to deploy Defender for Endpoint to your whole mobile estate</li>
+<li>🤖 Android | <a href="https://www.nickydewestelinck.be/2026/11/26/whats-new-for-android-enterprise-in-microsoft-intune-2611-november-2026-highlights/">What’s New for Android Enterprise in Microsoft Intune 2611: November 2026 Highlights</a> • <a href="https://intune.news/authors/nicky-de-westelinck">Nicky De Westelinck</a><br/>
+The app important Android Enterprise news in the November release</li>
+<li>👩‍💻 Developer | <a href="https://maisondasilva.com.br/2026/11/21/powershell-7-chegara-integrado-ao-windows-e-marcara-uma-nova-fase-da-automacao/">PowerShell 7 chegará integrado ao Windows e marcará uma nova fase da automação</a> • <a href="https://intune.news/authors/maison-da-silva">Maison da Silva</a><br/>
+PowerShell 7 is finally included in Windows 11 (alongside 5.1, don’t worry), but also keep in mind that 7.7 is switching to MSIX format. Learn more here (in Portuguese)</li>
+<li>👩‍💻 Developer | <a href="https://medium.com/@markhunterorr/intune-remediation-cleanup-1a3eea67158a?source=rss-f4c4977878b4------2">Intune Remediation Cleanup</a> • <a href="https://intune.news/authors/mark-orr">Mark Orr</a><br/>
+You have a fixed limit for scripts in Intune and if you have gone a bit wild with remediations, this script from Mark will help you clear up the unused ones</li>
+<li>☁️ AVD &amp; W365 | <a href="https://wolkenman.wordpress.com/2026/11/22/windows-365-service-release/">Windows 365 Service Release</a> • <a href="https://intune.news/authors/jan-mulder">Jan Mulder</a><br/>
+We now have functionality similar to the preview Windows builds for Windows 365 with the new service releases as covered here by Jan</li>
+<li>☁️ AVD &amp; W365 | 📺 <a href="https://www.youtube.com/watch?v=MMw7faBTvrM">The Get Rubix Thanksgiving Day Special: Windows 365 Ignite Recap</a> • <a href="https://intune.news/authors/steve-weiner">Steve Weiner</a><br/>
+Steve looks at the Windows 365 announcements from Ignite, especially as some are available already</li>
+</ul>
+<h2>Microsoft Content</h2>
+<h2>Service Messages</h2>
+<hr/>
+<p>That’s all for this week, have an amazing weekend!</p>
+<hr/>
+<hr/>
+</div>
+</div></div>
+</article>
+</body>
+</html>
